@@ -32,7 +32,7 @@ from .sources import SOURCES
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parent
-INTENDED_USE = ("Gold Rails is a non-commercial research benchmark by raxIT Labs. It compares guardrail systems and "
+INTENDED_USE = ("[gold]rails is a non-commercial research benchmark by raxIT Labs. It compares guardrail systems and "
                 "publishes the results for research, with credit to every upstream source. It is not a commercial product "
                 "or deployment. Publishing it changes no source's licence: each row stays under its source's own terms, "
                 "listed in SOURCES.md.")
@@ -61,7 +61,7 @@ UPSTREAM = {
     "orbench": ["orbench"], "ragtruth": ["ragtruth"], "nemotron_pii": ["nemotron_pii"],
 }
 AUTHORED = {"f2_controls", "f3_controls", "f3_test_candidates", "f4_words", "f5_controls"}
-AUTHORED_NOTE = ("Authored for Gold Rails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the "
+AUTHORED_NOTE = ("Authored for [gold]rails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the "
                  "author's intended labels (label_basis llm or deterministic), not independent annotation.")
 
 
@@ -134,6 +134,9 @@ def main(argv=None) -> int:
     ap.add_argument("--public-ref", default="v0.0.1", help="public version: the tag in the code repository and on the dataset")
     ap.add_argument("--previous", type=Path,
                     help="publication record of the upload this package revises (same public version); adds CHANGELOG.md")
+    ap.add_argument("--card-update", action="append", default=[], metavar="DATE|REVISION|TEXT",
+                    help="a card-only change to an uploaded revision: the date, the Hub revision whose data it keeps, and "
+                         "what changed; listed first in CHANGELOG.md")
     ap.add_argument("--code-ref", help="code revision the card and RECONSTRUCT.md name (default: --public-ref); "
                                        "set it to the code export's commit before uploading a revision")
     ap.add_argument("--full", action="store_true",
@@ -206,7 +209,8 @@ def main(argv=None) -> int:
     (out / "KNOWN_ISSUES.md").write_text(known_md(a.version, known), encoding="utf-8")
     (out / "RECONSTRUCT.md").write_text(reconstruct_md(a.version, a.public_repo, code_ref, held, rows_all), encoding="utf-8")
     if previous:
-        (out / "CHANGELOG.md").write_text(changelog_md(a.public_ref, a.version, man, rows_all, previous, review, code_ref),
+        (out / "CHANGELOG.md").write_text(changelog_md(a.public_ref, a.version, man, rows_all, previous, review, code_ref,
+                                                       a.card_update),
                                          encoding="utf-8")
     if review:
         (out / "LABEL_REVIEW.json").write_text(json.dumps(review, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -402,7 +406,8 @@ def _today() -> str:
     return datetime.now(timezone.utc).strftime("%-d %B %Y")
 
 
-def changelog_md(ref: str, version: str, man: dict, rows: list, previous: dict, review: dict | None, code_ref: str) -> str:
+def changelog_md(ref: str, version: str, man: dict, rows: list, previous: dict, review: dict | None, code_ref: str,
+                 card_updates: list = ()) -> str:
     """What this revision changes against the upload it revises, by canonical row hash, with both exact revisions."""
     from .records import canonical, read_jsonl
     prev_rel = ROOT / "release" / previous["release"]
@@ -421,12 +426,23 @@ def changelog_md(ref: str, version: str, man: dict, rows: list, previous: dict, 
     same = sum(1 for k in set(before) & set(after) if before[k][3] == after[k][3])
     prev_man = json.loads((prev_rel / "manifest.json").read_text(encoding="utf-8"))
     lines = ["# Changelog", "", f"Public version {ref}. Internal release numbers identify each revision's rows; earlier "
-             "results stay traceable through the Hub revision they used.", "",
-             f"## {ref}, revised {_today()}", "",
+             "results stay traceable through the Hub revision they used.", ""]
+    for u in card_updates:
+        date, rev, text = (x.strip() for x in u.split("|", 2))
+        lines += [f"## {ref}, card update, {date}", "", f"- {text}",
+                  f"- Data unchanged: every data file is identical to Hub revision `{rev}`.", ""]
+    this = ROOT / "release" / version / "publication.json"   # once uploaded, the revision keeps its upload date
+    pub = json.loads(this.read_text(encoding="utf-8")) if this.exists() else {}
+    when = _today()
+    if pub.get("uploaded"):
+        from datetime import date
+        when = date.fromisoformat(pub["uploaded"]).strftime("%-d %B %Y")
+    lines += [f"## {ref}, revised {when}", "",
              f"- Built from internal release {version}: release sha `{man['release_sha256']}`, manifest sha256 "
              f"`{_sha(prev_rel.parent / version / 'manifest.json')}`, {man['counts']['total']} rows.",
-             "- Hub revision: the commit this upload creates, recorded in the project's publication record after upload "
-             "(a revision cannot name its own commit).",
+             (f"- Hub revision `{pub['hub_commit']}`." if pub.get("hub_commit") else
+              "- Hub revision: the commit this upload creates, recorded in the project's publication record after upload "
+              "(a revision cannot name its own commit)."),
              f"- Code: {previous.get('code_repository', {}).get('url', '')} at `{code_ref}`.",
              f"- Rows compared with the previous revision by canonical row hash: {same} identical; changes below.", "",
              "| Feature | Subtask | Source | Change | Rows |", "|---|---|---|---|---|"]
@@ -503,11 +519,11 @@ def card(version: str, man: dict, files: list, rows: list, held: Counter, reg: l
             if c["field"] == "label_policy":
                 policy = c["now"]
     mode = Counter(r.get("redistribution") for r in rows)
-    lines = ["---", "pretty_name: Gold Rails", "license: other", "license_name: mixed-per-source",
+    lines = ["---", "pretty_name: \"[gold]rails\"", "license: other", "license_name: mixed-per-source",
              "license_link: https://huggingface.co/datasets/raxITLabs/goldrails/blob/main/SOURCES.md", "language:", "  - en", "task_categories:", "  - text-classification",
              "tags:", "  - guardrails", "  - content-moderation", "  - prompt-injection", "  - pii-detection",
              "  - hallucination-detection", "  - fairness", *yaml, "---", "",
-             f"# Gold Rails {ref if rights else version}", "",
+             f"# [gold]rails {ref if rights else version}", "",
              (f"**{ref}, revised {_today()}. Research release, complete text.** This revision is built from internal "
               f"release {version}. The first upload of {ref}, built from internal release {previous['release']}, stays at "
               f"Hub revision `{previous['hub_commit']}` (tag `{previous.get('hub_tag') or ref}`), so results computed on it "
@@ -524,7 +540,7 @@ def card(version: str, man: dict, files: list, rows: list, held: Counter, reg: l
               f"**Provisional research release.** Code: {repo} at tag `{ref}`. This is the public part of internal release "
               f"{version} (release sha `{man['release_sha256'][:12]}`, {man['counts']['total']} rows); "
               f"{sum(held.values())} rows are withheld, listed below."), "",
-             "Gold Rails measures guardrails on six capabilities: harmful content, prompt attacks, denied topics, word "
+             "[gold]rails measures guardrails on six capabilities: harmful content, prompt attacks, denied topics, word "
              "filters (custom words and profanity), sensitive information and grounding, plus exploratory bias tests. "
              "Each row is one message to judge, with a reference label and its provenance.", "",
              "## Intended use", "", INTENDED_USE, "",

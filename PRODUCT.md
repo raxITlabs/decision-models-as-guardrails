@@ -16,7 +16,7 @@ Readers of a raxIT Labs research page: engineers, security and platform leads ev
 
 ## Product Purpose
 
-Gold Rails is an open benchmark. It compares configured guardrail detectors across six selected task suites (a decision model with its questions, decision rule and frozen threshold, against Amazon Bedrock Guardrails with the policies configured for each suite) on the same held-out dataset, on quality, cost and latency. The dataset supplies the reference answers; Bedrock is a competitor, not the answer key. The results support a comparison on this dataset and these configurations, not a claim that one system can replace another as a complete service; untested capabilities, such as masking and grounding relevance, are listed on the page. The results page must make that comparison legible and traceable: every point is a frozen implementation evaluated on the test split, with its uncertainty, cost basis and ledger.
+[gold]rails is an open benchmark. It compares configured guardrail detectors across six selected task suites (a decision model with its questions, decision rule and frozen threshold, against Amazon Bedrock Guardrails with the policies configured for each suite) on the same held-out dataset, on quality, cost and latency. The dataset supplies the reference answers; Bedrock is a competitor, not the answer key. The results support a comparison on this dataset and these configurations, not a claim that one system can replace another as a complete service; untested capabilities, such as masking and grounding relevance, are listed on the page. The results page must make that comparison legible and traceable: every point is a frozen implementation evaluated on the test split, with its uncertainty, cost basis and ledger.
 
 ## Positioning
 

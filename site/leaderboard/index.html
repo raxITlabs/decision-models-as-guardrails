@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gold Rails results</title>
-<meta name="description" content="Gold Rails: decision-model guardrails measured against Amazon Bedrock Guardrails on quality, cost and latency.">
+<title>[gold]rails results</title>
+<meta name="description" content="[gold]rails: decision-model guardrails measured against Amazon Bedrock Guardrails on quality, cost and latency.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300..800;1,400&display=swap" rel="stylesheet">
@@ -317,7 +317,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 -->
 <div class="wrap">
   <header class="open">
-    <div class="masthead"><strong>raxIT Labs · Gold Rails</strong><span id="meta">Loading results</span></div>
+    <div class="masthead"><strong>raxIT Labs · [gold]rails</strong><span id="meta">Loading results</span></div>
     <h1>Can <span class="dm">decision models</span> stand in for <span class="br">Amazon Bedrock Guardrails</span>?</h1>
     <p class="answer" id="answer"></p>
     <ul class="status" id="status"></ul>
@@ -329,7 +329,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   </main>
 
   <footer>
-    <span id="foot-left">Gold Rails is an open benchmark. Every number traces to a freeze manifest and a raw ledger.</span>
+    <span id="foot-left">[gold]rails is an open benchmark. Every number traces to a freeze manifest and a raw ledger.</span>
     <span id="foot-right"></span>
   </footer>
 </div>
@@ -946,7 +946,7 @@ function renderMethod() {
         <details class="review-details"><summary>Review status, publication checks and limitations</summary><ul>${accepted}${blockers}</ul></details>
         ${(d.corrections || []).length ? `<details class="review-details"><summary>Corrections and run history</summary><ul>${d.corrections.map((c) => `<li><strong>${esc(c.title)}.</strong> ${esc(c.detail)}${c.code_commit ? ` Code <code>${esc(c.code_commit)}</code>.` : ""}</li>`).join("")}</ul></details>` : ""}
         <h3>Reproduce</h3>
-        ${d.benchmark.dataset_url ? `<p>Public dataset: <a href="${esc(d.benchmark.dataset_url)}">Gold Rails ${esc(d.benchmark.public_release || "")}</a>. ${esc(d.benchmark.public_note || "")} This page is served locally. Review status and publication checks are listed above.</p>` : ""}
+        ${d.benchmark.dataset_url ? `<p>Public dataset: <a href="${esc(d.benchmark.dataset_url)}">[gold]rails ${esc(d.benchmark.public_release || "")}</a>. ${esc(d.benchmark.public_note || "")} This page is served locally. Review status and publication checks are listed above.</p>` : ""}
         <p>Results file <a href="${esc(resultsPath())}">${esc(resultsPath())}</a>, dataset ${esc(d.benchmark.dataset_version)} (<code>${esc((d.benchmark.dataset_sha256 || "").slice(0, 12))}</code>), release manifest <code>${esc(d.benchmark.release_manifest || "n/a")}</code>.</p>
       </div>
     </div>

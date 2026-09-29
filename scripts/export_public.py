@@ -1,4 +1,4 @@
-"""Build the public Gold Rails repository as a clean, allowlisted export of this private repository. No push.
+"""Build the public [gold]rails repository as a clean, allowlisted export of this private repository. No push.
 
     uv run python scripts/export_public.py                      # build and scan into ../goldrails, report only
     uv run python scripts/export_public.py --commit              # also create the export's single commit and tag
@@ -210,7 +210,7 @@ def export_md(private: str, files: list, notes: dict) -> str:
     for n in notes.values():
         total.update(n)
     lines = ["# About this repository", "",
-             f"This is the public export of the Gold Rails benchmark, public version `{TAG}`, revision built from internal "
+             f"This is the public export of the [gold]rails benchmark, public version `{TAG}`, revision built from internal "
              f"dataset release {CURRENT}. The first upload of `{TAG}` used {FIRST_UPLOAD} (tag `{TAG}` in both places). "
              f"This export was built from commit `{private}` "
              "of the private development repository by `scripts/export_public.py`, from an allowlist of files. The "
@@ -228,7 +228,7 @@ def export_md(private: str, files: list, notes: dict) -> str:
              "- The AWS account number and local file paths are masked.", "",
              "| Redaction | Count |", "|---|---|"]
     lines += [f"| {k} | {v} |" for k, v in sorted(total.items())]
-    lines += ["", f"{len(files)} files. Gold Rails is a non-commercial research benchmark; each source's rows stay under "
+    lines += ["", f"{len(files)} files. [gold]rails is a non-commercial research benchmark; each source's rows stay under "
               "that source's licence (dataset/publish/v1.1-ai/SOURCES.md).", ""]
     return "\n".join(lines)
 
@@ -286,7 +286,7 @@ def main(argv=None) -> int:
             g("init", "-q", "-b", "main")
         g("add", "-A")
         g("-c", f"user.name={git('config', 'user.name')}", "-c", f"user.email={git('config', 'user.email')}", "commit", "-q",
-          "-m", f"Gold Rails {TAG}{' revision (internal dataset ' + CURRENT + ')' if revise else ''}: public export of "
+          "-m", f"[gold]rails {TAG}{' revision (internal dataset ' + CURRENT + ')' if revise else ''}: public export of "
                 f"private commit {private[:12]}")
         if not revise:
             g("tag", TAG)

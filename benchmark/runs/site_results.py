@@ -657,21 +657,21 @@ def main() -> int:
         "schema_version": "goldrails-leaderboard-site/0.1",
         "placeholder": False,
         "notice": notice(lb),
-        "benchmark": {"name": "Gold Rails, first benchmark" + (" (interim)" if open_blockers(lb) else ""),
+        "benchmark": {"name": "[gold]rails, first benchmark" + (" (interim)" if open_blockers(lb) else ""),
                       "dataset_version": f"{sub['release']} subset {sub['name']}",
                       "dataset_sha256": sub["subset_sha256"],
                       "dataset_url": ((publication.get("destination") + (f"/tree/{publication['hub_commit']}"
                                                                          if publication.get("hub_commit") else ""))
                                       if publication.get("visibility") == "public" else None),
                       "public_release": publication.get("public_release") or publication.get("hub_tag"), "split": "test",
-                      "public_note": ((f"The public dataset is Gold Rails {publication['public_release']}, Hugging Face "
+                      "public_note": ((f"The public dataset is [gold]rails {publication['public_release']}, Hugging Face "
                                        f"revision {publication['hub_commit'][:12]} ({publication['uploaded']}, internal release "
                                        f"{publication['release']}), the revision these results use. The first upload of "
                                        f"{publication['public_release']} stays at revision "
                                        f"{publication['revises']['hub_commit'][:12]} (tag {publication['public_release']}).")
                                       if publication.get("revises") and publication.get("release") == sub["release"] else
                                       None if not publication or publication.get("release") == sub["release"] else
-                                      f"The public dataset is Gold Rails {publication.get('hub_tag')} on Hugging Face "
+                                      f"The public dataset is [gold]rails {publication.get('hub_tag')} on Hugging Face "
                                       f"(revision {publication.get('hub_commit', '')[:12]}, built from internal release "
                                       f"{publication.get('release')}). These results use internal release {sub['release']}, "
                                       f"which differs only in the profanity rows; it is a proposed revision of "
@@ -706,7 +706,7 @@ def main() -> int:
             "original and corrected results are both kept",
             "The original freeze chronology is preserved in local development Git history. The clean code export has fresh "
             "history and does not independently establish when the original test configurations were frozen.",
-            "Gold Rails is a non-commercial research benchmark, published for research with credit to every upstream "
+            "[gold]rails is a non-commercial research benchmark, published for research with credit to every upstream "
             "source; each source's rows stay under that source's licence. "
             + ("The public dataset built from internal v1.2 uses NVIDIA Nemotron-PII and contains no AI4Privacy rows." if V12 else
                "AI4Privacy rows are excluded from the public package.")]

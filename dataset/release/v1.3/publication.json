@@ -42,8 +42,22 @@
     "what": "docs reorganised into folders; teaching primer (docs/teach/gold-rails-primer.html); every tracked doc plus VISION.md and PRODUCT.md published, except the unsent AI4Privacy draft in docs/requests/",
     "checks": "export scan 0 problems over 500 files; 301 tests pass and 4 skip from a clean install",
     "note": "the dataset card's code reference stays c468c822, the code that built Hugging Face revision 14e7557a"
+   },
+   {
+    "commit": "276a045",
+    "date": "2026-09-29",
+    "exported_from_private_commit": "f54b312a3f19",
+    "what": "docs/.nojekyll and docs/index.html for GitHub Pages; README links the rendered primer",
+    "checks": "export scan 0 problems over 502 files; 301 tests pass and 4 skip from a clean install"
    }
-  ]
+  ],
+  "pages": {
+   "url": "https://raxitlabs.github.io/goldrails/",
+   "source": "main /docs, no Jekyll",
+   "enabled": "2026-09-29, owner request",
+   "primer": "https://raxitlabs.github.io/goldrails/teach/gold-rails-primer.html",
+   "not_served": "site/leaderboard/ (the results site stays local)"
+  }
  },
  "open": [],
  "dataset_viewer": "working: preview, viewer, search, filter, statistics",

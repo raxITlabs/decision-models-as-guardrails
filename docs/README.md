@@ -1,13 +1,13 @@
-# Gold Rails docs
+# [gold]rails docs
 
-Gold Rails compares configured guardrail detectors (decision models with written questions, and Amazon Bedrock Guardrails) across six task suites, on quality, cost and latency. Public version v0.0.1: dataset at https://huggingface.co/datasets/raxITLabs/goldrails, results in `benchmark/results/first-benchmark/`.
+[gold]rails compares configured guardrail detectors (decision models with written questions, and Amazon Bedrock Guardrails) across six task suites, on quality, cost and latency. Public version v0.0.1: dataset at https://huggingface.co/datasets/raxITLabs/goldrails, results in `benchmark/results/first-benchmark/`.
 
 ## Layout
 
 | Folder | What it holds |
 |---|---|
 | `teach/` | Material for learning how the benchmark works |
-| `benchmark/` | Design, contract, audits, budget and release runbook for Gold Rails (14 to 24) |
+| `benchmark/` | Design, contract, audits, budget and release runbook for [gold]rails (14 to 24) |
 | `research/` | The early research notes (18 September 2026), raw research dumps, video transcripts, prior art and the data-quality review |
 | `reference/` | Copies of the TypeSafe docs, the first API spec and the TypeScript spikes |
 | `reports/`, `release/`, `archive/` | Published HTML reports, the v0.0.1 sign-off packet, and superseded pages |
@@ -19,6 +19,7 @@ Five files at the top of `docs/` and `docs/typesafe-reference/models.md` are one
 | File | What it holds |
 |---|---|
 | [teach/gold-rails-primer.html](teach/gold-rails-primer.html) | A one-page walkthrough for newcomers: who is compared, how one message is judged, tune-freeze-test, the score, paired intervals, cost and limits. Read it rendered at https://raxitlabs.github.io/goldrails/teach/gold-rails-primer.html |
+| [teach/benchmark-pipeline.html](teach/benchmark-pipeline.html) | For engineers: one diagram of the whole run, from pinned sources to published results, with every artifact and evidence gate. Source: `teach/diagrams/benchmark-pipeline.dataflow.json` |
 | [benchmark/18-benchmark-structure.md](benchmark/18-benchmark-structure.md) | The six suites and how the harness fits together |
 | [benchmark/19-evaluation-contract-v1.md](benchmark/19-evaluation-contract-v1.md) | The rules a result must follow. Signed as v1.1 on 28 September 2026 (`benchmark/contracts/v1.1-signed.json`) |
 
@@ -26,7 +27,7 @@ Five files at the top of `docs/` and `docs/typesafe-reference/models.md` are one
 
 | File | What it holds |
 |---|---|
-| [benchmark/14-gold-rails-v1-spec.md](benchmark/14-gold-rails-v1-spec.md) | Gold Rails v1: 10k rows, composition per feature, HF layout, harness adapters, landing page, under $100 in API and GPU spend, eight weeks |
+| [benchmark/14-gold-rails-v1-spec.md](benchmark/14-gold-rails-v1-spec.md) | [gold]rails v1: 10k rows, composition per feature, HF layout, harness adapters, landing page, under $100 in API and GPU spend, eight weeks |
 | [benchmark/16-evaluation-contract.md](benchmark/16-evaluation-contract.md) | After the pilot review: what a run may claim, claims withdrawn, fixes made, and the contract before the next run |
 | [benchmark/17-guardrail-policy-v0.md](benchmark/17-guardrail-policy-v0.md) | Policy v0.1 for review: two comparisons kept apart, separate labels for topic, harmful assistance, actionable and harmful detail, unsafe replies and instruction overrides; request routing vs reply enforcement; twelve rows proposed with full text in dataset/frozen |
 | [benchmark/18-benchmark-structure.md](benchmark/18-benchmark-structure.md) | Six suites (content, prompt attacks, denied topics, word filters, sensitive information, grounding), Automated Reasoning excluded; one harness, one results format, the leaderboard plot, sources per suite, current coverage, order of work |

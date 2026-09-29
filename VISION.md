@@ -1,4 +1,4 @@
-# Gold Rails: vision
+# [gold]rails: vision
 
 ## Why
 

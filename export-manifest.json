@@ -1,5 +1,5 @@
 {
- "private_commit": "f54b312a3f19652a6e18e33307ecc59d2179f33c",
+ "private_commit": "1674712b11edc21b77b535e779ecdd304f585a51",
  "tag": "v0.0.1",
  "public_url": "https://github.com/raxITlabs/goldrails",
  "files": [
@@ -25,20 +25,20 @@
   },
   {
    "path": "PRODUCT.md",
-   "private_sha256": "661dbc06e9bdea544efb9407617398af49aaafcc26525eb29a935ae89b587342",
-   "public_sha256": "661dbc06e9bdea544efb9407617398af49aaafcc26525eb29a935ae89b587342",
+   "private_sha256": "de79d3187bb3d83126718c05f8a6a555d6c533b203c64cc36062591178d7c0c1",
+   "public_sha256": "de79d3187bb3d83126718c05f8a6a555d6c533b203c64cc36062591178d7c0c1",
    "redactions": {}
   },
   {
    "path": "README.md",
-   "private_sha256": "c1a26dc4429fcefb74fcbaeb14b4db02995fdeb8d35bff48d0d2e594eeeb1b0a",
-   "public_sha256": "c1a26dc4429fcefb74fcbaeb14b4db02995fdeb8d35bff48d0d2e594eeeb1b0a",
+   "private_sha256": "ba1f43f211742809621583c65f3324895b3829858ef343ee49eead13658927e4",
+   "public_sha256": "ba1f43f211742809621583c65f3324895b3829858ef343ee49eead13658927e4",
    "redactions": {}
   },
   {
    "path": "VISION.md",
-   "private_sha256": "d1a42b806d2af98ab0aa74eca743f241f5bf679622fcd0a50afeb67b892a620c",
-   "public_sha256": "d1a42b806d2af98ab0aa74eca743f241f5bf679622fcd0a50afeb67b892a620c",
+   "private_sha256": "e8f4a625d0a4f940d49e5c54cb24214e474c3a90b441d58b904d1c66f8802dd2",
+   "public_sha256": "e8f4a625d0a4f940d49e5c54cb24214e474c3a90b441d58b904d1c66f8802dd2",
    "redactions": {}
   },
   {
@@ -444,8 +444,8 @@
   },
   {
    "path": "benchmark/results/first-benchmark/page-check.json",
-   "private_sha256": "1e7a1c7591256aa1c7b939f0da40487665effe5cc62d53e1adc95bf8c9762927",
-   "public_sha256": "1e7a1c7591256aa1c7b939f0da40487665effe5cc62d53e1adc95bf8c9762927",
+   "private_sha256": "fc32d1d15c3ecb595ca54c181592bb39fc9f0c9fe64922ab603d7f0ccff5a245",
+   "public_sha256": "fc32d1d15c3ecb595ca54c181592bb39fc9f0c9fe64922ab603d7f0ccff5a245",
    "redactions": {}
   },
   {
@@ -821,8 +821,8 @@
   },
   {
    "path": "benchmark/runs/site_results.py",
-   "private_sha256": "1882eb398e7b5137f1eebd9f19b47e11ead3709536b9cf86370167258b177ea0",
-   "public_sha256": "1882eb398e7b5137f1eebd9f19b47e11ead3709536b9cf86370167258b177ea0",
+   "private_sha256": "b7a0fc57c704b01934ff31f9b85df4ac6f87d66974f02c9bba16b17e0598a496",
+   "public_sha256": "b7a0fc57c704b01934ff31f9b85df4ac6f87d66974f02c9bba16b17e0598a496",
    "redactions": {}
   },
   {
@@ -1529,8 +1529,8 @@
   },
   {
    "path": "dataset/goldrails_dataset/publish.py",
-   "private_sha256": "60f9bc70032011c2acacf43e89648d8a5bf82dcb68afa5b3872af0a678795102",
-   "public_sha256": "60f9bc70032011c2acacf43e89648d8a5bf82dcb68afa5b3872af0a678795102",
+   "private_sha256": "947f289aca5d12ca715728ec750a044735378f08b028e6ef49bbb2855e29a9ae",
+   "public_sha256": "947f289aca5d12ca715728ec750a044735378f08b028e6ef49bbb2855e29a9ae",
    "redactions": {}
   },
   {
@@ -1817,8 +1817,8 @@
   },
   {
    "path": "dataset/publish/v1.3-full/CHANGELOG.md",
-   "private_sha256": "5dd5203bc4ba50ab77503783cd569203ed9b331922df8cab1149c01b1ba4ddaa",
-   "public_sha256": "5dd5203bc4ba50ab77503783cd569203ed9b331922df8cab1149c01b1ba4ddaa",
+   "private_sha256": "88f5fa3ddb8a9f79f5b45c546a3f5fc4ed00ed587552f76d297f8b6b9b624178",
+   "public_sha256": "88f5fa3ddb8a9f79f5b45c546a3f5fc4ed00ed587552f76d297f8b6b9b624178",
    "redactions": {}
   },
   {
@@ -1841,8 +1841,8 @@
   },
   {
    "path": "dataset/publish/v1.3-full/README.md",
-   "private_sha256": "9bb76f07d34b5314140c98d490a19b35fe889835784b00b29437d95abb383d5d",
-   "public_sha256": "9bb76f07d34b5314140c98d490a19b35fe889835784b00b29437d95abb383d5d",
+   "private_sha256": "2bc90971463bc0fdc4c54590513acd9d2c778218189a3023c5bd23baa30f120a",
+   "public_sha256": "2bc90971463bc0fdc4c54590513acd9d2c778218189a3023c5bd23baa30f120a",
    "redactions": {}
   },
   {
@@ -1859,8 +1859,8 @@
   },
   {
    "path": "dataset/publish/v1.3-full/SOURCES.md",
-   "private_sha256": "46d260c5ae741855f5273ab77cc78145ffed0195626dd8ff6fa655e28518448a",
-   "public_sha256": "46d260c5ae741855f5273ab77cc78145ffed0195626dd8ff6fa655e28518448a",
+   "private_sha256": "186807a9ad5c3169a279f0bf577f24fa58f67df66e5bcb4b9a452f9bebf84037",
+   "public_sha256": "186807a9ad5c3169a279f0bf577f24fa58f67df66e5bcb4b9a452f9bebf84037",
    "redactions": {}
   },
   {
@@ -1889,14 +1889,14 @@
   },
   {
    "path": "dataset/publish/v1.3-full/sources.json",
-   "private_sha256": "47862da80e66c3ce63abd36832c8df2f838e8ed6a4d79d8a1bf6504979f67337",
-   "public_sha256": "47862da80e66c3ce63abd36832c8df2f838e8ed6a4d79d8a1bf6504979f67337",
+   "private_sha256": "7335946521802fa8d230cd75f26973e81a3efb7db028ce25e4fe91b10677c59c",
+   "public_sha256": "7335946521802fa8d230cd75f26973e81a3efb7db028ce25e4fe91b10677c59c",
    "redactions": {}
   },
   {
    "path": "dataset/publish/v1.3-full/staging-report.json",
-   "private_sha256": "54335a6c888c7f65fa51290d88a7097b1d2e27c454532bb1f1bae577925f137c",
-   "public_sha256": "54335a6c888c7f65fa51290d88a7097b1d2e27c454532bb1f1bae577925f137c",
+   "private_sha256": "ebfaefc885ec99eea95f43a75c95c41bd63221e76ec5d8b27171f0e9359ec195",
+   "public_sha256": "ebfaefc885ec99eea95f43a75c95c41bd63221e76ec5d8b27171f0e9359ec195",
    "redactions": {}
   },
   {
@@ -2017,8 +2017,8 @@
   },
   {
    "path": "dataset/release/v1.3/publication.json",
-   "private_sha256": "12c4153d7d93a2a836e6223c4b41973ba7ceac301e324d9de0d416b8eeb1b466",
-   "public_sha256": "12c4153d7d93a2a836e6223c4b41973ba7ceac301e324d9de0d416b8eeb1b466",
+   "private_sha256": "9eebedfbe00940e589a30094822d8f4c5efe0c97c10097ff077c2afeb602a93b",
+   "public_sha256": "9eebedfbe00940e589a30094822d8f4c5efe0c97c10097ff077c2afeb602a93b",
    "redactions": {}
   },
   {
@@ -2149,8 +2149,8 @@
   },
   {
    "path": "docs/README.md",
-   "private_sha256": "167df4df41549747a511d930313013a5b540be30da5e2e5e593f4b0063623dfc",
-   "public_sha256": "167df4df41549747a511d930313013a5b540be30da5e2e5e593f4b0063623dfc",
+   "private_sha256": "913cd41094eaee070769342c759025b1543fe35f470fdf0038abe63366b0de8b",
+   "public_sha256": "913cd41094eaee070769342c759025b1543fe35f470fdf0038abe63366b0de8b",
    "redactions": {}
   },
   {
@@ -2893,9 +2893,33 @@
    "redactions": {}
   },
   {
+   "path": "docs/teach/benchmark-pipeline.html",
+   "private_sha256": "e5f73b9f1528839f31667793b15ee877690a19363dada8696fc0650057512407",
+   "public_sha256": "e5f73b9f1528839f31667793b15ee877690a19363dada8696fc0650057512407",
+   "redactions": {}
+  },
+  {
+   "path": "docs/teach/diagrams/benchmark-pipeline.dataflow.json",
+   "private_sha256": "4de15332b18728f3779dbd27357610fb40a9931686127046144082e9cb0427da",
+   "public_sha256": "4de15332b18728f3779dbd27357610fb40a9931686127046144082e9cb0427da",
+   "redactions": {}
+  },
+  {
+   "path": "docs/teach/diagrams/embed_pipeline.py",
+   "private_sha256": "6ab925a89c6218c4fee38676d446203e023152ae5b96d46ddb3a1aabe1eb76d8",
+   "public_sha256": "6ab925a89c6218c4fee38676d446203e023152ae5b96d46ddb3a1aabe1eb76d8",
+   "redactions": {}
+  },
+  {
+   "path": "docs/teach/diagrams/raxit_theme.py",
+   "private_sha256": "711f0ea8696872ec701c6123fbeff0fb9bfc3f4e6ee788227c52219e45a6dc33",
+   "public_sha256": "711f0ea8696872ec701c6123fbeff0fb9bfc3f4e6ee788227c52219e45a6dc33",
+   "redactions": {}
+  },
+  {
    "path": "docs/teach/gold-rails-primer.html",
-   "private_sha256": "352511b8f5d39c485ed021a4b5343bc438a618ec8fd53d3b3ae0bf10e1558b94",
-   "public_sha256": "352511b8f5d39c485ed021a4b5343bc438a618ec8fd53d3b3ae0bf10e1558b94",
+   "private_sha256": "3decdc114e601f942ff0051f2057bb171afd4e0ee62b6bfe37f68ad2689fcd0b",
+   "public_sha256": "3decdc114e601f942ff0051f2057bb171afd4e0ee62b6bfe37f68ad2689fcd0b",
    "redactions": {}
   },
   {
@@ -3032,28 +3056,28 @@
   },
   {
    "path": "scripts/export_public.py",
-   "private_sha256": "d9aef00c80d9444da2a12785f5b5a762b1e0539b4c1418d22faaad07a1f3268c",
-   "public_sha256": "02e559abb3af65d56dc000f0bd58a54a3d9138a16d4a8fb781a1449c5e026523",
+   "private_sha256": "62cdda1b1a26621b88a009749a56914a42890d9901f47a955e26a770e685ae80",
+   "public_sha256": "5b42bb015c77acdc6916c4dab7bcb15db23838b0084d9a093838f70fd8f94291",
    "redactions": {
     "AWS account masked": 1
    }
   },
   {
    "path": "site/leaderboard/index.html",
-   "private_sha256": "91cdae124e972f0f13f0c8908671e0ff388f9e899db1e6a17a3362fc2c4f4bc8",
-   "public_sha256": "91cdae124e972f0f13f0c8908671e0ff388f9e899db1e6a17a3362fc2c4f4bc8",
+   "private_sha256": "1e4fa6a05639beecbbf8fbfe45599ee22b57d761ba68ab19ca6f13e02defd97f",
+   "public_sha256": "1e4fa6a05639beecbbf8fbfe45599ee22b57d761ba68ab19ca6f13e02defd97f",
    "redactions": {}
   },
   {
    "path": "site/leaderboard/leaderboard.js",
-   "private_sha256": "0a246a16a55e1158b50156c89d0f347382afa9ec5a5ebee92b77cb8fc74cce57",
-   "public_sha256": "0a246a16a55e1158b50156c89d0f347382afa9ec5a5ebee92b77cb8fc74cce57",
+   "private_sha256": "2bf9323c1eee1a17b617aca002ea611127ba6ac3f0dea928d22a09fd32d307a9",
+   "public_sha256": "2bf9323c1eee1a17b617aca002ea611127ba6ac3f0dea928d22a09fd32d307a9",
    "redactions": {}
   },
   {
    "path": "site/leaderboard/results.json",
-   "private_sha256": "ae14b8280519d2fcd53f3509a5f6f2a3b535569fe93747d09be601c8f45817d4",
-   "public_sha256": "ae14b8280519d2fcd53f3509a5f6f2a3b535569fe93747d09be601c8f45817d4",
+   "private_sha256": "e8b7d5f6f2931cadd10467cec7a27a649c35db563cb7dbc4412ea13c439708e8",
+   "public_sha256": "e8b7d5f6f2931cadd10467cec7a27a649c35db563cb7dbc4412ea13c439708e8",
    "redactions": {}
   },
   {

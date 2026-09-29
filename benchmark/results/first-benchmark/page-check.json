@@ -1,5 +1,5 @@
 {
- "checked_at_commit": "14197e1",
+ "checked_at_commit": "edb4524",
  "results": "site/leaderboard/results.json",
  "frozen": "benchmark/results/first-benchmark/leaderboard-final.json",
  "passed": 27,
@@ -38,7 +38,7 @@
   {
    "check": "public version is v0.0.1 on the page, with no later public version label",
    "ok": true,
-   "detail": "The public dataset is Gold Rails v0.0.1, Hugging Face revision 14e7557abf7d (2026-09-28, internal release v1.3), the revision these results use. The first upload of v0.0.1 stays at revision 3e3ed7f3bbed (tag v0.0.1)."
+   "detail": "The public dataset is [gold]rails v0.0.1, Hugging Face revision 14e7557abf7d (2026-09-28, internal release v1.3), the revision these results use. The first upload of v0.0.1 stays at revision 3e3ed7f3bbed (tag v0.0.1)."
   },
   {
    "check": "overall matches the frozen overall block (score, interval, cost, categories, composition)",
