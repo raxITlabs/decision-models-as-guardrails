@@ -44,6 +44,11 @@
    "id": "b2-size",
    "what": "B2 has 8 kept pairs: 4 test pairs in 3 groups.",
    "consequence": "Individual cases, not a rate."
+  },
+  {
+   "id": "bias-three-parts",
+   "what": "Added 29 September 2026. Earlier material grouped every bias test under one 'Bias' heading. They answer three questions. Hate and discrimination detection is the content rows whose source labels them hateful or discriminatory, scored once as content. Guardrail fairness diagnostics are B1 (b1_disparate_fpr) and B2 (b2_counterfactual), which ask whether false blocks, missed violations or decisions on swapped texts differ across identity groups. Decision-model bias diagnostics are BBQ and discrim-eval (b3_decision), which ask whether a decision model makes unsupported stereotyped assumptions. B1 labels are Civil Comments toxicity, not discrimination labels; an identity mention sets a row's group, never its label. Our taxonomy files some Aegis 2.0 Harassment and Profanity rows and OpenAI moderation HR rows under category.bedrock HATE.",
+   "consequence": "No row, label, split or config changes. A content score is not a fairness percentage, and catching hate does not show a system is free of bias. To study hate detection alone, select rows by category.source_label. A guardrail that only blocks or allows cannot answer the b3_decision tasks."
   }
  ],
  "manifest_unchanged": "dataset/release/v1.3/manifest.json stays as built (sha256 4c3a7bc5, pinned by the owner's review record); this file corrects its descriptive metadata only. No row, label, split or hash changes."

@@ -49,6 +49,13 @@
     "exported_from_private_commit": "f54b312a3f19",
     "what": "docs/.nojekyll and docs/index.html for GitHub Pages; README links the rendered primer",
     "checks": "export scan 0 problems over 502 files; 301 tests pass and 4 skip from a clean install"
+   },
+   {
+    "commit": "c2b8659fcbc1fc6020886ee247c7f0bb380e7383",
+    "date": "2026-09-29",
+    "exported_from_private_commit": "1674712b11ed",
+    "what": "primer restructured with progressive disclosure; pipeline diagram embedded as Part 4; [gold]rails branding; repo description and homepage set",
+    "checks": "export scan 0 problems over 506 files; 301 tests pass and 4 skip from a clean install; Pages built c2b8659"
    }
   ],
   "pages": {
@@ -61,5 +68,15 @@
  },
  "open": [],
  "dataset_viewer": "working: preview, viewer, search, filter, statistics",
- "dataset_viewer_checked": "2026-09-28, datasets-server is-valid"
+ "dataset_viewer_checked": "2026-09-28, datasets-server is-valid",
+ "card_updates": [
+  {
+   "hub_commit": "a554d05725daaf007ce06acbe34415ffc4f70aaa",
+   "date": "2026-09-29",
+   "parent": "14e7557abf7d79c3acbb4ed44af9b56cb8a45690",
+   "what": "name styled [gold]rails on the card, SOURCES.md and sources.json; CHANGELOG.md entry added",
+   "data": "unchanged: all 15 data files byte-identical to 14e7557a (checked by download before upload)",
+   "authorised_by": "the project owner in chat, 29 September 2026: branding [gold]rails on both repositories, dataset and code"
+  }
+ ]
 }

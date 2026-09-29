@@ -257,8 +257,9 @@ footer { max-width: 1120px; margin: 48px auto 0; font-size: 0.9rem; color: var(-
           <tr><td>Grounding</td><td>states something its source does not support</td><td class="n">160</td></tr>
         </tbody>
       </table></div>
+      <p>Bias is tested too, in three parts that ask different questions. The first is already inside harmful content. The other two sit beside the scores and never change them.</p>
       <details class="more">
-        <summary>More detail: where the answer keys come from <small>6 sources</small></summary>
+        <summary>More detail: the answer keys and the three bias parts <small>6 sources, 3 parts</small></summary>
         <div class="body">
           <ul class="plain">
             <li><b>Harmful content:</b> public safety datasets such as Aegis 2.0 and OpenAI Moderation.</li>
@@ -268,7 +269,18 @@ footer { max-width: 1120px; margin: 48px auto 0; font-size: 0.9rem; color: var(-
             <li><b>Sensitive information:</b> NVIDIA Nemotron-PII annotations.</li>
             <li><b>Grounding:</b> RAGTruth human annotations.</li>
           </ul>
-          <p class="caption">Bias is measured too, but only as an exploratory check. It never counts toward any score.</p>
+          <p><b>The three bias parts.</b> Each answers its own question, so each has its own name.</p>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Part</th><th>The question</th><th class="n">Test messages</th><th>Compared</th></tr></thead>
+            <tbody>
+              <tr><td>Hate and discrimination detection</td><td>Does it catch messages the source labelled hateful or discriminatory?</td><td class="n">28</td><td>All seven systems</td></tr>
+              <tr><td>Guardrail fairness diagnostics</td><td>Does it block harmless messages, or miss harmful ones, more often when a message mentions a certain group? Does swapping one group word change its decision?</td><td class="n">108</td><td>All seven systems</td></tr>
+              <tr><td>Decision-model bias diagnostics</td><td>Does a decision model assume a stereotype that the text does not support?</td><td class="n">200</td><td>The six decision models</td></tr>
+            </tbody>
+          </table></div>
+          <p>The 28 hate messages are among the 560 messages in the harmful-content test and count once, there. Another 8 come from a source category that mixes harassment and discrimination. The fairness part uses 100 online comments, labelled toxic or not, and 4 pairs of messages that differ in one group word. Toxic is broader than hateful, so a missed comment there is a missed toxic comment, not missed hate. The decision-model part uses 150 BBQ questions and 50 discrim-eval decisions. Bedrock only blocks or allows, so it can't answer them. It is marked not applicable, not zero.</p>
+          <p>Catching hate and treating groups evenly are different things. A guardrail can catch every hateful message and still block harmless messages about one group more often than another. In this test every identity group has fewer than 30 comments, too few to show a difference, so a gap of zero would not show equal treatment either.</p>
+          <p class="caption">The six-capability score covers the guardrail tasks. The fairness diagnostics ask whether that performance holds across groups. The decision-model tests support conclusions about their own two tasks and nothing wider.</p>
         </div>
       </details>
     </section>
@@ -435,7 +447,7 @@ footer { max-width: 1120px; margin: 48px auto 0; font-size: 0.9rem; color: var(-
       <h2 id="limits-h">What can't it tell you?</h2>
       <p class="answer">It compares these systems, set up this way, on this data. It doesn't show that one could replace another everywhere.</p>
       <details class="more">
-        <summary>More detail: what is not tested <small>8 gaps</small></summary>
+        <summary>More detail: what is not tested <small>12 gaps</small></summary>
         <div class="body">
           <ul class="plain">
             <li>Hiding or masking personal data. Only spotting it is scored.</li>
@@ -446,6 +458,10 @@ footer { max-width: 1120px; margin: 48px auto 0; font-size: 0.9rem; color: var(-
             <li>Bedrock's exact profanity list, which AWS does not publish.</li>
             <li>Topics beyond the three written ones, and words beyond the tested lists.</li>
             <li>Speed under heavy load, or inside a real application.</li>
+            <li>Whether a system is free of bias. Catching hate is scored. Fairness across groups is only checked, on groups too small to compare.</li>
+            <li>A fairness percentage. The harmful-content score measures moderation accuracy.</li>
+            <li>Bias in general from Bedrock. Its hate filter is one content category, not a bias detector.</li>
+            <li>Whether a decision model treats demographic groups differently on discrim-eval. Its 50 messages come from different scenarios, so any gap mixes the scenario with the group.</li>
           </ul>
         </div>
       </details>

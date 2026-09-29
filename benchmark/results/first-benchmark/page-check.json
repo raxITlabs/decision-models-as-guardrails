@@ -1,8 +1,8 @@
 {
- "checked_at_commit": "edb4524",
+ "checked_at_commit": "dce655a",
  "results": "site/leaderboard/results.json",
  "frozen": "benchmark/results/first-benchmark/leaderboard-final.json",
- "passed": 27,
+ "passed": 33,
  "failed": 0,
  "checks": [
   {
@@ -139,6 +139,36 @@
    "check": "page carries every open evaluator blocker, owner-accepted ones only with a confirmed approval, and says not for publication while any stay open",
    "ok": true,
    "detail": "open: none; accepted: 2"
+  },
+  {
+   "check": "bias-parts.json is built from this bias.json (sha256) and every copied number equals bias.json",
+   "ok": true,
+   "detail": "7 fairness systems x 24 identities, 7 decision-model systems"
+  },
+  {
+   "check": "the page's three parts copy bias-parts.json and the audit's row counts (hate rows once, in content; no separate hate score; discrim-eval shows no group gap)",
+   "ok": true,
+   "detail": "7 fairness systems, 7 decision-model systems, 36 harmful and 13 benign hate rows of 560"
+  },
+  {
+   "check": "the page names the three parts and has no generic \"Bias\" section heading",
+   "ok": true,
+   "detail": "Hate and discrimination detection / Guardrail fairness diagnostics / Decision-model bias diagnostics"
+  },
+  {
+   "check": "Bedrock is not applicable in decision-model bias, with its reason and no score",
+   "ok": true,
+   "detail": "does not answer decision or QA tasks; its blocking verdict is not a decision answer and it is not scored as zero quality"
+  },
+  {
+   "check": "overall score unchanged: the frozen six-category overall, with no bias part inside and no combined number",
+   "ok": true,
+   "detail": "7 overall entries"
+  },
+  {
+   "check": "no claim the brief says to avoid (fairness percentage, bias-free, proven equal treatment, general bias detector)",
+   "ok": true,
+   "detail": "none"
   }
  ]
 }

@@ -182,3 +182,50 @@ computed on it remain traceable. The revision adds 500 Civil Comments profanity 
 ones; the other 8,307 rows are identical by canonical row hash. All 29 files match staging byte for byte and 8,807 rows
 load. The code is the private GitHub repository at `c468c82204cf3acb20821cf41df17e0d4ead9e78`, one commit on top of
 `26b578fe` (tag `v0.0.1`, not moved).
+
+## Bias reported as three parts: a reporting clarification (29 September 2026)
+
+No score, denominator, threshold, row, label or ledger changed, and no model was called. The six-suite overall is
+unchanged. `bias.json` stays as written (sha256 f8c9791166b33cfea6a06f58df2382ea6da00a96b879a07ea99a09a3bdcbc5a5).
+No bias row moved into the content suite, and no row counts twice.
+
+Everything under the single "Bias" heading answered one of three questions, so each question now has its own name.
+The brief is `docs/benchmark/bias-distinction-developer-handoff.md` and the audit is `docs/benchmark/25-bias-audit.md`
+(machine-readable copy `bias-audit.json`).
+
+| Part | What it covers now | Where it was reported before |
+|---|---|---|
+| Hate and discrimination detection | The content test rows whose source labels them hateful or discriminatory: 28, or 36 counting JailbreakBench's combined Harassment/Discrimination category. They already count once in the content score. No separate score is added. | Not named. The rows sat inside the content suite and were never broken out. |
+| Guardrail fairness diagnostics | B1 identity-mention moderation (100 rows) and B2 counterfactual pairs (4 pairs), all seven systems, beside the six-suite score and outside it | "Bias" (B1, B2), called exploratory |
+| Decision-model bias diagnostics | BBQ (150 rows) and discrim-eval (50 rows), the six decision models only. Bedrock and the regex baseline are not applicable, not zero | "Bias" (B3), called exploratory |
+
+`benchmark/runs/bias_parts.py` writes `bias-parts.json`, the three-part view of `bias.json`. It copies values and
+recomputes nothing. It adds group sample sizes and insufficient-evidence flags: all 24 B1 identity groups are below
+the support floor of 30 for every system, B2 has too few pairs for a rate, and every discrim-eval comparison is
+flagged unmatched because the 50 rows span 31 scenarios with no two differing in one attribute only. For B2 it shows
+correctness beside consistency, since a system can flip nothing and still get both texts of a pair wrong.
+
+Wording changed in the primer (`docs/teach/gold-rails-primer.html`, "What gets tested?" and "What can't it tell
+you?"), `docs/README.md`, a dated status note on `docs/benchmark/21-bias-evaluation.md` (the rest kept as history), the
+dataset card text in `dataset/goldrails_dataset/publish.py`, and one new known issue (`bias-three-parts`) in
+`dataset/release/v1.3/known-issues.json`. The release manifest is unchanged. The dataset staging was regenerated
+locally and not uploaded; its data files are byte-identical.
+
+Readings the results do not support, now stated where the parts are described: a moderation score is not a fairness
+percentage; catching hate does not show a system is free of bias; no observed group gap on these sample sizes does not
+show equal treatment; Bedrock's hate filter is one content category, not a general bias detector; and the
+discrim-eval group gaps compare different scenarios, so they do not isolate demographic bias. B1 labels are toxicity,
+so a B1 miss is a missed toxic comment, not missed hate.
+
+## Owner decisions on the bias audit (29 September 2026)
+
+No score, row, label or denominator changed.
+
+- **discrim-eval:** kept and shown as insufficient evidence for demographic bias. Its 50 rows span 31 scenarios with no
+  matched pairs, so no group gap is reported as a finding.
+- **B1 labels:** kept as general toxicity. A B1 miss is described as a missed toxic comment, never as missed hate.
+- **B1 comparison group:** `docs/benchmark/21-bias-evaluation.md` now matches the code, which compares each identity
+  with every row annotated as not mentioning it.
+- **B2 male/female pair (b2p-46eb278ff2):** flagged on the page as possibly not like-for-like and still counted.
+- **Hate detection:** counted by source label (28 rows, or 36 with JailbreakBench's combined category). The content
+  taxonomy mapping that files some harassment and profanity rows under hate is left as it is and noted in the audit.

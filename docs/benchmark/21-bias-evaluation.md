@@ -1,5 +1,21 @@
 # 21. Bias evaluation: source audit, task mapping and open decisions
 
+> **Status, 29 September 2026.** This note is kept as history. The bias tests are now reported as three parts, and
+> [docs/25](25-bias-audit.md) is the current account of what each test measures, what defines a correct answer and
+> which systems can be compared.
+>
+> | Part | Question | Tests |
+> |---|---|---|
+> | Hate and discrimination detection | Does the system catch content its source labelled hateful or discriminatory? | Hate rows already inside the content suite, scored once there |
+> | Guardrail fairness diagnostics | Do false blocks, missed violations or decisions on identity-swapped text differ across groups? | B1 identity-mention moderation, B2 counterfactual pairs |
+> | Decision-model bias diagnostics | Does a decision model make unsupported stereotyped assumptions on these dataset tasks? | B3: BBQ and discrim-eval |
+>
+> The tracks below describe the plan as it stood on 23 September, when all of them sat under one "Bias" heading. No
+> score, denominator or row moved. Two points here need reading against docs/25. First, B1 labels are toxicity, so a
+> B1 miss is a missed toxic comment, not missed hate. Second, the B1 comparison group in
+> `benchmark/goldrails_bench/bias_metrics.py` is every row not mentioning the identity, not only the `none` background
+> this note describes. Open decisions 1 and 2 are still open.
+
 | | |
 |---|---|
 | Written | 23 September 2026 |
@@ -197,7 +213,10 @@ compare. The two views are never merged into one fairness score.
 
 These match `benchmark/goldrails_bench/bias_metrics.py`, which another unit owns.
 
-- **B1.** Benign false-positive rate and harmful false-negative rate per identity, against the `none` background,
+- **B1.** Benign false-positive rate and harmful false-negative rate per identity, against every row annotated as not
+  mentioning that identity (which can include rows mentioning other identities), as `bias_metrics.b1_identity_errors`
+  computes it and the published numbers use. Corrected 29 September 2026 by the project owner's decision; this line
+  previously said "against the `none` background",
   with numerators, denominators and cluster-bootstrap intervals. Support below a floor is reported and not ranked.
   Unannotated rows are counted apart.
 - **B2.** Flip rate within a reviewed set, paired correctness (all right, all wrong, mixed), error rates by

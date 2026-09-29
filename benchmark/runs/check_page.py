@@ -3,8 +3,8 @@
     uv run python benchmark/runs/check_page.py
 
 Reads ``site/leaderboard/results.json`` (what the page draws) and compares it with the frozen sources: the provisional
-leaderboard, the freeze manifests, the corrected five-category view, ``bias.json`` and ``CORRECTIONS.md``. No model
-calls. Writes ``benchmark/results/first-benchmark/page-check.json`` and exits non-zero if any check fails.
+leaderboard, the freeze manifests, the corrected five-category view, ``bias.json`` (and its three-part view
+``bias-parts.json`` with the row audit ``bias-audit.json``) and ``CORRECTIONS.md``. No model calls. Writes ``benchmark/results/first-benchmark/page-check.json`` and exits non-zero if any check fails.
 """
 from __future__ import annotations
 
@@ -50,6 +50,233 @@ def load(p: Path):
 
 def git(*args: str) -> str:
     return subprocess.run(["git", *args], cwd=REPO, capture_output=True, text=True, check=False).stdout.strip()
+
+
+PARTS = ["Hate and discrimination detection", "Guardrail fairness diagnostics", "Decision-model bias diagnostics"]
+B1_CELL = ("benign", "harmful", "benign_failed", "harmful_failed", "label_unknown", "false_positives", "false_negatives",
+           "fpr", "fpr_numerator", "fpr_denominator", "fpr_interval", "fnr", "fnr_numerator", "fnr_denominator",
+           "fnr_interval")
+B2_COPIED = ("flip_rate", "flip_rate_interval", "paired_correct_rate", "paired_correct_interval",
+             "paired_correctness_denominator", "consistent_wrong_rate", "by_expected", "quality", "counts")
+# Affirmative forms of the brief's "claims to avoid"; a negated statement ("does not show equal treatment") passes.
+CLAIMS = re.compile(r"fairness (score|percentage)|bias-free|free of bias|\bunbiased\b|treats? (all )?groups equally|"
+                    r"(?<!not )(?<!n't )\b(proves?|shows?|establish(es)?) equal treatment|general-purpose bias detector",
+                    re.I)
+
+
+def _iv_eq(page, src) -> bool:
+    """A page interval (low, high, level) against the bias-parts interval it was copied from."""
+    if not page or not src or src.get("low") is None:
+        return not page and (not src or src.get("low") is None)
+    return page["low"] == src["low"] and page["high"] == src["high"] and page["level"] == src["level"]
+
+
+def bias_parts_checks(site: dict, lb: dict, bias: dict) -> None:
+    bp_path, au_path = RES / "bias-parts.json", RES / "bias-audit.json"
+    if not (bp_path.exists() and au_path.exists()):
+        check("bias-parts.json and bias-audit.json exist", False, "missing")
+        return
+    bp, au = load(bp_path), load(au_path)
+
+    # 11a. bias-parts.json is built from this bias.json, and every value it copies equals bias.json.
+    bad = []
+    if bp["meta"]["source_sha256"] != hashlib.sha256((RES / "bias.json").read_bytes()).hexdigest():
+        bad.append("bias.json sha256 differs from meta.source_sha256")
+    ms = bias["guardrail_fairness"]["min_support"]
+    src = {s["system"]: s for s in bias["guardrail_fairness"]["systems"]}
+    if {s["system"] for s in bp["guardrail_fairness"]["systems"]} != set(src):
+        bad.append("fairness systems differ")
+    for s in bp["guardrail_fairness"]["systems"]:
+        o = src.get(s["system"])
+        if o is None:
+            continue
+        name = s["system"]
+        if s["threshold"] != o["threshold"] or s["config_hash"] != o["config_hash"]:
+            bad.append(f"{name}: threshold or config")
+        if any(s["B1"]["overall"][k] != o["B1"]["overall"][k] for k in B1_CELL + ("rows_without_annotation",)) \
+                or s["B1"]["quality"] != o["B1"]["quality"]:
+            bad.append(f"{name}: B1 overall")
+        ids = {g["identity"]: g for g in o["B1"]["identities"]}
+        if [g["identity"] for g in s["B1"]["identities"]] != list(ids):
+            bad.append(f"{name}: B1 identities")
+        for g in s["B1"]["identities"]:
+            h = ids.get(g["identity"]) or {}
+            for side in ("mentioned", "not_mentioned"):
+                c, d = g[side], h.get(side) or {}
+                if any(c.get(k) != d.get(k) for k in B1_CELL) or c["n_benign"] != d.get("fpr_denominator") \
+                        or c["n_harmful"] != d.get("fnr_denominator"):
+                    bad.append(f"{name}/{g['identity']}: {side}")
+            small = any(g[side][k] < ms for side in ("mentioned", "not_mentioned") for k in ("n_benign", "n_harmful"))
+            if g["fpr_gap_vs_not_mentioned"] != h.get("fpr_gap") or g["fnr_gap_vs_not_mentioned"] != h.get("fnr_gap") \
+                    or g["low_support"] != h.get("low_support") or g["unknown_annotation"] != h.get("unknown_annotation") \
+                    or g["insufficient_evidence"] != (h.get("low_support") or small):
+                bad.append(f"{name}/{g['identity']}: gap or flag")
+        b2, q = s["B2"], o["B2"]
+        pairs = {"flip_rate": b2["consistency"]["flip_rate"], "flip_rate_interval": b2["consistency"]["flip_rate_interval"],
+                 "paired_correct_rate": b2["correctness"]["paired_correct_rate"],
+                 "paired_correct_interval": b2["correctness"]["paired_correct_interval"],
+                 "paired_correctness_denominator": b2["correctness"]["paired_correctness_denominator"],
+                 "consistent_wrong_rate": b2["correctness"]["consistent_wrong_rate"],
+                 "by_expected": b2["by_expected"], "quality": b2["quality"], "counts": b2["counts"]}
+        if any(pairs[k] != q[k] for k in B2_COPIED) or b2["too_few_pairs"] != (q["counts"]["evaluable"] < ms) \
+                or b2["consistency"]["flips"] != q["counts"]["flips"] or b2["correctness"]["all_wrong"] != q["counts"]["all_wrong"]:
+            bad.append(f"{name}: B2")
+    dsrc: dict = {}
+    for e in bias["decision_bias"]["systems"]:
+        dsrc.setdefault(e["system"], []).append(e)
+    if {s["system"] for s in bp["decision_model_bias"]["systems"]} != set(dsrc):
+        bad.append("decision-model systems differ")
+    for s in bp["decision_model_bias"]["systems"]:
+        es = dsrc.get(s["system"], [])
+        if s["status"] == "not_applicable":
+            na = next((e for e in es if e["status"] == "not_applicable"), None)
+            if na is None or s["reason"] != na["reason"] or "result" in s["bbq"] or "result" in s["discrim_eval"]:
+                bad.append(f"{s['system']}: not applicable")
+            continue
+        for track in ("bbq", "discrim_eval"):
+            e = next((x for x in es if track in x), None)
+            if e is None or s[track]["result"] != e[track] or s[track]["config_hash"] != e["config_hash"]:
+                bad.append(f"{s['system']}: {track}")
+    check("bias-parts.json is built from this bias.json (sha256) and every copied number equals bias.json", not bad,
+          "; ".join(bad[:8]) or f"{len(bp['guardrail_fairness']['systems'])} fairness systems x 24 identities, "
+                                f"{len(bp['decision_model_bias']['systems'])} decision-model systems")
+
+    # 11b. The page's three-part block copies bias-parts.json and the audit's row counts.
+    pp = site.get("bias_parts") or {}
+    bad = []
+    fair = {s["system"]: s for s in bp["guardrail_fairness"]["systems"]}
+    page_fair = (pp.get("guardrail_fairness") or {}).get("systems") or []
+    if {s["system"] for s in page_fair} != set(fair):
+        bad.append("fairness systems differ")
+    for s in page_fair:
+        f = fair.get(s["system"])
+        if f is None:
+            continue
+        o, b1 = f["B1"]["overall"], s["b1"]
+        if s["implementation"] != page_id(s["system"]) or s["threshold"] != f["threshold"]:
+            bad.append(f"{s['system']}: id or threshold")
+        if (b1["n_benign"], b1["n_harmful"], b1["fpr"], b1["fnr"], b1["false_positives"], b1["false_negatives"],
+                b1["balanced_accuracy"]) != (o["n_benign"], o["n_harmful"], o["fpr"], o["fnr"], o["fpr_numerator"],
+                                             o["fnr_numerator"], f["B1"]["quality"]["balanced_accuracy"]) \
+                or not _iv_eq(b1["fpr_interval"], o["fpr_interval"]) or not _iv_eq(b1["fnr_interval"], o["fnr_interval"]):
+            bad.append(f"{s['system']}: B1 overall")
+        idn = {g["identity"]: g for g in f["B1"]["identities"]}
+        with_rows = [g for g in f["B1"]["identities"] if g["mentioned"]["benign"] + g["mentioned"]["harmful"]]
+        if [g["identity"] for g in b1["groups"]] != [g["identity"] for g in with_rows] \
+                or sorted(b1["identities_without_rows"]) != sorted(set(idn) - {g["identity"] for g in with_rows}) \
+                or b1["identities"] != len(idn) \
+                or b1["groups_sufficient"] != sum(not g["insufficient_evidence"] for g in with_rows):
+            bad.append(f"{s['system']}: B1 group list")
+        for g in b1["groups"]:
+            h = idn.get(g["identity"]) or {}
+            m, n = h.get("mentioned") or {}, h.get("not_mentioned") or {}
+            fg, ng = h.get("fpr_gap_vs_not_mentioned") or {}, h.get("fnr_gap_vs_not_mentioned") or {}
+            if (g["n_benign"], g["n_harmful"], g["fpr"], g["fnr"], g["comparison_n_benign"], g["comparison_n_harmful"],
+                    g["fpr_gap"], g["fnr_gap"], g["insufficient_evidence"], g["reasons"]) != (
+                    m.get("n_benign"), m.get("n_harmful"), m.get("fpr"), m.get("fnr"), n.get("n_benign"),
+                    n.get("n_harmful"), fg.get("value"), ng.get("value"), h.get("insufficient_evidence"),
+                    h.get("insufficient_evidence_reasons")) \
+                    or not all(_iv_eq(g[a], b) for a, b in (("fpr_interval", m.get("fpr_interval")),
+                                                            ("fnr_interval", m.get("fnr_interval")),
+                                                            ("fpr_gap_interval", fg.get("interval")),
+                                                            ("fnr_gap_interval", ng.get("interval")))):
+                bad.append(f"{s['system']}/{g['identity']}")
+        c, k, p = f["B2"]["consistency"], f["B2"]["correctness"], s["b2"]
+        if (p["pairs"], p["evaluable"], p["flips"], p["flip_rate"], p["all_correct"], p["all_wrong"],
+                p["paired_correct_rate"], p["consistent_wrong_rate"], p["too_few_pairs"]) != (
+                f["B2"]["n_pairs"], f["B2"]["n_pairs_evaluable"], c["flips"], c["flip_rate"], k["all_correct"],
+                k["all_wrong"], k["paired_correct_rate"], k["consistent_wrong_rate"], f["B2"]["too_few_pairs"]) \
+                or not _iv_eq(p["flip_rate_interval"], c["flip_rate_interval"]) \
+                or not _iv_eq(p["paired_correct_interval"], k["paired_correct_interval"]):
+            bad.append(f"{s['system']}: B2 consistency or correctness")
+    dec = {s["system"]: s for s in bp["decision_model_bias"]["systems"]}
+    page_dec = (pp.get("decision_model_bias") or {}).get("systems") or []
+    if {s["system"] for s in page_dec} != set(dec):
+        bad.append("decision-model systems differ")
+    for s in page_dec:
+        d = dec.get(s["system"])
+        if d is None or s["status"] != d["status"]:
+            bad.append(f"{s['system']}: status"); continue
+        if s["status"] != "evaluated":
+            continue
+        cats, pb = d["bbq"]["result"]["categories"], s["bbq"]
+        for key, cond in (("ambig", "ambiguous"), ("disambig", "disambiguated")):
+            n = sum(c[key]["n"] for c in cats.values() if key in c)
+            ok = sum(c[key]["correct"] for c in cats.values() if key in c)
+            if (pb[cond]["n"], pb[cond]["correct"]) != (n, ok) or not close(pb[cond]["accuracy"], ok / n, 1e-12):
+                bad.append(f"{s['system']}: BBQ {cond}")
+        for x in pb["categories"]:
+            c = cats.get(x["category"]) or {}
+            dis = c.get("disambig") or {}
+            if (x["ambiguous_n"], x["disambiguated_n"], x["disambiguated_accuracy"], x["disambiguated_bias_score"]) != (
+                    (c.get("ambig") or {}).get("n", 0), dis.get("n", 0), dis.get("accuracy"), dis.get("bias_score")) \
+                    or not _iv_eq(x["disambiguated_bias_score_interval"], dis.get("bias_score_interval")):
+                bad.append(f"{s['system']}/{x['category']}: BBQ cell")
+        de, pd = d["discrim_eval"], s["discrim_eval"]
+        if (pd["n"], pd["mean_p_yes"], pd["insufficient_evidence"], pd["isolates_demographic_bias"]) != (
+                de["result"]["n"], de["result"]["mean_p_yes"], de["insufficient_evidence"], de["isolates_demographic_bias"]) \
+                or pd["group_gaps_shown"] is not False or "comparisons" in json.dumps(pd):
+            bad.append(f"{s['system']}: discrim-eval")
+    audit = {t["id"]: t for t in au["tasks"]}
+    ht = audit["content:hate"]["test_rows"]
+    h = pp.get("hate_detection") or {}
+    harmful = sum(x["n"] for x in h.get("harmful_by_source") or [])
+    jbb = sum(x["n"] for x in h.get("harmful_by_source") or [] if x["source"] == "jailbreakbench")
+    content_rows = next((q["test_cases"] for q in site.get("data_quality") or [] if q["suite"] == "content"), None)
+    if not (h.get("separate_score") is None and "separate_score" in h
+            and h.get("content_test_rows") == ht["content_suite_total"] == content_rows
+            and h.get("harmful_with_hate_source_label") == ht["totals"]["harmful_with_identity_hate_source_label"] == harmful - jbb
+            and h.get("harmful_including_jailbreakbench") == ht["totals"]["harmful_including_jbb_harassment_discrimination"] == harmful
+            and h.get("benign_same_topic") == ht["totals"]["benign_hate_adjacent_rows"]
+            == sum(x["n"] for x in h.get("benign_by_source") or [])):
+        bad.append("hate detection row counts")
+    check("the page's three parts copy bias-parts.json and the audit's row counts (hate rows once, in content; no "
+          "separate hate score; discrim-eval shows no group gap)", not bad,
+          "; ".join(bad[:8]) or f"{len(page_fair)} fairness systems, {len(page_dec)} decision-model systems, "
+                                f"{harmful} harmful and {h.get('benign_same_topic')} benign hate rows of {content_rows}")
+
+    # 11c. The three part names, and no generic "Bias" section heading.
+    page = (REPO / "site/leaderboard/index.html").read_text(encoding="utf-8")
+    named = (pp.get("parts") == PARTS == bp["parts"] == au["parts"]
+             and [(pp.get(k) or {}).get("part") for k in ("hate_detection", "guardrail_fairness", "decision_model_bias")] == PARTS)
+    renders = all(x in page for x in ("state.data.bias_parts", "<h3>${esc(h.part)}</h3>", "<h3>${esc(f.part)}</h3>",
+                                      "<h3>${esc(d.part)}</h3>"))
+    generic = re.findall(r"<h[1-6][^>]*>\s*Bias\b[^<]*", page) + [x for x in ("Bias, reported separately", "Bias, exploratory")
+                                                                 if x in page]
+    check("the page names the three parts and has no generic \"Bias\" section heading", named and renders and not generic,
+          "; ".join(generic) or " / ".join(PARTS))
+
+    # 11d. Bedrock is not applicable in decision-model bias, never scored as zero.
+    br = [s for s in page_dec if s["implementation"] == "bedrock"]
+    old = [e for e in site["entries"] if e["implementation"] == "bedrock" and e["suite"] == "bias" and e.get("track") == "decision_bias"]
+    ok = (len(br) == 1 and br[0]["status"] == "not_applicable" and br[0].get("reason")
+          and "bbq" not in br[0] and "discrim_eval" not in br[0]
+          and all(e["status"] == "not_applicable" and not (e.get("quality") or {}).get("score") for e in old)
+          and all(e["status"] == "not_applicable" for e in bias["decision_bias"]["systems"] if e["system"] == "bedrock-checks"))
+    check("Bedrock is not applicable in decision-model bias, with its reason and no score", bool(ok),
+          br[0].get("reason", "") if br else "no Bedrock row")
+
+    # 11e. The six-category overall is unchanged and holds no bias part; no number combines the three parts.
+    bad = []
+    frozen_ov = {page_id(i["implementation"]): i for i in lb["overall"]["implementations"] if i.get("ranked")}
+    six = {SITE_SUITE.get(s, s) for s in ("content", "prompt_attacks", "denied_topics", "word_filters", "sensitive_info",
+                                          "grounding")}
+    for e in (x for x in site["entries"] if x["suite"] == "overall" and x["status"] == "evaluated"):
+        f = frozen_ov.get(e["implementation"])
+        if f is None or not close(e["quality"]["score"], f["overall_score"]) or set(e.get("suites") or {}) != six:
+            bad.append(e["implementation"])
+    comb = pp.get("combination") or {}
+    if comb.get("single_number", "missing") is not None or any(isinstance(v, (int, float)) for v in comb.values()) \
+            or any(k in pp for k in ("score", "aggregate", "overall")):
+        bad.append("bias_parts carries a combined number")
+    check("overall score unchanged: the frozen six-category overall, with no bias part inside and no combined number",
+          not bad and len(frozen_ov) == sum(1 for x in site["entries"] if x["suite"] == "overall" and x["status"] == "evaluated"),
+          "; ".join(bad) or f"{len(frozen_ov)} overall entries")
+
+    # 11f. None of the brief's claims to avoid is made on the page or in its data.
+    hits = sorted({m.group(0) for t in (json.dumps(site), page) for m in CLAIMS.finditer(t)})
+    check("no claim the brief says to avoid (fairness percentage, bias-free, proven equal treatment, general bias "
+          "detector)", not hits, ", ".join(hits) or "none")
 
 
 def main() -> int:
@@ -379,6 +606,9 @@ def main() -> int:
           "for publication while any stay open",
           site.get("blockers") == open_ and acc_ok and (("Not for publication" in site.get("notice", "")) == bool(open_)),
           f"open: {'; '.join(open_) or 'none'}; accepted: {len(acc)}")
+
+    # 11. Bias in three parts (docs/benchmark/bias-distinction-developer-handoff.md, developer actions 2, 4 and 5).
+    bias_parts_checks(site, lb, bias)
 
     out = {"checked_at_commit": git("rev-parse", "--short", "HEAD"), "results": str(SITE.relative_to(REPO)),
            "frozen": str(pick.relative_to(REPO)),

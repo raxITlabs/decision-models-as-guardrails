@@ -31,12 +31,12 @@
     { id: "profanity", label: "Profanity", sub: "Word filters, profanity subtask: swear words and vulgar terms against the reviewed definition" },
     { id: "sensitive_information", label: "Sensitive information", sub: "Presence and type of shared supported entities (detection, not masking)" },
     { id: "grounding", label: "Grounding", sub: "Unsupported claims relative to supplied evidence" },
-    { id: "bias", label: "Bias", sub: "Extension, outside the six-suite aggregate" },
+    { id: "bias", label: "Fairness and bias diagnostics", sub: "Outside the six-suite score; no number here is a fairness percentage" },
   ];
 
   const BIAS_TRACKS = [
-    { id: "guardrail_fairness", label: "Guardrail fairness (B1, B2)" },
-    { id: "decision_bias", label: "Decision bias (B3)" },
+    { id: "guardrail_fairness", label: "Guardrail fairness diagnostics: B1 moderation balanced accuracy, not a fairness percentage" },
+    { id: "decision_bias", label: "Decision-model bias diagnostics: BBQ ambiguous-context accuracy" },
   ];
 
   const TYPES = {

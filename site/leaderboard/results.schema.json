@@ -93,6 +93,13 @@
             "null"
           ],
           "description": "How the public dataset version relates to the internal release these results use."
+        },
+        "public_release": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The public dataset version label, for example v0.0.1."
         }
       }
     },
@@ -320,6 +327,735 @@
           },
           "limits": {
             "type": "string"
+          }
+        }
+      }
+    },
+    "bias_parts": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "The bias assessment in three named parts, each answering one question. Values come from bias-parts.json (copied from bias.json) and row counts from bias-audit.json. Outside every score; no number combines the parts.",
+      "required": [
+        "parts",
+        "distinction",
+        "combination",
+        "hate_detection",
+        "guardrail_fairness",
+        "decision_model_bias"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "parts": {
+          "const": [
+            "Hate and discrimination detection",
+            "Guardrail fairness diagnostics",
+            "Decision-model bias diagnostics"
+          ]
+        },
+        "distinction": {
+          "type": "string"
+        },
+        "combination": {
+          "type": "object",
+          "required": [
+            "single_number"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "six_category_score": {
+              "type": "string"
+            },
+            "fairness": {
+              "type": "string"
+            },
+            "decision_model": {
+              "type": "string"
+            },
+            "single_number": {
+              "const": null
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        "hate_detection": {
+          "type": "object",
+          "required": [
+            "part",
+            "separate_score",
+            "content_test_rows"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "part": {
+              "type": "string"
+            },
+            "measures": {
+              "type": "string"
+            },
+            "systems_comparable": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "not_applicable": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "implementation",
+                  "reason"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "implementation": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "location": {
+              "type": "string"
+            },
+            "separate_score": {
+              "const": null
+            },
+            "content_test_rows": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "harmful_with_hate_source_label": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "harmful_including_jailbreakbench": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "benign_same_topic": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "harmful_by_source": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "source",
+                  "label",
+                  "n"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "source": {
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "n": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "detail": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                }
+              }
+            },
+            "benign_by_source": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "source",
+                  "label",
+                  "n"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "source": {
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "n": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "detail": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                }
+              }
+            },
+            "caveats": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "source": {
+              "type": "string"
+            }
+          }
+        },
+        "guardrail_fairness": {
+          "type": "object",
+          "required": [
+            "part",
+            "min_support",
+            "systems"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "part": {
+              "type": "string"
+            },
+            "measures": {
+              "type": "string"
+            },
+            "placement": {
+              "type": "string"
+            },
+            "reading": {
+              "type": "string"
+            },
+            "systems_comparable": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "not_applicable": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "implementation",
+                  "reason"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "implementation": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "notes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "min_support": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "consistency_vs_correctness": {
+              "type": "string"
+            },
+            "interval_method": {
+              "type": "string"
+            },
+            "b1_rows": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "b2_rows": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "systems": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "implementation",
+                  "system",
+                  "b1",
+                  "b2"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "implementation": {
+                    "type": "string"
+                  },
+                  "system": {
+                    "type": "string"
+                  },
+                  "threshold": {
+                    "$ref": "#/$defs/nullable_number"
+                  },
+                  "b1": {
+                    "type": "object",
+                    "required": [
+                      "n_benign",
+                      "n_harmful",
+                      "fpr",
+                      "fnr",
+                      "groups"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "n_benign": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "n_harmful": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "false_positives": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "false_negatives": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "fpr": {
+                        "$ref": "#/$defs/nullable_number"
+                      },
+                      "fpr_interval": {
+                        "$ref": "#/$defs/bias_interval"
+                      },
+                      "fnr": {
+                        "$ref": "#/$defs/nullable_number"
+                      },
+                      "fnr_interval": {
+                        "$ref": "#/$defs/bias_interval"
+                      },
+                      "balanced_accuracy": {
+                        "$ref": "#/$defs/nullable_number",
+                        "description": "Moderation quality guard on the B1 rows. Not a fairness measure."
+                      },
+                      "low_quality": {
+                        "type": "boolean"
+                      },
+                      "identities": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "identities_without_rows": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "groups_sufficient": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "groups": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "identity",
+                            "n_benign",
+                            "n_harmful",
+                            "fpr",
+                            "fnr",
+                            "insufficient_evidence"
+                          ],
+                          "additionalProperties": false,
+                          "properties": {
+                            "identity": {
+                              "type": "string"
+                            },
+                            "n_benign": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "n_harmful": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "fpr": {
+                              "$ref": "#/$defs/nullable_number"
+                            },
+                            "fpr_interval": {
+                              "$ref": "#/$defs/bias_interval"
+                            },
+                            "fnr": {
+                              "$ref": "#/$defs/nullable_number"
+                            },
+                            "fnr_interval": {
+                              "$ref": "#/$defs/bias_interval"
+                            },
+                            "comparison_n_benign": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "comparison_n_harmful": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "fpr_gap": {
+                              "$ref": "#/$defs/nullable_number"
+                            },
+                            "fpr_gap_interval": {
+                              "$ref": "#/$defs/bias_interval"
+                            },
+                            "fnr_gap": {
+                              "$ref": "#/$defs/nullable_number"
+                            },
+                            "fnr_gap_interval": {
+                              "$ref": "#/$defs/bias_interval"
+                            },
+                            "unknown_annotation_rows": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "insufficient_evidence": {
+                              "type": "boolean"
+                            },
+                            "reasons": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "b2": {
+                    "type": "object",
+                    "required": [
+                      "pairs",
+                      "flips",
+                      "flip_rate",
+                      "all_correct",
+                      "all_wrong",
+                      "paired_correct_rate",
+                      "too_few_pairs"
+                    ],
+                    "additionalProperties": false,
+                    "description": "Decision consistency (flips) and correctness (both texts right) side by side.",
+                    "properties": {
+                      "pairs": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "evaluable": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "flips": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "flip_rate": {
+                        "$ref": "#/$defs/nullable_number"
+                      },
+                      "flip_rate_interval": {
+                        "$ref": "#/$defs/bias_interval"
+                      },
+                      "all_correct": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "all_wrong": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "paired_correct_rate": {
+                        "$ref": "#/$defs/nullable_number"
+                      },
+                      "paired_correct_interval": {
+                        "$ref": "#/$defs/bias_interval"
+                      },
+                      "consistent_wrong_rate": {
+                        "$ref": "#/$defs/nullable_number"
+                      },
+                      "too_few_pairs": {
+                        "type": "boolean"
+                      },
+                      "too_few_pairs_reason": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "decision_model_bias": {
+          "type": "object",
+          "required": [
+            "part",
+            "systems"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "part": {
+              "type": "string"
+            },
+            "measures": {
+              "type": "string"
+            },
+            "placement": {
+              "type": "string"
+            },
+            "reading": {
+              "type": "string"
+            },
+            "systems_comparable": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "not_applicable": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "implementation",
+                  "reason"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "implementation": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "notes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "bbq_rows": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "discrim_eval_rows": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "systems": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "implementation",
+                  "system",
+                  "status"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "implementation": {
+                    "type": "string"
+                  },
+                  "system": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": [
+                      "evaluated",
+                      "not_applicable",
+                      "not_evaluated"
+                    ]
+                  },
+                  "reason": {
+                    "type": "string"
+                  },
+                  "bbq": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "n",
+                      "ambiguous",
+                      "disambiguated"
+                    ],
+                    "properties": {
+                      "config_hash": {
+                        "type": "string"
+                      },
+                      "n": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "metric": {
+                        "type": "string"
+                      },
+                      "ambiguous": {
+                        "type": "object",
+                        "required": [
+                          "n",
+                          "correct",
+                          "accuracy"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                          "n": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "correct": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "accuracy": {
+                            "$ref": "#/$defs/nullable_number"
+                          }
+                        }
+                      },
+                      "disambiguated": {
+                        "type": "object",
+                        "required": [
+                          "n",
+                          "correct",
+                          "accuracy"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                          "n": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "correct": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "accuracy": {
+                            "$ref": "#/$defs/nullable_number"
+                          }
+                        }
+                      },
+                      "categories": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        }
+                      },
+                      "per_category_evidence": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "discrim_eval": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "n",
+                      "insufficient_evidence",
+                      "isolates_demographic_bias",
+                      "group_gaps_shown"
+                    ],
+                    "properties": {
+                      "config_hash": {
+                        "type": "string"
+                      },
+                      "n": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "scenarios": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "mean_p_yes": {
+                        "$ref": "#/$defs/nullable_number"
+                      },
+                      "unmatched_scenarios": {
+                        "type": "boolean"
+                      },
+                      "insufficient_evidence": {
+                        "type": "boolean"
+                      },
+                      "isolates_demographic_bias": {
+                        "type": "boolean"
+                      },
+                      "group_gaps_shown": {
+                        "const": false
+                      },
+                      "note": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "if": {
+                  "properties": {
+                    "status": {
+                      "const": "not_applicable"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "reason"
+                  ],
+                  "not": {
+                    "anyOf": [
+                      {
+                        "required": [
+                          "bbq"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "discrim_eval"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1168,6 +1904,32 @@
             "null"
           ],
           "description": "Overall entries only: each suite's score for this implementation, including composed suites such as word filters (custom words and profanity, equal weight)."
+        }
+      }
+    },
+    "bias_interval": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "low",
+        "high",
+        "level"
+      ],
+      "additionalProperties": false,
+      "description": "A bootstrap interval copied from bias.json (via bias-parts.json); draw counts stay in bias.json.",
+      "properties": {
+        "low": {
+          "type": "number"
+        },
+        "high": {
+          "type": "number"
+        },
+        "level": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 1
         }
       }
     }

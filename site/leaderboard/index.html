@@ -161,28 +161,39 @@ h2 { font-size: 1.5rem; line-height: 1.2; letter-spacing: -0.02em; font-weight: 
 .wide-head .desc { min-height: 0; max-width: 72ch; margin: 0; }
 .wide-head .off { margin: 0; }
 @media (max-width: 800px) { .wide-head { grid-template-columns: 1fr; } }
-.biastab { width: 100%; border-collapse: collapse; font-size: 14px; }
-.biastab th { text-align: left; font-weight: 500; font-size: 13px; color: var(--ink-3); padding: 8px 12px 8px 0; border-bottom: 1px solid var(--rule); }
-.biastab td { padding: 7px 16px 7px 0; border-bottom: 1px solid var(--grid); }
-.biastab td.name { font-weight: 550; white-space: nowrap; width: 180px; }
-.biastab th:nth-child(2), .biastab th:nth-child(3) { width: 40%; }
-.biastab td.na { color: var(--ink-3); font-size: 13px; }
-.bb { all: unset; display: flex; align-items: center; gap: 10px; width: 100%; cursor: pointer; border-radius: 4px; }
-.bb:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
-.bb-track { flex: 1; height: 6px; background: var(--grid); border-radius: 3px; overflow: hidden; }
-.bb-fill { display: block; height: 100%; border-radius: 3px; }
-.bb:hover .bb-fill { filter: brightness(1.12); }
-.bb-v { width: 40px; text-align: right; font-weight: 600; }
-.bb-n { width: 48px; font-size: 12px; color: var(--ink-3); }
-.biastab td.b2 { font-variant-numeric: tabular-nums; white-space: nowrap; }
-.biastab td.b2 .bb-n { display: block; width: auto; }
-.biastab th.b2h { min-width: 150px; }
 .biaswrap { overflow-x: auto; }
-@media (max-width: 640px) {
-  .biastab td.name { width: auto; white-space: normal; }
-  .biastab thead th:not(:first-child) { font-size: 12px; }
-  .bb { gap: 6px; flex-wrap: wrap; } .bb-track { flex-basis: 100%; } .bb-v { width: auto; text-align: left; } .bb-n { width: auto; }
+.parts3 { list-style: none; margin: 0 0 8px; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--ink); }
+.parts3 li { padding: 18px 22px 18px 0; display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--ink-2); min-width: 0; }
+.parts3 li + li { padding-left: 22px; border-left: 1px solid var(--rule); }
+.parts3 a { color: var(--ink); text-decoration: none; display: flex; gap: 10px; align-items: baseline; font-size: 16px; }
+.parts3 a:hover strong { color: var(--dm); }
+.parts3 strong { font-weight: 650; letter-spacing: -0.01em; transition: color 160ms ease-out; }
+.parts3 small { font-size: 13px; color: var(--ink-3); }
+.part-n { font-size: 13px; font-weight: 650; color: var(--ink-3); min-width: 1ch; }
+.combine { border-top: 1px solid var(--rule); padding: 14px 0 6px; }
+.combine h3 { font-size: 15px; font-weight: 650; margin: 0; }
+.combine .notes, .part-notes { margin: 6px 0 0; padding: 0; list-style: none; font-size: 14px; color: var(--ink-2); max-width: 88ch; }
+.combine .notes li, .part-notes li { padding: 7px 0; border-bottom: 1px solid var(--grid); }
+.combine .notes li:last-child, .part-notes li:last-child { border-bottom: 0; }
+.combine .notes strong { color: var(--ink); font-weight: 600; }
+.part { scroll-margin-top: 24px; }
+.part-kicker { margin: 0 0 2px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-3); }
+.parttab { width: 100%; border-collapse: collapse; font-size: 14px; margin: 4px 0 8px; }
+.parttab th { text-align: left; font-weight: 500; font-size: 13px; color: var(--ink-3); padding: 8px 14px 8px 0; border-bottom: 1px solid var(--rule); vertical-align: bottom; }
+.parttab td { padding: 8px 14px 8px 0; border-bottom: 1px solid var(--grid); vertical-align: top; }
+.parttab td.name { font-weight: 550; white-space: nowrap; }
+.parttab .num { text-align: right; }
+.parttab td.na, .parttab .na { color: var(--ink-3); font-size: 13px; }
+.parttab .ci { display: block; font-size: 12px; color: var(--ink-3); }
+.parttab tr.sumrow td { font-weight: 600; border-bottom: 0; border-top: 1px solid var(--rule); }
+.flag { display: inline-block; margin-top: 4px; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 550; color: var(--br); box-shadow: inset 0 0 0 1px var(--br-soft); white-space: nowrap; }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 48px; }
+.part .table-filter { margin: 12px 0; }
+@media (max-width: 800px) {
+  .parts3, .two { grid-template-columns: 1fr; }
+  .parts3 li + li { padding-left: 0; border-left: 0; border-top: 1px solid var(--rule); }
 }
+@media (max-width: 640px) { .parttab td.name { white-space: normal; } .parttab { font-size: 13px; } }
 .lbl-fade { animation: lblin 360ms ease-out both; }
 @keyframes lblin { from { opacity: 0; } }
 @media (max-width: 1000px) {
@@ -323,7 +334,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     <ul class="status" id="status"></ul>
   </header>
 
-  <nav class="jumpnav" aria-label="Results sections"><a href="#h-overview">All models</a><a href="#h-verdict">By capability</a><a href="#charts">Cost &amp; speed</a><a href="#h-table">Detailed results</a><a href="#h-scope">Data quality</a><a href="#h-method">Method &amp; review</a></nav>
+  <nav class="jumpnav" aria-label="Results sections"><a href="#h-overview">All models</a><a href="#h-verdict">By capability</a><a href="#charts">Cost &amp; speed</a><a href="#h-table">Detailed results</a><a href="#bias">Hate, fairness &amp; bias</a><a href="#h-scope">Data quality</a><a href="#h-method">Method &amp; review</a></nav>
   <main id="main">
     <div class="skeleton" aria-hidden="true" style="margin-top:48px"></div>
   </main>
@@ -356,7 +367,7 @@ const ROWS = SUITES.flatMap((s) => (s === "word_filters" ? ["word_filters", "pro
 const WF = "word_filters_category";
 const CHARTS = SUITES.map((s) => (s === "word_filters" ? WF : s));
 const COST_ONLY = new Set(["overall", WF]);
-const LABEL = { word_filters: "Word filters: custom words", profanity: "Profanity or obscenity — Civil Comments", [WF]: "Word filters (component average)" };
+const LABEL = { word_filters: "Word filters: custom words", profanity: "Profanity or obscenity — Civil Comments", [WF]: "Word filters (component average)", bias: "Guardrail fairness and decision-model bias (F7)" };
 const baseLabel = (s) => LABEL[s] || (VIEW[s] ? VIEW[s].label : s);
 const ownerReviewed = () => !!(state.data && state.data.label_review);   // from results.json, built from the release's review record
 const profProv = () => isProvisional("profanity");
@@ -370,7 +381,7 @@ const DESC = {
   word_filters: "Configured terms under the declared matching rule",
   sensitive_information: "Personal data present in a message (detection)",
   grounding: "Claims not supported by the supplied evidence",
-  bias: "Separate evaluation, outside the six-suite score",
+  bias: "Guardrail fairness and decision-model bias diagnostics, outside the six-category score",
   overall: "Equal-weight mean of all six categories",
   profanity: "Word filters, profanity half: swear words and obscene language, against Civil Comments' rater labels",
   [WF]: "Component average of the custom-word and profanity scores, each from its own test rows; cost sums the two checks",
@@ -707,42 +718,6 @@ function panelSVG(suite, axis, dom) {
   });
   return { svg: g, off };
 }
-function nOf(e, track) {
-  if (track === "guardrail_fairness") { const g = ((e.bias && e.bias.groups) || [])[0]; return g ? (g.n_benign || 0) + (g.n_harmful || 0) : "?"; }
-  return e.sample && e.sample.total ? e.sample.total : "?";
-}
-function b2Of(e) { return e && e.bias && e.bias.pairs ? e.bias : null; }
-function b2Note() {
-  const n = Math.max(0, ...state.data.implementations.map((i) => (b2Of(entry(i.id, "bias", "guardrail_fairness")) || {}).pairs || 0));
-  return n
-    ? `${ownerReviewed() ? `B2: ${n} counterfactual test pairs, labels drafted by one AI reviewer and reviewed by the project owner,` : `B2 is provisional: ${n} counterfactual test pairs with single-AI reference labels,`} after hard and unresolved pairs were omitted. One flip is one pair, so read B2 as individual cases, not a rate.`
-    : "B2 counterfactual pairs await review.";
-}
-function biasBlock() {
-  const rows = state.data.implementations
-    .map((i) => ({ i, b1: entry(i.id, "bias", "guardrail_fairness"), b3: entry(i.id, "bias", "decision_bias") }))
-    .filter((r) => r.b1 || r.b3)
-    .sort((a, b) => ((scored(b.b1) ? b.b1.quality.score : -1) - (scored(a.b1) ? a.b1.quality.score : -1)));
-  const cellFor = (i, e, track) => {
-    const h = hue(i), col = h === "dm" ? "var(--dm)" : h === "br" ? "var(--br)" : "var(--base)";
-    if (!e) return `<td class="na">n/a</td>`;
-    if (e.status === "not_applicable") return `<td class="na">Not applicable</td>`;
-    if (!scored(e)) return `<td class="na">Not scored</td>`;
-    const v = e.quality.score;
-    if (track === "b2") {
-      const b = b2Of(e);
-      if (!b) return `<td class="na">Not scored</td>`;
-      const flips = Math.round(b.pair_flip_rate * b.pairs);
-      return `<td class="b2">${flips} of ${b.pairs} flip<span class="bb-n">${Math.round(b.paired_correctness * b.pairs)} both right</span></td>`;
-    }
-    return `<td><button class="bb pt" data-key="${esc(i.id)}" data-suite="bias" data-track="${track}" aria-label="${esc(short(i))}: ${fmtScore(v)}">
-      <span class="bb-track"><span class="bb-fill" style="width:${v}%;background:${col}"></span></span><span class="bb-v">${fmtScore(v)}</span><span class="bb-n">n=${nOf(e, track)}</span></button></td>`;
-  };
-  return `<div class="biaswrap"><table class="biastab">
-    <thead><tr><th>Implementation</th><th>Moderation on identity-related comments (B1)</th><th>Answers "unknown" when the context does not say (BBQ, B3)</th><th class="b2h">Flips when only the identity changes (B2, ${ownerReviewed() ? "owner-reviewed" : "labels awaiting review"})</th></tr></thead>
-    <tbody>${rows.map(({ i, b1, b3 }) => `<tr><td class="name"><span class="sw" style="background:${hue(i) === "dm" ? "var(--dm)" : hue(i) === "br" ? "var(--br)" : "var(--base)"}"></span>${esc(short(i))}</td>${cellFor(i, b1, "guardrail_fairness")}${cellFor(i, b3, "decision_bias")}${cellFor(i, b1, "b2")}</tr>`).join("")}</tbody>
-  </table></div>`;
-}
 function renderGrid() {
   const dom = xDomain(state.axis);
   const panel = (s) => {
@@ -767,7 +742,7 @@ function overallAside() {
       <li><strong>Cost is a mix of category checks.</strong> It is the mean of the six category costs per 1,000 checks, each measured separately; word filters count both of their checks. It is not the price of one call.</li>
       ${prov ? `<li><strong>Human label review pending.</strong> ${profProv() ? "Denied topics and the profanity half of word filters use" : "Denied topics uses"} single-AI reference labels, not independent human review.${profProv() ? "" : " Profanity now scores against Civil Comments' rater labels (dataset v1.3)."} The latest PII result uses the replacement NVIDIA Nemotron-PII test set; the other original categories retain their corrected results.</li>` : ""}
       <li><strong>Quality</strong> is the equal-weight mean of the six category scores, with a paired 95% interval. Word filters enters as a component average of its two checks.</li>
-      <li><strong>Bias is kept separate.</strong> It is not in this score; see its own section below.</li>
+      <li><strong>Hate detection is inside; fairness and decision-model bias are not.</strong> Hate and discrimination detection counts once, through content. Guardrail fairness and decision-model bias diagnostics stay outside this score; see <a href="#bias">the three parts</a>.</li>
       <li><strong>Speed is compared per category.</strong> No single call spans six categories.</li>
     </ul>`;
 }
@@ -779,7 +754,7 @@ function viewsNote(s) {
   return `<p class="off"><strong>Post-hoc views</strong>, Jev then Bedrock, primary score to view. ${vs.map((v) => `${esc(v.label.charAt(0).toUpperCase() + v.label.slice(1))} (${v.rows_dropped} rows): Jev ${f(v, "jev")}, Bedrock ${f(v, "bedrock")}.`).join(" ")} Same frozen thresholds; the primary score stands.</p>`;
 }
 function panelNote(s) {
-  if (s === "overall") return `<p class="off">Overall cost is a mix of category checks, not the price of one call: the mean of the six category costs per 1,000 checks, each measured separately, with word filters counting both of its checks.${!ownerReviewed() && state.data.provisional ? (profProv() ? " Human label review pending: two of the six categories (denied topics, and profanity within word filters) use single-AI reference labels." : " Human label review pending: denied topics, one of the six categories, uses single-AI reference labels.") : ""} Bias is not in this score.</p>`;
+  if (s === "overall") return `<p class="off">Overall cost is a mix of category checks, not the price of one call: the mean of the six category costs per 1,000 checks, each measured separately, with word filters counting both of its checks.${!ownerReviewed() && state.data.provisional ? (profProv() ? " Human label review pending: two of the six categories (denied topics, and profanity within word filters) use single-AI reference labels." : " Human label review pending: denied topics, one of the six categories, uses single-AI reference labels.") : ""} Guardrail fairness and decision-model bias diagnostics are not in this score.</p>`;
   if (s === WF) {
     const j = entry("jev", "word_filters"), b = entry("bedrock", "word_filters"), jp = entry("jev", "profanity"), bp = entry("bedrock", "profanity");
     const sub = scored(j) && scored(b) && scored(jp) && scored(bp)
@@ -789,22 +764,115 @@ function panelNote(s) {
   }
   return "";
 }
+/* ---------- hate detection, guardrail fairness and decision-model bias: three parts ---------- */
+/* Each part answers its own question, from results.json bias_parts (values copied from bias.json through
+   bias-parts.json, row counts from bias-audit.json). None enters a score and no number combines them. */
+const byImplOrder = (a, b) => state.data.implementations.findIndex((i) => i.id === a.implementation) - state.data.implementations.findIndex((i) => i.id === b.implementation);
+const implName = (id) => { const i = implById(id); return i ? short(i) : id; };
+const swatch = (id) => { const i = implById(id), h = i ? hue(i) : "base"; return `<span class="sw" style="background:${h === "dm" ? "var(--dm)" : h === "br" ? "var(--br)" : "var(--base)"}"></span>`; };
+const ivText = (i, unit = "%") => i ? `95% interval ${(i.low * 100).toFixed(1)}${unit === "%" ? "%" : ""} to ${(i.high * 100).toFixed(1)}${unit}` : "";
+const rateCell = (v, i, n) => isNum(v) ? `${G.fmtPct(v)}${i ? `<span class="ci">${ivText(i)}</span>` : ""}${n ? `<span class="ci">${esc(n)}</span>` : ""}` : `<span class="na">no rows</span>`;
+const gapCell = (v, i) => isNum(v) ? `${v > 0 ? "+" : ""}${(v * 100).toFixed(1)} points${i ? `<span class="ci">${ivText(i, " points")}</span>` : ""}` : `<span class="na">n/a</span>`;
+const flagTag = (text, title) => `<span class="flag"${title ? ` title="${esc(title)}"` : ""}>${esc(text)}</span>`;
+const naList = (xs) => (xs || []).map((x) => `${esc(implName(x.implementation))}: not applicable, ${esc(x.reason)}`).join(". ");
+const namesOf = (ids) => ids.map(implName).join(", ");
+const cap = (s) => String(s || "").charAt(0).toUpperCase() + String(s || "").slice(1);
+function sysPicker(group, systems, lead) {
+  return `<label class="table-filter">${esc(lead)} <select data-group="${group}">${systems.map((s) => `<option value="${esc(s.implementation)}"${s.implementation === "jev" ? " selected" : ""}>${esc(implName(s.implementation))}</option>`).join("")}</select></label>`;
+}
 function renderBias() {
-  return `<section aria-labelledby="h-bias" id="bias">
-    <h2 id="h-bias">Bias, reported separately</h2>
-    <p class="sub">Outside the six-category score and the overall. No cost or latency was recorded per bias run.</p>
-    <div class="grid grid-one">${biasPanel()}</div>
+  const p = state.data.bias_parts;
+  if (!p) return "";
+  const c = p.combination;
+  const parts = [[p.hate_detection, p.hate_detection.location], [p.guardrail_fairness, p.guardrail_fairness.placement], [p.decision_model_bias, p.decision_model_bias.placement]];
+  return `<section aria-labelledby="h-parts" id="bias">
+    <h2 id="h-parts">Hate detection, guardrail fairness and decision-model bias</h2>
+    <p class="sub">${esc(p.distinction)}</p>
+    <ol class="parts3">${parts.map(([x, where], k) => `<li><a href="#part-${k + 1}"><span class="part-n">${k + 1}</span><strong>${esc(x.part)}</strong></a><span>${esc(x.measures)}</span><small>${esc(cap(where))}</small></li>`).join("")}</ol>
+    <div class="combine"><h3>How the three parts fit together</h3><ul class="notes">
+      <li>${esc(c.six_category_score)}</li><li>${esc(c.fairness)}</li><li>${esc(c.decision_model)}</li><li><strong>${esc(c.note)}</strong></li>
+    </ul></div>
+    <div class="grid grid-one">${hatePanel(p.hate_detection)}${fairnessPanel(p.guardrail_fairness)}${decisionPanel(p.decision_model_bias)}</div>
   </section>`;
 }
-function biasPanel() {
-  return `<div class="panel panel-wide" id="panel-bias" data-suite="bias">
-      <div class="wide-head">
-        <div><h3>Bias, exploratory</h3>
-        <p class="desc">${esc(DESC.bias)}. B1 is balanced accuracy on comments that mention identities. B3 is BBQ accuracy on questions whose context does not give the answer, so the right answer is "unknown". Bedrock does not answer B3 questions: not applicable, not zero.</p></div>
-        <p class="off">Read these as exploratory diagnostics, not a fairness ranking. The selected cases are too sparse and unmatched for group comparisons: discrim-eval's 50 cases span 31 scenarios, so demographic groups mostly answered different questions, and Civil Comments has 1 to 18 comments per identity. No cost or latency was recorded per bias run, so bias has no cost axis. These summary scores have no intervals; the small, uneven samples do not support a reliable fairness ranking. ${b2Note()} Identity groups within B1 are too small to compare one group with another.</p>
-      </div>
-      ${biasBlock()}
-    </div>`;
+function hatePanel(h) {
+  const tab = (head, xs) => `<table class="parttab"><thead><tr><th>${esc(head)}</th><th class="num">Test rows</th></tr></thead><tbody>
+    ${xs.map((x) => `<tr><td>${esc(x.label)}${x.detail ? `<span class="ci">${esc(x.detail)}</span>` : ""}</td><td class="num">${x.n}</td></tr>`).join("")}
+    <tr class="sumrow"><td>Total</td><td class="num">${xs.reduce((a, x) => a + x.n, 0)}</td></tr></tbody></table>`;
+  return `<div class="panel panel-wide part" id="part-1">
+    <div class="wide-head">
+      <div><p class="part-kicker">Part 1</p><h3>${esc(h.part)}</h3>
+      <p class="desc">${esc(h.measures)} It is measured in the content category, where the source labels support it, and the content score already counts these rows once. There is no separate score.</p></div>
+      <p class="off">${h.harmful_with_hate_source_label} of the ${h.content_test_rows} content test rows are harmful and carry an identity-hate label at their source; ${h.harmful_including_jailbreakbench} counting JailbreakBench's combined harassment and discrimination category. ${h.benign_same_topic} benign rows sit on the same topic. Comparable: ${esc(namesOf(h.systems_comparable))}. ${naList(h.not_applicable)}.</p>
+    </div>
+    <div class="two">${tab("Harmful rows, by source label", h.harmful_by_source)}${tab("Benign rows on the same topic", h.benign_by_source)}</div>
+    <details class="review-details"><summary>What these rows can and cannot show</summary><ul class="notes">${h.caveats.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></details>
+  </div>`;
+}
+function fairnessPanel(f) {
+  const sys = f.systems.slice().sort(byImplOrder);
+  const row = (s) => {
+    const b = s.b1, q = s.b2, few = b.groups_sufficient === 0;
+    return `<tr><td class="name">${swatch(s.implementation)}${esc(implName(s.implementation))}</td>
+      <td>${rateCell(b.fpr, b.fpr_interval, `${b.false_positives} of ${b.n_benign} benign`)}</td>
+      <td>${rateCell(b.fnr, b.fnr_interval, `${b.false_negatives} of ${b.n_harmful} toxic`)}</td>
+      <td>${b.groups_sufficient} of ${b.identities}<span class="ci">${b.groups.length} with rows, ${b.identities_without_rows.length} with none</span>${few ? flagTag("Insufficient evidence", `every group is below ${f.min_support} rows`) : ""}</td>
+      <td>${q.flips} of ${q.evaluable} pairs flip<span class="ci">${ivText(q.flip_rate_interval)}</span>${q.too_few_pairs ? flagTag("Too few pairs", q.too_few_pairs_reason) : ""}</td>
+      <td>${q.all_correct} of ${q.evaluable} both right<span class="ci">${ivText(q.paired_correct_interval)}</span><span class="ci">${q.all_wrong} of ${q.evaluable} both wrong</span></td></tr>`;
+  };
+  const groups = (s) => `<div data-group-of="fair" data-sys="${esc(s.implementation)}"${s.implementation === "jev" ? "" : " hidden"}>
+    <div class="biaswrap"><table class="parttab"><thead><tr><th>Identity mentioned</th><th class="num">Benign rows</th><th>False blocks (FPR)</th><th>FPR gap vs rest</th><th class="num">Toxic rows</th><th>Missed (FNR)</th><th>FNR gap vs rest</th><th>Evidence</th></tr></thead><tbody>
+    ${s.b1.groups.slice().sort((a, c) => (c.n_benign + c.n_harmful) - (a.n_benign + a.n_harmful)).map((g) => `<tr><td class="name">${esc(g.identity.replace(/_/g, " "))}</td>
+      <td class="num">${g.n_benign}</td><td>${rateCell(g.fpr, g.fpr_interval)}</td><td>${gapCell(g.fpr_gap, g.fpr_gap_interval)}</td>
+      <td class="num">${g.n_harmful}</td><td>${rateCell(g.fnr, g.fnr_interval)}</td><td>${gapCell(g.fnr_gap, g.fnr_gap_interval)}</td>
+      <td>${g.insufficient_evidence ? flagTag("Insufficient", g.reasons.join("; ")) : "Enough rows"}</td></tr>`).join("")}
+    </tbody></table></div>
+    <p class="off">No test rows mention: ${esc(s.b1.identities_without_rows.map((x) => x.replace(/_/g, " ")).join(", "))}. The comparison ("rest") for each identity is the comments annotated as not mentioning it (${s.b1.groups.length ? `${s.b1.groups[0].comparison_n_benign} benign and ${s.b1.groups[0].comparison_n_harmful} toxic for ${esc(s.b1.groups[0].identity.replace(/_/g, " "))}` : "none"}). Moderation accuracy on all ${s.b1.n_benign + s.b1.n_harmful} comments is ${G.fmtPct(s.b1.balanced_accuracy)} (balanced accuracy). It is a quality guard for reading the rates, not a measure of fairness.</p>
+  </div>`;
+  return `<div class="panel panel-wide part" id="part-2">
+    <div class="wide-head">
+      <div><p class="part-kicker">Part 2</p><h3>${esc(f.part)}</h3>
+      <p class="desc">${esc(f.measures)} ${esc(f.placement)}</p></div>
+      <p class="off">B1: ${f.b1_rows.total} Civil Comments comments (${f.b1_rows.benign} benign, ${f.b1_rows.toxic} toxic), each system at its frozen content threshold. B2: ${f.b2_rows.pairs} identity-swapped pairs in ${f.b2_rows.clusters} clusters. Intervals: ${esc(f.interval_method)}. Comparable: ${esc(namesOf(f.systems_comparable))}.</p>
+    </div>
+    <div class="biaswrap"><table class="parttab">
+      <thead><tr><th>Implementation</th><th>False blocks on benign comments (B1 FPR)</th><th>Missed toxic comments (B1 FNR)</th><th>Identity groups with enough rows</th><th>Pairs: consistency (B2)</th><th>Pairs: correctness (B2)</th></tr></thead>
+      <tbody>${sys.map(row).join("")}${(f.not_applicable || []).map((x) => `<tr><td class="name">${swatch(x.implementation)}${esc(implName(x.implementation))}</td><td colspan="5" class="na">Not applicable: ${esc(x.reason)}</td></tr>`).join("")}</tbody>
+    </table></div>
+    <ul class="notes part-notes">${f.notes.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
+    <details class="review-details"><summary>Rates by identity group, for one system at a time</summary>
+      ${sysPicker("fair", sys, "System")}${sys.map(groups).join("")}
+    </details>
+  </div>`;
+}
+function decisionPanel(d) {
+  const sys = d.systems.slice().sort(byImplOrder);
+  const acc = (x) => `${G.fmtPct(x.accuracy)}<span class="ci">${x.correct} of ${x.n}, no interval</span>`;
+  const row = (s) => s.status !== "evaluated"
+    ? `<tr><td class="name">${swatch(s.implementation)}${esc(implName(s.implementation))}</td><td colspan="3" class="na">${s.status === "not_applicable" ? "Not applicable" : "Not evaluated"}${s.reason ? `: ${esc(s.reason)}` : ""}</td></tr>`
+    : `<tr><td class="name">${swatch(s.implementation)}${esc(implName(s.implementation))}</td>
+      <td>${acc(s.bbq.ambiguous)}</td><td>${acc(s.bbq.disambiguated)}</td>
+      <td>${flagTag("Insufficient evidence", s.discrim_eval.note)}<span class="ci">${s.discrim_eval.n} cases over ${s.discrim_eval.scenarios} scenarios; no group gap shown</span></td></tr>`;
+  const scored = sys.filter((s) => s.status === "evaluated");
+  const cats = (s) => `<div data-group-of="dec" data-sys="${esc(s.implementation)}"${s.implementation === "jev" ? "" : " hidden"}>
+    <div class="biaswrap"><table class="parttab"><thead><tr><th>BBQ category</th><th class="num">Ambiguous rows</th><th>Answered "unknown"</th><th class="num">Disambiguated rows</th><th>Correct</th><th>Bias score, disambiguated (-1 to 1)</th></tr></thead><tbody>
+    ${s.bbq.categories.map((x) => `<tr><td class="name">${esc(x.category.replace(/_/g, " "))}</td><td class="num">${x.ambiguous_n}</td><td>${x.ambiguous_n ? G.fmtPct(x.ambiguous_accuracy) : `<span class="na">no rows</span>`}</td><td class="num">${x.disambiguated_n}</td><td>${x.disambiguated_n ? G.fmtPct(x.disambiguated_accuracy) : `<span class="na">no rows</span>`}</td><td>${isNum(x.disambiguated_bias_score) ? `${x.disambiguated_bias_score.toFixed(2)}${x.disambiguated_bias_score_interval ? `<span class="ci">95% ${x.disambiguated_bias_score_interval.low.toFixed(2)} to ${x.disambiguated_bias_score_interval.high.toFixed(2)}, ${x.disambiguated_n} rows</span>` : ""}` : `<span class="na">n/a</span>`}</td></tr>`).join("")}
+    </tbody></table></div>
+    <p class="off">${esc(cap(s.bbq.per_category_evidence))}, so no category result is read as a finding. discrim-eval average p(yes) over its ${s.discrim_eval.n} cases is ${s.discrim_eval.mean_p_yes.toFixed(3)}; it describes the answers and is not a bias measure.</p>
+  </div>`;
+  return `<div class="panel panel-wide part" id="part-3">
+    <div class="wide-head">
+      <div><p class="part-kicker">Part 3 · supplementary</p><h3>${esc(d.part)}</h3>
+      <p class="desc">${esc(d.measures)} ${esc(d.placement)}</p></div>
+      <p class="off">BBQ: ${d.bbq_rows.total} questions (${d.bbq_rows.ambiguous} ambiguous, ${d.bbq_rows.disambiguated} disambiguated) from ${d.bbq_rows.templates} templates. discrim-eval: ${d.discrim_eval_rows.total} cases over ${d.discrim_eval_rows.scenarios} scenarios. Comparable: ${esc(namesOf(d.systems_comparable))}; the rest are listed as not applicable.</p>
+    </div>
+    <div class="biaswrap"><table class="parttab">
+      <thead><tr><th>Implementation</th><th>BBQ, ambiguous context: answered "unknown"</th><th>BBQ, disambiguated context: correct</th><th>discrim-eval</th></tr></thead>
+      <tbody>${sys.map(row).join("")}${(d.not_applicable || []).filter((x) => !sys.some((s) => s.implementation === x.implementation)).map((x) => `<tr><td class="name">${swatch(x.implementation)}${esc(implName(x.implementation))}</td><td colspan="3" class="na">Not applicable: ${esc(x.reason)}</td></tr>`).join("")}</tbody>
+    </table></div>
+    <ul class="notes part-notes">${d.notes.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
+    ${scored.length ? `<details class="review-details"><summary>BBQ by category, for one system at a time</summary>${sysPicker("dec", scored, "System")}${scored.map(cats).join("")}</details>` : ""}
+  </div>`;
 }
 const chartsTitle = (axis) => axis === "cost" ? "Quality against cost: overall and six categories" : "Quality against speed, by category";
 function renderCharts() {
@@ -984,7 +1052,7 @@ function openDetail(key, suite, track, anchor) {
     const g = e.bias.groups.filter((x) => (x.n_benign || 0) + (x.n_harmful || 0) >= 5);
     extra = `<table><thead><tr><th>Group</th><th>FPR</th><th>FNR</th><th>n</th></tr></thead><tbody>${g.map((x) => `<tr><td>${esc(x.group)}</td><td>${esc(G.fmtPct(x.fpr))}</td><td>${esc(G.fmtPct(x.fnr))}</td><td>${(x.n_benign || 0) + (x.n_harmful || 0)}</td></tr>`).join("")}</tbody></table>`;
   }
-  const where = suite === "bias" ? (track === "decision_bias" ? "Bias, decision tasks (B3)" : "Bias, moderation on identity mentions (B1)") : label(suite);
+  const where = suite === "bias" ? (track === "decision_bias" ? "Decision-model bias diagnostics: BBQ" : "Guardrail fairness diagnostics: B1") : label(suite);
   $("detail-body").innerHTML = `
     <h4 id="detail-title" style="color:${col}">${esc(impl.label)}</h4>
     <p class="where">${esc(where)}</p>
@@ -1012,6 +1080,8 @@ function render() {
   $("foot-right").textContent = `Generated ${state.data.benchmark.generated_at}. Tariffs dated ${state.data.cost_basis.tariff_date || "n/a"}.`;
 }
 document.addEventListener("change", (ev) => {
+  const g = ev.target.dataset && ev.target.dataset.group;
+  if (g) return document.querySelectorAll(`[data-group-of="${g}"]`).forEach((el) => { el.hidden = el.dataset.sys !== ev.target.value; });
   if (ev.target.id !== "category-filter") return;
   document.querySelectorAll("#results-table tr[data-category]").forEach(row => { row.hidden = ev.target.value !== "all" && row.dataset.category !== ev.target.value; });
 });
