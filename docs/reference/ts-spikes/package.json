@@ -1,0 +1,18 @@
+{
+  "name": "jev-powered-guardrails",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test:aegis": "tsx --env-file=../../.env scripts/aegis-sample.ts"
+  },
+  "dependencies": {
+    "@typesafe-ai/sdk": "^0.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "tsx": "^4",
+    "typescript": "^5"
+  },
+  "packageManager": "pnpm@10"
+}

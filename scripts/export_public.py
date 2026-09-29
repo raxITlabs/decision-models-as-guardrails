@@ -43,17 +43,14 @@ DATASET_URL = "https://huggingface.co/datasets/raxITLabs/goldrails"
 PUBLIC_URL = "https://github.com/raxITlabs/goldrails"
 
 INCLUDE = [
-    "README.md", "pyproject.toml", "uv.lock", "Makefile", ".gitignore", ".env.example",
+    "README.md", "VISION.md", "PRODUCT.md", "pyproject.toml", "uv.lock", "Makefile", ".gitignore", ".env.example",
     "benchmark/pyproject.toml", "benchmark/contracts/*", "benchmark/goldrails_bench/*", "benchmark/question_sets/*",
     "benchmark/runs/*", "benchmark/subsets/*", "benchmark/suites/*", "benchmark/tests/*",
     "benchmark/results/first-benchmark/*", "benchmark/results/smoke-word-filters*",
     "dataset/pyproject.toml", "dataset/goldrails_dataset/*", "dataset/tests/*", "dataset/release/*",
     "dataset/publish/v1.2-full/*", "dataset/publish/v1.3-full/*", "dataset/frozen/*",
     "site/leaderboard/*", "infra/*", "scripts/export_public.py",
-    "docs/README.md", "docs/14-gold-rails-v1-spec.md", "docs/16-evaluation-contract.md", "docs/17-guardrail-policy-v0.md",
-    "docs/18-benchmark-structure.md", "docs/19-evaluation-contract-v1.md", "docs/20-source-audit.md",
-    "docs/21-bias-evaluation.md", "docs/22-budget-forecast.md", "docs/23-release-runbook.md", "docs/24-bias-licence.md",
-    "docs/research/data-quality-team-2026-09-24/*",
+    "docs/*",                                                  # every tracked doc (owner, 29 Sep 2026)
 ]
 EXCLUDE = [
     "dataset/samples/*",                                      # 180 AI4Privacy rows with text, plus old pilot samples
@@ -66,6 +63,7 @@ EXCLUDE = [
     "dataset/release/v1.0/*",
     "dataset/release/rights-confirmation-*",                   # AI4Privacy record, superseded by v1.2
     "*.ipynb",
+    "docs/requests/*",                                        # unsent AI4Privacy permission draft; AI4Privacy stays out
 ]
 AI4P_ID = re.compile(r"f5-ai4privacy-[0-9a-f]{10}")
 ACCOUNT = "<aws-account>"

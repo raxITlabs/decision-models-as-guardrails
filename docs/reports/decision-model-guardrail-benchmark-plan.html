@@ -1,0 +1,315 @@
+<title>Guardrail Benchmark for Decision Models</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg: #f4f6f8; --panel: #ffffff; --ink: #161a20; --muted: #5d6673; --line: #d7dde4;
+    --accent: #1f6f5f; --accent-bg: #e3f1ec; --warn: #9a5b00; --warn-bg: #fbeed6; --bad: #a12c2c; --bad-bg: #f9e3e3;
+    --code-bg: #eceff3; --jev: #1d4ed8; --jev-bg: #e6edfc;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --bg: #0e1116; --panel: #161b22; --ink: #e7eaee; --muted: #98a2b0; --line: #2a323d;
+    --accent: #43c2a8; --accent-bg: #123229; --warn: #f0b35a; --warn-bg: #3a2a0f; --bad: #f08a8a; --bad-bg: #3b1818;
+    --code-bg: #0f141a; --jev: #86a8ff; --jev-bg: #172343; } }
+  :root[data-theme="dark"] {
+    --bg: #0e1116; --panel: #161b22; --ink: #e7eaee; --muted: #98a2b0; --line: #2a323d;
+    --accent: #43c2a8; --accent-bg: #123229; --warn: #f0b35a; --warn-bg: #3a2a0f; --bad: #f08a8a; --bad-bg: #3b1818;
+    --code-bg: #0f141a; --jev: #86a8ff; --jev-bg: #172343; }
+  body { background: var(--bg); color: var(--ink); font-family: "IBM Plex Sans", system-ui, sans-serif; font-size: 16px; line-height: 1.55; padding-inline: 16px; padding-block: 36px 72px; }
+  main { max-width: 80ch; margin-inline: auto; }
+  h1 { font-size: 2.1rem; font-weight: 600; line-height: 1.12; text-wrap: balance; margin: 0 0 .4rem; }
+  .meta { color: var(--muted); font-family: "IBM Plex Mono", monospace; font-size: .8rem; margin: 0 0 1.5rem; }
+  .thesis { border-left: 3px solid var(--accent); padding: 6px 0 6px 16px; margin: 0 0 2.5rem; font-size: 1.08rem; max-width: 68ch; }
+  h2 { font-size: 1.35rem; font-weight: 600; margin: 3rem 0 .8rem; text-wrap: balance; }
+  h3 { font-size: 1.05rem; font-weight: 600; margin: 1.6rem 0 .5rem; }
+  p { margin: 0 0 1rem; max-width: 70ch; }
+  ul, ol { padding-left: 1.2rem; margin: 0 0 1rem; max-width: 70ch; } li { margin-bottom: .4rem; }
+  code { font-family: "IBM Plex Mono", monospace; font-size: .86rem; background: var(--code-bg); padding: .08em .35em; border-radius: 3px; }
+  pre { font-family: "IBM Plex Mono", monospace; font-size: .84rem; background: var(--code-bg); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; overflow-x: auto; margin: 0 0 1rem; line-height: 1.5; }
+  .tag { display: inline-block; font-family: "IBM Plex Mono", monospace; font-size: .72rem; padding: .12em .5em; border-radius: 3px; font-weight: 500; white-space: nowrap; }
+  .tag.high { color: var(--accent); background: var(--accent-bg); } .tag.med { color: var(--warn); background: var(--warn-bg); } .tag.low { color: var(--bad); background: var(--bad-bg); } .tag.jev { color: var(--jev); background: var(--jev-bg); }
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; margin: 0 0 1.2rem; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
+  .tablewrap { overflow-x: auto; margin: 0 0 1.2rem; }
+  figure { margin: 1.4rem 0 1.8rem; } figure svg { display: block; width: 100%; height: auto; max-width: 100%; }
+  figcaption { color: var(--muted); font-size: .9rem; margin-top: .5rem; max-width: 70ch; }
+  .diag { overflow-x: auto; } .diag svg { min-width: 640px; }
+  .diag text { font-family: "IBM Plex Sans", system-ui, sans-serif; font-size: 12.5px; fill: currentColor; }
+  .diag .mono { font-family: "IBM Plex Mono", monospace; font-size: 11px; }
+  .diag .lbl { font-size: 10.5px; fill: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .diag .box { fill: var(--panel); stroke: currentColor; stroke-width: 1; }
+  .diag .box.acc { stroke: var(--accent); stroke-width: 1.6; } .diag .box.jev { stroke: var(--jev); stroke-width: 1.6; } .diag .box.faint { stroke: var(--line); }
+  .diag .edge { stroke: currentColor; stroke-width: 1.2; fill: none; marker-end: url(#arw); } .diag .edge.dashed { stroke-dasharray: 4 3; }
+  .diag .elabel { font-size: 10.5px; fill: var(--muted); }
+  pre.mermaid { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px; overflow-x: auto; margin: 0; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin: 0 0 1.2rem; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; }
+  .panel h4 { margin: 0 0 .4rem; font-size: .76rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+  .panel p { margin: 0; font-size: .95rem; }
+  .verdict { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 6px; padding: 14px 18px; margin: 0 0 1.5rem; }
+  .small { color: var(--muted); font-size: .88rem; }
+  .num { font-variant-numeric: tabular-nums; font-family: "IBM Plex Mono", monospace; }
+</style>
+
+<main>
+  <h1>Guardrail Benchmark for Decision Models</h1>
+  <p class="meta">Plan for approval · 22 September 2026, revised same day after JevBench and Kev · raxIT Labs research project</p>
+  <p class="thesis">Decision models (Jev and the open-weight Jev-class models behind it: Kev, OpenJev, djev, Winnow) all speak one contract: state and typed questions in, probabilities out. JevBench already ranks 52 of them on general decisions. Nobody has asked the question a buyer of guardrails asks: on the guardrail surface, with the same rows, how do they compare to the managed services they would replace, and to each other, on accuracy, calibration, policy adaptation, robustness to how the question is phrased, bias, latency, and cost. That is this benchmark.</p>
+
+  <h2>1. What exists, and the gap we fill</h2>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Benchmark</th><th>What it covers</th><th>What it leaves out</th></tr></thead>
+    <tbody>
+      <tr><td><strong>JevBench</strong> (Benchmark Heaven, v1.3.0, scored 21 Sep 2026)</td><td>52 Jev-class systems: Jev 1.13.0 (74.4), SemIf/OpenJev on Qwen3.5-4B (73.1), djev on diffusion-gemma (73.0), Winnow-12B (71.2), GPT-5.6 Luna as a decision model (65.9). 534 decisions across intent, factual reasoning, extraction, tool selection. Score = geometric mean of intelligence, calibration, speed, cost.</td><td>No guardrail tasks. No safety, injection, PII, or action rows. No managed-service baselines. Self-hosted latency is "an assumption, not a measurement". Notes small models are "very sensitive to option order" but does not measure it as a metric.</td></tr>
+      <tr><td>Kev model card (Jared Palmer, Apache-2.0)</td><td>Kev-9B 0.852 accuracy, 0.237 Brier vs Jev 0.857, 0.211 on a held-out decision set. Three sizes on Qwen3.5. Mirrors <code>POST /v1/systemone</code> exactly.</td><td>Vendor's own eval, general decisions only.</td></tr>
+      <tr><td>GuardBench, Artificial Analysis, CircleGuardBench, arXiv 2605.28830</td><td>Guard models (Llama Guard, Qwen3Guard, Nemotron, WildGuard, Granite Guardian, ShieldGemma) on prompt-level safety, some with latency and over-refusal.</td><td>No decision models. Prompt-level only. No calibration, cost, injection through tool results, actions, or policy adaptation. These are the reference points for our T1 to T3 numbers, not our subjects.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="verdict">
+    <strong>What this benchmark is:</strong> the guardrail-domain companion to JevBench. Same class of subject, one contract for all of them, a different and harder set of questions. <strong>Subjects</strong> are decision models: Jev 1.13.0 and the top open-weight Jev-class models by JevBench rank. <strong>Baselines</strong> are what a buyer would otherwise use: Amazon Bedrock Guardrails, Google Model Armor, Azure AI Content Safety, OpenAI omni-moderation, one general LLM used as a classifier, and a regex floor. <strong>Not subjects:</strong> Llama Guard and the fixed-taxonomy guard models. One of them may appear as an anchor row so T1 to T3 can be checked against published numbers, clearly labelled as an anchor.
+  </div>
+
+  <h2>2. The benchmark, as a mechanism</h2>
+  <p>Every system under test receives the same unified record and returns the same shape: a probability or score per task label. The harness never asks a system to explain itself. Decisions are made in the harness at thresholds fixed on a tuning split, so a vendor's default threshold and a fair threshold are both reported.</p>
+
+  <figure>
+    <div class="diag">
+    <svg viewBox="0 0 780 320" role="img" aria-label="Unified dataset records flow through one adapter per system under test; each returns scores; the harness applies thresholds tuned on a held-out split and computes per-task metrics, calibration, latency and cost.">
+      <defs><marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+      <rect class="box acc" x="10" y="40" width="170" height="240" rx="6"/>
+      <text class="lbl" x="22" y="60">frozen dataset</text>
+      <text class="mono" x="22" y="84">record = {</text>
+      <text class="mono" x="22" y="100">  id, task, text,</text>
+      <text class="mono" x="22" y="116">  role, context[],</text>
+      <text class="mono" x="22" y="132">  label, category,</text>
+      <text class="mono" x="22" y="148">  source, licence,</text>
+      <text class="mono" x="22" y="164">  split: tune|test }</text>
+      <line x1="22" y1="180" x2="168" y2="180" stroke="var(--line)"/>
+      <text x="22" y="200">8 tasks · 1 taxonomy</text>
+      <text x="22" y="216">sha256 pinned</text>
+      <text x="22" y="232">contamination notes</text>
+      <text class="mono" x="22" y="256">~25k test · ~5k tune</text>
+      <path class="edge" d="M180,160 L248,160"/>
+      <text class="elabel" x="188" y="152">same rows</text>
+      <rect class="box" x="250" y="40" width="200" height="240" rx="6"/>
+      <text class="lbl" x="262" y="60">subjects · one System One adapter</text>
+      <text x="262" y="84" fill="var(--jev)">Jev 1.13.0 (TypeSafe)</text>
+      <text x="262" y="100" fill="var(--jev)">Kev 0.8B · 4B · 9B</text>
+      <text x="262" y="116" fill="var(--jev)">OpenJev · djev · Winnow-12B</text>
+      <text x="262" y="132" fill="var(--jev)">next 4 by JevBench rank</text>
+      <line x1="262" y1="142" x2="438" y2="142" stroke="var(--line)"/>
+      <text class="lbl" x="262" y="160">baselines · one adapter each</text>
+      <text x="262" y="180">Bedrock InvokeGuardrailChecks</text>
+      <text x="262" y="196">Google Model Armor · Azure CS</text>
+      <text x="262" y="212">OpenAI omni-moderation</text>
+      <text x="262" y="228">GPT-5 mini as classifier</text>
+      <text x="262" y="244">regex + word lists floor</text>
+      <text x="262" y="260" fill="var(--muted)">anchor: one guard model, T1–T3 only</text>
+      <path class="edge" d="M450,160 L518,160"/>
+      <text class="elabel" x="458" y="152">scores</text>
+      <rect class="box acc" x="520" y="40" width="250" height="240" rx="6"/>
+      <text class="lbl" x="532" y="60">harness, in code</text>
+      <text x="532" y="84">record every raw response</text>
+      <text x="532" y="100">threshold on tune split at FPR 5%</text>
+      <text x="532" y="116">also score at vendor default</text>
+      <line x1="532" y1="128" x2="758" y2="128" stroke="var(--line)"/>
+      <text x="532" y="148">per task · per category:</text>
+      <text class="mono" x="532" y="164">F1 recall precision AUPRC</text>
+      <text class="mono" x="532" y="180">recall@FPR5 · over-refusal</text>
+      <text class="mono" x="532" y="196">ECE Brier (if probabilistic)</text>
+      <text class="mono" x="532" y="212">p50 p95 latency · $/1M evals</text>
+      <text class="mono" x="532" y="228">policy-shift delta</text>
+      <text x="532" y="256">leaderboard + paper + receipts</text>
+      <text class="elabel" x="10" y="305">Vendor thresholds and taxonomies differ, so the harness owns the decision. A system that returns only a label gets F1 at its default and no calibration row, which is itself a finding.</text>
+    </svg>
+    </div>
+    <figcaption>Every subject speaks the same contract, so one adapter and one published question set serve all of them; a difference in score is a difference in the model, not in our prompt. Baselines each get a thin adapter that maps their categories onto ours.</figcaption>
+  </figure>
+
+  <h3>The eight tasks</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Task</th><th>Question a guardrail answers</th><th>Primary sources</th><th>Who can play</th></tr></thead>
+    <tbody>
+      <tr><td><strong>T1 input safety</strong></td><td>Is this user message harmful, by category</td><td>Aegis 2.0, WildGuardMix, ToxicChat, BeaverTails, HarmBench, StrongREJECT</td><td>everyone</td></tr>
+      <tr><td><strong>T2 output safety</strong></td><td>Is this assistant reply harmful, given the prompt</td><td>Aegis 2.0 responses, BeaverTails QA, WildGuardMix response labels</td><td>everyone</td></tr>
+      <tr><td><strong>T3 over-refusal</strong></td><td>Is this benign-but-scary message wrongly flagged</td><td>XSTest, OR-Bench, WildGuard refusal labels, ToxicChat benign</td><td>everyone; specificity on this slice, plus the review band for probabilistic systems</td></tr>
+      <tr><td><strong>T4 direct injection</strong></td><td>Does this user message try to override instructions or leak the system prompt</td><td>in-the-wild jailbreak prompts, JailbreakBench, deepset injections, WildJailbreak</td><td>all subjects; Bedrock, Azure Prompt Shields, Model Armor as baselines</td></tr>
+      <tr><td><strong>T5 indirect injection</strong></td><td>Does this tool result or document carry instructions aimed at the agent</td><td>AgentDojo, InjecAgent, BIPIA, plus our own crafted tool outputs</td><td>all subjects; most managed services skip tool results, which the table will show</td></tr>
+      <tr><td><strong>T6 PII / secrets</strong></td><td>Which spans are personal or secret, and are they real or test fixtures</td><td>pii-masking-300k, Gretel PII, our trap set (order numbers, test keys)</td><td>all subjects with regex candidates; Bedrock, Azure, Model Armor as baselines; Presidio as floor</td></tr>
+      <tr><td><strong>T7 action safety</strong></td><td>Should this tool call run, given the task and recent user turns</td><td>AgentDojo tasks, ToolEmu, kill-the-god-agent scenarios, jev-guard style cases</td><td>all subjects; LLM classifier and a rules-only baseline; managed services mostly cannot play</td></tr>
+      <tr><td><strong>T8 policy adaptation</strong></td><td>Same rows, a custom category or an edited policy, no retraining</td><td>Banking77 routing shifts, denied-topic definitions, custom categories over T1 rows</td><td>all subjects by construction; LLM classifier; Bedrock denied topics as the only managed baseline</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>T1 to T3 let the anchor row and the OpenAI baseline be checked against Artificial Analysis and GuardBench. T4 to T8 are where decision models are supposed to be different.</p>
+
+  <h3>Decision-model metrics, on top of the guardrail metrics</h3>
+  <p>Because every subject takes the same questions, we can measure things a fixed-taxonomy system cannot even be asked. These are the metrics that make it a decision-model benchmark rather than a guard-model benchmark with extra rows.</p>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Metric</th><th>How it is measured</th><th>Why it matters</th></tr></thead>
+    <tbody>
+      <tr><td>Calibration (ECE, Brier)</td><td>Reliability diagram per task on test, after tuning on tune</td><td>The whole premise of "calibrated decisions"; Kev's own card reports Brier, so the field expects it</td></tr>
+      <tr><td>Fan-out invariance</td><td>Same row, same question, asked alone and inside a 15-question question set; report mean absolute drift</td><td>Vendors claim questions are independent; buyers pack question sets to save cost</td></tr>
+      <tr><td>Option-order sensitivity</td><td>Choice questions with options shuffled across 5 seeds; report variance of the argmax and of probabilities</td><td>JevBench observed it, nobody quantified it; small models are the suspects</td></tr>
+      <tr><td>Rephrase robustness</td><td>Three human paraphrases of each question set question; agreement across phrasings</td><td>A decision model is "as good as the question"; this measures how much</td></tr>
+      <tr><td>Criteria sensitivity</td><td>Same question with and without criteria text, with negative carve-outs on and off</td><td>Tests the community's folk wisdom about carve-outs with numbers</td></tr>
+      <tr><td>Counterfactual bias</td><td>T1 and T7 rows with names, dialects, or group markers swapped; report score deltas by group</td><td>Simon Willison's black-box critique, turned into a measurement</td></tr>
+      <tr><td>Policy-shift delta</td><td>T8: accuracy before and after a policy edit, no retraining, no new examples</td><td>The one capability no fixed-taxonomy system has</td></tr>
+      <tr><td>Cost and latency</td><td>$/1M evaluations from measured tokens and list price; p50 and p95 at concurrency 1 and 16, hosted and self-hosted both measured, never assumed</td><td>JevBench adjusts self-hosted latency by a formula; we measure it</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>One taxonomy</h3>
+  <p>Every source has its own categories. We map all of them onto the MLCommons AILuminate hazard taxonomy (12 hazards), plus three non-hazard labels the guardrail surface needs: <code>injection</code>, <code>pii</code>, <code>unsafe_action</code>. The mapping table is a versioned file and a design decision, not an afterthought. Where a vendor's category has no clean mapping (Bedrock's "Misconduct" spans four hazards), the mapping is many-to-one and reported per hazard.</p>
+
+  <h2>3. Building the dataset</h2>
+  <figure>
+<pre class="mermaid">
+flowchart LR
+    S1["public sets<br/>Aegis · WildGuardMix · ToxicChat<br/>BeaverTails · HarmBench · XSTest<br/>JBB · in-the-wild · WildJailbreak<br/>AgentDojo · InjecAgent · pii-300k"] --> N["normalise<br/>one record schema<br/>licence + source kept"]
+    S2["crafted sets<br/>indirect injection in tool outputs<br/>PII traps · action scenarios<br/>policy-shift pairs"] --> N
+    N --> M["map categories<br/>to AILuminate + 3"]
+    M --> D["dedup + decontaminate<br/>MinHash near-dup<br/>flag rows known in guard-model training"]
+    D --> L["label audit<br/>human re-check 5% per source<br/>drop 'Needs Caution' from test"]
+    L --> SP["stratified split<br/>tune 15% · test 85%<br/>by task × category × source"]
+    SP --> F["freeze<br/>sha256 · datasheet · HF dataset<br/>gated where licences require"]
+</pre>
+    <figcaption>Public rows are re-used under their licences; crafted rows are ours and open. The tune split exists so thresholds are never fit on test rows, and the contamination flag exists because Llama Guard and friends were trained on some of these sets.</figcaption>
+  </figure>
+
+  <div class="grid2">
+    <div class="panel"><h4>Target size</h4><p>About 30k rows: 25k test, 5k tune. Roughly 12k on T1 to T3, 6k on T4 and T5, 4k on T6, 2k on T7, and 1k paired rows on T8. Enough for per-category confidence intervals, small enough to run every system for under a few hundred dollars.</p></div>
+    <div class="panel"><h4>Labels</h4><p>Human labels only. Where a source used LLM labels (some WildGuardMix and BeaverTails slices), that is recorded in the datasheet and those rows are excluded from the headline, included in an appendix. This answers the one public critique of Jev's own numbers before it is raised.</p></div>
+    <div class="panel"><h4>Licences</h4><p>Aegis CC-BY-4.0, ToxicChat CC-BY-NC, BeaverTails CC-BY-NC, WildGuard ODC-BY with gating, XSTest CC-BY, JBB MIT, pii-300k open. Non-commercial rows are fine for a research benchmark and flagged for anyone reusing the set commercially.</p></div>
+    <div class="panel"><h4>Language</h4><p>English in v1. A small multilingual slice from Aegis (German, Spanish, Chinese) is held as a sanity check and reported separately, since Jev is English-first and Nemotron and Bedrock Standard tier claim broad coverage.</p></div>
+  </div>
+
+  <h2>4. Systems under test</h2>
+  <h3>Subjects: decision models</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>System</th><th>Base and size</th><th>Access</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag jev">Jev 1.13.0</span></td><td>proprietary</td><td>TypeSafe API, pinned version</td><td>the reference decision model; JevBench 74.4</td></tr>
+      <tr><td>Kev 0.8B, 4B, 9B</td><td>Qwen3.5, LoRA r16 + pointer head, Apache-2.0</td><td>local, mirrors /v1/systemone</td><td>card reports 0.852 acc, 0.237 Brier on held-out decisions</td></tr>
+      <tr><td>SemIf / OpenJev</td><td>Qwen3.5-4B</td><td>local</td><td>JevBench 73.1; publishes adapters, heads, and data</td></tr>
+      <tr><td>djev</td><td>diffusion-gemma (Maisa)</td><td>local</td><td>JevBench 73.0; a non-autoregressive take</td></tr>
+      <tr><td>Winnow-12B Q8</td><td>12B</td><td>local</td><td>JevBench 71.2</td></tr>
+      <tr><td>Next four by JevBench rank at freeze date</td><td>various, 0.5B to 35B</td><td>local or hosted</td><td>selection rule is pre-registered so we cannot cherry-pick</td></tr>
+      <tr><td>GPT-5.6 Luna, structured output</td><td>frontier LLM used as a decision model</td><td>API</td><td>JevBench includes it at 65.9; keeps the comparison honest about what "decision model" buys over a small LLM</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>Baselines: what a buyer uses today</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>System</th><th>Access</th><th>Tasks</th><th>Returns</th></tr></thead>
+    <tbody>
+      <tr><td>Amazon Bedrock Guardrails (InvokeGuardrailChecks, ApplyGuardrail)</td><td>AWS credentials</td><td>T1 T2 T4 T6 T8 (denied topics)</td><td>6-step severity; PII confidence and offsets</td></tr>
+      <tr><td>Google Model Armor</td><td>GCP API</td><td>T1 T2 T4 T5 T6</td><td>confidence levels; injection and jailbreak; DLP findings</td></tr>
+      <tr><td>Azure AI Content Safety + Prompt Shields</td><td>Azure API</td><td>T1 T2 T4 T5 (documents)</td><td>severity 0 to 6; attack boolean</td></tr>
+      <tr><td>OpenAI omni-moderation</td><td>API, free</td><td>T1 T2</td><td>category scores; the anchor to Artificial Analysis</td></tr>
+      <tr><td>GPT-5 mini as classifier</td><td>API, structured output, same category text</td><td>all tasks</td><td>label plus self-reported confidence</td></tr>
+      <tr><td>Regex + word lists; Presidio for PII</td><td>local</td><td>T4 T6</td><td>match; the deterministic floor</td></tr>
+      <tr><td>Anchor: one guard model (Llama Guard 4 or Qwen3Guard)</td><td>local</td><td>T1 T2 T3 only</td><td>lets our T1 to T3 numbers be checked against GuardBench and Artificial Analysis; not a subject</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="small">All subjects receive the identical question set per task. The question set text, criteria, and carve-outs are published verbatim and frozen before the full run. Baselines run at their documented defaults and, where they return a score, also at a threshold tuned on our tune split at 5% false-positive rate. Both numbers are published.</p>
+
+  <h2>5. Harness</h2>
+  <figure>
+<pre class="mermaid">
+flowchart TD
+    RM["run manifest<br/>dataset hash · system id · version<br/>config · date · pinned thresholds"] --> RUN
+    subgraph RUN["runner"]
+        direction LR
+        A["adapter.score(record) → {label: p}"] --> C["cache by (system, version, record id)"]
+        C --> R["raw response + timing receipt"]
+    end
+    RUN --> RES["results/{system}/{run}.parquet"]
+    RES --> AN["analysis<br/>thresholds from tune split<br/>metrics per task × category<br/>bootstrap CIs · ECE · cost"]
+    AN --> OUT["leaderboard site · paper · datasheet<br/>every receipt published"]
+    RES -. "rerun on model release" .-> RUN
+</pre>
+    <figcaption>Adapters are thin and stateless. Caching means a rerun after a bug fix costs nothing. Receipts, not summaries, are the published artefact, so a vendor can dispute a row rather than a number.</figcaption>
+  </figure>
+
+  <div class="grid2">
+    <div class="panel"><h4>Stack</h4><p>Python with uv, since every guard model and most SDKs are Python-first. pandas or polars for analysis, vLLM for open models, one adapter module per system, one Zod-equivalent (pydantic) schema for records and scores. The TypeScript question set from this repo ports to the Jev adapter in an afternoon.</p></div>
+    <div class="panel"><h4>Fairness rules, fixed before any run</h4><p>Same rows for every system. No system sees test labels. Thresholds from tune only. Category definitions given to LLM classifiers and Jev are the AILuminate text, verbatim, the same for both. Latency measured one request at a time from one region, then again at concurrency 16. Cost from list prices on the run date.</p></div>
+    <div class="panel"><h4>Pre-registration</h4><p>Tasks, metrics, thresholds policy, the taxonomy mapping, and the go/no-go for publishing are committed to the repo before the first full run. Changes after that are logged as amendments.</p></div>
+    <div class="panel"><h4>Reproducibility</h4><p>Dataset pinned by sha256 and published on Hugging Face. Open-model runs reproducible on one A100 or H100. Managed-service runs reproducible with credentials; their receipts are published so the numbers survive a vendor changing the model.</p></div>
+  </div>
+
+  <h2>6. What we expect to learn, stated as hypotheses</h2>
+  <ul>
+    <li><strong>H1.</strong> On T1 to T3, Jev and the best open decision models land within a few F1 points of the managed services and the anchor guard model. Decision models do not win on plain content safety, and the benchmark should say so plainly.</li>
+    <li><strong>H2.</strong> Calibration is where the class earns its name: ECE under 0.1 after tuning for Jev and the larger open models, worse for the sub-1B models, and much worse for LLM self-reported confidence and vendor severity buckets.</li>
+    <li><strong>H3.</strong> The open Jev-class models trail Jev by a small, size-dependent margin on accuracy but fail differently: order sensitivity and fan-out drift grow sharply below 4B. This is the finding a self-hosting buyer needs and nobody has published.</li>
+    <li><strong>H4.</strong> On T5, T7, and T8, managed services mostly cannot participate, and decision models beat the LLM classifier on cost by two orders of magnitude at similar accuracy. T8 policy-shift delta is small for decision models and undefined for the services.</li>
+    <li><strong>H5.</strong> Counterfactual bias is measurable and non-zero for every subject; the question is whether it is larger for decision models than for the LLM classifier. We do not have a prior, which is the point of measuring.</li>
+    <li><strong>H6.</strong> Rephrase and criteria sensitivity are large enough that a published question set is part of the result: two teams with different wording would rank the same models differently. If true, the benchmark's question set becomes a shared asset.</li>
+  </ul>
+  <p>If H2 and H4 fail, the honest conclusion is that "decision model" is a cost story, not a capability story. Pre-registration commits us to publishing that.</p>
+
+  <h2>7. Plan and gates</h2>
+  <figure>
+<pre class="mermaid">
+flowchart TD
+    W1["Weeks 1–2 · dataset v0<br/>schema · taxonomy map · ingest 12 public sets<br/>dedup · split · datasheet draft"] --> W3
+    W3["Weeks 3–4 · harness + first adapters<br/>System One adapter (Jev + Kev) · OpenAI · anchor guard model<br/>T1–T3 end to end · compare to Artificial Analysis and JevBench"] --> G1{"gate 1<br/>our T1–T3 numbers within ±3 F1 of<br/>published results for shared models"}
+    G1 -- "yes" --> W5
+    G1 -- "no" --> FIX["fix harness or mapping; re-run"] --> G1
+    W5["Weeks 5–7 · breadth<br/>Bedrock · Model Armor · Azure · GPT-5 mini<br/>remaining Jev-class models · robustness probes<br/>crafted sets for T5 T6 T7 T8 · counterfactual pairs"] --> W8
+    W8["Weeks 8–9 · full run<br/>all systems × all tasks · concurrency latency<br/>bootstrap CIs · calibration · cost"] --> G2{"gate 2<br/>pre-registered analysis complete;<br/>receipts published; label audit done"}
+    G2 --> W10["Weeks 10–12 · publish<br/>HF dataset + leaderboard site<br/>paper draft · vendor notice period 2 weeks<br/>open harness under Apache-2"]
+</pre>
+    <figcaption>Gate 1 is the credibility check: if we cannot reproduce Artificial Analysis and GuardBench on the models they share with us, nothing else we publish will be trusted. Gate 2 is the honesty check.</figcaption>
+  </figure>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Cost line</th><th>Estimate</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td>Managed services, full run</td><td class="num">$120 to $350</td><td>30k rows × 4 services; Bedrock about $0.25 per 1k text units across three checks, Azure and Model Armor similar, OpenAI free</td></tr>
+      <tr><td>Jev, full run with 15-question question sets</td><td class="num">under $5</td><td>30k rows × ~1.2k tokens at $0.042/M; reruns are effectively free</td></tr>
+      <tr><td>LLM-as-classifier arms</td><td class="num">$60 to $150</td><td>two small models, structured output</td></tr>
+      <tr><td>GPU for open decision models</td><td class="num">$100 to $250</td><td>about 40 GPU-hours on a rented H100 across 8 to 10 Jev-class models plus the anchor; robustness probes multiply calls by about 10 on subjects, which is cheap for these models</td></tr>
+      <tr><td>Human label audit</td><td class="num">$300 to $800</td><td>5% of test rows re-checked by two annotators, or done in-house</td></tr>
+      <tr><td>People</td><td class="num">1 engineer, 12 weeks</td><td>plus a second person for the label audit and paper in weeks 8 to 12</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2>8. Risks</h2>
+  <ul>
+    <li><strong>Contamination.</strong> Guard models trained on the public sets will look better than they are. Mitigation: the contamination flag per row, a "clean" subset of crafted and post-training-cutoff rows, and reporting both.</li>
+    <li><strong>Taxonomy mapping disputes.</strong> A vendor will argue their category was mapped unfairly. Mitigation: publish the map, offer a two-week notice period, accept mapping PRs with rerun.</li>
+    <li><strong>Terms of service.</strong> Some managed services forbid benchmarking in their terms. Mitigation: read the terms before signing up, and where publishing is barred, run privately and report "not publishable under vendor terms" as a row.</li>
+    <li><strong>Vendor drift.</strong> Bedrock updates its classifiers silently; Jev aliases move. Mitigation: pinned versions where possible, run dates on every number, receipts published.</li>
+    <li><strong>Licence limits on redistribution.</strong> CC-BY-NC and gated sets. Mitigation: publish the record ids and mapping, not the text, for restricted sources, with a script that rebuilds the set from the originals.</li>
+    <li><strong>Subject selection.</strong> Picking which open models to include is where bias creeps in. Mitigation: the rule is "Jev plus the top N on JevBench at the freeze date plus any model that mirrors the System One API and asks to be included", written down before the run.</li>
+    <li><strong>Overlap with JevBench.</strong> Benchmark Heaven may extend into guardrail tasks. Mitigation: talk to them before week 5; offer our task set as a JevBench track if they prefer, and keep our harness Apache-2 either way.</li>
+    <li><strong>Jev conflict of interest.</strong> We are also building on Jev. Mitigation: pre-registration, the Jev question set published verbatim, and an explicit prior (H1) that it will not win on content safety.</li>
+  </ul>
+
+  <h2>9. Decisions to make before week 1</h2>
+  <ol>
+    <li>Subject rule: Jev plus the top N open Jev-class models on JevBench at freeze. N = 8 proposed. Include GPT-5.6 Luna as a decision model, yes or no.</li>
+    <li>Baselines and credentials: Bedrock, Model Armor, Azure, OpenAI moderation; who funds the AWS, GCP, and Azure accounts.</li>
+    <li>Scope of v1: all eight tasks and all eight decision-model metrics, or T1 to T4 plus T8 with calibration and cost first, robustness and bias probes in a second release.</li>
+    <li>Whether to include the counterfactual bias probe in v1. It is the most likely to draw attention and the most likely to be disputed.</li>
+    <li>Relationship with Benchmark Heaven: independent, or offer the guardrail tasks as a JevBench track.</li>
+    <li>GPU: rented H100 hours or a local box.</li>
+    <li>Publishing: Hugging Face dataset plus a raxIT Labs leaderboard; venue submission or not.</li>
+    <li>Name and repo. Working title "GBDM, Guardrail Benchmark for Decision Models". Python with uv in a new repository.</li>
+  </ol>
+
+  <p class="small">Sources: JevBench (benchmarkheaven.com/jev-models, v1.3.0); Kev (github.com/jaredpalmer/kev); Simon Willison, "Jev introduces a new shape of LLM" (21 Sep 2026); GuardBench (github.com/AmenRa/GuardBench, EMNLP 2024); Artificial Analysis guardrail safety benchmark (2026); CircleGuardBench (github.com/whitecircle/circle-guard-bench); arXiv 2605.28830 (2026); AWS, Google, Azure, OpenAI, Lakera, TypeSafe documentation; docs 09 to 12 in this repository.</p>
+</main>

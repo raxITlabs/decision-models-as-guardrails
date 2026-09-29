@@ -1,0 +1,268 @@
+<title>Gold Rails System Design</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root { --bg:#f4f6f8; --panel:#fff; --ink:#161a20; --muted:#5d6673; --line:#d7dde4; --accent:#1f6f5f; --accent-bg:#e3f1ec; --warn:#9a5b00; --warn-bg:#fbeed6; --code-bg:#eceff3; --jev:#1d4ed8; --jev-bg:#e6edfc; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#0e1116; --panel:#161b22; --ink:#e7eaee; --muted:#98a2b0; --line:#2a323d; --accent:#43c2a8; --accent-bg:#123229; --warn:#f0b35a; --warn-bg:#3a2a0f; --code-bg:#0f141a; --jev:#86a8ff; --jev-bg:#172343; } }
+  :root[data-theme="dark"] { --bg:#0e1116; --panel:#161b22; --ink:#e7eaee; --muted:#98a2b0; --line:#2a323d; --accent:#43c2a8; --accent-bg:#123229; --warn:#f0b35a; --warn-bg:#3a2a0f; --code-bg:#0f141a; --jev:#86a8ff; --jev-bg:#172343; }
+  body { background:var(--bg); color:var(--ink); font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:16px; line-height:1.55; padding-inline:16px; padding-block:36px 72px; }
+  main { max-width:84ch; margin-inline:auto; }
+  h1 { font-size:2rem; font-weight:600; line-height:1.12; text-wrap:balance; margin:0 0 .4rem; }
+  .meta { color:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:.8rem; margin:0 0 1.5rem; }
+  h2 { font-size:1.3rem; font-weight:600; margin:2.8rem 0 .6rem; }
+  p { margin:0 0 1rem; max-width:72ch; } ul { padding-left:1.2rem; margin:0 0 1rem; max-width:72ch; } li { margin-bottom:.35rem; }
+  code { font-family:"IBM Plex Mono",monospace; font-size:.86rem; background:var(--code-bg); padding:.08em .35em; border-radius:3px; }
+  figure { margin:1rem 0 1.6rem; } figcaption { color:var(--muted); font-size:.9rem; margin-top:.5rem; max-width:72ch; }
+  pre.mermaid { background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:12px; overflow-x:auto; margin:0; }
+  .tag { display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:.72rem; padding:.12em .5em; border-radius:3px; font-weight:500; }
+  .tag.built { color:var(--accent); background:var(--accent-bg);} .tag.planned { color:var(--warn); background:var(--warn-bg);}
+  table { width:100%; border-collapse:collapse; font-size:.9rem; margin:0 0 1.2rem; } th,td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; } th { font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); font-weight:600; }
+</style>
+
+<main>
+  <h1>Gold Rails, as UML</h1>
+  <p class="meta">22 September 2026 · <span class="tag built">built</span> means it runs today in the repo · <span class="tag planned">planned</span> means designed in docs 14 and 15, not yet code</p>
+  <p>Four views. The component view shows what talks to what. The class view shows the data and the client as they exist in <code>goldrails/</code>. The sequence view shows one row being judged by one decision model. The activity view shows how a sample is built and frozen.</p>
+
+  <h2>1. Component diagram</h2>
+  <figure>
+<pre class="mermaid">
+flowchart LR
+  subgraph SRC["Public sources (Hugging Face, GitHub)"]
+    S1["Aegis 2.0"]:::ext
+    S2["AILuminate demo"]:::ext
+    S3["OR-Bench · JBB · deepset · gandalf · OpenAI-mod"]:::ext
+  end
+  subgraph PKG["goldrails package · built"]
+    L["sources/*<br/>one loader per source"]:::built
+    R["records.py<br/>Record · validate · hash"]:::built
+    T["taxonomy.py<br/>AILuminate ↔ Bedrock map"]:::built
+    B["build.py<br/>sample · dedup · split · manifest"]:::built
+    Q["question_sets.py<br/>load versioned JSON"]:::built
+    C["systemone.py<br/>SystemOneClient (SDK, no retries)"]:::built
+  end
+  subgraph DATA["Artifacts in repo"]
+    D["data/pilot/*.jsonl<br/>manifest.json"]:::built
+    QS["question_sets/v1/*.json"]:::built
+    RES["results/*.parquet<br/>summary.json"]:::planned
+  end
+  subgraph SYS["Systems under test"]
+    JEV["Jev 1.13.0<br/>api.typesafe.ai"]:::jev
+    KEV["Kev 0.8B / 4B<br/>local /v1/systemone"]:::jev
+    BR["Bedrock Guardrails<br/>InvokeGuardrailChecks"]:::planned
+    LLM["GPT-5 mini classifier<br/>OpenAI-compatible"]:::planned
+  end
+  NB["notebooks/01–03<br/>reference runs"]:::built
+  H["bench/ harness<br/>ledger · runner · scoring"]:::planned
+  LP["landing page<br/>reads summary.json"]:::planned
+  SRC --> L --> R --> B --> D
+  T --> L
+  QS --> Q
+  D --> NB
+  Q --> NB
+  NB --> C
+  C -->|"POST /v1/systemone"| JEV
+  C -->|"POST /v1/systemone"| KEV
+  D --> H
+  Q --> H
+  H --> C
+  H -->|"boto3"| BR
+  H -->|"JSON schema"| LLM
+  H --> RES --> LP
+  classDef built stroke:#1f6f5f,stroke-width:2px;
+  classDef planned stroke:#9a5b00,stroke-dasharray:4 3;
+  classDef jev stroke:#1d4ed8,stroke-width:2px;
+  classDef ext stroke:#999;
+</pre>
+    <figcaption>Solid green is running code. Dashed amber is the harness and landing page from doc 14, which replace the notebooks once they are boring. Every decision model is reached through one client; services get their own thin adapters.</figcaption>
+  </figure>
+
+  <h2>2. Class diagram, the record and the client</h2>
+  <figure>
+<pre class="mermaid">
+classDiagram
+  class Record {
+    +str id
+    +str feature  «F1..F8»
+    +str subtask
+    +State state
+    +Category category
+    +list labels
+    +Any expected
+    +dict expected_distribution
+    +str split  «tune|test»
+    +str visibility  «public|heldout»
+    +str group
+    +dict attribute
+    +Provenance provenance
+    +validate()
+    +to_json()
+    +from_dict(d)$
+  }
+  class State {
+    +str role  «user|assistant|tool|system»
+    +str text
+    +list~Turn~ context
+    +dict tool_call
+    +str source
+    +str query
+  }
+  class Category {
+    +str ailuminate
+    +str bedrock
+    +str source_label
+  }
+  class Provenance {
+    +str source
+    +str source_id
+    +str licence
+    +str label_basis  «human|deterministic|synthetic_reviewed|llm»
+    +str imported_at
+    +list contamination
+    +str exclude_reason
+  }
+  class QuestionSet {
+    +str name
+    +str version
+    +str feature
+    +dict questions  «id → Noul|Score|Choice spec»
+  }
+  class SystemOneClient {
+    +str system
+    +str model
+    +TypeSafeClient client  «retry = 0»
+    +ask(state, questions) SystemOneCall
+  }
+  class SystemOneCall {
+    +str system
+    +bool ok
+    +str model
+    +dict answers
+    +dict usage
+    +float latency_s
+    +str error
+    +Any raw
+  }
+  class Source {
+    <<module>>
+    +NAME
+    +LICENCE
+    +load(limit) list~Record~
+  }
+  class Builder {
+    <<module build.py>>
+    +build(per_cell, seed) list~Record~
+    +write(records, out_dir) manifest
+    +dedup(records)
+  }
+  Record *-- State
+  Record *-- Category
+  Record *-- Provenance
+  Source ..> Record : creates
+  Builder ..> Source : loads
+  Builder ..> Record : samples, splits, hashes
+  SystemOneClient ..> QuestionSet : sends questions from
+  SystemOneClient ..> Record : sends state_of(record)
+  SystemOneClient --> SystemOneCall : returns
+</pre>
+    <figcaption>The record never contains a question and never contains its own answer inside <code>state</code>; <code>validate()</code> refuses both. The question set is a separate versioned file so the same rows can be re-asked. The client returns the raw answer and keeps no policy.</figcaption>
+  </figure>
+
+  <h2>3. Sequence diagram, one row through one decision model</h2>
+  <figure>
+<pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant NB as Notebook / Harness
+  participant QS as question_sets.load()
+  participant C as SystemOneClient
+  participant SDK as typesafe_sdk (retry=0)
+  participant M as Decision model<br/>Jev or Kev
+  participant SC as scoring (in code)
+  NB->>QS: load("v1", "f1-bedrock5")
+  QS-->>NB: {questions}
+  NB->>C: ask(state_of(record), questions)
+  Note over C: state = {role, text, context}<br/>never the label
+  C->>SDK: system_one(state, questions, model)
+  SDK->>M: POST /v1/systemone
+  M-->>SDK: {model, answers{id: noul|score}, usage}
+  SDK-->>C: SystemOneResponse
+  C-->>NB: SystemOneCall{ok, answers, latency_s, usage, raw}
+  alt planned harness
+    NB->>SC: threshold(answers, tuned_on=tune split)
+    SC-->>NB: pass | review | block
+    NB->>NB: write receipt (raw + timing) before next row
+  end
+</pre>
+    <figcaption>One HTTP call carries every question in the set. A failure returns <code>ok=false</code> with the error and is never retried inside the client. Thresholds live outside the model and are fitted on the tune split only.</figcaption>
+  </figure>
+
+  <h2>4. Activity diagram, building and freezing a sample</h2>
+  <figure>
+<pre class="mermaid">
+flowchart TD
+  A([start: build --per-cell N --seed S]) --> B["for each source in PILOT_PLAN<br/>load() → records"]
+  B --> C{"exclude_reason set?"}
+  C -- yes --> X["drop from pool<br/>(e.g. Needs Caution)"]
+  C -- no --> D["dedup on normalised text"]
+  D --> E["group by (feature, subtask, expected)"]
+  E --> F["shuffle with seed · take N per cell"]
+  F --> G["stratified 15% → split = tune"]
+  G --> H["validate() every record"]
+  H --> I["write {feature}.{split}.jsonl"]
+  I --> J["dataset_hash() per file · manifest.json"]
+  J --> K([frozen sample])
+  K -.-> L["planned: contamination flags,<br/>crafted rows, 3-annotator audit,<br/>heldout slice, HF push"]:::planned
+  classDef planned stroke:#9a5b00,stroke-dasharray:4 3;
+</pre>
+    <figcaption>What runs today ends at the manifest. The planned steps are the freshness and audit work from the golden-dataset plan; they slot in between dedup and split without changing the record shape.</figcaption>
+  </figure>
+
+  <h2>5. Planned harness, deployment view</h2>
+  <figure>
+<pre class="mermaid">
+flowchart LR
+  subgraph LAPTOP["Contributor machine (any, with uv)"]
+    RUN["bench runner<br/>serial · ledger · fsync"]
+    KEVS["Kev server<br/>vendor/kev, port 8009"]
+    RAW[("raw receipts<br/>outside repo")]
+  end
+  subgraph CLOUD["Hosted APIs"]
+    JEV["TypeSafe Jev"]
+    AWS["AWS Bedrock Guardrails"]
+    OAI["OpenAI / OpenRouter"]
+  end
+  subgraph REPO["git: raxITlabs/gold-rails"]
+    DS["data/ + question_sets/ + manifest"]
+    RESJ["results/summary.json<br/>results/systems/*.json"]
+  end
+  HF[("Hugging Face<br/>raxITLabs/gold-rails")]
+  SITE["raxit.ai landing page section"]
+  DS --> RUN
+  RUN --> KEVS
+  RUN --> JEV
+  RUN --> AWS
+  RUN --> OAI
+  RUN --> RAW
+  RUN --> RESJ
+  DS --> HF
+  RESJ --> SITE
+</pre>
+    <figcaption>No separate site and no bucket. Results are committed as JSON and the landing page reads them at build time. Credentials come from <code>.env</code>; raw receipts with full response bodies stay outside the repository.</figcaption>
+  </figure>
+
+  <h2>Where each piece lives</h2>
+  <table>
+    <thead><tr><th>Element</th><th>Path</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Record, State, Category, Provenance, hash</td><td><code>goldrails/records.py</code></td><td><span class="tag built">built</span></td></tr>
+      <tr><td>Taxonomy maps</td><td><code>goldrails/taxonomy.py</code></td><td><span class="tag built">built</span></td></tr>
+      <tr><td>Seven loaders</td><td><code>goldrails/sources/</code></td><td><span class="tag built">built</span></td></tr>
+      <tr><td>Builder and manifest</td><td><code>goldrails/build.py</code></td><td><span class="tag built">built</span></td></tr>
+      <tr><td>Question sets v1</td><td><code>question_sets/v1/</code>, <code>goldrails/question_sets.py</code></td><td><span class="tag built">built</span></td></tr>
+      <tr><td>System One client</td><td><code>goldrails/systemone.py</code></td><td><span class="tag built">built</span></td></tr>
+      <tr><td>Reference runs</td><td><code>notebooks/01</code> to <code>03</code></td><td><span class="tag built">built</span></td></tr>
+      <tr><td>Bedrock, LLM, regex adapters; ledger runner; scoring; summary</td><td><code>bench/</code></td><td><span class="tag planned">planned</span></td></tr>
+      <tr><td>Landing page section</td><td>raxit.ai repo</td><td><span class="tag planned">planned</span></td></tr>
+    </tbody>
+  </table>
+</main>

@@ -172,3 +172,13 @@ The project owner replied in chat to the sign-off packet (`docs/release/signoff-
 interval, cost, paired difference and overall value equals `leaderboard-v1.3.json`, which stays as history under the
 draft contract and approval 4. The evaluator still prints the two implementations-file lines; the page lists them as
 accepted, with the record and basis.
+
+## Public dataset v0.0.1 revised on Hugging Face (28 September 2026)
+
+With the owner's approval, `raxITLabs/goldrails` gained revision `14e7557abf7d79c3acbb4ed44af9b56cb8a45690` on
+`main`, built from internal release v1.3 (`dataset/release/v1.3/publication.json`). The public version stays v0.0.1.
+Tag `v0.0.1` stays on the first upload, `3e3ed7f3bbed83b6d12316d2b5b396acdfc40873` (internal release v1.2), so results
+computed on it remain traceable. The revision adds 500 Civil Comments profanity rows and removes 258 lexicon-selected
+ones; the other 8,307 rows are identical by canonical row hash. All 29 files match staging byte for byte and 8,807 rows
+load. The code is the private GitHub repository at `c468c82204cf3acb20821cf41df17e0d4ead9e78`, one commit on top of
+`26b578fe` (tag `v0.0.1`, not moved).

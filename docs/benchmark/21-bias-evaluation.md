@@ -4,7 +4,7 @@
 |---|---|
 | Written | 23 September 2026 |
 | Status | Draft. Covers plan steps B0 (source audit) and B1 (loaders and schema). Nothing here has been run against a model, and nothing here is a result. |
-| Plan | [Gold Rails completion plan](reports/gold-rails-completion-plan.html), "Restore bias to the evaluation" |
+| Plan | [Gold Rails completion plan](../reports/gold-rails-completion-plan.html), "Restore bias to the evaluation" |
 | Contract | [docs/19](19-evaluation-contract-v1.md), section "Bias" |
 | Code | `dataset/goldrails_dataset/sources/{civil_comments_identity,holistic_bias,discrim_eval,bbq}.py`, `dataset/goldrails_dataset/bias_pairs.py`, tests in `dataset/tests/test_bias_sources.py` |
 

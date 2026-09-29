@@ -1,7 +1,7 @@
 {
  "version": "v1.3",
  "full_text": true,
- "code_commit": "35bbd248b8d2f7fe76e53b2c8d5c1cf64f48833e",
+ "code_commit": "1eeecc23ec06f31cc32728c6d28e86a3bfa62b38",
  "files": [
   {
    "config": "content",
@@ -112,16 +112,14 @@
  "rows": 8807,
  "public_version": "v0.0.1",
  "revises": "3e3ed7f3bbed83b6d12316d2b5b396acdfc40873",
- "code_ref": "main",
+ "code_ref": "c468c82204cf3acb20821cf41df17e0d4ead9e78",
  "verification": {
   "files_matching_release_manifest": "15 of 15",
   "rows_matching_their_canonical_hash": "8807 of 8807",
   "benchmark_inputs_reproduced": "19735 of 19735 ledger records",
   "ledger_records_for_rows_not_in_this_release": 2950
  },
- "pending": [
-  "code_ref 'main' is not a commit: set --code-ref to the code export's commit before uploading"
- ],
+ "pending": [],
  "withheld": {},
  "problems": []
 }

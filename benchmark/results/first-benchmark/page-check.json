@@ -1,5 +1,5 @@
 {
- "checked_at_commit": "4836b33",
+ "checked_at_commit": "443d588",
  "results": "site/leaderboard/results.json",
  "frozen": "benchmark/results/first-benchmark/leaderboard-final.json",
  "passed": 27,
@@ -38,7 +38,7 @@
   {
    "check": "public version is v0.0.1 on the page, with no later public version label",
    "ok": true,
-   "detail": "The public dataset is Gold Rails v0.0.1 on Hugging Face (revision 3e3ed7f3bbed, built from internal release v1.2). These results use internal release v1.3, which differs only in the profanity rows; it is a proposed revision of v0.0.1 and is not uploaded."
+   "detail": "The public dataset is Gold Rails v0.0.1, Hugging Face revision 14e7557abf7d (2026-09-28, internal release v1.3), the revision these results use. The first upload of v0.0.1 stays at revision 3e3ed7f3bbed (tag v0.0.1)."
   },
   {
    "check": "overall matches the frozen overall block (score, interval, cost, categories, composition)",
@@ -123,7 +123,7 @@
   {
    "check": "every page correction's commit is in CORRECTIONS.md",
    "ok": true,
-   "detail": "12 corrections"
+   "detail": "13 corrections"
   },
   {
    "check": "every commit named in CORRECTIONS.md exists",

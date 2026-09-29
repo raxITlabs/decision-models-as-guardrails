@@ -1,5 +1,5 @@
 {
- "private_commit": "1eeecc23ec06f31cc32728c6d28e86a3bfa62b38",
+ "private_commit": "2b44edaca94ef8f54ee1c393879065d4bf64dd53",
  "tag": "v0.0.1",
  "public_url": "https://github.com/raxITlabs/goldrails",
  "files": [
@@ -13,8 +13,8 @@
   },
   {
    "path": ".gitignore",
-   "private_sha256": "84cab047ebf5b7efe918c997436c7596ed89b8642b9303a679e592125d77626c",
-   "public_sha256": "84cab047ebf5b7efe918c997436c7596ed89b8642b9303a679e592125d77626c",
+   "private_sha256": "95033208abd76b33f3541ab60745711237b95675da2dce26d9321b867b113700",
+   "public_sha256": "95033208abd76b33f3541ab60745711237b95675da2dce26d9321b867b113700",
    "redactions": {}
   },
   {
@@ -24,9 +24,21 @@
    "redactions": {}
   },
   {
+   "path": "PRODUCT.md",
+   "private_sha256": "661dbc06e9bdea544efb9407617398af49aaafcc26525eb29a935ae89b587342",
+   "public_sha256": "661dbc06e9bdea544efb9407617398af49aaafcc26525eb29a935ae89b587342",
+   "redactions": {}
+  },
+  {
    "path": "README.md",
-   "private_sha256": "3e6f110c29bfd207c104e1d3d76e4040e5971b706a1426979b4aa25143dc2c27",
-   "public_sha256": "3e6f110c29bfd207c104e1d3d76e4040e5971b706a1426979b4aa25143dc2c27",
+   "private_sha256": "1e6ffff359629fda4dd5b7bedef823e01a271044ca87ccfb087e641c3cd1edcc",
+   "public_sha256": "1e6ffff359629fda4dd5b7bedef823e01a271044ca87ccfb087e641c3cd1edcc",
+   "redactions": {}
+  },
+  {
+   "path": "VISION.md",
+   "private_sha256": "d1a42b806d2af98ab0aa74eca743f241f5bf679622fcd0a50afeb67b892a620c",
+   "public_sha256": "d1a42b806d2af98ab0aa74eca743f241f5bf679622fcd0a50afeb67b892a620c",
    "redactions": {}
   },
   {
@@ -253,8 +265,8 @@
   },
   {
    "path": "benchmark/results/first-benchmark/CORRECTIONS.md",
-   "private_sha256": "bf9ac561409e5d0a84e5205dd426295feb981c6af0c55d4666b842665406748c",
-   "public_sha256": "bf9ac561409e5d0a84e5205dd426295feb981c6af0c55d4666b842665406748c",
+   "private_sha256": "0806cb2a122288cf841db1a760daa4f64a872fb14e8cd6114f51057d4628c336",
+   "public_sha256": "0806cb2a122288cf841db1a760daa4f64a872fb14e8cd6114f51057d4628c336",
    "redactions": {}
   },
   {
@@ -432,8 +444,8 @@
   },
   {
    "path": "benchmark/results/first-benchmark/page-check.json",
-   "private_sha256": "078d20c850c64088e692208d1e385090f9741fbd8d803f2937a4c31575593075",
-   "public_sha256": "078d20c850c64088e692208d1e385090f9741fbd8d803f2937a4c31575593075",
+   "private_sha256": "ca3f713ebe2527fc5349f8c101c08ee76b8e9091f0a28e9577757dbebb41825e",
+   "public_sha256": "ca3f713ebe2527fc5349f8c101c08ee76b8e9091f0a28e9577757dbebb41825e",
    "redactions": {}
   },
   {
@@ -809,8 +821,8 @@
   },
   {
    "path": "benchmark/runs/site_results.py",
-   "private_sha256": "40f22e6de96bdf458879e8f1e47f2e8f76e2ce9a76fb062379d9bf1cf219e93c",
-   "public_sha256": "40f22e6de96bdf458879e8f1e47f2e8f76e2ce9a76fb062379d9bf1cf219e93c",
+   "private_sha256": "1882eb398e7b5137f1eebd9f19b47e11ead3709536b9cf86370167258b177ea0",
+   "public_sha256": "1882eb398e7b5137f1eebd9f19b47e11ead3709536b9cf86370167258b177ea0",
    "redactions": {}
   },
   {
@@ -1493,8 +1505,8 @@
   },
   {
    "path": "dataset/goldrails_dataset/audit.py",
-   "private_sha256": "1fbcfe87c24bb6655a073353ae46ee254be836edb626aeacaca9c5b6b66f9087",
-   "public_sha256": "1fbcfe87c24bb6655a073353ae46ee254be836edb626aeacaca9c5b6b66f9087",
+   "private_sha256": "c9e68f634647045f01be723f3e2446b9259d0b208b7857b0fcf5514394cd33c3",
+   "public_sha256": "c9e68f634647045f01be723f3e2446b9259d0b208b7857b0fcf5514394cd33c3",
    "redactions": {}
   },
   {
@@ -1511,8 +1523,8 @@
   },
   {
    "path": "dataset/goldrails_dataset/packet.py",
-   "private_sha256": "f1f15b709dc098de33c000c4757be5e88e147f44af01c8a0608fe8f81427e1e3",
-   "public_sha256": "f1f15b709dc098de33c000c4757be5e88e147f44af01c8a0608fe8f81427e1e3",
+   "private_sha256": "dcb14549e0963b0aff900e371b0f45b56d55f8c90b5d0918edf4041b6192d324",
+   "public_sha256": "dcb14549e0963b0aff900e371b0f45b56d55f8c90b5d0918edf4041b6192d324",
    "redactions": {}
   },
   {
@@ -1805,8 +1817,8 @@
   },
   {
    "path": "dataset/publish/v1.3-full/CHANGELOG.md",
-   "private_sha256": "88b6cde945a41d28e219278afdcd930a57121b5d792aff3b5d1a14633e4899d1",
-   "public_sha256": "88b6cde945a41d28e219278afdcd930a57121b5d792aff3b5d1a14633e4899d1",
+   "private_sha256": "5dd5203bc4ba50ab77503783cd569203ed9b331922df8cab1149c01b1ba4ddaa",
+   "public_sha256": "5dd5203bc4ba50ab77503783cd569203ed9b331922df8cab1149c01b1ba4ddaa",
    "redactions": {}
   },
   {
@@ -1829,14 +1841,14 @@
   },
   {
    "path": "dataset/publish/v1.3-full/README.md",
-   "private_sha256": "7b31707b3b5a1bbc87c2eab5b931389d7edc73b0723eee7ee23a3df6301d0623",
-   "public_sha256": "7b31707b3b5a1bbc87c2eab5b931389d7edc73b0723eee7ee23a3df6301d0623",
+   "private_sha256": "9bb76f07d34b5314140c98d490a19b35fe889835784b00b29437d95abb383d5d",
+   "public_sha256": "9bb76f07d34b5314140c98d490a19b35fe889835784b00b29437d95abb383d5d",
    "redactions": {}
   },
   {
    "path": "dataset/publish/v1.3-full/RECONSTRUCT.md",
-   "private_sha256": "dfbcfb25cc5224000bfcbf03ad76847a7dd31b01b1a55ae26ece2492907ef416",
-   "public_sha256": "dfbcfb25cc5224000bfcbf03ad76847a7dd31b01b1a55ae26ece2492907ef416",
+   "private_sha256": "0a61b96f0757b50d4356913b39a2be8d6e569976411ef03e26d1c1a4dfa8282a",
+   "public_sha256": "0a61b96f0757b50d4356913b39a2be8d6e569976411ef03e26d1c1a4dfa8282a",
    "redactions": {}
   },
   {
@@ -1883,8 +1895,8 @@
   },
   {
    "path": "dataset/publish/v1.3-full/staging-report.json",
-   "private_sha256": "974f3dd2882180ff2b2b5d602b4f89515b10d0db58ccb5850a915de03433a99c",
-   "public_sha256": "974f3dd2882180ff2b2b5d602b4f89515b10d0db58ccb5850a915de03433a99c",
+   "private_sha256": "54335a6c888c7f65fa51290d88a7097b1d2e27c454532bb1f1bae577925f137c",
+   "public_sha256": "54335a6c888c7f65fa51290d88a7097b1d2e27c454532bb1f1bae577925f137c",
    "redactions": {}
   },
   {
@@ -1961,8 +1973,8 @@
   },
   {
    "path": "dataset/release/v1.2/publication.json",
-   "private_sha256": "75586be0ae8c4df484fc811e23ac73c27ecb146c6c275d87c52ac307ef24ab0a",
-   "public_sha256": "75586be0ae8c4df484fc811e23ac73c27ecb146c6c275d87c52ac307ef24ab0a",
+   "private_sha256": "af03027b9d5419314e8c1e7e0d8c1cd2a399c403700f9003f0e90ac0fdcd5cf4",
+   "public_sha256": "af03027b9d5419314e8c1e7e0d8c1cd2a399c403700f9003f0e90ac0fdcd5cf4",
    "redactions": {}
   },
   {
@@ -2001,6 +2013,12 @@
    "path": "dataset/release/v1.3/owner-review-confirmation.json",
    "private_sha256": "1243398d1769f0aa020a49c389f71fb177c0f1d03b84a66f709a5455ef222154",
    "public_sha256": "1243398d1769f0aa020a49c389f71fb177c0f1d03b84a66f709a5455ef222154",
+   "redactions": {}
+  },
+  {
+   "path": "dataset/release/v1.3/publication.json",
+   "private_sha256": "6428a35a9ac6c5aa0f3b25dd74af06b2abff5c5ae89af20e756317c7ec38e2c3",
+   "public_sha256": "6428a35a9ac6c5aa0f3b25dd74af06b2abff5c5ae89af20e756317c7ec38e2c3",
    "redactions": {}
   },
   {
@@ -2094,69 +2112,507 @@
    "redactions": {}
   },
   {
-   "path": "docs/14-gold-rails-v1-spec.md",
+   "path": "docs/09-bedrock-guardrails-feature-inventory.md",
+   "private_sha256": "b0184adecff519ce6522a9166f6dfa9216d8da7a7a40bdf156056ec59f22484a",
+   "public_sha256": "b0184adecff519ce6522a9166f6dfa9216d8da7a7a40bdf156056ec59f22484a",
+   "redactions": {}
+  },
+  {
+   "path": "docs/17-guardrail-policy-v0.md",
+   "private_sha256": "e2bc6519f04c999cfae54428366892d9b7501288cb59ce851c63dd5189ae16ae",
+   "public_sha256": "e2bc6519f04c999cfae54428366892d9b7501288cb59ce851c63dd5189ae16ae",
+   "redactions": {}
+  },
+  {
+   "path": "docs/19-evaluation-contract-v1.md",
+   "private_sha256": "1647b5b8523f5c72e9f5bed07278798c87df7bfbfd192f80f4b50ec78ce261f1",
+   "public_sha256": "1647b5b8523f5c72e9f5bed07278798c87df7bfbfd192f80f4b50ec78ce261f1",
+   "redactions": {}
+  },
+  {
+   "path": "docs/20-source-audit.md",
+   "private_sha256": "9f105f4f2eb8148cc0e8a9a33b2302520f521bf7018490cc47bb1db01f54a534",
+   "public_sha256": "9f105f4f2eb8148cc0e8a9a33b2302520f521bf7018490cc47bb1db01f54a534",
+   "redactions": {}
+  },
+  {
+   "path": "docs/23-release-runbook.md",
+   "private_sha256": "4af79c6c2b219ef15cb6cd35d6ceee08dcb943e3e999bd02672103dfec42af1b",
+   "public_sha256": "4af79c6c2b219ef15cb6cd35d6ceee08dcb943e3e999bd02672103dfec42af1b",
+   "redactions": {}
+  },
+  {
+   "path": "docs/README.md",
+   "private_sha256": "76809c951a8371875bef24c26492e73ac950aa324276c918ef4f7e34fe56f785",
+   "public_sha256": "76809c951a8371875bef24c26492e73ac950aa324276c918ef4f7e34fe56f785",
+   "redactions": {}
+  },
+  {
+   "path": "docs/archive/2026-09-28-bedrock-feature-map/README.md",
+   "private_sha256": "2e16dc277c1ceba0ca101768d445b5017ea80eed69da25dccdb258e1aafc68b3",
+   "public_sha256": "2e16dc277c1ceba0ca101768d445b5017ea80eed69da25dccdb258e1aafc68b3",
+   "redactions": {}
+  },
+  {
+   "path": "docs/archive/2026-09-28-bedrock-feature-map/bedrock-feature-map.html",
+   "private_sha256": "50c717291d285e60aac3fea27382789ab572aaf5ec9d42d47e9e485fdeaeff33",
+   "public_sha256": "50c717291d285e60aac3fea27382789ab572aaf5ec9d42d47e9e485fdeaeff33",
+   "redactions": {}
+  },
+  {
+   "path": "docs/benchmark/14-gold-rails-v1-spec.md",
    "private_sha256": "61c4451459f666dcf5e11703df3dc3e50c597ec4a3a9ec338f023a40246eac4c",
    "public_sha256": "61c4451459f666dcf5e11703df3dc3e50c597ec4a3a9ec338f023a40246eac4c",
    "redactions": {}
   },
   {
-   "path": "docs/16-evaluation-contract.md",
+   "path": "docs/benchmark/16-evaluation-contract.md",
    "private_sha256": "b2202f559be97a83fd17c077b06a14bd38a37334f0100be7c4fcd99198205c95",
    "public_sha256": "b2202f559be97a83fd17c077b06a14bd38a37334f0100be7c4fcd99198205c95",
    "redactions": {}
   },
   {
-   "path": "docs/17-guardrail-policy-v0.md",
+   "path": "docs/benchmark/17-guardrail-policy-v0.md",
    "private_sha256": "0ca51e0711c423c61541f35f5460427a83bc971cb107dfef91a3a32c28c3a980",
    "public_sha256": "0ca51e0711c423c61541f35f5460427a83bc971cb107dfef91a3a32c28c3a980",
    "redactions": {}
   },
   {
-   "path": "docs/18-benchmark-structure.md",
+   "path": "docs/benchmark/18-benchmark-structure.md",
    "private_sha256": "4d3dd14243dbd0b3a05ccd22b6a81dc77ce342c5ac49a21401ed4836c53a8d8b",
    "public_sha256": "4d3dd14243dbd0b3a05ccd22b6a81dc77ce342c5ac49a21401ed4836c53a8d8b",
    "redactions": {}
   },
   {
-   "path": "docs/19-evaluation-contract-v1.md",
-   "private_sha256": "6868fc66b44200bd6c437926ca042f6a9582e4f8d31c02db806862d916d6c55f",
-   "public_sha256": "6868fc66b44200bd6c437926ca042f6a9582e4f8d31c02db806862d916d6c55f",
+   "path": "docs/benchmark/19-evaluation-contract-v1.md",
+   "private_sha256": "7fb664b894bcd3e5ebe0b9b28e2636935639fe05e46a6d2e8fed3f67a456fcd9",
+   "public_sha256": "7fb664b894bcd3e5ebe0b9b28e2636935639fe05e46a6d2e8fed3f67a456fcd9",
    "redactions": {}
   },
   {
-   "path": "docs/20-source-audit.md",
+   "path": "docs/benchmark/20-source-audit.md",
    "private_sha256": "5dc922b6ca6a0e4dda111ac1dabcb348c5985e4abb69f9f5af7375ba00974c08",
    "public_sha256": "5dc922b6ca6a0e4dda111ac1dabcb348c5985e4abb69f9f5af7375ba00974c08",
    "redactions": {}
   },
   {
-   "path": "docs/21-bias-evaluation.md",
-   "private_sha256": "9de0a05301114de2df64e51ad2b8106dce9517516a78a0e194526a08f2eb416f",
-   "public_sha256": "9de0a05301114de2df64e51ad2b8106dce9517516a78a0e194526a08f2eb416f",
+   "path": "docs/benchmark/21-bias-evaluation.md",
+   "private_sha256": "f29443f734e48e4756f1bea4df576e9fe75cb86dba71f0e3eae037126c9fa949",
+   "public_sha256": "f29443f734e48e4756f1bea4df576e9fe75cb86dba71f0e3eae037126c9fa949",
    "redactions": {}
   },
   {
-   "path": "docs/22-budget-forecast.md",
+   "path": "docs/benchmark/22-budget-forecast.md",
    "private_sha256": "15243fbbcb47d2f796aa7b4cb61058f077fddb3e292d1c45687633ae346dcaa1",
    "public_sha256": "15243fbbcb47d2f796aa7b4cb61058f077fddb3e292d1c45687633ae346dcaa1",
    "redactions": {}
   },
   {
-   "path": "docs/23-release-runbook.md",
+   "path": "docs/benchmark/23-release-runbook.md",
    "private_sha256": "337677b8158481c3945dea3cbf10f2073e366696e539abc539a991b69d791557",
    "public_sha256": "337677b8158481c3945dea3cbf10f2073e366696e539abc539a991b69d791557",
    "redactions": {}
   },
   {
-   "path": "docs/24-bias-licence.md",
+   "path": "docs/benchmark/24-bias-licence.md",
    "private_sha256": "5c5afdac3a0c7b240418252fbe07ee5994abde987dc8d26ce63e009175d60639",
    "public_sha256": "5c5afdac3a0c7b240418252fbe07ee5994abde987dc8d26ce63e009175d60639",
    "redactions": {}
   },
   {
-   "path": "docs/README.md",
-   "private_sha256": "5d6691eba39b6f0fae2cfa4a10e925442982c74e24d9a114417e903af6336fc3",
-   "public_sha256": "5d6691eba39b6f0fae2cfa4a10e925442982c74e24d9a114417e903af6336fc3",
+   "path": "docs/reference/specs/2026-09-18-guardrails-api-design.md",
+   "private_sha256": "b8d5b51e3a3fa7cc4f78dcd6182d2acff71a9923b2dc88bbcd8d51940f7de50a",
+   "public_sha256": "b8d5b51e3a3fa7cc4f78dcd6182d2acff71a9923b2dc88bbcd8d51940f7de50a",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/ts-spikes/README.md",
+   "private_sha256": "1d1a7197988df94abb0e62dd70f6b49e78d6529e9ae183fee6a723e0857029ff",
+   "public_sha256": "1d1a7197988df94abb0e62dd70f6b49e78d6529e9ae183fee6a723e0857029ff",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/ts-spikes/fixtures/aegis-sample-5.json",
+   "private_sha256": "45c72e6bbe762643f50958d582a7d1bd1f9c6c56edd730c411c8b3bcfefc673d",
+   "public_sha256": "45c72e6bbe762643f50958d582a7d1bd1f9c6c56edd730c411c8b3bcfefc673d",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/ts-spikes/package.json",
+   "private_sha256": "adbd1bc1f19a0c76f2543682a7c91a52d76bacf0c3d7cabda9e04b25a9480339",
+   "public_sha256": "adbd1bc1f19a0c76f2543682a7c91a52d76bacf0c3d7cabda9e04b25a9480339",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/ts-spikes/pnpm-lock.yaml",
+   "private_sha256": "b0a5d884cf27c70c611e943a3f2d19bbdeb57cc6d1dea38f350e3a9123257987",
+   "public_sha256": "b0a5d884cf27c70c611e943a3f2d19bbdeb57cc6d1dea38f350e3a9123257987",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/ts-spikes/pnpm-workspace.yaml",
+   "private_sha256": "ac02d96368617c760f093cfe61fdec64b6244007ab3553e0d6621f706f54a353",
+   "public_sha256": "ac02d96368617c760f093cfe61fdec64b6244007ab3553e0d6621f706f54a353",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/ts-spikes/scripts/aegis-sample.ts",
+   "private_sha256": "3f734b00475d8deffa1646f0f0237b63ba5947e489507d3e67ac1c8b8992afcc",
+   "public_sha256": "3f734b00475d8deffa1646f0f0237b63ba5947e489507d3e67ac1c8b8992afcc",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/ts-spikes/spikes/README.md",
+   "private_sha256": "4e07199964cbaf8aa8ac599560365de0984a42b57f11fe326f0deaa35a290caa",
+   "public_sha256": "4e07199964cbaf8aa8ac599560365de0984a42b57f11fe326f0deaa35a290caa",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/ts-spikes/spikes/spike-question-set.ts",
+   "private_sha256": "bd96956fe729e6d55d5986efe2e86786913289b102fb5fed497cbc3c69bf7136",
+   "public_sha256": "bd96956fe729e6d55d5986efe2e86786913289b102fb5fed497cbc3c69bf7136",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/ts-spikes/spikes/spike-size.ts",
+   "private_sha256": "d0596d87a09b07216d39fc6a0c2a63a3a0b1e89e29aff67c37ae9152745ce2bb",
+   "public_sha256": "d0596d87a09b07216d39fc6a0c2a63a3a0b1e89e29aff67c37ae9152745ce2bb",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/ts-spikes/tsconfig.json",
+   "private_sha256": "b3aeed4e21e7db408c64d5a78bf6118cc1a7cfc10f60882475c1aefc1765c7ff",
+   "public_sha256": "b3aeed4e21e7db408c64d5a78bf6118cc1a7cfc10f60882475c1aefc1765c7ff",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/README.md",
+   "private_sha256": "23cceb042e90719dbabc8b39ebdab9a91bd416e807563e4fd60c6eeabb6e8c4a",
+   "public_sha256": "23cceb042e90719dbabc8b39ebdab9a91bd416e807563e4fd60c6eeabb6e8c4a",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/_index.md",
+   "private_sha256": "f2502da4eaf57a5863fe6fe0b8f4ee84d846db4f68a3b81a9710b8efd71f888b",
+   "public_sha256": "f2502da4eaf57a5863fe6fe0b8f4ee84d846db4f68a3b81a9710b8efd71f888b",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/api.md",
+   "private_sha256": "b9b205096ac164e26f7797a52551c72f2bb3d270dffd923dc7180af3b1a21ae8",
+   "public_sha256": "b9b205096ac164e26f7797a52551c72f2bb3d270dffd923dc7180af3b1a21ae8",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/concepts_how-to-build-with-system-one.md",
+   "private_sha256": "4f4dca16ba79da8a8f371814f53afa17666be7922f3c9b704eaddc16c7722663",
+   "public_sha256": "4f4dca16ba79da8a8f371814f53afa17666be7922f3c9b704eaddc16c7722663",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/concepts_state.md",
+   "private_sha256": "b83169672788220e04e702586823f02cea962dbb01bba3c09d3229c0711305eb",
+   "public_sha256": "b83169672788220e04e702586823f02cea962dbb01bba3c09d3229c0711305eb",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/concepts_system-one.md",
+   "private_sha256": "e072211498bc1b6ed22d14aae2c2716903f4a8112e908cc45c35af65d3b84895",
+   "public_sha256": "e072211498bc1b6ed22d14aae2c2716903f4a8112e908cc45c35af65d3b84895",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/confidence.md",
+   "private_sha256": "c553ccda01913b9962e33b9f3948afeb7496482ab8bfe5352ff0e451f97514ef",
+   "public_sha256": "c553ccda01913b9962e33b9f3948afeb7496482ab8bfe5352ff0e451f97514ef",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/cookbooks_classifying_rag_passages.md",
+   "private_sha256": "d309b903471529d86de2d05aeebb43e2656c4935e122cf41bb95c3a559bef498",
+   "public_sha256": "d309b903471529d86de2d05aeebb43e2656c4935e122cf41bb95c3a559bef498",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/cookbooks_consistency_choice_cookbook.md",
+   "private_sha256": "381b3840c94e9e232cefef2dbe941254a90b6a1cf56c8b8c7e333b9f12e9b583",
+   "public_sha256": "381b3840c94e9e232cefef2dbe941254a90b6a1cf56c8b8c7e333b9f12e9b583",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/cookbooks_consistency_noul_cookbook.md",
+   "private_sha256": "fb141c4937d9c65a6a35aa5650b5137b4f7ef4a562ee814591da41730a751047",
+   "public_sha256": "fb141c4937d9c65a6a35aa5650b5137b4f7ef4a562ee814591da41730a751047",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/cookbooks_function_calling.md",
+   "private_sha256": "5447823489575a93adc3943627461fa8b904e5692bfed3395caa21a50458fe40",
+   "public_sha256": "5447823489575a93adc3943627461fa8b904e5692bfed3395caa21a50458fe40",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/cookbooks_llm_guardrails.md",
+   "private_sha256": "ebc742bbbbe8af86ea609dd2c4dc52980c337f97044b1ebb7ea8d01dc1403c34",
+   "public_sha256": "ebc742bbbbe8af86ea609dd2c4dc52980c337f97044b1ebb7ea8d01dc1403c34",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/cookbooks_parallel_questions.md",
+   "private_sha256": "e142ddb58aeb69796358851910e856dc089335db10f6bcecc801e95ff5e28808",
+   "public_sha256": "e142ddb58aeb69796358851910e856dc089335db10f6bcecc801e95ff5e28808",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/cookbooks_pre_parsed_value_extraction_cookbook.md",
+   "private_sha256": "5a2026433afc618ab1ed16994d8c07281399e527482006a92e7e343ddcd96a2d",
+   "public_sha256": "5a2026433afc618ab1ed16994d8c07281399e527482006a92e7e343ddcd96a2d",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/introduction.md",
+   "private_sha256": "85c0e910b668b27d5eb61c1e923ae34e03f31fe0b02d69278430b17f6bc3fcb8",
+   "public_sha256": "85c0e910b668b27d5eb61c1e923ae34e03f31fe0b02d69278430b17f6bc3fcb8",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/introduction_quickstart.md",
+   "private_sha256": "84110251b994b059443c439d5f80406e966a2e5a3aa8e4c5885415390999cf7d",
+   "public_sha256": "84110251b994b059443c439d5f80406e966a2e5a3aa8e4c5885415390999cf7d",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/model-jaggedness_jev-1.13.md",
+   "private_sha256": "e69329bd32e91ac08f0bd2681ceb4aacc34923b9190e29c15c8f75d8e22950e2",
+   "public_sha256": "e69329bd32e91ac08f0bd2681ceb4aacc34923b9190e29c15c8f75d8e22950e2",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/models.md",
+   "private_sha256": "8f09cfcbcc667dddb19b547f4250840e0215d149b45fdb879d51f1e4d9210dca",
+   "public_sha256": "8f09cfcbcc667dddb19b547f4250840e0215d149b45fdb879d51f1e4d9210dca",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/patterns_composite-scoring.md",
+   "private_sha256": "b8cc7828beb5e7f585f2bdd00717bdef2394347a30ea12920ceb0c2080b9cef5",
+   "public_sha256": "b8cc7828beb5e7f585f2bdd00717bdef2394347a30ea12920ceb0c2080b9cef5",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/patterns_confidence-routing.md",
+   "private_sha256": "5f1f8e0af76cb291d1583d8791f543a911f4ebebe1077ccd85e0178f2211b566",
+   "public_sha256": "5f1f8e0af76cb291d1583d8791f543a911f4ebebe1077ccd85e0178f2211b566",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/patterns_fan-out.md",
+   "private_sha256": "f1f0789b2c2e7badbf645614892b38f43f3a956906c20430ce7d5b22242ec621",
+   "public_sha256": "f1f0789b2c2e7badbf645614892b38f43f3a956906c20430ce7d5b22242ec621",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/patterns_intent-routing.md",
+   "private_sha256": "90a753c541af934522384f28e553bc9d8c1ad36fbacaf0cef68d0d44b7bcb5a1",
+   "public_sha256": "90a753c541af934522384f28e553bc9d8c1ad36fbacaf0cef68d0d44b7bcb5a1",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/primitives.md",
+   "private_sha256": "6cbe8960e23863cf2a1c8c6892d2fa4a0c0b42c9a4f034b6cec0727f2ec8c728",
+   "public_sha256": "6cbe8960e23863cf2a1c8c6892d2fa4a0c0b42c9a4f034b6cec0727f2ec8c728",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/primitives_advanced.md",
+   "private_sha256": "73eeedee0c3ff68e5964c914ba006e4f59522fa8222e43bd960418febd13ea7f",
+   "public_sha256": "73eeedee0c3ff68e5964c914ba006e4f59522fa8222e43bd960418febd13ea7f",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/primitives_choice.md",
+   "private_sha256": "5ba42269e9a07ac5b1220ee6b6c69f060f57b6a7ff619cfedcb916acfb6c92c5",
+   "public_sha256": "5ba42269e9a07ac5b1220ee6b6c69f060f57b6a7ff619cfedcb916acfb6c92c5",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/primitives_noul.md",
+   "private_sha256": "402a2f30ca71b53227058a5df3fb3e0a10063588a31b883f924d6660815c6916",
+   "public_sha256": "402a2f30ca71b53227058a5df3fb3e0a10063588a31b883f924d6660815c6916",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/primitives_score.md",
+   "private_sha256": "653ca2a688bf6613bf4c1621046a22c66e672a90cf40992c1fe218a8e96768c4",
+   "public_sha256": "653ca2a688bf6613bf4c1621046a22c66e672a90cf40992c1fe218a8e96768c4",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/sdk-js-api/ChoiceResponse.md",
+   "private_sha256": "4325f9f44b85549c68ea4fff2e79d8c24dbd6a44103589a8752ab40003885d06",
+   "public_sha256": "4325f9f44b85549c68ea4fff2e79d8c24dbd6a44103589a8752ab40003885d06",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/sdk-js-api/NoulResponse.md",
+   "private_sha256": "6227fefaed88bd826c07d8183f752990c9af6b5b52468dda49335fc6a99eb1bf",
+   "public_sha256": "6227fefaed88bd826c07d8183f752990c9af6b5b52468dda49335fc6a99eb1bf",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/sdk-js-api/RequestOptions.md",
+   "private_sha256": "81fae66c86b0b25f88536144d656f3f8ecf20588658a24b488514d22091d67ee",
+   "public_sha256": "81fae66c86b0b25f88536144d656f3f8ecf20588658a24b488514d22091d67ee",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/sdk-js-api/RetryPolicy.md",
+   "private_sha256": "ecaf1ae900811fdb14829e188bb398347d1d8b549d01d24953eab1eabef5eddb",
+   "public_sha256": "ecaf1ae900811fdb14829e188bb398347d1d8b549d01d24953eab1eabef5eddb",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/sdk-js-api/ScoreResponse.md",
+   "private_sha256": "f9f1d1f6da5db8d8a32512e07839973d05a19e5742fa0d943754ec9e1897d3ff",
+   "public_sha256": "f9f1d1f6da5db8d8a32512e07839973d05a19e5742fa0d943754ec9e1897d3ff",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/sdk-js-api/SystemOneRequest.md",
+   "private_sha256": "a9cc654ab780c1b63390cec607ba42fc91625545e70410ae348bfecd2ed447e5",
+   "public_sha256": "a9cc654ab780c1b63390cec607ba42fc91625545e70410ae348bfecd2ed447e5",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/sdk-js-api/SystemOneResult.md",
+   "private_sha256": "7cb2e4e7a724cd7841310f2e119e55a8ca9b55b9c94191ad36c76713cee08ced",
+   "public_sha256": "7cb2e4e7a724cd7841310f2e119e55a8ca9b55b9c94191ad36c76713cee08ced",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/sdk-js-api/TypeSafeClient.md",
+   "private_sha256": "3831ede08860c95daa182c33a5c3dc698f92d30990df88f7d6af764d989d2347",
+   "public_sha256": "3831ede08860c95daa182c33a5c3dc698f92d30990df88f7d6af764d989d2347",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/sdk-js-api/TypeSafeClientConfig.md",
+   "private_sha256": "5780a70b4f0bc12433b1cebc8810e22ad6c5298fcec7fb77163770af483a1f69",
+   "public_sha256": "5780a70b4f0bc12433b1cebc8810e22ad6c5298fcec7fb77163770af483a1f69",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/sdk-js-api/choice.md",
+   "private_sha256": "971e2ac7f5ef762fac9afb4aa481350296938872cb886cf198162018b36f30a8",
+   "public_sha256": "971e2ac7f5ef762fac9afb4aa481350296938872cb886cf198162018b36f30a8",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/sdk-js-api/noul.md",
+   "private_sha256": "496c8ffa64162d5fdf4aca671f7f363672ffb25de8f666b28753810b7820e1bd",
+   "public_sha256": "496c8ffa64162d5fdf4aca671f7f363672ffb25de8f666b28753810b7820e1bd",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/sdk-js-api/score.md",
+   "private_sha256": "2f7bd6acff7da9a8fa6e88a8f9cc0b9b7040df039f6d5072a3187729ff155783",
+   "public_sha256": "2f7bd6acff7da9a8fa6e88a8f9cc0b9b7040df039f6d5072a3187729ff155783",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/sdk_javascript.md",
+   "private_sha256": "25ba04f5b55819bee85e21d9184b7b8c807a81e95754baef4b05157240a2e1bb",
+   "public_sha256": "25ba04f5b55819bee85e21d9184b7b8c807a81e95754baef4b05157240a2e1bb",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/sdk_python.md",
+   "private_sha256": "81cada0bf991f40520c62aab20ab09e0bb728d4ada77a9e301c658d320192bc2",
+   "public_sha256": "81cada0bf991f40520c62aab20ab09e0bb728d4ada77a9e301c658d320192bc2",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reference/typesafe/sdk_python_usage.md",
+   "private_sha256": "87268e825a2b8bdac886778f3217d85d0c6cc5330241fd730f15cfaff006980c",
+   "public_sha256": "87268e825a2b8bdac886778f3217d85d0c6cc5330241fd730f15cfaff006980c",
+   "redactions": {}
+  },
+  {
+   "path": "docs/release/signoff-v0.0.1-2026-09-28.md",
+   "private_sha256": "6882ea8e3c83b60fc818f9bb26791a49c3ccdf8ec4c1ee142fc45e4916bd70c8",
+   "public_sha256": "6882ea8e3c83b60fc818f9bb26791a49c3ccdf8ec4c1ee142fc45e4916bd70c8",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reports/decision-model-guardrail-benchmark-plan.html",
+   "private_sha256": "c225d8220a09ca01f047547db1b05eb4c49857714319c515b880540a20df5bcc",
+   "public_sha256": "c225d8220a09ca01f047547db1b05eb4c49857714319c515b880540a20df5bcc",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reports/developer-handoff-dataset-first.md",
+   "private_sha256": "bbc8293684b560b4456603506511da0d258dfbd9719674b9bf9f1f86e5ab421e",
+   "public_sha256": "bbc8293684b560b4456603506511da0d258dfbd9719674b9bf9f1f86e5ab421e",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reports/diagrams/how-the-benchmark-runs.workflow.json",
+   "private_sha256": "286c05d9c40eb5259b9c3163f1bf15e8a50f9859863fc2882aec4348971b389c",
+   "public_sha256": "286c05d9c40eb5259b9c3163f1bf15e8a50f9859863fc2882aec4348971b389c",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reports/gold-rails-completion-plan.html",
+   "private_sha256": "728a30b0ca6adad5f926ad0fb67eb05963ee5e9a3b8d740aa51c8d3f01f01a3d",
+   "public_sha256": "728a30b0ca6adad5f926ad0fb67eb05963ee5e9a3b8d740aa51c8d3f01f01a3d",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reports/gold-rails-readiness.html",
+   "private_sha256": "198a9ce7e2e962ac6257a223de94c93d096fcd4c062e94db503ecbaa7b475650",
+   "public_sha256": "198a9ce7e2e962ac6257a223de94c93d096fcd4c062e94db503ecbaa7b475650",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reports/gold-rails-release-packet.html",
+   "private_sha256": "ebde0658ad405a3a874f70de5feebd29edb2dc7e0db50f4caf082c3a1ea365cd",
+   "public_sha256": "ebde0658ad405a3a874f70de5feebd29edb2dc7e0db50f4caf082c3a1ea365cd",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reports/gold-rails-status.html",
+   "private_sha256": "3450435d615d06065c8fa16e24f3be2c679364e781951754cbd0e1f563640fdd",
+   "public_sha256": "3450435d615d06065c8fa16e24f3be2c679364e781951754cbd0e1f563640fdd",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reports/gold-rails-system-design.html",
+   "private_sha256": "bebc8cdfafc823ecea9a9a7daa4bad06f183ea707d9c2b6a0693aebe760ebbfc",
+   "public_sha256": "bebc8cdfafc823ecea9a9a7daa4bad06f183ea707d9c2b6a0693aebe760ebbfc",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reports/golden-dataset-plan.html",
+   "private_sha256": "eb0f5ccf5a07e632ee8d94bff928a74462d3a5e3c9e2c281a067006ee8bc1815",
+   "public_sha256": "eb0f5ccf5a07e632ee8d94bff928a74462d3a5e3c9e2c281a067006ee8bc1815",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reports/how-the-benchmark-runs.html",
+   "private_sha256": "d4399cf240216d0d6298562b3eac3fdc96009292cbb87a7430e3c84ae688d5a4",
+   "public_sha256": "d4399cf240216d0d6298562b3eac3fdc96009292cbb87a7430e3c84ae688d5a4",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reports/jev-content-filter-explainer.html",
+   "private_sha256": "b79bad6259098c5d6ef39695fd8a7e640017827646864e822b97bd02d894e2f2",
+   "public_sha256": "b79bad6259098c5d6ef39695fd8a7e640017827646864e822b97bd02d894e2f2",
+   "redactions": {}
+  },
+  {
+   "path": "docs/reports/jev-guardrails-decision-memo.html",
+   "private_sha256": "e69c85a4d527ad5e56267d1d624c0a7b64535557cfb3a64b994069e7db2acafb",
+   "public_sha256": "e69c85a4d527ad5e56267d1d624c0a7b64535557cfb3a64b994069e7db2acafb",
    "redactions": {}
   },
   {
@@ -2225,6 +2681,216 @@
    "redactions": {
     "AI4Privacy source id masked": 14
    }
+  },
+  {
+   "path": "docs/research/early-2026-09-18/01-jev-primer.md",
+   "private_sha256": "7dba4e78bd3019f7e9e7f0906d7155f6437f684caa6a2890541e182f4bf57f22",
+   "public_sha256": "7dba4e78bd3019f7e9e7f0906d7155f6437f684caa6a2890541e182f4bf57f22",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/early-2026-09-18/02-community-research.md",
+   "private_sha256": "5b7bfa002807add608fc21f3643d8d55762be183b0e5180a5eba32f0bee7d467",
+   "public_sha256": "5b7bfa002807add608fc21f3643d8d55762be183b0e5180a5eba32f0bee7d467",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/early-2026-09-18/03-cybersecurity-decision-map.md",
+   "private_sha256": "002c84fd8bef97e06a2e736764a8d9e97a4811406e69209bd255a52fc271479b",
+   "public_sha256": "002c84fd8bef97e06a2e736764a8d9e97a4811406e69209bd255a52fc271479b",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/early-2026-09-18/04-ir-showcase-ideas.md",
+   "private_sha256": "966572e07aa414d6c9fb748137224266f2e70cfd984e0d92250645345c947d01",
+   "public_sha256": "966572e07aa414d6c9fb748137224266f2e70cfd984e0d92250645345c947d01",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/early-2026-09-18/05-bedrock-guardrails-mapping.md",
+   "private_sha256": "6c3fd4bb280199d7b33342e470cdffddfa4775a083ae54cf0a4d81f92571562b",
+   "public_sha256": "6c3fd4bb280199d7b33342e470cdffddfa4775a083ae54cf0a4d81f92571562b",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/early-2026-09-18/06-product-design.md",
+   "private_sha256": "ba2eebb2c06357e61a09cbcd259ae60df35398620827c8b811f929df8e9e8b61",
+   "public_sha256": "ba2eebb2c06357e61a09cbcd259ae60df35398620827c8b811f929df8e9e8b61",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/early-2026-09-18/07-poc-plan.md",
+   "private_sha256": "24c1b23a08697084ddf382427f0707e1c16e6748afb68223390eda040988344e",
+   "public_sha256": "24c1b23a08697084ddf382427f0707e1c16e6748afb68223390eda040988344e",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/early-2026-09-18/08-sources.md",
+   "private_sha256": "47a7c4027f343b4ee48b339e5ab67b847c333e8ae5767829e7783c003fdf1f88",
+   "public_sha256": "47a7c4027f343b4ee48b339e5ab67b847c333e8ae5767829e7783c003fdf1f88",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/early-2026-09-18/09-bedrock-guardrails-feature-inventory.md",
+   "private_sha256": "a9eede80e8918d0d7cc800f2db4b5d0c685753741056f42b8a9cf7d3b5727808",
+   "public_sha256": "a9eede80e8918d0d7cc800f2db4b5d0c685753741056f42b8a9cf7d3b5727808",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/early-2026-09-18/10-evaluation-datasets.md",
+   "private_sha256": "dc8597e44b22a93646416cb3debbce9129c95d75c6ffcabe7636043738035964",
+   "public_sha256": "dc8597e44b22a93646416cb3debbce9129c95d75c6ffcabe7636043738035964",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/early-2026-09-18/11-defence-in-depth-and-prior-art.md",
+   "private_sha256": "88d062c25fa2c2fa50d7f443e0457e83fcff180f8286f1f0e39f2686ca17d1ec",
+   "public_sha256": "88d062c25fa2c2fa50d7f443e0457e83fcff180f8286f1f0e39f2686ca17d1ec",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/early-2026-09-18/12-jev-inside-the-runtime-engine.md",
+   "private_sha256": "b80a21e00b3d628ef23145aee858743c844f81c4f7c189029c85c6bb9cb59a3e",
+   "public_sha256": "b80a21e00b3d628ef23145aee858743c844f81c4f7c189029c85c6bb9cb59a3e",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/early-2026-09-18/13-jevbench-learnings.md",
+   "private_sha256": "02070ea1a9a16e7e69ceb5da088fa5082741ad54ddaca95ce04fb763cece113f",
+   "public_sha256": "02070ea1a9a16e7e69ceb5da088fa5082741ad54ddaca95ce04fb763cece113f",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/early-2026-09-18/15-grayzonebench-learnings.md",
+   "private_sha256": "22d56020428f76d9106c9348812d4021c23a45b378c6f0ed2954ba0c5397d77e",
+   "public_sha256": "22d56020428f76d9106c9348812d4021c23a45b378c6f0ed2954ba0c5397d77e",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/early-2026-09-18/appendix-vault-script-survey.md",
+   "private_sha256": "fb761e8119d703efd5533a740b4c00acf61d399ef676fb8b88152b420aa93233",
+   "public_sha256": "fb761e8119d703efd5533a740b4c00acf61d399ef676fb8b88152b420aa93233",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/prior-art/README.md",
+   "private_sha256": "0320892e6d8804b3b00e17643e80baa2c9ed259af39267a0fdf2b81ad7e50116",
+   "public_sha256": "0320892e6d8804b3b00e17643e80baa2c9ed259af39267a0fdf2b81ad7e50116",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/prior-art/jev-guard-guard.js",
+   "private_sha256": "152aea7d4d4013559edfa139db43d694f4de557777afa85bf3d690b40988407a",
+   "public_sha256": "152aea7d4d4013559edfa139db43d694f4de557777afa85bf3d690b40988407a",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/prior-art/jevegis-eval-cases.json",
+   "private_sha256": "e782f1441fa55774b95451f0c90012cea39554045db512a50e79fb7ea3c9bf7c",
+   "public_sha256": "e782f1441fa55774b95451f0c90012cea39554045db512a50e79fb7ea3c9bf7c",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/prior-art/octapull-bench-cases.jsonl",
+   "private_sha256": "093b06c88f56293e7d00e4d9aff2e8f2d172766ebd800155c9d5d34d896b0d09",
+   "public_sha256": "607a7ce08e1e65333457ef83208b4c5c582ca293c6be17eedc37152f4fc51eec",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/prior-art/octapull-chatbot.yaml",
+   "private_sha256": "501e311e11d642c0c2aea35e621fc4edebe41e04fad8d54f10fc76739dcb8a99",
+   "public_sha256": "501e311e11d642c0c2aea35e621fc4edebe41e04fad8d54f10fc76739dcb8a99",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/prior-art/octapull-injection.yaml",
+   "private_sha256": "456864caae01646a162df1fbe547993f89c27afb18ca949b9a41dd9cb164c2e0",
+   "public_sha256": "456864caae01646a162df1fbe547993f89c27afb18ca949b9a41dd9cb164c2e0",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/prior-art/octapull-off-topic.yaml",
+   "private_sha256": "f35db83e10f7483f1ca00678aa57117fdba77519846933a9867eb16c67d45ed1",
+   "public_sha256": "f35db83e10f7483f1ca00678aa57117fdba77519846933a9867eb16c67d45ed1",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/prior-art/octapull-output.yaml",
+   "private_sha256": "3ed15772c3b456f3b7682a10be3a7f7ede4b1af12c06d97fecd8ff29db30884d",
+   "public_sha256": "3ed15772c3b456f3b7682a10be3a7f7ede4b1af12c06d97fecd8ff29db30884d",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/prior-art/octapull-tool-safety.yaml",
+   "private_sha256": "f8e226256894a936d9b3e67697ae5174aeb75b1bc2c5d9032145895e3fc4a32a",
+   "public_sha256": "f8e226256894a936d9b3e67697ae5174aeb75b1bc2c5d9032145895e3fc4a32a",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/prior-art/octapull-toxicity.yaml",
+   "private_sha256": "fc7953a6061aaef2a066356fbb6415ff60df89e711002fafb27117db5eaec0bb",
+   "public_sha256": "fc7953a6061aaef2a066356fbb6415ff60df89e711002fafb27117db5eaec0bb",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/prior-art/owasp-agentic-skills-top10-checklist.md",
+   "private_sha256": "3341092c3d7ceb26f0408a841d2e0782c845ac6a248c28b5dd0f2ba27f32bc33",
+   "public_sha256": "3341092c3d7ceb26f0408a841d2e0782c845ac6a248c28b5dd0f2ba27f32bc33",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/raw/README.md",
+   "private_sha256": "800cc76cc26d223e06fba31704d77611a7d00a7371e8b8344fdb5f16dca825b0",
+   "public_sha256": "800cc76cc26d223e06fba31704d77611a7d00a7371e8b8344fdb5f16dca825b0",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/raw/typesafe-ai-jev-system-one-model-use-cases-raw-v3.md",
+   "private_sha256": "73a39a461f6a0d8f93b372083a4c56358edfd146baf1dce0d87d93221951bae6",
+   "public_sha256": "73a39a461f6a0d8f93b372083a4c56358edfd146baf1dce0d87d93221951bae6",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/raw/typesafe-jev-demos-and-evidence-based-misinformation-detection-raw-demo-research.md",
+   "private_sha256": "08ee0fe5978aaff4e69800e4a35fd9a6335606970063ef4357f7bf432bb542f3",
+   "public_sha256": "08ee0fe5978aaff4e69800e4a35fd9a6335606970063ef4357f7bf432bb542f3",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/raw/typesafe-jev-guardrail-eval-raw-v3.md",
+   "private_sha256": "8904f91ed81c65a8668c8ab620ae85476077f788bd2b04e048052923b0518d07",
+   "public_sha256": "8904f91ed81c65a8668c8ab620ae85476077f788bd2b04e048052923b0518d07",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/transcripts/nate-herk-12-use-cases-ymgH8jS6Wb8.txt",
+   "private_sha256": "0d01c7aab44ec0d66b51c31b744d6392bbd6b25c47b06e334e32459ef4cbf348",
+   "public_sha256": "0d01c7aab44ec0d66b51c31b744d6392bbd6b25c47b06e334e32459ef4cbf348",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/transcripts/prompt-engineering-open-jevs-FVzI3QAxwNs.txt",
+   "private_sha256": "e7c8195b0f4af7373c127bda8823f08f1b447edf35d46ea034d97304e6516fb1",
+   "public_sha256": "e7c8195b0f4af7373c127bda8823f08f1b447edf35d46ea034d97304e6516fb1",
+   "redactions": {}
+  },
+  {
+   "path": "docs/research/transcripts/theo-jev-is-incredible-F3YXg7AaKWE.txt",
+   "private_sha256": "c1d4a927a42df28e9797eabfc031fd8d7d9d2f2d172da85ace4f53f2f72fc542",
+   "public_sha256": "c1d4a927a42df28e9797eabfc031fd8d7d9d2f2d172da85ace4f53f2f72fc542",
+   "redactions": {}
+  },
+  {
+   "path": "docs/teach/gold-rails-primer.html",
+   "private_sha256": "352511b8f5d39c485ed021a4b5343bc438a618ec8fd53d3b3ae0bf10e1558b94",
+   "public_sha256": "352511b8f5d39c485ed021a4b5343bc438a618ec8fd53d3b3ae0bf10e1558b94",
+   "redactions": {}
+  },
+  {
+   "path": "docs/typesafe-reference/models.md",
+   "private_sha256": "801e67ac59e60751a7b39db887c4267644d972eeb3fed2604400bc2972e5a46c",
+   "public_sha256": "801e67ac59e60751a7b39db887c4267644d972eeb3fed2604400bc2972e5a46c",
+   "redactions": {}
   },
   {
    "path": "infra/aws/README.md",
@@ -2354,8 +3020,8 @@
   },
   {
    "path": "scripts/export_public.py",
-   "private_sha256": "db5b7e5e3678916377ac20b791540c4c8186516103d979646ac05fb907ecc07c",
-   "public_sha256": "2cf910ffa87c47de2a6ccaeec7f1b3d05fddb4b242aa2e0ac211e4faedab0fd1",
+   "private_sha256": "d9aef00c80d9444da2a12785f5b5a762b1e0539b4c1418d22faaad07a1f3268c",
+   "public_sha256": "02e559abb3af65d56dc000f0bd58a54a3d9138a16d4a8fb781a1449c5e026523",
    "redactions": {
     "AWS account masked": 1
    }
@@ -2374,8 +3040,8 @@
   },
   {
    "path": "site/leaderboard/results.json",
-   "private_sha256": "13ce7d24879aef2fb8eb62c19619e0165e6df6438c6ecc03737c9be2ebbee1fd",
-   "public_sha256": "13ce7d24879aef2fb8eb62c19619e0165e6df6438c6ecc03737c9be2ebbee1fd",
+   "private_sha256": "ae14b8280519d2fcd53f3509a5f6f2a3b535569fe93747d09be601c8f45817d4",
+   "public_sha256": "ae14b8280519d2fcd53f3509a5f6f2a3b535569fe93747d09be601c8f45817d4",
    "redactions": {}
   },
   {
@@ -2392,8 +3058,8 @@
   },
   {
    "path": "site/leaderboard/tests/test_leaderboard_site.py",
-   "private_sha256": "338f33342b0987f2dcd6f3c318c48973322f9561ac8bb9595bffa4bf26c28694",
-   "public_sha256": "338f33342b0987f2dcd6f3c318c48973322f9561ac8bb9595bffa4bf26c28694",
+   "private_sha256": "14a06d5567c37eeea3208084fb610c6fe628f79c25637d0bce0f43896c8da6b9",
+   "public_sha256": "14a06d5567c37eeea3208084fb610c6fe628f79c25637d0bce0f43896c8da6b9",
    "redactions": {}
   },
   {

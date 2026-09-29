@@ -11,9 +11,7 @@
   "rows_loaded": 8565,
   "card_names": "raxITLabs/goldrail"
  },
- "open": [
-  "the code repository is private, so the card's code link resolves only for people with access until it is made public"
- ],
+ "open": [],
  "renamed": [
   {
    "from": "raxITLabs/gold-rails",
@@ -33,10 +31,15 @@
  "dataset_viewer": "working: preview, viewer, search, filter",
  "code_repository": {
   "url": "https://github.com/raxITlabs/goldrails",
-  "visibility": "private",
+  "visibility": "public",
   "tag": "v0.0.1",
   "commit": "26b578fea60ce1b755066d39c75637af2e639287",
   "exported_from_private_commit": "2eb75edf775b",
-  "export": "scripts/export_public.py: 338 allowlisted files, withheld-text scan 0 problems; 301 tests pass and 4 skip from a clean install"
+  "export": "scripts/export_public.py: 338 allowlisted files, withheld-text scan 0 problems; 301 tests pass and 4 skip from a clean install",
+  "made_public": {
+   "date": "2026-09-29",
+   "by": "the project owner in chat: \"make this repo public please\"",
+   "checked_before": "both commits (26b578f, c468c82) scanned for keys, tokens, the AWS account number, local paths and AI4Privacy ids: no hits"
+  }
  }
 }

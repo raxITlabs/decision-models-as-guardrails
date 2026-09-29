@@ -6,10 +6,10 @@
   "name": "Gold Rails, first benchmark",
   "dataset_version": "v1.3 subset first-benchmark-v1.3",
   "dataset_sha256": "90ba5867cc74462e3af951ea9032788004e3db315abe3c1e1b61294552b873a8",
-  "dataset_url": "https://huggingface.co/datasets/raxITLabs/goldrails",
+  "dataset_url": "https://huggingface.co/datasets/raxITLabs/goldrails/tree/14e7557abf7d79c3acbb4ed44af9b56cb8a45690",
   "public_release": "v0.0.1",
   "split": "test",
-  "public_note": "The public dataset is Gold Rails v0.0.1 on Hugging Face (revision 3e3ed7f3bbed, built from internal release v1.2). These results use internal release v1.3, which differs only in the profanity rows; it is a proposed revision of v0.0.1 and is not uploaded.",
+  "public_note": "The public dataset is Gold Rails v0.0.1, Hugging Face revision 14e7557abf7d (2026-09-28, internal release v1.3), the revision these results use. The first upload of v0.0.1 stays at revision 3e3ed7f3bbed (tag v0.0.1).",
   "evaluation_contract": "v1.1 (signed by the project owner, 28 September 2026)",
   "release_manifest": "dataset/release/v1.3/manifest.json",
   "generated_at": "2026-09-28",
@@ -136,6 +136,12 @@
   ]
  },
  "corrections": [
+  {
+   "date": "2026-09-28",
+   "title": "Public dataset v0.0.1 revised on Hugging Face (internal release v1.3)",
+   "detail": "With the owner's approval, Hugging Face revision 14e7557abf7d replaced the profanity rows (500 Civil Comments rater-labelled rows added, 258 lexicon-selected rows removed; the other 8,307 rows identical by canonical row hash) and added CHANGELOG.md and LABEL_REVIEW.json. The public version stays v0.0.1; its tag stays on the first upload, revision 3e3ed7f3bbed, so earlier results remain traceable. Code for this revision: the private GitHub repository at c468c82204cf.",
+   "code_commit": null
+  },
   {
    "date": "2026-09-28",
    "title": "Contract v1.1 signed; approval 5 confirmed",

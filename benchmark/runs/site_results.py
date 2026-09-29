@@ -660,9 +660,17 @@ def main() -> int:
         "benchmark": {"name": "Gold Rails, first benchmark" + (" (interim)" if open_blockers(lb) else ""),
                       "dataset_version": f"{sub['release']} subset {sub['name']}",
                       "dataset_sha256": sub["subset_sha256"],
-                      "dataset_url": publication.get("destination") if publication.get("visibility") == "public" else None,
-                      "public_release": publication.get("hub_tag"), "split": "test",
-                      "public_note": (None if not publication or publication.get("release") == sub["release"] else
+                      "dataset_url": ((publication.get("destination") + (f"/tree/{publication['hub_commit']}"
+                                                                         if publication.get("hub_commit") else ""))
+                                      if publication.get("visibility") == "public" else None),
+                      "public_release": publication.get("public_release") or publication.get("hub_tag"), "split": "test",
+                      "public_note": ((f"The public dataset is Gold Rails {publication['public_release']}, Hugging Face "
+                                       f"revision {publication['hub_commit'][:12]} ({publication['uploaded']}, internal release "
+                                       f"{publication['release']}), the revision these results use. The first upload of "
+                                       f"{publication['public_release']} stays at revision "
+                                       f"{publication['revises']['hub_commit'][:12]} (tag {publication['public_release']}).")
+                                      if publication.get("revises") and publication.get("release") == sub["release"] else
+                                      None if not publication or publication.get("release") == sub["release"] else
                                       f"The public dataset is Gold Rails {publication.get('hub_tag')} on Hugging Face "
                                       f"(revision {publication.get('hub_commit', '')[:12]}, built from internal release "
                                       f"{publication.get('release')}). These results use internal release {sub['release']}, "
@@ -738,6 +746,13 @@ def main() -> int:
             else ["denied topics and bias B2 counterfactual pairs await independent human review"]),
         "sensitivity_views": sensitivity_block(),
         "corrections": ([
+            *([{"date": "2026-09-28", "title": "Public dataset v0.0.1 revised on Hugging Face (internal release v1.3)",
+                "detail": ("With the owner's approval, Hugging Face revision 14e7557abf7d replaced the profanity rows (500 "
+                           "Civil Comments rater-labelled rows added, 258 lexicon-selected rows removed; the other 8,307 rows "
+                           "identical by canonical row hash) and added CHANGELOG.md and LABEL_REVIEW.json. The public version "
+                           "stays v0.0.1; its tag stays on the first upload, revision 3e3ed7f3bbed, so earlier results remain "
+                           "traceable. Code for this revision: the private GitHub repository at c468c82204cf."),
+                "code_commit": None}] if (REPO / "dataset/release/v1.3/publication.json").exists() else []),
             *([{"date": "2026-09-28", "title": "Contract v1.1 signed; approval 5 confirmed",
                 "detail": ("The project owner signed evaluation contract v1.1 and confirmed approval 5 in chat: \"go ahead, "
                            "sign contract and approval 5, keep repo private\". The signed contract "

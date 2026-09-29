@@ -83,7 +83,7 @@ def test_no_external_hosts_outside_the_allowlist():
 
 def test_owned_files_have_no_em_dashes():
     owned = [p for p in SITE.rglob("*") if p.is_file() and p.suffix in {".html", ".js", ".json", ".py"}]
-    owned += [REPO / "dataset" / "DATASET_CARD.md", REPO / "docs" / "22-budget-forecast.md"]
+    owned += [REPO / "dataset" / "DATASET_CARD.md", REPO / "docs" / "benchmark" / "22-budget-forecast.md"]
     owner_names = ("Profanity or obscenity " + chr(0x2014) + " Civil Comments",)   # the subtask name the owner chose, 28 Sep 2026
     for p in owned:
         if p.exists():

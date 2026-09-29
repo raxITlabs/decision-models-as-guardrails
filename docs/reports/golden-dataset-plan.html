@@ -1,0 +1,193 @@
+<title>Guardrail Golden Dataset</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root { --bg:#f4f6f8; --panel:#fff; --ink:#161a20; --muted:#5d6673; --line:#d7dde4; --accent:#1f6f5f; --accent-bg:#e3f1ec; --warn:#9a5b00; --warn-bg:#fbeed6; --bad:#a12c2c; --bad-bg:#f9e3e3; --code-bg:#eceff3; --jev:#1d4ed8; --jev-bg:#e6edfc; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#0e1116; --panel:#161b22; --ink:#e7eaee; --muted:#98a2b0; --line:#2a323d; --accent:#43c2a8; --accent-bg:#123229; --warn:#f0b35a; --warn-bg:#3a2a0f; --bad:#f08a8a; --bad-bg:#3b1818; --code-bg:#0f141a; --jev:#86a8ff; --jev-bg:#172343; } }
+  :root[data-theme="dark"] { --bg:#0e1116; --panel:#161b22; --ink:#e7eaee; --muted:#98a2b0; --line:#2a323d; --accent:#43c2a8; --accent-bg:#123229; --warn:#f0b35a; --warn-bg:#3a2a0f; --bad:#f08a8a; --bad-bg:#3b1818; --code-bg:#0f141a; --jev:#86a8ff; --jev-bg:#172343; }
+  body { background:var(--bg); color:var(--ink); font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:16px; line-height:1.55; padding-inline:16px; padding-block:36px 72px; }
+  main { max-width:80ch; margin-inline:auto; }
+  h1 { font-size:2.1rem; font-weight:600; line-height:1.12; text-wrap:balance; margin:0 0 .4rem; }
+  .meta { color:var(--muted); font-family:"IBM Plex Mono",monospace; font-size:.8rem; margin:0 0 1.5rem; }
+  .thesis { border-left:3px solid var(--accent); padding:6px 0 6px 16px; margin:0 0 2.5rem; font-size:1.08rem; max-width:68ch; }
+  h2 { font-size:1.35rem; font-weight:600; margin:3rem 0 .8rem; text-wrap:balance; } h3 { font-size:1.05rem; font-weight:600; margin:1.6rem 0 .5rem; }
+  p { margin:0 0 1rem; max-width:70ch; } ul,ol { padding-left:1.2rem; margin:0 0 1rem; max-width:70ch; } li { margin-bottom:.4rem; }
+  code { font-family:"IBM Plex Mono",monospace; font-size:.86rem; background:var(--code-bg); padding:.08em .35em; border-radius:3px; }
+  pre { font-family:"IBM Plex Mono",monospace; font-size:.84rem; background:var(--code-bg); border:1px solid var(--line); border-radius:6px; padding:12px 14px; overflow-x:auto; margin:0 0 1rem; line-height:1.5; }
+  .tag { display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:.72rem; padding:.12em .5em; border-radius:3px; font-weight:500; white-space:nowrap; }
+  .tag.high { color:var(--accent); background:var(--accent-bg);} .tag.med { color:var(--warn); background:var(--warn-bg);} .tag.low { color:var(--bad); background:var(--bad-bg);} .tag.jev { color:var(--jev); background:var(--jev-bg);}
+  table { width:100%; border-collapse:collapse; font-size:.9rem; margin:0 0 1.2rem; } th,td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); font-weight:600; } .tablewrap { overflow-x:auto; margin:0 0 1.2rem; }
+  figure { margin:1.4rem 0 1.8rem; } figure svg { display:block; width:100%; height:auto; max-width:100%; } figcaption { color:var(--muted); font-size:.9rem; margin-top:.5rem; max-width:70ch; }
+  .diag { overflow-x:auto; } .diag svg { min-width:640px; } .diag text { font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:12.5px; fill:currentColor; } .diag .mono { font-family:"IBM Plex Mono",monospace; font-size:11px; } .diag .lbl { font-size:10.5px; fill:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+  .diag .box { fill:var(--panel); stroke:currentColor; stroke-width:1; } .diag .box.acc { stroke:var(--accent); stroke-width:1.6; } .diag .box.faint { stroke:var(--line); } .diag .edge { stroke:currentColor; stroke-width:1.2; fill:none; marker-end:url(#arw); } .diag .elabel { font-size:10.5px; fill:var(--muted); }
+  pre.mermaid { background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:12px; overflow-x:auto; margin:0; }
+  .grid2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; margin:0 0 1.2rem; } .panel { background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:14px 16px; } .panel h4 { margin:0 0 .4rem; font-size:.76rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:600; } .panel p { margin:0; font-size:.95rem; }
+  .verdict { background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:6px; padding:14px 18px; margin:0 0 1.5rem; }
+  .small { color:var(--muted); font-size:.88rem; } .num { font-variant-numeric:tabular-nums; font-family:"IBM Plex Mono",monospace; }
+  .cm td:not(:first-child) { text-align:center; font-family:"IBM Plex Mono",monospace; font-size:.8rem; }
+</style>
+
+<main>
+  <h1>Task 1: the guardrail golden dataset</h1>
+  <p class="meta">Plan for approval · 22 September 2026, revised the same evening for source freshness and policy adherence · precedes any harness or adapter work</p>
+  <p class="thesis">Organise the dataset around the features people pay Amazon Bedrock Guardrails for, add bias as a first-class feature because a decision model's number can hide it, and build it the way JevBench built its task set: one record schema, human labels only in the headline, a held-out slice, hashes frozen before any system runs. The capability matrix, what each system can and cannot do, falls out of the dataset rather than being asserted.</p>
+
+  <h2>1. Features, taken from what Bedrock sells</h2>
+  <p>Seven Bedrock pillars, minus the two we cannot serve (Automated Reasoning, images), plus two the benchmark adds: bias and actions. Each feature gets its own slice, its own label semantics, and its own metrics.</p>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Feature</th><th>Bedrock's version</th><th>What the golden slice must contain</th><th>Rows</th></tr></thead>
+    <tbody>
+      <tr><td><strong>F1 content</strong></td><td>Hate, Insults, Sexual, Violence, Misconduct; input and output; four confidence buckets</td><td>User messages and assistant replies with per-category human labels; a benign-but-scary slice for over-refusal; replies carry the prompt that caused them</td><td class="num">12,000</td></tr>
+      <tr><td><strong>F2 prompt attacks</strong></td><td>Jailbreak, injection, prompt leakage (Standard tier); input only; skips tool results</td><td>Direct attacks by subtype, benign lookalikes (security docs, role-play requests), and indirect attacks inside tool results and documents</td><td class="num">6,000</td></tr>
+      <tr><td><strong>F3 policy adherence</strong> (denied topics and written policies)</td><td>Denied topics: name + definition + 5 examples, up to 30. Automated Reasoning: a natural-language policy document. NeMo: Colang rails. gpt-oss-safeguard: a policy paragraph at inference time</td><td>Two halves. (a) Twelve topic definitions in Bedrock's format with on-topic harmful, on-topic benign, adjacent, and off-topic rows. (b) Bespoke written policies paired with dialogues, from DynaBench's human-validated test split plus our own policies in Bedrock, NeMo, and gpt-oss-safeguard formats, so the same policy is expressed the way each service expects it</td><td class="num">4,000</td></tr>
+      <tr><td><strong>F4 word filters</strong></td><td>Managed profanity list + 10k custom exact-match words</td><td>Exact matches, obfuscations (l33t, spacing, unicode look-alikes, hyphenation), and false-friend benign words; deterministic ground truth</td><td class="num">2,000</td></tr>
+      <tr><td><strong>F5 sensitive information</strong></td><td>31 PII entity types + custom regex; block or mask; trace returns the raw match</td><td>Span-labelled PII across Bedrock's 31 types, synthetic secrets in real formats, and a trap set of look-alikes (order numbers, test keys, public addresses)</td><td class="num">4,000</td></tr>
+      <tr><td><strong>F6 contextual grounding</strong></td><td>Grounding and relevance scores over source, query, response; output only</td><td>Source, query, response triples with claim-level support labels and a relevance label; the four-quadrant design from Bedrock's own docs</td><td class="num">3,000</td></tr>
+      <tr><td><strong>F7 bias</strong> <span class="tag high">added</span></td><td>None. Bedrock has no bias feature</td><td>Three sub-tests, below. Counterfactual pairs are generated from templates and held out in part so nobody can train on them</td><td class="num">4,000</td></tr>
+      <tr><td><strong>F8 actions</strong> <span class="tag med">beyond Bedrock</span></td><td>Only via AgentCore Policy scores on tool inputs and outputs</td><td>Tool calls with task, arguments, and recent user turns; labels for scope, authorisation, irreversibility</td><td class="num">2,000</td></tr>
+      <tr><td>Automated Reasoning, images</td><td>Formal proofs; image content filters</td><td>Out of scope, stated in the datasheet</td><td class="num">0</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="small">About 37k rows: 32k test, 5k tune. Row counts are targets; the datasheet records what was achieved per feature and why.</p>
+
+  <h2>2. Bias, designed as a feature rather than a caveat</h2>
+  <p>A guardrail is biased when it treats the same content differently depending on who is mentioned, or when a decision it makes depends on a protected attribute that should not matter. A decision model returns a number and nothing else, so the only way to find this is to measure it. Three sub-tests, each with a different mechanism.</p>
+  <div class="grid2">
+    <div class="panel"><h4>B1 · disparate false positives</h4><p>Benign text that mentions an identity group. Source: <code>google/civil_comments</code> identity-annotated rows (CC0, 1.8M, we sample ~1,500 benign across ~20 identity attributes). Metric: false-positive rate per identity group on F1 categories, and the largest gap. This is the Jigsaw unintended-bias design, applied to guardrails.</p></div>
+    <div class="panel"><h4>B2 · counterfactual pairs</h4><p>Take ~1,000 F1 rows and ~300 F8 rows, swap a name, dialect marker, or group descriptor using the HolisticBias descriptor list (~600 descriptors, CC-BY-SA) and CrowS-Pairs style templates. Same content, different group. Metric: absolute score delta per attribute, and flip rate at the tuned threshold. Half the templates are held out.</p></div>
+    <div class="panel"><h4>B3 · decision bias</h4><p><code>Anthropic/discrim-eval</code> (CC-BY-4.0): 70 decision scenarios (loan, housing, hiring, visa) with age, gender, race varied. Asked as a Choice or Noul ("should this be approved"), which is exactly how a decision model would be used. Metric: discrimination score as in the paper. <code>heegyu/bbq</code> adds ambiguous-context stereotype reliance for Choice questions.</p></div>
+    <div class="panel"><h4>What bias is not, here</h4><p>We do not measure whether a model's opinions are biased. We measure whether a guardrail's decisions change with protected attributes when the content does not. That is narrow, defensible, and what a buyer would be liable for.</p></div>
+  </div>
+
+  <h2>3. Sources: freshness first</h2>
+  <div class="verdict">
+    <strong>The field's data is stale, and that is the opportunity.</strong> A catalogue of 195 safety benchmarks released 2018 to 2026 found 137 with inactive repositories and 96 with outdated Hugging Face datasets. Qwen3Guard's own report lists ToxicChat, the 2022 OpenAI moderation set, Aegis, SimpleSafetyTests, HarmBench, WildGuardTest, XSTest and BeaverTails as its evaluation sets, and DynaGuard trained on WildGuard, BeaverTails, ToxicChat and Aegis 2.0. A November 2025 study of ten guard models found Qwen3Guard fell from 91.0% on benchmarks to 33.8% on novel prompts, a 57-point gap the authors attribute to training-data contamination. Even the August 2026 EMNLP paper "No One Model Catches Every Harm" collected no new data and reused the same eleven sets. So: the classic sets stay only as an <em>anchor</em> slice, so our numbers can be checked against published ones; the headline is built from 2025 to 2026 sources, our own crafted rows, and a private slice, on the Lakera PINT principle that "all evaluated solutions are not directly trained on any of the inputs".
+  </div>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Feature</th><th>Source</th><th>Date</th><th>Size · licence · gated</th><th>Contamination risk</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td>F1</td><td>MLCommons AILuminate v1.1 practice set</td><td>2025</td><td>12k public (1.2k demo) · CC-BY-4.0 · no; 12k private for members</td><td>medium: public since 2025, human-written, 12 hazards, the industry's own taxonomy</td><td>headline; our AILuminate mapping is theirs by construction</td></tr>
+      <tr><td>F1</td><td>nvidia/Aegis-AI-Content-Safety-Dataset-2.0</td><td>Jan 2025</td><td>~33k · CC-BY-4.0 · no</td><td>high: in Qwen3Guard eval and DynaGuard training</td><td>headline for response rows (few alternatives carry prompt + response with human labels); flagged</td></tr>
+      <tr><td>F1</td><td>SORRY-Bench (2025 refresh)</td><td>2024, refreshed 2025</td><td>9.5k · CC-BY-4.0 · no</td><td>medium</td><td>headline: 45 fine categories, linguistic mutations</td></tr>
+      <tr><td>F1</td><td>BELLS-Operational content-moderation set (CeSIA)</td><td>2026</td><td>1.4k · CC-BY-NC-SA · gated to researchers</td><td>low-medium: 44% extracted from older benchmarks, 29% handcrafted, 27% generated; EU AI Act taxonomy</td><td>headline, handcrafted third only; apply for access</td></tr>
+      <tr><td>F1</td><td>"No One Model Catches Every Harm" C4 slice (BeaverTails, Bingo)</td><td>Aug 2026 paper</td><td>reuses existing sets</td><td>high</td><td>anchor only; its finding that conversational safety averages F1 ~52% tells us where to craft</td></tr>
+      <tr><td>F1 anchor</td><td>ToxicChat, BeaverTails, HarmBench, XSTest, OpenAI 2022 moderation, WildGuardTest, SimpleSafetyTests</td><td>2022 to 2024</td><td>various · NC for two · some gated</td><td>high, by the vendors' own eval lists</td><td>anchor slice, 2k rows, reported separately, never in the headline</td></tr>
+      <tr><td>F1 over-refusal</td><td>OR-Bench, plus fresh crafted lookalikes</td><td>2024 + ours</td><td>10k–100k · CC-BY-4.0</td><td>medium</td><td>headline; XSTest moves to anchor</td></tr>
+      <tr><td>F2 direct</td><td>Lakera PINT (public part) and PINT-style private set of ours</td><td>2024, active 2026</td><td>4.3k, 30% non-English · MIT · no</td><td>low by design</td><td>headline; the private half is what keeps it that way</td></tr>
+      <tr><td>F2 direct</td><td>WildJailbreak, JailbreakBench, HackAPrompt (sampled)</td><td>2024, 2024, 2023</td><td>ODC-BY gated, MIT, MIT gated</td><td>high (in-the-wild set is in TypeSafe's own cookbook)</td><td>anchor</td></tr>
+      <tr><td>F2 leakage</td><td>Lakera gandalf_ignore_instructions, plus crafted</td><td>2023 + ours</td><td>1k–10k · MIT</td><td>medium</td><td>headline for the subtype Bedrock Classic lacks</td></tr>
+      <tr><td>F2 indirect</td><td>LivePI</td><td>May 2026</td><td>7 surfaces × 12 rendering families × 5 goals · CC-BY-4.0</td><td>low</td><td>headline</td></tr>
+      <tr><td>F2 indirect</td><td>MCPTox, MCP Security Bench, MCP-SafetyBench</td><td>2025, ICLR 2026, ICLR 2026</td><td>1,312 cases from 45 live servers; 12 and 20 attack types</td><td>low</td><td>headline: tool descriptions and tool results, the surface Bedrock skips</td></tr>
+      <tr><td>F2 indirect</td><td>"Indirect Prompt Injection in the Wild" (15.3k real injections from 1.2B URLs)</td><td>Apr 2026</td><td>release not confirmed</td><td>lowest possible: observed, not authored</td><td>headline if the authors release; contact them</td></tr>
+      <tr><td>F2 anchor</td><td>AgentDojo, InjecAgent, BIPIA, deepset</td><td>2023 to 2024</td><td>MIT / Apache</td><td>high; AgentDojo is still the field's default in 2026 papers</td><td>anchor</td></tr>
+      <tr><td>F3</td><td>montehoover/DynaBench test split</td><td>Sep 2025</td><td>40k dialogues with 40k bespoke policies, human-validated · open</td><td>medium: DynaGuard trained on the train split; test split only</td><td>headline for written-policy adherence</td></tr>
+      <tr><td>F3</td><td>Crafted: 12 Bedrock-format topics, 30 written policies in three service formats, paired dialogues</td><td>ours, 2026</td><td>~1.5k · ours</td><td>none, half held out</td><td>headline</td></tr>
+      <tr><td>F4</td><td>LDNOOBW lists + crafted obfuscations</td><td>ours</td><td>2k · CC-BY-4.0</td><td>n/a, deterministic</td><td>headline</td></tr>
+      <tr><td>F5</td><td>PIIBench (10 sources unified, 48 types, BIO tags)</td><td>Apr 2026</td><td>2.37M sequences · CC-BY-4.0</td><td>medium; note its baselines all score span-F1 under 0.14, which smells like label inconsistency across sources, so we audit before use</td><td>headline candidate, subject to audit</td></tr>
+      <tr><td>F5</td><td>PII Arena / pii-secrets-benchmark (41 sets, secrets coverage)</td><td>frozen 9 Sep 2026</td><td>41.6k rows, 227k annotations · MIT</td><td>low for its synthetic secrets</td><td>headline for secrets; English cuts only</td></tr>
+      <tr><td>F5</td><td>ai4privacy pii-masking-400k, Gretel finance PII</td><td>2024 to 2025</td><td>open · ai4privacy terms, Apache-2.0</td><td>high: OpenAI Privacy Filter reports on pii-masking-300k</td><td>anchor</td></tr>
+      <tr><td>F6</td><td>FACTS Grounding public set</td><td>Dec 2024, live leaderboard</td><td>860 public, 859 private · Apache-2.0</td><td>medium; the private half is Google's</td><td>headline</td></tr>
+      <tr><td>F6</td><td>Vectara FaithBench / FaithJudge, ContextualJudgeBench</td><td>2025</td><td>open</td><td>low-medium</td><td>headline</td></tr>
+      <tr><td>F6</td><td>LLM-AggreFact, RAGTruth, HaluEval</td><td>2023 to 2025</td><td>CC-BY-ND, unstated, Apache</td><td>medium-high</td><td>anchor; ND set as ids plus rebuild script</td></tr>
+      <tr><td>F7 B1</td><td>google/civil_comments identity slice</td><td>2019</td><td>CC0</td><td>high age, but bias-by-identity on benign text has no fresh equivalent</td><td>headline, with 500 fresh crafted rows added</td></tr>
+      <tr><td>F7 B2</td><td>Counterfactual pairs from HolisticBias descriptors over 2025 to 2026 F1 rows</td><td>ours</td><td>~1.5k pairs · CC-BY-SA descriptors</td><td>none, half held out</td><td>headline; test-retest run twice per AgentFairBench's finding that single-run spreads overstate disparity ~2.4×</td></tr>
+      <tr><td>F7 B3</td><td>AgentFairBench (hiring, lending, triage; name-coded race and gender)</td><td>Jun 2026</td><td>864 decisions pilot · open code + data</td><td>low</td><td>headline</td></tr>
+      <tr><td>F7 B3</td><td>Anthropic/discrim-eval, heegyu/bbq</td><td>2023, 2022</td><td>CC-BY-4.0</td><td>high: both appear in frontier system cards</td><td>anchor</td></tr>
+      <tr><td>F8</td><td>LivePI goals, MCP-SafetyBench, kill-the-god-agent scenarios, crafted</td><td>2026 + ours</td><td>~2k</td><td>low; all crafted rows held out</td><td>headline</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="grid2">
+    <div class="panel"><h4>Headline versus anchor</h4><p>Headline rows are 2025 or later, human-labelled or deterministic, or ours. Anchor rows are the classic sets, kept at about 2k rows so every system's number can be compared to its published one, and reported in a separate table. A system that does well on anchor and badly on headline has memorised the benchmarks; that gap is itself a published column.</p></div>
+    <div class="panel"><h4>Private slice, PINT style</h4><p>About 20% of headline rows are never released: half the counterfactual templates, half the crafted policies, all crafted F8 scenarios, and a random 10% of every other headline feature. They go only to production APIs and our own machines, following JevBench's rule, and are refreshed yearly. Lakera has kept PINT private since 2024 for exactly this reason.</p></div>
+    <div class="panel"><h4>Crafting is now a bigger share</h4><p>Roughly 6k of 32k test rows are ours. Every crafted row carries a rationale and a reviewer, JevBench's hard-tier discipline, and the generator prompts are published so the method is reproducible even where the rows are private.</p></div>
+    <div class="panel"><h4>What is not fresh, and why we keep it anyway</h4><p>civil_comments (2019) for identity-conditioned false positives and discrim-eval (2023) for decision bias have no 2026 replacement of comparable size and labelling. They are used with fresh crafted rows beside them and the age stated.</p></div>
+  </div>
+
+  <h2>4. The record</h2>
+  <p>Borrowed from JevBench's <code>tasks.py</code> and extended for guardrail semantics. One dataclass, one validator, one hash.</p>
+<pre>record = {
+  id:          "f1-aegis-0413",
+  feature:     "F1" | "F2" | ... | "F8",
+  subtask:     "input" | "output" | "over_refusal" | "jailbreak" | "injection" | "leakage" | "indirect"
+             | "topic" | "word" | "pii" | "grounding" | "relevance" | "b1" | "b2" | "b3" | "action",
+  state:       { role, text, context: [ {role, text} ], tool_call?, source?, query? },
+  category:    { ailuminate: "violent_crimes", bedrock: "VIOLENCE", source_label: "Criminal Planning" },
+  labels:      ["no", "yes"]  or  ordered options / levels,
+  expected:    "yes" | option | level index | spans[] | null,
+  group:       "b2-name-swap-0091" | null,          # counterfactual or paraphrase pair
+  attribute:   { kind: "gender", value: "female" } | null,   # F7 only
+  split:       "tune" | "test",
+  visibility:  "public" | "heldout",
+  provenance:  { source, source_id, licence, label_basis: "human"|"deterministic"|"synthetic_reviewed",
+                 imported_at, contamination: ["llama-guard-3", ...], exclude_reason, notes }
+}</pre>
+  <ul>
+    <li><code>validate()</code> refuses an <code>expected</code> outside <code>labels</code>, a state carrying <code>expected</code>, <code>label</code>, <code>answer</code>, or <code>ground_truth</code>, and an F7 row with no <code>attribute</code>.</li>
+    <li><code>dataset_hash()</code> is order-independent; <code>manifest.json</code> pins one hash per feature per split, written before any system runs.</li>
+    <li><code>label_basis</code> other than <code>human</code> or <code>deterministic</code> excludes the row from the headline and keeps it in an appendix. That is the answer to "your answer key came from an LLM" before it is asked.</li>
+    <li>Questions are not in the record. The record is what is judged; the question set each system receives is a separate versioned file, so the same rows can be re-asked when a question set changes.</li>
+  </ul>
+
+  <h2>5. Pipeline</h2>
+  <figure>
+<pre class="mermaid">
+flowchart LR
+    A["ingest<br/>one loader per source<br/>raw kept outside repo"] --> B["normalise<br/>record schema · role + context<br/>licence + label_basis"]
+    B --> C["map<br/>source category → AILuminate + Bedrock<br/>versioned mapping file"]
+    C --> D["dedup<br/>MinHash near-dup across sources<br/>keep first by licence preference"]
+    D --> E["contaminate-check<br/>flag rows present in known<br/>guard-model training sets"]
+    E --> F["craft<br/>F3 topics · F4 obfuscations · F5 traps<br/>F7 counterfactual pairs · F8 scenarios"]
+    F --> G["audit<br/>two annotators re-label 5% per source<br/>Cohen's κ per feature · drop 'Needs Caution'"]
+    G --> H["split<br/>stratified tune 15% / test 85%<br/>by feature × category × source"]
+    H --> I["freeze<br/>sha256 per feature × split<br/>datasheet · HF release (public slice)<br/>held-out slice stays private"]
+</pre>
+    <figcaption>Crafted rows are reviewed by a human before they enter the audit step; synthetic-but-reviewed is a label basis, not a shortcut. The held-out slice (half of B2 templates, a third of F3 topics, all F8 crafted scenarios) is the JevBench pattern: it is what keeps the numbers meaningful after the dataset is public.</figcaption>
+  </figure>
+
+  <h2>6. The capability matrix falls out of the dataset</h2>
+  <p>Once every row has a feature and subtask, each system either can be asked the question natively, can be asked through a mapping we write down, or cannot be asked at all. That table is the "what we can and cannot do" deliverable, and it is filled in by running the tune split, not by reading documentation.</p>
+  <div class="tablewrap">
+  <table class="cm">
+    <thead><tr><th>Feature · subtask</th><th>Bedrock</th><th>Model Armor</th><th>Azure</th><th>OpenAI mod</th><th>Decision models</th><th>LLM classifier</th></tr></thead>
+    <tbody>
+      <tr><td>F1 input · output</td><td>native</td><td>native</td><td>native</td><td>native</td><td>question set</td><td>prompt</td></tr>
+      <tr><td>F1 over-refusal</td><td>native</td><td>native</td><td>native</td><td>native</td><td>question set + review band</td><td>prompt</td></tr>
+      <tr><td>F2 jailbreak · injection</td><td>native</td><td>native</td><td>native</td><td>—</td><td>question set</td><td>prompt</td></tr>
+      <tr><td>F2 leakage</td><td>Standard tier</td><td>?</td><td>?</td><td>—</td><td>question set</td><td>prompt</td></tr>
+      <tr><td>F2 indirect (tool results)</td><td>— (docs say skipped)</td><td>partial</td><td>documents only</td><td>—</td><td>question set</td><td>prompt</td></tr>
+      <tr><td>F3 denied topics</td><td>native</td><td>?</td><td>?</td><td>—</td><td>question set (definition as criteria)</td><td>prompt</td></tr>
+      <tr><td>F4 word filters</td><td>native</td><td>?</td><td>blocklist</td><td>—</td><td>not asked; regex floor</td><td>—</td></tr>
+      <tr><td>F5 PII spans</td><td>native + offsets</td><td>DLP</td><td>native</td><td>—</td><td>regex candidates + confirm</td><td>prompt, weak offsets</td></tr>
+      <tr><td>F6 grounding · relevance</td><td>native</td><td>?</td><td>groundedness</td><td>—</td><td>question set per claim</td><td>prompt</td></tr>
+      <tr><td>F7 B1 · B2</td><td>measured on F1</td><td>measured on F1</td><td>measured on F1</td><td>measured on F1</td><td>measured on F1</td><td>measured on F1</td></tr>
+      <tr><td>F7 B3 decision bias</td><td>—</td><td>—</td><td>—</td><td>—</td><td>question set</td><td>prompt</td></tr>
+      <tr><td>F8 actions</td><td>AgentCore only</td><td>—</td><td>—</td><td>—</td><td>question set</td><td>prompt</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="small">"?" means the vendor docs are ambiguous and the tune-split run decides. "—" means the system cannot be asked. Both are findings and both are published.</p>
+
+  <h2>7. Four weeks</h2>
+  <ol>
+    <li><strong>Week 1.</strong> Schema, validator, hash, manifest. Loaders for the F1 and F2 public sources. Category mapping file, first version. Licence table committed.</li>
+    <li><strong>Week 2.</strong> Loaders for F5, F6, F7 sources. Dedup and contamination flags. Crafted F3 topic definitions and F4 obfuscation generator, reviewed.</li>
+    <li><strong>Week 3.</strong> F7 counterfactual generator over HolisticBias descriptors, human review of 300 pairs. F8 scenarios. Audit round: two annotators, 5% per source, κ reported.</li>
+    <li><strong>Week 4.</strong> Split, freeze, datasheet, public release of the public slice on Hugging Face. Run the tune split through Jev and OpenAI moderation only, to fill the capability matrix and catch schema mistakes before any ranking exists.</li>
+  </ol>
+
+  <h2>8. Decisions needed</h2>
+  <ol>
+    <li>Confirm the eight features and the row targets, and that Automated Reasoning and images are out of scope.</li>
+    <li>Bias sub-tests: all three in v1, or B1 and B3 first with B2's counterfactual generation in a second pass.</li>
+    <li>Non-commercial sources (ToxicChat, BeaverTails): include in the headline with NC flagged, or appendix only. Include changes what a commercial user of the set can do with it.</li>
+    <li>Annotation: in-house for the 5% audit and the crafted rows, or a paid vendor. About 1,800 rows to re-label plus 300 counterfactual pairs to review.</li>
+    <li>Held-out policy: keep a private slice indefinitely (JevBench's choice), or publish everything after the first results.</li>
+    <li>Name for the dataset. Working title "Gold Rail".</li>
+  </ol>
+
+  <p class="small">Sources verified via the Hugging Face API and arXiv on 22 September 2026; freshness findings from AISafetyBenchExplorer (arXiv 2604.12875), the Qwen3Guard technical report, arXiv 2511.22047, arXiv 2608.21775, DynaGuard (arXiv 2509.02563), LivePI (arXiv 2605.17986), AgentFairBench (arXiv 2606.16723), PIIBench (arXiv 2604.15776), PII Arena, Lakera PINT. Bedrock feature definitions from docs 09 in this repository. Record and freeze conventions from JevBench (github.com/fstandhartinger/jevbench, MIT).</p>
+</main>

@@ -6,7 +6,7 @@ Public version v0.0.1. Internal release numbers identify each revision's rows; e
 
 - Built from internal release v1.3: release sha `818c9e00f9f845950a883ec63b406af59a55d2da0dd7a43741dcfe673df10004`, manifest sha256 `4c3a7bc5adaa543c766512b8fc9ab02dae29b83586b7d616d49bd30e4ab4767d`, 8807 rows.
 - Hub revision: the commit this upload creates, recorded in the project's publication record after upload (a revision cannot name its own commit).
-- Code: https://github.com/raxITlabs/goldrails at `main`.
+- Code: https://github.com/raxITlabs/goldrails at `c468c82204cf3acb20821cf41df17e0d4ead9e78`.
 - Rows compared with the previous revision by canonical row hash: 8307 identical; changes below.
 
 | Feature | Subtask | Source | Change | Rows |

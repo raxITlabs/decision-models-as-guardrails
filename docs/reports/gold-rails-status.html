@@ -1,0 +1,176 @@
+<title>Gold Rails Status</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,650&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#f4f5f2; --paper:#ffffff; --ink:#1c2230; --muted:#5b6272; --rule:#dcdfe3;
+  --gold:#9a6b00; --gold-soft:#f3e7c8; --good:#2f6b3f; --warn:#8a5a00; --bad:#9b2d24;
+  --good-bg:#e4f0e6; --warn-bg:#f6ecd6; --bad-bg:#f5e1de; --chip:#eceef1;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#14171d; --paper:#1b1f27; --ink:#e7e9ee; --muted:#a2a9b6; --rule:#2e3440;
+    --gold:#e2b04a; --gold-soft:#3a3020; --good:#8fcf9d; --warn:#e7bd6a; --bad:#f09a8e;
+    --good-bg:#1f3326; --warn-bg:#382d17; --bad-bg:#3c211e; --chip:#262b35;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#14171d; --paper:#1b1f27; --ink:#e7e9ee; --muted:#a2a9b6; --rule:#2e3440;
+  --gold:#e2b04a; --gold-soft:#3a3020; --good:#8fcf9d; --warn:#e7bd6a; --bad:#f09a8e;
+  --good-bg:#1f3326; --warn-bg:#382d17; --bad-bg:#3c211e; --chip:#262b35;
+}
+body{background:var(--ground);color:var(--ink);font:15px/1.6 var(--sans);padding:0 16px;}
+.wrap{max-width:880px;margin:0 auto;padding-block:40px 64px;display:flex;flex-direction:column;gap:40px;}
+header{display:flex;flex-direction:column;gap:10px;border-bottom:2px solid var(--gold);padding-bottom:22px;}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--gold);}
+h1{font:650 clamp(30px,5vw,42px)/1.1 var(--serif);margin:0;text-wrap:balance;}
+h2{font:650 23px/1.25 var(--serif);margin:0 0 12px;text-wrap:balance;}
+h3{font:600 15px/1.3 var(--sans);margin:0 0 6px;}
+p{margin:0;max-width:68ch;}
+.lede{font-size:17px;color:var(--ink);}
+.meta{color:var(--muted);font-size:13px;display:flex;flex-wrap:wrap;gap:6px 18px;}
+.meta span{font-family:var(--mono);}
+section{display:flex;flex-direction:column;gap:12px;}
+.tldr{background:var(--paper);border:1px solid var(--rule);border-left:4px solid var(--gold);padding:20px 22px;display:flex;flex-direction:column;gap:10px;}
+.tldr ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;max-width:72ch;}
+.question{font:500 19px/1.45 var(--serif);border-left:3px solid var(--rule);padding:4px 0 4px 16px;max-width:64ch;}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;}
+.panel{background:var(--paper);border:1px solid var(--rule);padding:16px 18px;display:flex;flex-direction:column;gap:6px;}
+.panel ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;}
+.panel p,.panel li{font-size:14px;}
+.tablewrap{overflow-x:auto;background:var(--paper);border:1px solid var(--rule);}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:13.5px;}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top;}
+th{font:600 11.5px/1.3 var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--ground);}
+tr:last-child td{border-bottom:0;}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;}
+.pill{display:inline-block;font:500 11.5px/1 var(--sans);padding:4px 8px;border-radius:3px;white-space:nowrap;}
+.p-good{background:var(--good-bg);color:var(--good);}
+.p-warn{background:var(--warn-bg);color:var(--warn);}
+.p-bad{background:var(--bad-bg);color:var(--bad);}
+.p-neutral{background:var(--chip);color:var(--muted);}
+.note{font-size:13px;color:var(--muted);max-width:76ch;}
+ol.timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;}
+ol.timeline li{display:grid;grid-template-columns:96px 1fr;gap:14px;padding:10px 0;border-bottom:1px solid var(--rule);}
+ol.timeline li:last-child{border-bottom:0;}
+.when{font:500 12px/1.5 var(--mono);color:var(--gold);padding-top:2px;}
+.checklist{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;}
+.checklist li{display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:start;max-width:76ch;}
+.box{width:14px;height:14px;border:1.5px solid var(--gold);border-radius:2px;margin-top:4px;}
+code{font:13px var(--mono);background:var(--chip);padding:1px 5px;border-radius:3px;}
+footer{border-top:1px solid var(--rule);padding-top:16px;color:var(--muted);font-size:13px;}
+@media (max-width:520px){ol.timeline li{grid-template-columns:1fr;gap:2px;}}
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">raxIT Labs · research project</div>
+  <h1>Gold Rails: where we are</h1>
+  <p class="lede">A guardrail benchmark that asks whether decision models such as Jev can stand in for managed guardrails such as Amazon Bedrock Guardrails.</p>
+  <div class="meta">Status as of <span>23 Sep 2026, morning</span> Work since <span>21 Sep 16:03</span> Commits <span>84</span> Tests <span>46 passing</span></div>
+</header>
+
+<section class="tldr" aria-labelledby="tldr">
+  <h2 id="tldr">TL;DR</h2>
+  <ul>
+    <li>We started with an idea for a Jev-powered guardrail API and ended up building the thing that has to come first: an open, reproducible benchmark comparing decision models with Bedrock Guardrails.</li>
+    <li>All six Bedrock capabilities we compare against now have a working smoke suite, run on seven systems: Jev, Kev 0.8B, 4B and 9B, Open-Jev 2B, Laya, and Bedrock itself.</li>
+    <li>On small tuning samples Jev ranks well on attacks, PII, topics and grounding, and over-flags benign scary-sounding text on content. None of that is a result yet.</li>
+    <li>Three outside reviews caught overclaims, a leaky dataset split, mismatched tasks and a scoring bug. All are fixed and written up, and the evaluation rules are tighter for it.</li>
+    <li>All GCP infrastructure is torn down and nothing bills. The four AWS guardrails remain; they cost nothing at rest.</li>
+    <li>Next: review the authored test cases, add the missing coverage, freeze the evaluation contract, then run the held-out comparison.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="goal">
+  <h2 id="goal">The goal</h2>
+  <p class="question">Across Bedrock Guardrails' capabilities, how competitive are decision-model implementations on quality, cost and latency, and with what limitations?</p>
+  <p>The comparison is between complete implementations: a decision model with its questions and decision rule, against a managed service with its supported configuration. Both see the same test cases, and each dataset's own task definition decides what is correct. Automated Reasoning is excluded because formal verification is a different capability. The dataset will be published on Hugging Face under raxITLabs and the results on raxit.ai.</p>
+</section>
+
+<section aria-labelledby="journey">
+  <h2 id="journey">How we got here</h2>
+  <ol class="timeline">
+    <li><span class="when">21 Sep</span><div><h3>Research</h3><p>Jev primer, community research, a Bedrock Guardrails feature inventory, and a first API design for a Jev content filter. Five-row spikes against Jev.</p></div></li>
+    <li><span class="when">22 Sep a.m.</span><div><h3>Pivot to a benchmark</h3><p>Decision memo, JevBench and GrayZoneBench learnings, the Gold Rails v1 spec, and the first dataset: seven public sources, a 250-row pilot and a 1k sample.</p></div></li>
+    <li><span class="when">22 Sep p.m.</span><div><h3>Open models in the cloud</h3><p>A Terraform VM on GCP with two L4 GPUs serving Kev, Open-Jev and later Laya behind IAP tunnels. Many fixes to get it serving, then a concurrent runner that took a pilot pass from about 25 minutes to under 3.</p></div></li>
+    <li><span class="when">22 Sep eve.</span><div><h3>Baseline and scoring</h3><p>Bedrock added through InvokeGuardrailChecks, a scorer and reports. First outside review: our explanations overclaimed and the labels mixed different judgments. Evaluation contract written.</p></div></li>
+    <li><span class="when">22 Sep late</span><div><h3>Six suites</h3><p>Scope reset to Bedrock's six comparable capabilities. Prompt attacks, PII, then an AWS Terraform module for ApplyGuardrail so denied topics, word filters and grounding could be tested too.</p></div></li>
+    <li><span class="when">23 Sep night</span><div><h3>Frozen rows and teardown</h3><p>Deterministic sampling, content-verified ledger history, all seven systems on the frozen tuning rows, then the GCP infrastructure deleted.</p></div></li>
+  </ol>
+</section>
+
+<section aria-labelledby="coverage">
+  <h2 id="coverage">Where each suite stands</h2>
+  <p class="note">Smoke runs on frozen tuning rows at a 0.5 threshold, no confidence intervals. AUROC is how often a positive row scores above a negative one, where 0.5 is chance. These numbers validate the pipeline. They are not the benchmark result.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Suite</th><th>Cases</th><th>Rows</th><th>Jev (AUROC · recall · false flags)</th><th>Bedrock</th><th>Best open model</th><th>State</th></tr></thead>
+      <tbody>
+        <tr><td>Content</td><td>Aegis 2.0, AILuminate, OpenAI moderation, OR-Bench</td><td class="num">20</td><td class="num">0.79 · 0.75 · 0.33</td><td class="num">0.90 · 0.88 · 0.17</td><td class="num">Kev-4B 0.88</td><td><span class="pill p-warn">pilot, pre-freeze</span></td></tr>
+        <tr><td>Prompt attacks</td><td>deepset, Gandalf, JailbreakBench attack prompts, authored controls</td><td class="num">78</td><td class="num">0.92 · 0.84 · 0.20</td><td class="num">0.77 · 0.63 · 0.11</td><td class="num">Kev-9B 0.91</td><td><span class="pill p-good">7 systems</span></td></tr>
+        <tr><td>Sensitive info (detect)</td><td>AI4Privacy spans, authored PII-free text</td><td class="num">48</td><td class="num">0.97 · 0.67 · 0.03</td><td class="num">0.90 · 0.80 · 0.00</td><td class="num">Kev-4B 0.96</td><td><span class="pill p-good">7 systems</span></td></tr>
+        <tr><td>Denied topics</td><td>Authored in-topic, near-miss and off-topic requests</td><td class="num">28</td><td class="num">recall 1.00 · 0.06</td><td class="num">recall 0.83 · 0.12</td><td class="num">Kev-4B 1.00 · 0.00</td><td><span class="pill p-warn">cases unreviewed</span></td></tr>
+        <tr><td>Word filters</td><td>Generated from a stated matching rule</td><td class="num">41</td><td class="num">1.00 · 1.00 · 0.00</td><td class="num">1.00 · 1.00 · 0.00</td><td class="num">regex 1.00</td><td><span class="pill p-good">regex is the reference</span></td></tr>
+        <tr><td>Grounding</td><td>RAGTruth with human hallucination spans</td><td class="num">30</td><td class="num">0.87 · 0.67 · 0.13</td><td class="num">0.62 · 0.27 · 0.13</td><td class="num">Kev-4B 0.71</td><td><span class="pill p-warn">relevance unlabelled</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Bedrock's topic answer is yes or no, so its topic line is compared on recall and false flags only. On word filters a regex matches the rule perfectly and costs nothing, which is the bar any model has to clear. Open-Jev 2B detects almost no prompt attacks on these rows, and the cause is not yet known.</p>
+</section>
+
+<section aria-labelledby="built">
+  <h2 id="built">What exists in the repo</h2>
+  <div class="grid2">
+    <div class="panel"><h3>Dataset</h3><ul><li>Record schema with provenance, spans and group ids</li><li>Loaders for 10 public sources plus authored controls</li><li>Group-aware splits; examined rows never reach test</li><li>Rebuilds are byte-identical</li></ul></div>
+    <div class="panel"><h3>Benchmark</h3><ul><li>One client for every System One server, plus Bedrock and regex adapters</li><li>Concurrent, resumable runner with per-GPU lanes</li><li>Ledgers with config, dataset and row hashes</li><li>Scorer and reports per suite, arm, source and entity</li></ul></div>
+    <div class="panel"><h3>Infrastructure</h3><ul><li><code>infra/gcp</code>: model VM, rebuilt with <code>make up</code></li><li><code>infra/aws</code>: four versioned Bedrock guardrails</li><li><code>make up · run · pause · down · status · report</code></li></ul></div>
+    <div class="panel"><h3>Docs</h3><ul><li><code>VISION.md</code>: the goal</li><li>Doc 16: evaluation contract and withdrawn claims</li><li>Doc 18: six suites, coverage, plot and cost rules</li><li>Doc 17: custom-policy study, parked</li></ul></div>
+  </div>
+</section>
+
+<section aria-labelledby="lessons">
+  <h2 id="lessons">What the reviews changed</h2>
+  <div class="grid2">
+    <div class="panel"><h3>Say only what the data shows</h3><p>Early explanations described why models behaved as they did from a single row. Claims are now checked against the ledger first, and hypotheses are labelled as hypotheses.</p></div>
+    <div class="panel"><h3>Same task for every system</h3><p>JailbreakBench goals were used as jailbreaks, PII questions were broader than Bedrock's entity types, and unscored relevance leaked into grounding. Each suite now declares exactly which questions decide the score.</p></div>
+    <div class="panel"><h3>Clean splits</h3><p>Pilot rows sat in the test split and related conversations crossed tune and test. Splits are now grouped, examined rows are excluded, and sampling is frozen.</p></div>
+    <div class="panel"><h3>Provable history</h3><p>Results were moved between dataset versions by row id alone. They now move only when the row's full content is identical, recovered from git.</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="infra">
+  <h2 id="infra">Infrastructure and spend</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Resource</th><th>State</th><th>Cost now</th></tr></thead>
+      <tbody>
+        <tr><td>GCP VM, disk, firewall rules, service account</td><td><span class="pill p-good">deleted, verified</span></td><td class="num">$0</td></tr>
+        <tr><td>AWS Bedrock guardrails (4, versioned)</td><td><span class="pill p-neutral">kept for pinned runs</span></td><td class="num">$0 at rest</td></tr>
+        <tr><td>TypeSafe Jev API, Bedrock calls</td><td><span class="pill p-neutral">pay per call</span></td><td class="num">cents so far</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Estimated spend to date is under $10, almost all on-demand GPU time at about $2 an hour, reconstructed from logs rather than a billing statement. Recreating the VM re-downloads model weights on first boot. GPU stockouts in us-east4 delayed two sessions.</p>
+</section>
+
+<section aria-labelledby="next">
+  <h2 id="next">Before the held-out run</h2>
+  <ul class="checklist">
+    <li><span class="box" aria-hidden="true"></span><span>Human review of the authored cases: topic requests, prompt-attack controls and PII-free controls, about 70 rows.</span></li>
+    <li><span class="box" aria-hidden="true"></span><span>Fill the named coverage gaps: masking scored on spans, relevance labels for grounding, indirect prompt injection from LLMail-Inject, a published topic source such as BARRED.</span></li>
+    <li><span class="box" aria-hidden="true"></span><span>Pick each system's threshold on tuning rows for a stated false-positive budget, then report recall at that budget with intervals.</span></li>
+    <li><span class="box" aria-hidden="true"></span><span>Freeze the evaluation contract and the held-out samples, with hashes recorded before any call.</span></li>
+    <li><span class="box" aria-hidden="true"></span><span>Run the held-out comparison once, publish the dataset to Hugging Face, and build the results section on raxit.ai.</span></li>
+  </ul>
+</section>
+
+<footer>Source of truth: the ledgers and reports in <code>benchmark/results/</code> and the docs in <code>docs/</code>. Every number here comes from those files on 23 September.</footer>
+
+</div>

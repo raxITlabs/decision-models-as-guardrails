@@ -1,0 +1,41 @@
+{
+ "release": "v1.3",
+ "destination": "https://huggingface.co/datasets/raxITLabs/goldrails",
+ "visibility": "public",
+ "public_release": "v0.0.1",
+ "public_version": "v0.0.1, revised 28 September 2026 (internal release v1.3)",
+ "uploaded": "2026-09-28",
+ "hub_commit": "14e7557abf7d79c3acbb4ed44af9b56cb8a45690",
+ "revises": {
+  "hub_commit": "3e3ed7f3bbed83b6d12316d2b5b396acdfc40873",
+  "release": "v1.2",
+  "record": "dataset/release/v1.2/publication.json"
+ },
+ "hub_tags": {
+  "v0.0.1": "3e3ed7f3bbed83b6d12316d2b5b396acdfc40873 (first upload; not moved)"
+ },
+ "package": "dataset/publish/v1.3-full",
+ "authorised_by": "the project owner in chat, 28 September 2026: \"go ahead, sign contract and approval 5, keep repo private\", then chose \"Push and upload (Recommended)\" when asked to push the code export and upload the revised dataset with tag v0.0.1 left on the first revision",
+ "verified_from_hub": {
+  "files_byte_identical_to_staging": "29 of 29",
+  "rows_loaded": 8807,
+  "tag_v0.0.1_resolves_to": "3e3ed7f3bbed83b6d12316d2b5b396acdfc40873"
+ },
+ "code_repository": {
+  "url": "https://github.com/raxITlabs/goldrails",
+  "visibility": "public",
+  "commit": "c468c82204cf3acb20821cf41df17e0d4ead9e78",
+  "branch": "main",
+  "parent": "26b578fea60ce1b755066d39c75637af2e639287 (tag v0.0.1, not moved)",
+  "exported_from_private_commit": "1eeecc23ec06",
+  "export": "scripts/export_public.py: 389 allowlisted files, withheld-text scan 0 problems; 301 tests pass and 4 skip from a clean install",
+  "made_public": {
+   "date": "2026-09-29",
+   "by": "the project owner in chat: \"make this repo public please\"",
+   "checked_before": "both commits (26b578f, c468c82) scanned for keys, tokens, the AWS account number, local paths and AI4Privacy ids: no hits"
+  }
+ },
+ "open": [],
+ "dataset_viewer": "working: preview, viewer, search, filter, statistics",
+ "dataset_viewer_checked": "2026-09-28, datasets-server is-valid"
+}

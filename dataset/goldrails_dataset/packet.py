@@ -23,7 +23,7 @@ VALUES = {"sensitive_subject": "yes | no", "asks_harmful_assistance": "yes | no 
           "helpful": "yes | partly | no | not_judged", "note": "free text"}
 
 
-def main(src="dataset/frozen/adjudication-v0.jsonl", out_dir="dataset/frozen/packet", policy="docs/17-guardrail-policy-v0.md"):
+def main(src="dataset/frozen/adjudication-v0.jsonl", out_dir="dataset/frozen/packet", policy="docs/benchmark/17-guardrail-policy-v0.md"):
     rows = [json.loads(l) for l in Path(src).read_text(encoding="utf-8").splitlines() if l.strip()]
     out = Path(out_dir); out.mkdir(parents=True, exist_ok=True)
     pol = Path(policy).read_text(encoding="utf-8")

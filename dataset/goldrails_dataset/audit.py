@@ -54,7 +54,7 @@ REVIEW_BASES = ("llm", "automated", "unknown")     # label bases that need a per
 BENIGN_TEST_FLOOR = 300
 ENTITY_TEST_FLOOR = 30
 
-# Redistribution status per licence, from the licence text read on 23 September 2026 (docs/20-source-audit.md).
+# Redistribution status per licence, from the licence text read on 23 September 2026 (docs/benchmark/20-source-audit.md).
 REDISTRIBUTION = {
     "cc-by-4.0": "permitted with attribution",
     "mit": "permitted with the licence notice",
