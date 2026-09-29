@@ -7,7 +7,7 @@
 <meta name="description" content="A plain-language guide to how the [gold]rails guardrail benchmark works: who is compared, how one message is judged, how scores are made, and what the results can and cannot show.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* raxIT Labs house style (raxitlabs-github/site DESIGN.md): warm editorial, cream ground, warm ink, Inter only.
    Layout: centered title block and short version; then a sticky contents rail (wide screens) beside one
@@ -113,8 +113,8 @@ figure { margin: 0; display: grid; gap: 10px; }
 .frame { background: var(--raise); border: 1px solid var(--edge); border-radius: 8px; padding: 18px; overflow-x: auto; }
 figcaption, .caption { font-size: 0.9rem; color: var(--ink-3); }
 svg { display: block; max-width: 100%; height: auto; }
-#paired text, #timeline text { fill: var(--ink-2); font-family: var(--font-body); font-size: 12px; }
-#paired .strong, #timeline .strong { fill: var(--ink); font-weight: 600; }
+#timeline text { fill: var(--ink-2); font-family: var(--font-body); font-size: 12px; }
+#timeline .strong { fill: var(--ink); font-weight: 600; }
 .formula { font: 500 1.1rem var(--font-body); color: var(--ink); background: var(--raise); border: 1px solid var(--edge); border-radius: 8px; padding: 16px 20px; overflow-x: auto; font-variant-numeric: tabular-nums; }
 ul.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; }
 dl.list { margin: 0; display: grid; gap: 14px; }
@@ -148,6 +148,23 @@ details.more > summary:hover { background: var(--step); }
 details.more > summary small { margin-left: auto; font-weight: 400; color: var(--ink-3); font-size: 0.85rem; }
 details.more > .body { padding: 4px 16px 18px; display: grid; gap: 14px; }
 
+/* Bias map: the overall score with hate detection nested inside, the two diagnostics beside it */
+.cards.three { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.bias-map { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 14px; align-items: stretch; }
+.bm-score { background: var(--raise); border: 1px solid var(--edge); border-radius: 8px; padding: 18px; display: grid; gap: 12px; align-content: start; }
+.bm-chips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.bm-chip { border: 1px solid var(--edge); border-radius: 6px; padding: 8px 10px; font-size: 0.9rem; color: var(--ink); background: var(--paper); }
+.bm-host { grid-column: 1 / -1; display: grid; gap: 8px; }
+.bm-inner { border: 1.5px solid var(--jev); background: var(--jev-faint); border-radius: 6px; padding: 8px 10px; display: grid; gap: 2px; }
+.bm-inner span, .bm-card > span:not(.bm-rel) { font-size: 0.88rem; color: var(--ink-2); }
+.bm-side { display: grid; gap: 14px; }
+.bm-card { background: var(--raise); border: 1px dashed color-mix(in srgb, var(--ink) 35%, transparent); border-radius: 8px; padding: 16px; display: grid; gap: 4px; align-content: start; }
+.bm-card b, .bm-inner b { color: var(--ink); font-weight: 600; }
+.bm-rel { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+table.bias-q th[scope=row] { background: var(--step); color: var(--ink-3); white-space: nowrap; }
+table.bias-q thead th { color: var(--ink); text-transform: none; letter-spacing: 0; font-size: 0.85rem; font-weight: 600; }
+table.bias-q td { min-width: 9rem; }
+@media (max-width: 720px) { .bias-map { grid-template-columns: 1fr; } }
 dl.gloss { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: 12px 24px; margin: 0; }
 dl.gloss dt { font-weight: 600; color: var(--ink); scroll-margin-top: 24px; }
 dl.gloss dd { margin: 0; }
@@ -215,6 +232,7 @@ footer { max-width: 1120px; margin: 48px auto 0; font-size: 0.9rem; color: var(-
     </div>
     <div class="part"><span>3 · Reading the results</span>
       <a href="#overall">How do six scores become one?</a>
+      <a href="#bias">What about bias?</a>
       <a href="#cost">What does it cost?</a>
       <a href="#check">How can anyone check it?</a>
       <a href="#limits">What can't it tell you?</a>
@@ -257,9 +275,9 @@ footer { max-width: 1120px; margin: 48px auto 0; font-size: 0.9rem; color: var(-
           <tr><td>Grounding</td><td>states something its source does not support</td><td class="n">160</td></tr>
         </tbody>
       </table></div>
-      <p>Bias is tested too, in three parts that ask different questions. The first is already inside harmful content. The other two sit beside the scores and never change them.</p>
+      <p>Bias is tested too, as three separate questions. <a href="#bias">What about bias?</a> explains why they stay separate.</p>
       <details class="more">
-        <summary>More detail: the answer keys and the three bias parts <small>6 sources, 3 parts</small></summary>
+        <summary>More detail: where the answer keys come from <small>6 sources</small></summary>
         <div class="body">
           <ul class="plain">
             <li><b>Harmful content:</b> public safety datasets such as Aegis 2.0 and OpenAI Moderation.</li>
@@ -269,18 +287,6 @@ footer { max-width: 1120px; margin: 48px auto 0; font-size: 0.9rem; color: var(-
             <li><b>Sensitive information:</b> NVIDIA Nemotron-PII annotations.</li>
             <li><b>Grounding:</b> RAGTruth human annotations.</li>
           </ul>
-          <p><b>The three bias parts.</b> Each answers its own question, so each has its own name.</p>
-          <div class="tablewrap"><table>
-            <thead><tr><th>Part</th><th>The question</th><th class="n">Test messages</th><th>Compared</th></tr></thead>
-            <tbody>
-              <tr><td>Hate and discrimination detection</td><td>Does it catch messages the source labelled hateful or discriminatory?</td><td class="n">28</td><td>All seven systems</td></tr>
-              <tr><td>Guardrail fairness diagnostics</td><td>Does it block harmless messages, or miss harmful ones, more often when a message mentions a certain group? Does swapping one group word change its decision?</td><td class="n">108</td><td>All seven systems</td></tr>
-              <tr><td>Decision-model bias diagnostics</td><td>Does a decision model assume a stereotype that the text does not support?</td><td class="n">200</td><td>The six decision models</td></tr>
-            </tbody>
-          </table></div>
-          <p>The 28 hate messages are among the 560 messages in the harmful-content test and count once, there. Another 8 come from a source category that mixes harassment and discrimination. The fairness part uses 100 online comments, labelled toxic or not, and 4 pairs of messages that differ in one group word. Toxic is broader than hateful, so a missed comment there is a missed toxic comment, not missed hate. The decision-model part uses 150 BBQ questions and 50 discrim-eval decisions. Bedrock only blocks or allows, so it can't answer them. It is marked not applicable, not zero.</p>
-          <p>Catching hate and treating groups evenly are different things. A guardrail can catch every hateful message and still block harmless messages about one group more often than another. In this test every identity group has fewer than 30 comments, too few to show a difference, so a gap of zero would not show equal treatment either.</p>
-          <p class="caption">The six-capability score covers the guardrail tasks. The fairness diagnostics ask whether that performance holds across groups. The decision-model tests support conclusions about their own two tasks and nothing wider.</p>
         </div>
       </details>
     </section>
@@ -373,10 +379,13 @@ footer { max-width: 1120px; margin: 48px auto 0; font-size: 0.9rem; color: var(-
     <section id="sure" aria-labelledby="sure-h">
       <h2 id="sure-h">How sure can we be?</h2>
       <p class="answer">Jev is clearly ahead on four of the six capabilities. On the other two there is no clear difference.</p>
-      <p>Each bar below is Jev's score minus Bedrock's, with its likely range. If the whole bar sits right of zero, Jev is clearly ahead. If it crosses zero, we can't tell them apart.</p>
+      <p>The table gives Jev's score minus Bedrock's, with its likely range. If the whole range is above zero, Jev is clearly ahead. If it includes zero, we can't tell them apart. The <a href="#rc-gaps">results chart</a> shows the same verdicts.</p>
       <figure>
-        <div class="frame scroll"><svg id="paired" viewBox="0 0 820 330" role="img" aria-label="Jev minus Bedrock, with 95% ranges. Jev ahead on prompt attacks, denied topics, profanity, grounding and overall. No clear difference on harmful content and sensitive information. Custom words tied at 100."></svg></div>
-        <figcaption>Points are Jev minus Bedrock in score points. Word filters appears as its two checks, custom words and profanity. <span class="scroll-hint">Scroll sideways to see the whole chart.</span></figcaption>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Capability</th><th class="n">Jev minus Bedrock</th><th class="n">Likely range</th><th>Verdict</th></tr></thead>
+          <tbody id="paired-rows"></tbody>
+        </table></div>
+        <figcaption>In score points. Word filters appears as its two checks, custom words and profanity.</figcaption>
       </figure>
       <details class="more">
         <summary>More detail: how the ranges are worked out <small>bootstrap</small></summary>
@@ -397,6 +406,552 @@ footer { max-width: 1120px; margin: 48px auto 0; font-size: 0.9rem; color: var(-
         <thead><tr><th>Capability</th><th class="n">Jev</th><th class="n">Bedrock</th></tr></thead>
         <tbody id="overall-rows"></tbody>
       </table></div>
+<!-- results-charts:start results (generated by docs/teach/diagrams/results_charts.py; re-run it, do not edit by hand) -->
+<style>
+/* Result charts: every rule is scoped to .rc or #rc-<chart>; no page rule reaches the chart text. */
+.rc { margin: 0; min-width: 0; display: grid; gap: 12px; background: var(--raise); border: 1px solid var(--edge); border-radius: 8px; padding: 16px 16px 12px; }
+.rc-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 8px 16px; }
+.rc .rc-q { flex: 1 1 16rem; margin: 0; font: 600 1.1rem/1.35 var(--font-body); letter-spacing: -0.01em; color: #18120c; }
+.rc-jev { color: #3457d5; }
+.rc-br { color: #a84329; }
+.rc-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.rc-pill { font: 600 14px/1.2 var(--font-body); padding: 6px 14px; border-radius: 999px; background: #e7e0d6; color: #3a2d20; white-space: nowrap; }
+.rc-pill.rc-na { background: #f3ded6; color: #a84329; }
+.rc-scroll { min-width: 0; overflow-x: auto; }
+.rc-scroll > svg { display: block; width: 100%; height: auto; max-width: none; min-width: var(--rc-min); }
+.rc-scroll.rc-end { direction: rtl; }
+.rc-scroll.rc-end > svg { direction: ltr; }
+.rc-n { display: none; }
+.rc-hint { display: none; margin: 0; font-size: 0.85rem; color: var(--ink-3); }
+@media (max-width: 760px) { .rc-hint { display: block; } }
+@media (max-width: 540px) { .rc-has-n .rc-w, .rc-has-n .rc-hint { display: none; } .rc-has-n .rc-n { display: block; } }
+.rc-stack { display: grid; gap: 16px; min-width: 0; }
+#rc-overall .rc-w svg text { font-family: 'Inter', system-ui, sans-serif; font-style: normal; letter-spacing: 0; fill: #3a2d20; font-size: 14px; font-weight: 400 }
+#rc-overall .rc-w svg .d-jev { fill: #3457d5; stroke: #1f3aa3; stroke-width: 1.5 }
+#rc-overall .rc-w svg .d-bed { fill: #e76f51; stroke: #a84329; stroke-width: 1.5 }
+#rc-overall .rc-w svg .d-open { fill: #c2b8ab; stroke: #8a7d6d; stroke-width: 1.5 }
+#rc-overall .rc-w svg .g { stroke: #e3d9cc; stroke-width: 1 }
+#rc-overall .rc-w svg .ty { font-size: 15px; fill: #6f5237; text-anchor: end }
+#rc-overall .rc-w svg .tx { font-size: 15px; fill: #6f5237; text-anchor: middle }
+#rc-overall .rc-w svg .axt { font-size: 15px; fill: #3a2d20; font-weight: 500 }
+#rc-overall .rc-w svg .eff { font-size: 15px; font-style: italic; fill: #6f5237; text-anchor: end }
+#rc-overall .rc-w svg .open { font-size: 15px; font-weight: 500; fill: #6f5237 }
+#rc-overall .rc-w svg .h-jev { fill: #3457d5 }
+#rc-overall .rc-w svg .h-bed { fill: #a84329 }
+#rc-overall .rc-w svg .hn { font-size: 20px; font-weight: 700 }
+#rc-overall .rc-w svg .hv { font-size: 15px; font-weight: 600 }
+#rc-gaps .rc-w svg text { font-family: 'Inter', system-ui, sans-serif; font-style: normal; letter-spacing: 0; fill: #3a2d20; font-size: 14px; font-weight: 400 }
+#rc-gaps .rc-w svg .d-jev { fill: #3457d5; stroke: #1f3aa3; stroke-width: 1.5 }
+#rc-gaps .rc-w svg .d-bed { fill: #e76f51; stroke: #a84329; stroke-width: 1.5 }
+#rc-gaps .rc-w svg .d-open { fill: #c2b8ab; stroke: #8a7d6d; stroke-width: 1.5 }
+#rc-gaps .rc-w svg .g { stroke: #e3d9cc; stroke-width: 1 }
+#rc-gaps .rc-w svg .tx { font-size: 15px; fill: #6f5237; text-anchor: middle }
+#rc-gaps .rc-w svg .axt { font-size: 15px; fill: #3a2d20; font-weight: 500 }
+#rc-gaps .rc-w svg .rl { font-size: 16px; font-weight: 500; fill: #3a2d20 }
+#rc-gaps .rc-w svg .rlb { font-size: 18px; font-weight: 700; fill: #18120c }
+#rc-gaps .rc-w svg .lead { stroke: #3457d5; stroke-opacity: .5; stroke-width: 6; stroke-linecap: round }
+#rc-gaps .rc-w svg .gap { font-size: 18px; font-weight: 700; fill: #3457d5; text-anchor: end }
+#rc-gaps .rc-w svg .gapo { font-size: 20px; font-weight: 700; fill: #3457d5; text-anchor: end }
+#rc-gaps .rc-w svg .lvl { font-size: 16px; font-weight: 500; fill: #6f5237; text-anchor: end }
+#rc-gaps .rc-w svg .hn { font-size: 15px; font-weight: 700; text-anchor: middle }
+#rc-gaps .rc-w svg .h-jev { fill: #3457d5 }
+#rc-gaps .rc-w svg .h-bed { fill: #a84329 }
+#rc-gaps .rc-w svg .sep { stroke: #d9cfc2; stroke-width: 1 }
+#rc-gaps .rc-n svg text { font-family: 'Inter', system-ui, sans-serif; font-style: normal; letter-spacing: 0; fill: #3a2d20; font-size: 14px; font-weight: 400 }
+#rc-gaps .rc-n svg .d-jev { fill: #3457d5; stroke: #1f3aa3; stroke-width: 1.5 }
+#rc-gaps .rc-n svg .d-bed { fill: #e76f51; stroke: #a84329; stroke-width: 1.5 }
+#rc-gaps .rc-n svg .d-open { fill: #c2b8ab; stroke: #8a7d6d; stroke-width: 1.5 }
+#rc-gaps .rc-n svg .g { stroke: #e3d9cc; stroke-width: 1 }
+#rc-gaps .rc-n svg .tx { font-size: 14px; fill: #6f5237; text-anchor: middle }
+#rc-gaps .rc-n svg .axt { font-size: 14px; fill: #3a2d20; font-weight: 500; text-anchor: middle }
+#rc-gaps .rc-n svg .rl { font-size: 15px; font-weight: 500; fill: #3a2d20; paint-order: stroke; stroke: #faf8f5; stroke-width: 5px; stroke-linejoin: round }
+#rc-gaps .rc-n svg .rlb { font-size: 17px; font-weight: 700; fill: #18120c; paint-order: stroke; stroke: #faf8f5; stroke-width: 5px; stroke-linejoin: round }
+#rc-gaps .rc-n svg .lead { stroke: #3457d5; stroke-opacity: .5; stroke-width: 6; stroke-linecap: round }
+#rc-gaps .rc-n svg .gap { font-size: 16px; font-weight: 700; fill: #3457d5; text-anchor: end; paint-order: stroke; stroke: #faf8f5; stroke-width: 5px; stroke-linejoin: round }
+#rc-gaps .rc-n svg .gapo { font-size: 18px; font-weight: 700; fill: #3457d5; text-anchor: end; paint-order: stroke; stroke: #faf8f5; stroke-width: 5px; stroke-linejoin: round }
+#rc-gaps .rc-n svg .lvl { font-size: 15px; font-weight: 500; fill: #6f5237; text-anchor: end; paint-order: stroke; stroke: #faf8f5; stroke-width: 5px; stroke-linejoin: round }
+#rc-gaps .rc-n svg .hn { font-size: 14px; font-weight: 700; text-anchor: middle; paint-order: stroke; stroke: #faf8f5; stroke-width: 5px; stroke-linejoin: round }
+#rc-gaps .rc-n svg .h-jev { fill: #3457d5 }
+#rc-gaps .rc-n svg .h-bed { fill: #a84329 }
+#rc-gaps .rc-n svg .sep { stroke: #d9cfc2; stroke-width: 1 }
+#rc-content .rc-w svg text { font-family: 'Inter', system-ui, sans-serif; font-style: normal; letter-spacing: 0; fill: #3a2d20; font-size: 14px; font-weight: 400 }
+#rc-content .rc-w svg .d-jev { fill: #3457d5; stroke: #1f3aa3; stroke-width: 1.5 }
+#rc-content .rc-w svg .d-bed { fill: #e76f51; stroke: #a84329; stroke-width: 1.5 }
+#rc-content .rc-w svg .d-open { fill: #c2b8ab; stroke: #8a7d6d; stroke-width: 1.5 }
+#rc-content .rc-w svg .g { stroke: #e3d9cc; stroke-width: 1 }
+#rc-content .rc-w svg .ty { font-size: 14px; fill: #6f5237; text-anchor: end }
+#rc-content .rc-w svg .tx { font-size: 14px; fill: #6f5237; text-anchor: middle }
+#rc-content .rc-w svg .axt { font-size: 14px; fill: #3a2d20; font-weight: 500 }
+#rc-content .rc-w svg .eff { font-size: 14px; font-style: italic; fill: #6f5237; text-anchor: end }
+#rc-content .rc-w svg .open { font-size: 14px; font-weight: 500; fill: #6f5237 }
+#rc-content .rc-w svg .h-jev { fill: #3457d5 }
+#rc-content .rc-w svg .h-bed { fill: #a84329 }
+#rc-content .rc-w svg .hn { font-size: 18px; font-weight: 700 }
+#rc-content .rc-w svg .hv { font-size: 14px; font-weight: 600 }
+#rc-prompt_attacks .rc-w svg text { font-family: 'Inter', system-ui, sans-serif; font-style: normal; letter-spacing: 0; fill: #3a2d20; font-size: 14px; font-weight: 400 }
+#rc-prompt_attacks .rc-w svg .d-jev { fill: #3457d5; stroke: #1f3aa3; stroke-width: 1.5 }
+#rc-prompt_attacks .rc-w svg .d-bed { fill: #e76f51; stroke: #a84329; stroke-width: 1.5 }
+#rc-prompt_attacks .rc-w svg .d-open { fill: #c2b8ab; stroke: #8a7d6d; stroke-width: 1.5 }
+#rc-prompt_attacks .rc-w svg .g { stroke: #e3d9cc; stroke-width: 1 }
+#rc-prompt_attacks .rc-w svg .ty { font-size: 14px; fill: #6f5237; text-anchor: end }
+#rc-prompt_attacks .rc-w svg .tx { font-size: 14px; fill: #6f5237; text-anchor: middle }
+#rc-prompt_attacks .rc-w svg .axt { font-size: 14px; fill: #3a2d20; font-weight: 500 }
+#rc-prompt_attacks .rc-w svg .eff { font-size: 14px; font-style: italic; fill: #6f5237; text-anchor: end }
+#rc-prompt_attacks .rc-w svg .open { font-size: 14px; font-weight: 500; fill: #6f5237 }
+#rc-prompt_attacks .rc-w svg .h-jev { fill: #3457d5 }
+#rc-prompt_attacks .rc-w svg .h-bed { fill: #a84329 }
+#rc-prompt_attacks .rc-w svg .hn { font-size: 18px; font-weight: 700 }
+#rc-prompt_attacks .rc-w svg .hv { font-size: 14px; font-weight: 600 }
+#rc-denied_topics .rc-w svg text { font-family: 'Inter', system-ui, sans-serif; font-style: normal; letter-spacing: 0; fill: #3a2d20; font-size: 14px; font-weight: 400 }
+#rc-denied_topics .rc-w svg .d-jev { fill: #3457d5; stroke: #1f3aa3; stroke-width: 1.5 }
+#rc-denied_topics .rc-w svg .d-bed { fill: #e76f51; stroke: #a84329; stroke-width: 1.5 }
+#rc-denied_topics .rc-w svg .d-open { fill: #c2b8ab; stroke: #8a7d6d; stroke-width: 1.5 }
+#rc-denied_topics .rc-w svg .g { stroke: #e3d9cc; stroke-width: 1 }
+#rc-denied_topics .rc-w svg .ty { font-size: 14px; fill: #6f5237; text-anchor: end }
+#rc-denied_topics .rc-w svg .tx { font-size: 14px; fill: #6f5237; text-anchor: middle }
+#rc-denied_topics .rc-w svg .axt { font-size: 14px; fill: #3a2d20; font-weight: 500 }
+#rc-denied_topics .rc-w svg .eff { font-size: 14px; font-style: italic; fill: #6f5237; text-anchor: end }
+#rc-denied_topics .rc-w svg .open { font-size: 14px; font-weight: 500; fill: #6f5237 }
+#rc-denied_topics .rc-w svg .h-jev { fill: #3457d5 }
+#rc-denied_topics .rc-w svg .h-bed { fill: #a84329 }
+#rc-denied_topics .rc-w svg .hn { font-size: 18px; font-weight: 700 }
+#rc-denied_topics .rc-w svg .hv { font-size: 14px; font-weight: 600 }
+#rc-word_filters .rc-w svg text { font-family: 'Inter', system-ui, sans-serif; font-style: normal; letter-spacing: 0; fill: #3a2d20; font-size: 14px; font-weight: 400 }
+#rc-word_filters .rc-w svg .d-jev { fill: #3457d5; stroke: #1f3aa3; stroke-width: 1.5 }
+#rc-word_filters .rc-w svg .d-bed { fill: #e76f51; stroke: #a84329; stroke-width: 1.5 }
+#rc-word_filters .rc-w svg .d-open { fill: #c2b8ab; stroke: #8a7d6d; stroke-width: 1.5 }
+#rc-word_filters .rc-w svg .g { stroke: #e3d9cc; stroke-width: 1 }
+#rc-word_filters .rc-w svg .ty { font-size: 14px; fill: #6f5237; text-anchor: end }
+#rc-word_filters .rc-w svg .tx { font-size: 14px; fill: #6f5237; text-anchor: middle }
+#rc-word_filters .rc-w svg .axt { font-size: 14px; fill: #3a2d20; font-weight: 500 }
+#rc-word_filters .rc-w svg .eff { font-size: 14px; font-style: italic; fill: #6f5237; text-anchor: end }
+#rc-word_filters .rc-w svg .open { font-size: 14px; font-weight: 500; fill: #6f5237 }
+#rc-word_filters .rc-w svg .h-jev { fill: #3457d5 }
+#rc-word_filters .rc-w svg .h-bed { fill: #a84329 }
+#rc-word_filters .rc-w svg .hn { font-size: 18px; font-weight: 700 }
+#rc-word_filters .rc-w svg .hv { font-size: 14px; font-weight: 600 }
+#rc-sensitive_info .rc-w svg text { font-family: 'Inter', system-ui, sans-serif; font-style: normal; letter-spacing: 0; fill: #3a2d20; font-size: 14px; font-weight: 400 }
+#rc-sensitive_info .rc-w svg .d-jev { fill: #3457d5; stroke: #1f3aa3; stroke-width: 1.5 }
+#rc-sensitive_info .rc-w svg .d-bed { fill: #e76f51; stroke: #a84329; stroke-width: 1.5 }
+#rc-sensitive_info .rc-w svg .d-open { fill: #c2b8ab; stroke: #8a7d6d; stroke-width: 1.5 }
+#rc-sensitive_info .rc-w svg .g { stroke: #e3d9cc; stroke-width: 1 }
+#rc-sensitive_info .rc-w svg .ty { font-size: 14px; fill: #6f5237; text-anchor: end }
+#rc-sensitive_info .rc-w svg .tx { font-size: 14px; fill: #6f5237; text-anchor: middle }
+#rc-sensitive_info .rc-w svg .axt { font-size: 14px; fill: #3a2d20; font-weight: 500 }
+#rc-sensitive_info .rc-w svg .eff { font-size: 14px; font-style: italic; fill: #6f5237; text-anchor: end }
+#rc-sensitive_info .rc-w svg .open { font-size: 14px; font-weight: 500; fill: #6f5237 }
+#rc-sensitive_info .rc-w svg .h-jev { fill: #3457d5 }
+#rc-sensitive_info .rc-w svg .h-bed { fill: #a84329 }
+#rc-sensitive_info .rc-w svg .hn { font-size: 18px; font-weight: 700 }
+#rc-sensitive_info .rc-w svg .hv { font-size: 14px; font-weight: 600 }
+#rc-grounding .rc-w svg text { font-family: 'Inter', system-ui, sans-serif; font-style: normal; letter-spacing: 0; fill: #3a2d20; font-size: 14px; font-weight: 400 }
+#rc-grounding .rc-w svg .d-jev { fill: #3457d5; stroke: #1f3aa3; stroke-width: 1.5 }
+#rc-grounding .rc-w svg .d-bed { fill: #e76f51; stroke: #a84329; stroke-width: 1.5 }
+#rc-grounding .rc-w svg .d-open { fill: #c2b8ab; stroke: #8a7d6d; stroke-width: 1.5 }
+#rc-grounding .rc-w svg .g { stroke: #e3d9cc; stroke-width: 1 }
+#rc-grounding .rc-w svg .ty { font-size: 14px; fill: #6f5237; text-anchor: end }
+#rc-grounding .rc-w svg .tx { font-size: 14px; fill: #6f5237; text-anchor: middle }
+#rc-grounding .rc-w svg .axt { font-size: 14px; fill: #3a2d20; font-weight: 500 }
+#rc-grounding .rc-w svg .eff { font-size: 14px; font-style: italic; fill: #6f5237; text-anchor: end }
+#rc-grounding .rc-w svg .open { font-size: 14px; font-weight: 500; fill: #6f5237 }
+#rc-grounding .rc-w svg .h-jev { fill: #3457d5 }
+#rc-grounding .rc-w svg .h-bed { fill: #a84329 }
+#rc-grounding .rc-w svg .hn { font-size: 18px; font-weight: 700 }
+#rc-grounding .rc-w svg .hv { font-size: 14px; font-weight: 600 }
+#rc-fairness .rc-w svg text { font-family: 'Inter', system-ui, sans-serif; font-style: normal; letter-spacing: 0; fill: #3a2d20; font-size: 14px; font-weight: 400 }
+#rc-fairness .rc-w svg .d-jev { fill: #3457d5; stroke: #1f3aa3; stroke-width: 1.5 }
+#rc-fairness .rc-w svg .d-bed { fill: #e76f51; stroke: #a84329; stroke-width: 1.5 }
+#rc-fairness .rc-w svg .d-open { fill: #c2b8ab; stroke: #8a7d6d; stroke-width: 1.5 }
+#rc-fairness .rc-w svg .g { stroke: #e3d9cc; stroke-width: 1 }
+#rc-fairness .rc-w svg .pt { font-size: 16px; font-weight: 600; fill: #3a2d20 }
+#rc-fairness .rc-w svg .bar { fill: #c2b8ab; stroke: #8a7d6d; stroke-width: 1 }
+#rc-fairness .rc-w svg .bv { font-size: 14px; font-weight: 600; fill: #3a2d20; text-anchor: middle }
+#rc-fairness .rc-w svg .bl { font-size: 14px; fill: #6f5237; text-anchor: middle }
+#rc-fairness .rc-w svg .need { stroke: #6f5237; stroke-width: 1.5; stroke-dasharray: 6 4 }
+#rc-fairness .rc-w svg .needt { font-size: 14px; font-weight: 600; fill: #6f5237; text-anchor: end }
+#rc-fairness .rc-w svg .base { stroke: #a8977f; stroke-width: 1 }
+#rc-fairness .rc-w svg .nm { font-size: 15px; font-weight: 500; fill: #6f5237 }
+#rc-fairness .rc-w svg .nmh { font-size: 16px; font-weight: 700 }
+#rc-fairness .rc-w svg .h-jev { fill: #3457d5 }
+#rc-fairness .rc-w svg .h-bed { fill: #a84329 }
+#rc-fairness .rc-w svg .ok { fill: #248a7e }
+#rc-fairness .rc-w svg .chg { fill: #3a2d20 }
+#rc-fairness .rc-w svg .box { fill: none; stroke: #6f5237; stroke-width: 1.5 }
+#rc-fairness .rc-w svg .x { stroke: #6f5237; stroke-width: 1.5 }
+#rc-fairness .rc-w svg .lg { font-size: 14px; fill: #3a2d20 }
+#rc-stereotypes .rc-w svg text { font-family: 'Inter', system-ui, sans-serif; font-style: normal; letter-spacing: 0; fill: #3a2d20; font-size: 14px; font-weight: 400 }
+#rc-stereotypes .rc-w svg .d-jev { fill: #3457d5; stroke: #1f3aa3; stroke-width: 1.5 }
+#rc-stereotypes .rc-w svg .d-bed { fill: #e76f51; stroke: #a84329; stroke-width: 1.5 }
+#rc-stereotypes .rc-w svg .d-open { fill: #c2b8ab; stroke: #8a7d6d; stroke-width: 1.5 }
+#rc-stereotypes .rc-w svg .g { stroke: #e3d9cc; stroke-width: 1 }
+#rc-stereotypes .rc-w svg .ty { font-size: 14px; fill: #6f5237; text-anchor: end }
+#rc-stereotypes .rc-w svg .tx { font-size: 14px; fill: #6f5237; text-anchor: middle }
+#rc-stereotypes .rc-w svg .axt { font-size: 14px; fill: #3a2d20; font-weight: 500 }
+#rc-stereotypes .rc-w svg .eff { font-size: 14px; font-style: italic; fill: #6f5237; text-anchor: end }
+#rc-stereotypes .rc-w svg .open { font-size: 14px; font-weight: 500; fill: #6f5237 }
+#rc-stereotypes .rc-w svg .hn { font-size: 18px; font-weight: 700; fill: #3457d5 }
+</style>
+<div class="rc-stack">
+<figure class="rc rc-has-n" id="rc-gaps">
+<div class="rc-head"><h3 class="rc-q">Where does <span class="rc-jev">Jev</span> lead <span class="rc-br">Bedrock</span>, and by how many points?</h3><div class="rc-pills"><span class="rc-pill">By category</span></div></div>
+<div class="rc-scroll rc-w"><svg viewBox="0 0 680 456" width="100%" style="--rc-min: 680px" role="img" aria-label="Task score, Jev against Bedrock, on a 50 to 100 scale. Overall 91.9 vs 81.1, Jev ahead by 10.8. Denied topics 100.0 vs 76.5, +23.5. Grounding 80.0 vs 65.0, +15.0. Word filters 96.9 vs 82.8, +14.1. Prompt attacks 98.8 vs 86.9, +11.9. Harmful content 78.9 vs 78.6, level. Sensitive information 96.8 vs 96.7, level. A gap is shown where the paired 95% range excludes zero; level where it does not.">
+<text class="axt" x="236" y="20">Task score</text>
+<line class="g" x1="236.0" x2="236.0" y1="34" y2="416"></line><text class="tx" x="236.0" y="440">50</text>
+<line class="g" x1="308.0" x2="308.0" y1="34" y2="416"></line><text class="tx" x="308.0" y="440">60</text>
+<line class="g" x1="380.0" x2="380.0" y1="34" y2="416"></line><text class="tx" x="380.0" y="440">70</text>
+<line class="g" x1="452.0" x2="452.0" y1="34" y2="416"></line><text class="tx" x="452.0" y="440">80</text>
+<line class="g" x1="524.0" x2="524.0" y1="34" y2="416"></line><text class="tx" x="524.0" y="440">90</text>
+<line class="g" x1="596.0" x2="596.0" y1="34" y2="416"></line><text class="tx" x="596.0" y="440">100</text>
+<text class="rlb" x="16" y="82">Overall</text>
+<line class="lead" x1="459.9" x2="537.5" y1="76" y2="76"></line>
+<circle class="d-bed" cx="459.9" cy="76.0" r="11"></circle><circle class="d-jev" cx="537.5" cy="76.0" r="11"></circle>
+<text class="hn h-bed" x="459.9" y="56">Bedrock</text>
+<text class="hn h-jev" x="537.5" y="56">Jev</text>
+<text class="gapo" x="664" y="83">+10.8</text>
+<line class="sep" x1="16" x2="664" y1="110" y2="110"></line>
+<text class="rl" x="16" y="156">Denied topics</text>
+<line class="lead" x1="427.0" x2="596.0" y1="150" y2="150"></line>
+<circle class="d-bed" cx="427.0" cy="150.0" r="9"></circle><circle class="d-jev" cx="596.0" cy="150.0" r="9"></circle>
+<text class="gap" x="664" y="156">+23.5</text>
+<text class="rl" x="16" y="206">Grounding</text>
+<line class="lead" x1="344.0" x2="452.0" y1="200" y2="200"></line>
+<circle class="d-bed" cx="344.0" cy="200.0" r="9"></circle><circle class="d-jev" cx="452.0" cy="200.0" r="9"></circle>
+<text class="gap" x="664" y="206">+15.0</text>
+<text class="rl" x="16" y="256">Word filters</text>
+<line class="lead" x1="472.2" x2="573.5" y1="250" y2="250"></line>
+<circle class="d-bed" cx="472.2" cy="250.0" r="9"></circle><circle class="d-jev" cx="573.5" cy="250.0" r="9"></circle>
+<text class="gap" x="664" y="256">+14.1</text>
+<text class="rl" x="16" y="306">Prompt attacks</text>
+<line class="lead" x1="501.5" x2="587.0" y1="300" y2="300"></line>
+<circle class="d-bed" cx="501.5" cy="300.0" r="9"></circle><circle class="d-jev" cx="587.0" cy="300.0" r="9"></circle>
+<text class="gap" x="664" y="306">+11.9</text>
+<text class="rl" x="16" y="356">Harmful content</text>
+<circle class="d-bed" cx="442.2" cy="342.0" r="8"></circle><circle class="d-jev" cx="443.8" cy="358.0" r="8"></circle>
+<text class="lvl" x="664" y="356">level</text>
+<text class="rl" x="16" y="406">Sensitive information</text>
+<circle class="d-bed" cx="572.5" cy="392.0" r="8"></circle><circle class="d-jev" cx="572.9" cy="408.0" r="8"></circle>
+<text class="lvl" x="664" y="406">level</text>
+</svg></div>
+<div class="rc-scroll rc-n"><svg viewBox="0 0 300 510" width="100%" style="--rc-min: 300px" role="img" aria-label="Task score, Jev against Bedrock, on a 50 to 100 scale. Overall 91.9 vs 81.1, Jev ahead by 10.8. Denied topics 100.0 vs 76.5, +23.5. Grounding 80.0 vs 65.0, +15.0. Word filters 96.9 vs 82.8, +14.1. Prompt attacks 98.8 vs 86.9, +11.9. Harmful content 78.9 vs 78.6, level. Sensitive information 96.8 vs 96.7, level. A gap is shown where the paired 95% range excludes zero; level where it does not.">
+<line class="g" x1="16.0" x2="16.0" y1="8" y2="454"></line><text class="tx" x="16.0" y="476">50</text>
+<line class="g" x1="69.6" x2="69.6" y1="8" y2="454"></line><text class="tx" x="69.6" y="476">60</text>
+<line class="g" x1="123.2" x2="123.2" y1="8" y2="454"></line><text class="tx" x="123.2" y="476">70</text>
+<line class="g" x1="176.8" x2="176.8" y1="8" y2="454"></line><text class="tx" x="176.8" y="476">80</text>
+<line class="g" x1="230.4" x2="230.4" y1="8" y2="454"></line><text class="tx" x="230.4" y="476">90</text>
+<line class="g" x1="284.0" x2="284.0" y1="8" y2="454"></line><text class="tx" x="284.0" y="476">100</text>
+<text class="axt" x="150" y="500">Task score</text>
+<text class="rlb" x="16" y="28">Overall</text>
+<text class="gapo" x="288" y="28">+10.8</text>
+<line class="lead" x1="182.7" x2="240.5" y1="54" y2="54"></line>
+<circle class="d-bed" cx="182.7" cy="54.0" r="10"></circle><circle class="d-jev" cx="240.5" cy="54.0" r="10"></circle>
+<text class="hn h-bed" x="182.7" y="84">Bedrock</text>
+<text class="hn h-jev" x="240.5" y="84">Jev</text>
+<line class="sep" x1="16" x2="288" y1="100" y2="100"></line>
+<text class="rl" x="16" y="128">Denied topics</text>
+<line class="lead" x1="158.2" x2="284.0" y1="152" y2="152"></line>
+<circle class="d-bed" cx="158.2" cy="152.0" r="8"></circle><circle class="d-jev" cx="284.0" cy="152.0" r="8"></circle>
+<text class="gap" x="288" y="128">+23.5</text>
+<text class="rl" x="16" y="184">Grounding</text>
+<line class="lead" x1="96.4" x2="176.8" y1="208" y2="208"></line>
+<circle class="d-bed" cx="96.4" cy="208.0" r="8"></circle><circle class="d-jev" cx="176.8" cy="208.0" r="8"></circle>
+<text class="gap" x="288" y="184">+15.0</text>
+<text class="rl" x="16" y="240">Word filters</text>
+<line class="lead" x1="191.9" x2="267.2" y1="264" y2="264"></line>
+<circle class="d-bed" cx="191.9" cy="264.0" r="8"></circle><circle class="d-jev" cx="267.2" cy="264.0" r="8"></circle>
+<text class="gap" x="288" y="240">+14.1</text>
+<text class="rl" x="16" y="296">Prompt attacks</text>
+<line class="lead" x1="213.7" x2="277.3" y1="320" y2="320"></line>
+<circle class="d-bed" cx="213.7" cy="320.0" r="8"></circle><circle class="d-jev" cx="277.3" cy="320.0" r="8"></circle>
+<text class="gap" x="288" y="296">+11.9</text>
+<text class="rl" x="16" y="352">Harmful content</text>
+<circle class="d-bed" cx="169.5" cy="370.0" r="7"></circle><circle class="d-jev" cx="170.7" cy="382.0" r="7"></circle>
+<text class="lvl" x="288" y="352">level</text>
+<text class="rl" x="16" y="408">Sensitive information</text>
+<circle class="d-bed" cx="266.5" cy="426.0" r="7"></circle><circle class="d-jev" cx="266.8" cy="438.0" r="7"></circle>
+<text class="lvl" x="288" y="408">level</text>
+</svg></div>
+<p class="rc-hint">Scroll sideways to see the whole chart.</p>
+</figure>
+<figure class="rc" id="rc-overall">
+<div class="rc-head"><h3 class="rc-q">How do <span class="rc-jev">Jev</span> and <span class="rc-br">Bedrock</span> compare across all six categories, and at what cost?</h3><div class="rc-pills"><span class="rc-pill">Overall</span></div></div>
+<div class="rc-scroll rc-w rc-end"><svg viewBox="0 0 680 508" width="100%" style="--rc-min: 680px" role="img" aria-label="Overall, Jev against Bedrock. Task score against cost per 1,000 checks, cost axis $0 to $1.20. Jev 91.9 at $0.043. Bedrock 81.1 at $0.137. Open decision models: Kev 9B 87.1 at $0.409, Kev 4B 86.5 at $0.305, Open-Jev 2B 73.3 at $0.640, Kev 0.8B 73.1 at $0.382, Laya 69.6 at $0.503.">
+<line class="g" x1="62" x2="628" y1="440.0" y2="440.0"></line><text class="ty" x="50" y="445.2">40</text>
+<line class="g" x1="62" x2="628" y1="378.3" y2="378.3"></line><text class="ty" x="50" y="383.6">50</text>
+<line class="g" x1="62" x2="628" y1="316.7" y2="316.7"></line><text class="ty" x="50" y="321.9">60</text>
+<line class="g" x1="62" x2="628" y1="255.0" y2="255.0"></line><text class="ty" x="50" y="260.2">70</text>
+<line class="g" x1="62" x2="628" y1="193.3" y2="193.3"></line><text class="ty" x="50" y="198.6">80</text>
+<line class="g" x1="62" x2="628" y1="131.7" y2="131.7"></line><text class="ty" x="50" y="136.9">90</text>
+<line class="g" x1="62" x2="628" y1="70.0" y2="70.0"></line><text class="ty" x="50" y="75.2">100</text>
+<line class="g" x1="628.0" x2="628.0" y1="70" y2="440"></line><text class="tx" x="628.0" y="467">$0</text>
+<line class="g" x1="533.7" x2="533.7" y1="70" y2="440"></line><text class="tx" x="533.7" y="467">$0.20</text>
+<line class="g" x1="439.3" x2="439.3" y1="70" y2="440"></line><text class="tx" x="439.3" y="467">$0.40</text>
+<line class="g" x1="345.0" x2="345.0" y1="70" y2="440"></line><text class="tx" x="345.0" y="467">$0.60</text>
+<line class="g" x1="250.7" x2="250.7" y1="70" y2="440"></line><text class="tx" x="250.7" y="467">$0.80</text>
+<line class="g" x1="156.3" x2="156.3" y1="70" y2="440"></line><text class="tx" x="156.3" y="467">$1.00</text>
+<line class="g" x1="62.0" x2="62.0" y1="70" y2="440"></line><text class="tx" x="62.0" y="467">$1.20</text>
+<text class="axt" x="62" y="40">Task score</text>
+<text class="eff" x="628" y="40">most efficient ↗</text>
+<text class="axt" x="345" y="496" text-anchor="middle">Cost per 1,000 checks (right is cheaper)</text>
+<circle class="d-open" cx="390.6" cy="257.4" r="7"></circle>
+<circle class="d-open" cx="447.6" cy="236.2" r="7"></circle>
+<circle class="d-open" cx="326.2" cy="234.6" r="7"></circle>
+<circle class="d-open" cx="484.0" cy="153.2" r="7"></circle>
+<circle class="d-open" cx="434.9" cy="149.5" r="7"></circle>
+<circle class="d-bed" cx="563.2" cy="186.6" r="10"></circle>
+<circle class="d-jev" cx="607.7" cy="120.1" r="10"></circle>
+<text class="h-jev hn" x="591.7" y="117.1" text-anchor="end">Jev</text>
+<text class="h-jev hv" x="591.7" y="139.1" text-anchor="end">91.9 · $0.043</text>
+<text class="h-bed hn" x="547.2" y="183.6" text-anchor="end">Bedrock</text>
+<text class="h-bed hv" x="547.2" y="205.6" text-anchor="end">81.1 · $0.137</text>
+<text class="open" x="421.9" y="154.0" text-anchor="end">Kev 9B</text>
+<text class="open" x="497.0" y="157.7" text-anchor="start">Kev 4B</text>
+<text class="open" x="339.2" y="239.1" text-anchor="start">Open-Jev 2B</text>
+<text class="open" x="460.6" y="240.7" text-anchor="start">Kev 0.8B</text>
+<text class="open" x="403.6" y="261.9" text-anchor="start">Laya</text>
+</svg></div>
+<p class="rc-hint">Scroll sideways to see the whole chart.</p>
+</figure>
+</div>
+<details class="more">
+<summary>More detail: each category, score against cost <small>6 charts</small></summary>
+<div class="body rc-stack">
+<figure class="rc" id="rc-content">
+<div class="rc-head"><h3 class="rc-q">Can it spot messages that are violent, hateful, sexual or otherwise unsafe?</h3><div class="rc-pills"><span class="rc-pill">Harmful content</span></div></div>
+<div class="rc-scroll rc-w rc-end"><svg viewBox="0 0 680 452" width="100%" style="--rc-min: 680px" role="img" aria-label="Harmful content. Task score against cost per 1,000 checks, cost axis $0 to $1.20. Jev 78.9 at $0.044. Bedrock 78.6 at $0.072. Open decision models: Kev 9B 79.4 at $0.377, Kev 4B 77.1 at $0.217, Open-Jev 2B 70.1 at $0.440, Laya 68.9 at $0.337, Kev 0.8B 65.8 at $0.103.">
+<line class="g" x1="62" x2="628" y1="386.0" y2="386.0"></line><text class="ty" x="50" y="390.9">40</text>
+<line class="g" x1="62" x2="628" y1="332.7" y2="332.7"></line><text class="ty" x="50" y="337.6">50</text>
+<line class="g" x1="62" x2="628" y1="279.3" y2="279.3"></line><text class="ty" x="50" y="284.2">60</text>
+<line class="g" x1="62" x2="628" y1="226.0" y2="226.0"></line><text class="ty" x="50" y="230.9">70</text>
+<line class="g" x1="62" x2="628" y1="172.7" y2="172.7"></line><text class="ty" x="50" y="177.6">80</text>
+<line class="g" x1="62" x2="628" y1="119.3" y2="119.3"></line><text class="ty" x="50" y="124.2">90</text>
+<line class="g" x1="62" x2="628" y1="66.0" y2="66.0"></line><text class="ty" x="50" y="70.9">100</text>
+<line class="g" x1="628.0" x2="628.0" y1="66" y2="386"></line><text class="tx" x="628.0" y="412">$0</text>
+<line class="g" x1="533.7" x2="533.7" y1="66" y2="386"></line><text class="tx" x="533.7" y="412">$0.20</text>
+<line class="g" x1="439.3" x2="439.3" y1="66" y2="386"></line><text class="tx" x="439.3" y="412">$0.40</text>
+<line class="g" x1="345.0" x2="345.0" y1="66" y2="386"></line><text class="tx" x="345.0" y="412">$0.60</text>
+<line class="g" x1="250.7" x2="250.7" y1="66" y2="386"></line><text class="tx" x="250.7" y="412">$0.80</text>
+<line class="g" x1="156.3" x2="156.3" y1="66" y2="386"></line><text class="tx" x="156.3" y="412">$1.00</text>
+<line class="g" x1="62.0" x2="62.0" y1="66" y2="386"></line><text class="tx" x="62.0" y="412">$1.20</text>
+<text class="axt" x="62" y="36">Task score</text>
+<text class="eff" x="628" y="36">most efficient ↗</text>
+<text class="axt" x="345" y="440" text-anchor="middle">Cost per 1,000 checks (right is cheaper)</text>
+<circle class="d-open" cx="579.2" cy="248.2" r="6"></circle>
+<circle class="d-open" cx="469.1" cy="231.8" r="6"></circle>
+<circle class="d-open" cx="420.3" cy="225.7" r="6"></circle>
+<circle class="d-open" cx="525.4" cy="188.2" r="6"></circle>
+<circle class="d-open" cx="450.3" cy="175.7" r="6"></circle>
+<circle class="d-bed" cx="594.0" cy="179.9" r="9"></circle>
+<circle class="d-jev" cx="607.5" cy="178.8" r="9"></circle>
+<text class="h-jev hn" x="607.5" y="143.2" text-anchor="middle">Jev</text>
+<text class="h-jev hv" x="607.5" y="163.8" text-anchor="middle">78.9 · $0.044</text>
+<text class="h-bed hn" x="594.0" y="209.3" text-anchor="middle">Bedrock</text>
+<text class="h-bed hv" x="594.0" y="229.9" text-anchor="middle">78.6 · $0.072</text>
+<text class="open" x="462.3" y="179.9" text-anchor="start">Kev 9B</text>
+<text class="open" x="515.4" y="207.4" text-anchor="end">Kev 4B</text>
+<text class="open" x="408.3" y="229.9" text-anchor="end">Open-Jev 2B</text>
+<text class="open" x="481.1" y="236.0" text-anchor="start">Laya</text>
+<text class="open" x="591.2" y="252.4" text-anchor="start">Kev 0.8B</text>
+</svg></div>
+<p class="rc-hint">Scroll sideways to see the whole chart.</p>
+</figure>
+<figure class="rc" id="rc-prompt_attacks">
+<div class="rc-head"><h3 class="rc-q">Can it spot someone tricking the AI into ignoring its rules, such as a jailbreak?</h3><div class="rc-pills"><span class="rc-pill">Prompt attacks</span></div></div>
+<div class="rc-scroll rc-w rc-end"><svg viewBox="0 0 680 452" width="100%" style="--rc-min: 680px" role="img" aria-label="Prompt attacks. Task score against cost per 1,000 checks, cost axis $0 to $1.20. Jev 98.8 at $0.026. Bedrock 86.9 at $0.086. Open decision models: Kev 4B 94.8 at $0.121, Kev 9B 94.6 at $0.144, Laya 90.2 at $0.334, Kev 0.8B 75.8 at $0.729, Open-Jev 2B 67.7 at $0.380.">
+<line class="g" x1="62" x2="628" y1="386.0" y2="386.0"></line><text class="ty" x="50" y="390.9">40</text>
+<line class="g" x1="62" x2="628" y1="332.7" y2="332.7"></line><text class="ty" x="50" y="337.6">50</text>
+<line class="g" x1="62" x2="628" y1="279.3" y2="279.3"></line><text class="ty" x="50" y="284.2">60</text>
+<line class="g" x1="62" x2="628" y1="226.0" y2="226.0"></line><text class="ty" x="50" y="230.9">70</text>
+<line class="g" x1="62" x2="628" y1="172.7" y2="172.7"></line><text class="ty" x="50" y="177.6">80</text>
+<line class="g" x1="62" x2="628" y1="119.3" y2="119.3"></line><text class="ty" x="50" y="124.2">90</text>
+<line class="g" x1="62" x2="628" y1="66.0" y2="66.0"></line><text class="ty" x="50" y="70.9">100</text>
+<line class="g" x1="628.0" x2="628.0" y1="66" y2="386"></line><text class="tx" x="628.0" y="412">$0</text>
+<line class="g" x1="533.7" x2="533.7" y1="66" y2="386"></line><text class="tx" x="533.7" y="412">$0.20</text>
+<line class="g" x1="439.3" x2="439.3" y1="66" y2="386"></line><text class="tx" x="439.3" y="412">$0.40</text>
+<line class="g" x1="345.0" x2="345.0" y1="66" y2="386"></line><text class="tx" x="345.0" y="412">$0.60</text>
+<line class="g" x1="250.7" x2="250.7" y1="66" y2="386"></line><text class="tx" x="250.7" y="412">$0.80</text>
+<line class="g" x1="156.3" x2="156.3" y1="66" y2="386"></line><text class="tx" x="156.3" y="412">$1.00</text>
+<line class="g" x1="62.0" x2="62.0" y1="66" y2="386"></line><text class="tx" x="62.0" y="412">$1.20</text>
+<text class="axt" x="62" y="36">Task score</text>
+<text class="eff" x="628" y="36">most efficient ↗</text>
+<text class="axt" x="345" y="440" text-anchor="middle">Cost per 1,000 checks (right is cheaper)</text>
+<circle class="d-open" cx="448.9" cy="238.2" r="6"></circle>
+<circle class="d-open" cx="284.1" cy="194.9" r="6"></circle>
+<circle class="d-open" cx="470.5" cy="118.2" r="6"></circle>
+<circle class="d-open" cx="560.1" cy="94.9" r="6"></circle>
+<circle class="d-open" cx="570.8" cy="93.8" r="6"></circle>
+<circle class="d-bed" cx="587.7" cy="136.0" r="9"></circle>
+<circle class="d-jev" cx="615.5" cy="72.7" r="9"></circle>
+<text class="h-jev hn" x="600.5" y="63.6" text-anchor="end">Jev</text>
+<text class="h-jev hv" x="600.5" y="84.2" text-anchor="end">98.8 · $0.026</text>
+<text class="h-bed hn" x="587.7" y="165.4" text-anchor="middle">Bedrock</text>
+<text class="h-bed hv" x="587.7" y="186.0" text-anchor="middle">86.9 · $0.086</text>
+<text class="open" x="582.8" y="98.0" text-anchor="start">Kev 4B</text>
+<text class="open" x="548.1" y="99.1" text-anchor="end">Kev 9B</text>
+<text class="open" x="482.5" y="122.4" text-anchor="start">Laya</text>
+<text class="open" x="296.1" y="199.1" text-anchor="start">Kev 0.8B</text>
+<text class="open" x="460.9" y="242.4" text-anchor="start">Open-Jev 2B</text>
+</svg></div>
+<p class="rc-hint">Scroll sideways to see the whole chart.</p>
+</figure>
+<figure class="rc" id="rc-denied_topics">
+<div class="rc-head"><h3 class="rc-q">Can it spot personal investment, medical and legal advice that a business has chosen to block?</h3><div class="rc-pills"><span class="rc-pill">Denied topics</span></div></div>
+<div class="rc-scroll rc-w rc-end"><svg viewBox="0 0 680 452" width="100%" style="--rc-min: 680px" role="img" aria-label="Denied topics. Task score against cost per 1,000 checks, cost axis $0 to $1.20. Jev 100.0 at $0.035. Bedrock 76.5 at $0.150. Open decision models: Kev 4B 98.9 at $0.180, Kev 9B 96.0 at $0.234, Open-Jev 2B 79.5 at $0.585, Kev 0.8B 78.3 at $0.110, Laya 62.3 at $0.540.">
+<line class="g" x1="62" x2="628" y1="386.0" y2="386.0"></line><text class="ty" x="50" y="390.9">40</text>
+<line class="g" x1="62" x2="628" y1="332.7" y2="332.7"></line><text class="ty" x="50" y="337.6">50</text>
+<line class="g" x1="62" x2="628" y1="279.3" y2="279.3"></line><text class="ty" x="50" y="284.2">60</text>
+<line class="g" x1="62" x2="628" y1="226.0" y2="226.0"></line><text class="ty" x="50" y="230.9">70</text>
+<line class="g" x1="62" x2="628" y1="172.7" y2="172.7"></line><text class="ty" x="50" y="177.6">80</text>
+<line class="g" x1="62" x2="628" y1="119.3" y2="119.3"></line><text class="ty" x="50" y="124.2">90</text>
+<line class="g" x1="62" x2="628" y1="66.0" y2="66.0"></line><text class="ty" x="50" y="70.9">100</text>
+<line class="g" x1="628.0" x2="628.0" y1="66" y2="386"></line><text class="tx" x="628.0" y="412">$0</text>
+<line class="g" x1="533.7" x2="533.7" y1="66" y2="386"></line><text class="tx" x="533.7" y="412">$0.20</text>
+<line class="g" x1="439.3" x2="439.3" y1="66" y2="386"></line><text class="tx" x="439.3" y="412">$0.40</text>
+<line class="g" x1="345.0" x2="345.0" y1="66" y2="386"></line><text class="tx" x="345.0" y="412">$0.60</text>
+<line class="g" x1="250.7" x2="250.7" y1="66" y2="386"></line><text class="tx" x="250.7" y="412">$0.80</text>
+<line class="g" x1="156.3" x2="156.3" y1="66" y2="386"></line><text class="tx" x="156.3" y="412">$1.00</text>
+<line class="g" x1="62.0" x2="62.0" y1="66" y2="386"></line><text class="tx" x="62.0" y="412">$1.20</text>
+<text class="axt" x="62" y="36">Task score</text>
+<text class="eff" x="628" y="36">most efficient ↗</text>
+<text class="axt" x="345" y="440" text-anchor="middle">Cost per 1,000 checks (right is cheaper)</text>
+<circle class="d-open" cx="373.5" cy="266.8" r="6"></circle>
+<circle class="d-open" cx="576.1" cy="181.8" r="6"></circle>
+<circle class="d-open" cx="352.0" cy="175.3" r="6"></circle>
+<circle class="d-open" cx="517.8" cy="87.3" r="6"></circle>
+<circle class="d-open" cx="543.2" cy="72.1" r="6"></circle>
+<circle class="d-bed" cx="557.2" cy="191.2" r="9"></circle>
+<circle class="d-jev" cx="611.4" cy="66.0" r="9"></circle>
+<text class="h-jev hn" x="611.4" y="95.4" text-anchor="middle">Jev</text>
+<text class="h-jev hv" x="611.4" y="116.0" text-anchor="middle">100.0 · $0.035</text>
+<text class="h-bed hn" x="542.2" y="188.1" text-anchor="end">Bedrock</text>
+<text class="h-bed hv" x="542.2" y="208.7" text-anchor="end">76.5 · $0.150</text>
+<text class="open" x="543.2" y="57.3" text-anchor="middle">Kev 4B</text>
+<text class="open" x="505.8" y="91.5" text-anchor="end">Kev 9B</text>
+<text class="open" x="340.0" y="179.5" text-anchor="end">Open-Jev 2B</text>
+<text class="open" x="588.1" y="186.0" text-anchor="start">Kev 0.8B</text>
+<text class="open" x="385.5" y="271.0" text-anchor="start">Laya</text>
+</svg></div>
+<p class="rc-hint">Scroll sideways to see the whole chart.</p>
+</figure>
+<figure class="rc" id="rc-word_filters">
+<div class="rc-head"><h3 class="rc-q">Can it catch banned words, from a custom list and from a profanity list?</h3><div class="rc-pills"><span class="rc-pill">Word filters</span></div></div>
+<div class="rc-scroll rc-w rc-end"><svg viewBox="0 0 680 452" width="100%" style="--rc-min: 680px" role="img" aria-label="Word filters. Task score against cost per 1,000 checks, cost axis $0 to $1.20. Jev 96.9 at $0.049. Bedrock 82.8 free. Open decision models: Kev 4B 94.1 at $0.226, Kev 9B 93.4 at $0.259, Open-Jev 2B 79.7 at $1.180, Kev 0.8B 76.9 at $0.951, Laya 69.1 at $0.876.">
+<line class="g" x1="62" x2="628" y1="386.0" y2="386.0"></line><text class="ty" x="50" y="390.9">40</text>
+<line class="g" x1="62" x2="628" y1="332.7" y2="332.7"></line><text class="ty" x="50" y="337.6">50</text>
+<line class="g" x1="62" x2="628" y1="279.3" y2="279.3"></line><text class="ty" x="50" y="284.2">60</text>
+<line class="g" x1="62" x2="628" y1="226.0" y2="226.0"></line><text class="ty" x="50" y="230.9">70</text>
+<line class="g" x1="62" x2="628" y1="172.7" y2="172.7"></line><text class="ty" x="50" y="177.6">80</text>
+<line class="g" x1="62" x2="628" y1="119.3" y2="119.3"></line><text class="ty" x="50" y="124.2">90</text>
+<line class="g" x1="62" x2="628" y1="66.0" y2="66.0"></line><text class="ty" x="50" y="70.9">100</text>
+<line class="g" x1="628.0" x2="628.0" y1="66" y2="386"></line><text class="tx" x="628.0" y="412">$0</text>
+<line class="g" x1="533.7" x2="533.7" y1="66" y2="386"></line><text class="tx" x="533.7" y="412">$0.20</text>
+<line class="g" x1="439.3" x2="439.3" y1="66" y2="386"></line><text class="tx" x="439.3" y="412">$0.40</text>
+<line class="g" x1="345.0" x2="345.0" y1="66" y2="386"></line><text class="tx" x="345.0" y="412">$0.60</text>
+<line class="g" x1="250.7" x2="250.7" y1="66" y2="386"></line><text class="tx" x="250.7" y="412">$0.80</text>
+<line class="g" x1="156.3" x2="156.3" y1="66" y2="386"></line><text class="tx" x="156.3" y="412">$1.00</text>
+<line class="g" x1="62.0" x2="62.0" y1="66" y2="386"></line><text class="tx" x="62.0" y="412">$1.20</text>
+<text class="axt" x="62" y="36">Task score</text>
+<text class="eff" x="628" y="36">most efficient ↗</text>
+<text class="axt" x="345" y="440" text-anchor="middle">Cost per 1,000 checks (right is cheaper)</text>
+<circle class="d-open" cx="214.8" cy="231.0" r="6"></circle>
+<circle class="d-open" cx="179.2" cy="189.3" r="6"></circle>
+<circle class="d-open" cx="71.3" cy="174.3" r="6"></circle>
+<circle class="d-open" cx="505.7" cy="101.0" r="6"></circle>
+<circle class="d-open" cx="521.4" cy="97.7" r="6"></circle>
+<circle class="d-bed" cx="628.0" cy="157.7" r="9"></circle>
+<circle class="d-jev" cx="605.1" cy="82.7" r="9"></circle>
+<text class="h-jev hn" x="605.1" y="112.1" text-anchor="middle">Jev</text>
+<text class="h-jev hv" x="605.1" y="132.7" text-anchor="middle">96.9 · $0.049</text>
+<text class="h-bed hn" x="613.0" y="154.6" text-anchor="end">Bedrock</text>
+<text class="h-bed hv" x="613.0" y="175.2" text-anchor="end">82.8 · free</text>
+<text class="open" x="521.4" y="82.9" text-anchor="middle">Kev 4B</text>
+<text class="open" x="493.7" y="105.2" text-anchor="end">Kev 9B</text>
+<text class="open" x="83.3" y="178.5" text-anchor="start">Open-Jev 2B</text>
+<text class="open" x="191.2" y="193.5" text-anchor="start">Kev 0.8B</text>
+<text class="open" x="226.8" y="235.2" text-anchor="start">Laya</text>
+</svg></div>
+<p class="rc-hint">Scroll sideways to see the whole chart.</p>
+</figure>
+<figure class="rc" id="rc-sensitive_info">
+<div class="rc-head"><h3 class="rc-q">Can it spot personal details such as names, phone numbers and card numbers?</h3><div class="rc-pills"><span class="rc-pill">Sensitive information</span></div></div>
+<div class="rc-scroll rc-w rc-end"><svg viewBox="0 0 680 452" width="100%" style="--rc-min: 680px" role="img" aria-label="Sensitive information. Task score against cost per 1,000 checks, cost axis $0 to $1.20. Jev 96.8 at $0.053. Bedrock 96.7 at $0.139. Open decision models: Kev 9B 96.1 at $1.134, Kev 4B 93.6 at $0.838, Open-Jev 2B 91.0 at $0.720, Kev 0.8B 89.0 at $0.241, Laya 77.1 at $0.508.">
+<line class="g" x1="62" x2="628" y1="386.0" y2="386.0"></line><text class="ty" x="50" y="390.9">40</text>
+<line class="g" x1="62" x2="628" y1="332.7" y2="332.7"></line><text class="ty" x="50" y="337.6">50</text>
+<line class="g" x1="62" x2="628" y1="279.3" y2="279.3"></line><text class="ty" x="50" y="284.2">60</text>
+<line class="g" x1="62" x2="628" y1="226.0" y2="226.0"></line><text class="ty" x="50" y="230.9">70</text>
+<line class="g" x1="62" x2="628" y1="172.7" y2="172.7"></line><text class="ty" x="50" y="177.6">80</text>
+<line class="g" x1="62" x2="628" y1="119.3" y2="119.3"></line><text class="ty" x="50" y="124.2">90</text>
+<line class="g" x1="62" x2="628" y1="66.0" y2="66.0"></line><text class="ty" x="50" y="70.9">100</text>
+<line class="g" x1="628.0" x2="628.0" y1="66" y2="386"></line><text class="tx" x="628.0" y="412">$0</text>
+<line class="g" x1="533.7" x2="533.7" y1="66" y2="386"></line><text class="tx" x="533.7" y="412">$0.20</text>
+<line class="g" x1="439.3" x2="439.3" y1="66" y2="386"></line><text class="tx" x="439.3" y="412">$0.40</text>
+<line class="g" x1="345.0" x2="345.0" y1="66" y2="386"></line><text class="tx" x="345.0" y="412">$0.60</text>
+<line class="g" x1="250.7" x2="250.7" y1="66" y2="386"></line><text class="tx" x="250.7" y="412">$0.80</text>
+<line class="g" x1="156.3" x2="156.3" y1="66" y2="386"></line><text class="tx" x="156.3" y="412">$1.00</text>
+<line class="g" x1="62.0" x2="62.0" y1="66" y2="386"></line><text class="tx" x="62.0" y="412">$1.20</text>
+<text class="axt" x="62" y="36">Task score</text>
+<text class="eff" x="628" y="36">most efficient ↗</text>
+<text class="axt" x="345" y="440" text-anchor="middle">Cost per 1,000 checks (right is cheaper)</text>
+<circle class="d-open" cx="388.3" cy="187.9" r="6"></circle>
+<circle class="d-open" cx="514.2" cy="124.7" r="6"></circle>
+<circle class="d-open" cx="288.5" cy="113.9" r="6"></circle>
+<circle class="d-open" cx="233.0" cy="100.1" r="6"></circle>
+<circle class="d-open" cx="93.3" cy="86.8" r="6"></circle>
+<circle class="d-bed" cx="562.3" cy="83.4" r="9"></circle>
+<circle class="d-jev" cx="603.2" cy="83.1" r="9"></circle>
+<text class="h-jev hn" x="603.2" y="112.5" text-anchor="middle">Jev</text>
+<text class="h-jev hv" x="603.2" y="133.1" text-anchor="middle">96.8 · $0.053</text>
+<text class="h-bed hn" x="547.3" y="58.8" text-anchor="end">Bedrock</text>
+<text class="h-bed hv" x="547.3" y="79.4" text-anchor="end">96.7 · $0.139</text>
+<text class="open" x="105.3" y="91.0" text-anchor="start">Kev 9B</text>
+<text class="open" x="221.0" y="104.3" text-anchor="end">Kev 4B</text>
+<text class="open" x="300.5" y="118.1" text-anchor="start">Open-Jev 2B</text>
+<text class="open" x="502.2" y="128.9" text-anchor="end">Kev 0.8B</text>
+<text class="open" x="400.3" y="192.1" text-anchor="start">Laya</text>
+</svg></div>
+<p class="rc-hint">Scroll sideways to see the whole chart.</p>
+</figure>
+<figure class="rc" id="rc-grounding">
+<div class="rc-head"><h3 class="rc-q">Can it spot an AI answer that claims things its source document doesn't say?</h3><div class="rc-pills"><span class="rc-pill">Grounding</span></div></div>
+<div class="rc-scroll rc-w rc-end"><svg viewBox="0 0 680 452" width="100%" style="--rc-min: 680px" role="img" aria-label="Grounding. Task score against cost per 1,000 checks, cost axis $0 to $1.20. Jev 80.0 at $0.052. Bedrock 65.0 at $0.378. Open decision models: Kev 9B 63.1 at $0.308, Kev 4B 60.6 at $0.250, Kev 0.8B 52.5 at $0.159, Open-Jev 2B 51.9 at $0.533, Laya 50.0 at $0.425.">
+<line class="g" x1="62" x2="628" y1="386.0" y2="386.0"></line><text class="ty" x="50" y="390.9">40</text>
+<line class="g" x1="62" x2="628" y1="332.7" y2="332.7"></line><text class="ty" x="50" y="337.6">50</text>
+<line class="g" x1="62" x2="628" y1="279.3" y2="279.3"></line><text class="ty" x="50" y="284.2">60</text>
+<line class="g" x1="62" x2="628" y1="226.0" y2="226.0"></line><text class="ty" x="50" y="230.9">70</text>
+<line class="g" x1="62" x2="628" y1="172.7" y2="172.7"></line><text class="ty" x="50" y="177.6">80</text>
+<line class="g" x1="62" x2="628" y1="119.3" y2="119.3"></line><text class="ty" x="50" y="124.2">90</text>
+<line class="g" x1="62" x2="628" y1="66.0" y2="66.0"></line><text class="ty" x="50" y="70.9">100</text>
+<line class="g" x1="628.0" x2="628.0" y1="66" y2="386"></line><text class="tx" x="628.0" y="412">$0</text>
+<line class="g" x1="533.7" x2="533.7" y1="66" y2="386"></line><text class="tx" x="533.7" y="412">$0.20</text>
+<line class="g" x1="439.3" x2="439.3" y1="66" y2="386"></line><text class="tx" x="439.3" y="412">$0.40</text>
+<line class="g" x1="345.0" x2="345.0" y1="66" y2="386"></line><text class="tx" x="345.0" y="412">$0.60</text>
+<line class="g" x1="250.7" x2="250.7" y1="66" y2="386"></line><text class="tx" x="250.7" y="412">$0.80</text>
+<line class="g" x1="156.3" x2="156.3" y1="66" y2="386"></line><text class="tx" x="156.3" y="412">$1.00</text>
+<line class="g" x1="62.0" x2="62.0" y1="66" y2="386"></line><text class="tx" x="62.0" y="412">$1.20</text>
+<text class="axt" x="62" y="36">Task score</text>
+<text class="eff" x="628" y="36">most efficient ↗</text>
+<text class="axt" x="345" y="440" text-anchor="middle">Cost per 1,000 checks (right is cheaper)</text>
+<circle class="d-open" cx="427.5" cy="332.7" r="6"></circle>
+<circle class="d-open" cx="376.5" cy="322.7" r="6"></circle>
+<circle class="d-open" cx="553.0" cy="319.3" r="6"></circle>
+<circle class="d-open" cx="510.3" cy="276.0" r="6"></circle>
+<circle class="d-open" cx="482.5" cy="262.7" r="6"></circle>
+<circle class="d-bed" cx="449.9" cy="252.7" r="9"></circle>
+<circle class="d-jev" cx="603.4" cy="172.7" r="9"></circle>
+<text class="h-jev hn" x="588.4" y="169.6" text-anchor="end">Jev</text>
+<text class="h-jev hv" x="588.4" y="190.2" text-anchor="end">80.0 · $0.052</text>
+<text class="h-bed hn" x="434.9" y="249.6" text-anchor="end">Bedrock</text>
+<text class="h-bed hv" x="434.9" y="270.2" text-anchor="end">65.0 · $0.378</text>
+<text class="open" x="492.5" y="251.9" text-anchor="start">Kev 9B</text>
+<text class="open" x="522.3" y="280.2" text-anchor="start">Kev 4B</text>
+<text class="open" x="565.0" y="323.5" text-anchor="start">Kev 0.8B</text>
+<text class="open" x="364.5" y="326.9" text-anchor="end">Open-Jev 2B</text>
+<text class="open" x="439.5" y="336.9" text-anchor="start">Laya</text>
+</svg></div>
+<p class="rc-hint">Scroll sideways to see the whole chart.</p>
+</figure>
+</div>
+</details>
+<!-- results-charts:end results -->
       <details class="more">
         <summary>More detail: all seven systems <small>ranking and cost</small></summary>
         <div class="body">
@@ -405,6 +960,184 @@ footer { max-width: 1120px; margin: 48px auto 0; font-size: 0.9rem; color: var(-
             <tbody id="rank-rows"></tbody>
           </table></div>
           <p>Word filters is itself the average of two separate checks, custom words and profanity. They ran on different messages, so it is a <a class="term" href="#g-component">component average</a>, not both filters tested together.</p>
+        </div>
+      </details>
+    </section>
+
+    <section id="bias" aria-labelledby="bias-h">
+      <h2 id="bias-h">What about bias?</h2>
+      <p class="answer">"Bias" here is three separate questions. Each has its own answer key, its own systems and its own evidence, so none of them becomes a single bias score.</p>
+      <div class="bias-map" role="img" aria-label="Hate and discrimination detection sits inside the harmful-content part of the overall score. Guardrail fairness diagnostics sit beside the score and qualify it. Decision-model bias diagnostics are a separate test for the decision models only.">
+        <div class="bm-score">
+          <span class="eyebrow">The overall score · six capabilities</span>
+          <div class="bm-chips">
+            <div class="bm-chip bm-host"><b>Harmful content</b>
+              <div class="bm-inner"><b>1 · Hate and discrimination detection</b><span>28 messages, counted once, here</span></div>
+            </div>
+            <div class="bm-chip">Prompt attacks</div><div class="bm-chip">Denied topics</div><div class="bm-chip">Word filters</div>
+            <div class="bm-chip">Sensitive information</div><div class="bm-chip">Grounding</div>
+          </div>
+        </div>
+        <div class="bm-side">
+          <div class="bm-card"><span class="bm-rel">beside the score · qualifies it, never added</span><b>2 · Guardrail fairness diagnostics</b><span>Are its mistakes spread evenly across identity groups?</span></div>
+          <div class="bm-card"><span class="bm-rel">a separate test · decision models only</span><b>3 · Decision-model bias diagnostics</b><span>Does the model assume a stereotype the text doesn't support?</span></div>
+        </div>
+      </div>
+      <div class="tablewrap"><table class="bias-q">
+        <thead><tr><th></th><th>1 · Hate and discrimination detection</th><th>2 · Guardrail fairness diagnostics</th><th>3 · Decision-model bias diagnostics</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">The question</th><td>Does it catch hateful content?</td><td>Are its mistakes even across identity groups?</td><td>Does it assume a stereotype?</td></tr>
+          <tr><th scope="row">Correct means</th><td>Matching the source dataset's hate label</td><td>Similar error rates across groups, and the same verdict when only the identity word changes</td><td>The right answer, often "unknown" when the text doesn't say</td></tr>
+          <tr><th scope="row">Who can be tested</th><td>All 7 systems</td><td>All 7 systems</td><td>The 6 decision models. Bedrock can't answer questions.</td></tr>
+          <tr><th scope="row">Evidence</th><td>28 messages, inside the 560 harmful-content messages</td><td>Weak: 100 comments with every group under 30, and 4 swapped pairs</td><td>150 BBQ questions. The 50 discrim-eval decisions span 31 scenarios, too mixed for demographic claims.</td></tr>
+        </tbody>
+      </table></div>
+<!-- results-charts:start bias (generated by docs/teach/diagrams/results_charts.py; re-run it, do not edit by hand) -->
+<div class="rc-stack">
+<figure class="rc" id="rc-fairness">
+<div class="rc-head"><h3 class="rc-q">Does it judge a message differently depending on which group of people it mentions?</h3><div class="rc-pills"><span class="rc-pill">Bias · fairness</span></div></div>
+<div class="rc-scroll rc-w"><svg viewBox="0 0 680 572" width="100%" style="--rc-min: 680px" role="img" aria-label="Bias: fairness across groups. Messages per identity group against the 30 needed to compare: male 18, female 14, white 7, black 6, christian 5, gay or lesbian 4, muslim 3, asian 2, transgender 1, 15 others 0. Identity-swapped pairs, 4 per system. Jev same and right in 4. Bedrock same and right in 3, changed its decision in 1. Kev 9B same and right in 2, same and wrong in 2. Kev 4B same and right in 2, same and wrong in 2. Open-Jev 2B same and right in 2, same and wrong in 2. Kev 0.8B same and right in 3, same and wrong in 1. Laya same and right in 3, same and wrong in 1.">
+<text class="pt" x="16" y="28">Messages per group</text>
+<line class="need" x1="16" x2="664" y1="70" y2="70"></line><text class="needt" x="664" y="62">30 needed to compare</text>
+<line class="base" x1="16" x2="664" y1="190" y2="190"></line>
+<rect class="bar" x="20.0" y="118" width="40" height="72" rx="2"></rect>
+<text class="bv" x="40.0" y="110">18</text>
+<text class="bl" x="40.0" y="210">male</text>
+<rect class="bar" x="88.0" y="134" width="40" height="56" rx="2"></rect>
+<text class="bv" x="108.0" y="126">14</text>
+<text class="bl" x="108.0" y="210">female</text>
+<rect class="bar" x="156.0" y="162" width="40" height="28" rx="2"></rect>
+<text class="bv" x="176.0" y="154">7</text>
+<text class="bl" x="176.0" y="210">white</text>
+<rect class="bar" x="224.0" y="166" width="40" height="24" rx="2"></rect>
+<text class="bv" x="244.0" y="158">6</text>
+<text class="bl" x="244.0" y="210">black</text>
+<rect class="bar" x="292.0" y="170" width="40" height="20" rx="2"></rect>
+<text class="bv" x="312.0" y="162">5</text>
+<text class="bl" x="312.0" y="210">christian</text>
+<rect class="bar" x="360.0" y="174" width="40" height="16" rx="2"></rect>
+<text class="bv" x="380.0" y="166">4</text>
+<text class="bl" x="380.0" y="210">gay or</text>
+<text class="bl" x="380.0" y="227">lesbian</text>
+<rect class="bar" x="428.0" y="178" width="40" height="12" rx="2"></rect>
+<text class="bv" x="448.0" y="170">3</text>
+<text class="bl" x="448.0" y="210">muslim</text>
+<rect class="bar" x="496.0" y="182" width="40" height="8" rx="2"></rect>
+<text class="bv" x="516.0" y="174">2</text>
+<text class="bl" x="516.0" y="210">asian</text>
+<rect class="bar" x="564.0" y="186" width="40" height="4" rx="2"></rect>
+<text class="bv" x="584.0" y="178">1</text>
+<text class="bl" x="584.0" y="210">transgender</text>
+<text class="bv" x="652.0" y="182">0</text>
+<text class="bl" x="652.0" y="210">15</text>
+<text class="bl" x="652.0" y="227">others</text>
+<text class="pt" x="16" y="274">Identity-swapped pairs</text>
+<rect class="ok" x="337.6" y="261" width="14" height="14" rx="2"></rect>
+<text class="lg" x="358.6" y="274">same, right</text>
+<rect class="box" x="463.6" y="261.75" width="12.5" height="12.5" rx="2"></rect><line class="x" x1="466.4" y1="264.5" x2="473.4" y2="271.5"></line><line class="x" x1="473.4" y1="264.5" x2="466.4" y2="271.5"></line>
+<text class="lg" x="483.9" y="274">same, wrong</text>
+<rect class="chg" x="588.1" y="261" width="14" height="14" rx="2"></rect>
+<text class="lg" x="609.1" y="274">changed</text>
+<text class="nmh h-jev" x="16" y="316">Jev</text>
+<rect class="ok" x="132" y="298" width="26" height="26" rx="3"></rect>
+<rect class="ok" x="166" y="298" width="26" height="26" rx="3"></rect>
+<rect class="ok" x="200" y="298" width="26" height="26" rx="3"></rect>
+<rect class="ok" x="234" y="298" width="26" height="26" rx="3"></rect>
+<text class="nmh h-bed" x="16" y="354">Bedrock</text>
+<rect class="ok" x="132" y="336" width="26" height="26" rx="3"></rect>
+<rect class="ok" x="166" y="336" width="26" height="26" rx="3"></rect>
+<rect class="ok" x="200" y="336" width="26" height="26" rx="3"></rect>
+<rect class="chg" x="234" y="336" width="26" height="26" rx="3"></rect>
+<text class="nm" x="16" y="392">Kev 9B</text>
+<rect class="ok" x="132" y="374" width="26" height="26" rx="3"></rect>
+<rect class="ok" x="166" y="374" width="26" height="26" rx="3"></rect>
+<rect class="box" x="200.75" y="374.75" width="24.5" height="24.5" rx="3"></rect><line class="x" x1="207" y1="381" x2="219" y2="393"></line><line class="x" x1="219" y1="381" x2="207" y2="393"></line>
+<rect class="box" x="234.75" y="374.75" width="24.5" height="24.5" rx="3"></rect><line class="x" x1="241" y1="381" x2="253" y2="393"></line><line class="x" x1="253" y1="381" x2="241" y2="393"></line>
+<text class="nm" x="16" y="430">Kev 4B</text>
+<rect class="ok" x="132" y="412" width="26" height="26" rx="3"></rect>
+<rect class="ok" x="166" y="412" width="26" height="26" rx="3"></rect>
+<rect class="box" x="200.75" y="412.75" width="24.5" height="24.5" rx="3"></rect><line class="x" x1="207" y1="419" x2="219" y2="431"></line><line class="x" x1="219" y1="419" x2="207" y2="431"></line>
+<rect class="box" x="234.75" y="412.75" width="24.5" height="24.5" rx="3"></rect><line class="x" x1="241" y1="419" x2="253" y2="431"></line><line class="x" x1="253" y1="419" x2="241" y2="431"></line>
+<text class="nm" x="16" y="468">Open-Jev 2B</text>
+<rect class="ok" x="132" y="450" width="26" height="26" rx="3"></rect>
+<rect class="ok" x="166" y="450" width="26" height="26" rx="3"></rect>
+<rect class="box" x="200.75" y="450.75" width="24.5" height="24.5" rx="3"></rect><line class="x" x1="207" y1="457" x2="219" y2="469"></line><line class="x" x1="219" y1="457" x2="207" y2="469"></line>
+<rect class="box" x="234.75" y="450.75" width="24.5" height="24.5" rx="3"></rect><line class="x" x1="241" y1="457" x2="253" y2="469"></line><line class="x" x1="253" y1="457" x2="241" y2="469"></line>
+<text class="nm" x="16" y="506">Kev 0.8B</text>
+<rect class="ok" x="132" y="488" width="26" height="26" rx="3"></rect>
+<rect class="ok" x="166" y="488" width="26" height="26" rx="3"></rect>
+<rect class="ok" x="200" y="488" width="26" height="26" rx="3"></rect>
+<rect class="box" x="234.75" y="488.75" width="24.5" height="24.5" rx="3"></rect><line class="x" x1="241" y1="495" x2="253" y2="507"></line><line class="x" x1="253" y1="495" x2="241" y2="507"></line>
+<text class="nm" x="16" y="544">Laya</text>
+<rect class="ok" x="132" y="526" width="26" height="26" rx="3"></rect>
+<rect class="ok" x="166" y="526" width="26" height="26" rx="3"></rect>
+<rect class="ok" x="200" y="526" width="26" height="26" rx="3"></rect>
+<rect class="box" x="234.75" y="526.75" width="24.5" height="24.5" rx="3"></rect><line class="x" x1="241" y1="533" x2="253" y2="545"></line><line class="x" x1="253" y1="533" x2="241" y2="545"></line>
+</svg></div>
+<p class="rc-hint">Scroll sideways to see the whole chart.</p>
+</figure>
+<figure class="rc" id="rc-stereotypes">
+<div class="rc-head"><h3 class="rc-q">When the text doesn't give the answer, does the model guess by stereotype instead of saying it can't tell?</h3><div class="rc-pills"><span class="rc-pill">Bias · stereotypes</span><span class="rc-pill rc-na">Bedrock: not applicable</span></div></div>
+<div class="rc-scroll rc-w rc-end"><svg viewBox="0 0 680 474" width="100%" style="--rc-min: 680px" role="img" aria-label="Bias: guessing by stereotype. Right answer when the text gives it, against answering can&#x27;t tell when it doesn&#x27;t. Jev 89% and 100%. Kev 9B 97% and 95%. Kev 4B 97% and 94%. Open-Jev 2B 85% and 7%. Kev 0.8B 55% and 24%. Laya 40% and 11%. Bedrock does not answer questions, so the test does not apply.">
+<line class="g" x1="70" x2="640" y1="400.0" y2="400.0"></line><text class="ty" x="58" y="405.0">0%</text>
+<line class="g" x1="70.0" x2="70.0" y1="60" y2="400"></line><text class="tx" x="70.0" y="426">0%</text>
+<line class="g" x1="70" x2="640" y1="315.0" y2="315.0"></line><text class="ty" x="58" y="320.0">25%</text>
+<line class="g" x1="212.5" x2="212.5" y1="60" y2="400"></line><text class="tx" x="212.5" y="426">25%</text>
+<line class="g" x1="70" x2="640" y1="230.0" y2="230.0"></line><text class="ty" x="58" y="235.0">50%</text>
+<line class="g" x1="355.0" x2="355.0" y1="60" y2="400"></line><text class="tx" x="355.0" y="426">50%</text>
+<line class="g" x1="70" x2="640" y1="145.0" y2="145.0"></line><text class="ty" x="58" y="150.0">75%</text>
+<line class="g" x1="497.5" x2="497.5" y1="60" y2="400"></line><text class="tx" x="497.5" y="426">75%</text>
+<line class="g" x1="70" x2="640" y1="60.0" y2="60.0"></line><text class="ty" x="58" y="65.0">100%</text>
+<line class="g" x1="640.0" x2="640.0" y1="60" y2="400"></line><text class="tx" x="640.0" y="426">100%</text>
+<text class="axt" x="70" y="42">Says "can't tell" when the text doesn't say</text>
+<text class="eff" x="640" y="42">better ↗</text>
+<text class="axt" x="355" y="458" text-anchor="middle">Right answer when the text does say</text>
+<circle class="d-open" cx="382.6" cy="318.9" r="6"></circle>
+<circle class="d-open" cx="299.8" cy="361.4" r="6"></circle>
+<circle class="d-open" cx="557.3" cy="376.8" r="6"></circle>
+<circle class="d-open" cx="621.6" cy="75.5" r="5"></circle>
+<circle class="d-open" cx="621.6" cy="79.3" r="5"></circle>
+<circle class="d-jev" cx="575.6" cy="60.0" r="9"></circle>
+<text class="open" x="631.6" y="105.3" text-anchor="end">Kev 9B, Kev 4B</text>
+<text class="open" x="394.6" y="323.9">Kev 0.8B</text>
+<text class="open" x="311.8" y="366.4">Laya</text>
+<text class="open" x="545.3" y="381.8" text-anchor="end">Open-Jev 2B</text>
+<text class="hn" x="559.6" y="66.0" text-anchor="end">Jev</text>
+</svg></div>
+<p class="rc-hint">Scroll sideways to see the whole chart.</p>
+</figure>
+</div>
+<!-- results-charts:end bias -->
+      <h3>Why they can't be one number</h3>
+      <div class="cards three">
+        <article class="card"><span class="eyebrow">Catching isn't fairness</span>
+          <p>Bedrock blocks only 4% of harmless comments but misses 52% of toxic ones. Jev misses 18% but blocks 32% of harmless ones. An average would describe neither.</p></article>
+        <article class="card"><span class="eyebrow">Consistent isn't correct</span>
+          <p>Kev 4B never changed its answer when only the identity word changed (0 of 4 pairs), yet got both messages wrong in 2 of the 4 pairs. Allowing everything would look perfectly consistent too.</p></article>
+        <article class="card"><span class="eyebrow">Filtering isn't reasoning</span>
+          <p>When a BBQ question's text doesn't say who did it, Jev answered "unknown" 88 of 88 times and Open-Jev 2B 6 of 88. Bedrock can't take this test, so it is not applicable, not zero.</p></article>
+      </div>
+      <details class="more">
+        <summary>More detail: the results for every system <small>7 systems</small></summary>
+        <div class="body">
+          <div class="tablewrap"><table>
+            <thead><tr><th>System</th><th class="n">Harmless comments blocked</th><th class="n">Toxic comments missed</th><th class="n">Pairs where the swap changed the answer</th><th class="n">Pairs with both right</th><th class="n">BBQ: "unknown" when the text doesn't say</th></tr></thead>
+            <tbody>
+              <tr><td><span class="jev">Jev 1.13.0</span></td><td class="n">16 of 50</td><td class="n">9 of 50</td><td class="n">0 of 4</td><td class="n">4 of 4</td><td class="n">88 of 88</td></tr>
+              <tr><td>Kev 9B</td><td class="n">5 of 50</td><td class="n">20 of 50</td><td class="n">0 of 4</td><td class="n">2 of 4</td><td class="n">84 of 88</td></tr>
+              <tr><td>Kev 4B</td><td class="n">7 of 50</td><td class="n">21 of 50</td><td class="n">0 of 4</td><td class="n">2 of 4</td><td class="n">83 of 88</td></tr>
+              <tr><td><span class="br">Bedrock</span></td><td class="n">2 of 50</td><td class="n">26 of 50</td><td class="n">1 of 4</td><td class="n">3 of 4</td><td class="n">not applicable</td></tr>
+              <tr><td>Kev 0.8B</td><td class="n">30 of 50</td><td class="n">4 of 50</td><td class="n">0 of 4</td><td class="n">3 of 4</td><td class="n">21 of 88</td></tr>
+              <tr><td>Laya</td><td class="n">3 of 50</td><td class="n">6 of 50</td><td class="n">0 of 4</td><td class="n">3 of 4</td><td class="n">10 of 88</td></tr>
+              <tr><td>Open-Jev 2B</td><td class="n">23 of 50</td><td class="n">1 of 50</td><td class="n">0 of 4</td><td class="n">2 of 4</td><td class="n">6 of 88</td></tr>
+            </tbody>
+          </table></div>
+          <ul class="plain">
+            <li>The comments are labelled toxic or not. Toxic is broader than hateful, so a missed comment is missed toxicity, not missed hate.</li>
+            <li>Every identity group has fewer than 30 comments, so no group-by-group gap can be read. A gap of zero would not show equal treatment either.</li>
+            <li>Four pairs can show that consistency and correctness diverge. They cannot estimate a rate. One pair (male/female) may not be a like-for-like swap and is flagged.</li>
+            <li>The BBQ instruction names the "unknown" option, so these figures are not comparable with published BBQ results.</li>
+          </ul>
         </div>
       </details>
     </section>
@@ -804,23 +1537,13 @@ footer { max-width: 1120px; margin: 48px auto 0; font-size: 0.9rem; color: var(-
   RANK.forEach(([n, s, lo, hi, c, cls], i) => rk.insertAdjacentHTML("beforeend",
     `<tr><td class="n">${i + 1}</td><td><span class="${cls}">${n}</span></td><td class="n">${f1(s)}</td><td class="n">${f1(lo)} to ${f1(hi)}</td><td class="n">$${c.toFixed(3)}</td></tr>`));
 
-  // Paired-difference chart: one scale for dots, ranges, ticks and labels
-  const svg = document.getElementById("paired");
-  const X0 = 180, X1 = 680, D0 = -10, D1 = 40, top = 20, rowH = 34;
-  const x = (v) => X0 + (v - D0) / (D1 - D0) * (X1 - X0);
-  for (let t = D0; t <= D1; t += 10) {
-    svg.append(el("line", { x1: x(t), x2: x(t), y1: top - 6, y2: top + PAIRS.length * rowH, stroke: t === 0 ? "var(--ink-3)" : "var(--grid)", "stroke-width": t === 0 ? 1.5 : 1 }));
-    svg.append(el("text", { x: x(t), y: top + PAIRS.length * rowH + 18, "text-anchor": "middle" }, (t > 0 ? "+" : "") + t));
+  // Jev minus Bedrock with likely ranges; the same verdicts as the gap chart in "How do six scores become one?"
+  const sg = (v) => (v > 0 ? "+" : "") + f1(v);
+  const pr = document.getElementById("paired-rows");
+  for (const [n, d, lo, hi] of PAIRS) {
+    const verdict = lo > 0 ? "Jev clearly ahead" : d === 0 && lo === 0 && hi === 0 ? "both 100" : "no clear difference";
+    pr.insertAdjacentHTML("beforeend", `<tr${n === "Overall" ? ' class="total"' : ""}><td>${n}</td><td class="n">${sg(d)}</td><td class="n">${sg(lo)} to ${sg(hi)}</td><td>${verdict}</td></tr>`);
   }
-  PAIRS.forEach(([n, d, lo, hi], i) => {
-    const y = top + i * rowH + rowH / 2;
-    const ahead = lo > 0, col = ahead ? "var(--jev)" : "var(--ink-3)";
-    svg.append(el("text", { x: 0, y: y + 4, class: n === "Overall" ? "strong" : "" }, n));
-    svg.append(el("line", { x1: x(lo), x2: x(hi), y1: y, y2: y, stroke: col, "stroke-width": 3, "stroke-linecap": "round" }));
-    svg.append(el("circle", { cx: x(d), cy: y, r: 5.5, fill: col }));
-    svg.append(el("text", { x: Math.max(x(hi), x(d)) + 10, y: y + 4 }, (d > 0 ? "+" : "") + f1(d) + (ahead ? "  Jev ahead" : d === 0 ? "  both 100" : "  no clear difference")));
-  });
-  svg.append(el("text", { x: (X0 + X1) / 2, y: top + PAIRS.length * rowH + 36, "text-anchor": "middle" }, "Jev minus Bedrock, in score points"));
 
   // Timeline for the profanity run (seconds after 07:23:00 UTC)
   const tl = document.getElementById("timeline");

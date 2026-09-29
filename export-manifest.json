@@ -1,5 +1,5 @@
 {
- "private_commit": "23575a6e855e5d5adb1b1de4318157a26d39a062",
+ "private_commit": "320379c9366adc083f2fb3926d4c41b1dd67405c",
  "tag": "v0.0.1",
  "public_url": "https://github.com/raxITlabs/goldrails",
  "files": [
@@ -462,8 +462,8 @@
   },
   {
    "path": "benchmark/results/first-benchmark/page-check.json",
-   "private_sha256": "6a5f36ea9135e5961d1a06ead89bb13fbca8fb8337f749a8b98cf370dfa38398",
-   "public_sha256": "6a5f36ea9135e5961d1a06ead89bb13fbca8fb8337f749a8b98cf370dfa38398",
+   "private_sha256": "d0cb757a9e57153e5c498a2e826e57ba213497612c36b628b784081845d51326",
+   "public_sha256": "d0cb757a9e57153e5c498a2e826e57ba213497612c36b628b784081845d51326",
    "redactions": {}
   },
   {
@@ -572,6 +572,12 @@
    "path": "benchmark/results/first-benchmark/profanity-obfuscation.json",
    "private_sha256": "9c7a7a12f71246ed24b9a557da31b9592ca4890c00de4bdfadc617514096d9cc",
    "public_sha256": "9c7a7a12f71246ed24b9a557da31b9592ca4890c00de4bdfadc617514096d9cc",
+   "redactions": {}
+  },
+  {
+   "path": "benchmark/results/first-benchmark/rescore-2026-09-29.json",
+   "private_sha256": "0c88d340b6f19e02ef38290691a460ac704ebc2adfcfa83e9141ee8c505448ed",
+   "public_sha256": "0c88d340b6f19e02ef38290691a460ac704ebc2adfcfa83e9141ee8c505448ed",
    "redactions": {}
   },
   {
@@ -1847,8 +1853,8 @@
   },
   {
    "path": "dataset/publish/v1.3-full/CHANGELOG.md",
-   "private_sha256": "88f5fa3ddb8a9f79f5b45c546a3f5fc4ed00ed587552f76d297f8b6b9b624178",
-   "public_sha256": "88f5fa3ddb8a9f79f5b45c546a3f5fc4ed00ed587552f76d297f8b6b9b624178",
+   "private_sha256": "1ed65361c656754a8b63ff9c7eb50afcaa92bfda08263b4de902f23a2fad67e9",
+   "public_sha256": "1ed65361c656754a8b63ff9c7eb50afcaa92bfda08263b4de902f23a2fad67e9",
    "redactions": {}
   },
   {
@@ -1925,8 +1931,8 @@
   },
   {
    "path": "dataset/publish/v1.3-full/staging-report.json",
-   "private_sha256": "cd41b321f3478ea5e2aa41667f057d6f81006b1536d0d45759dca2c4c6230b0c",
-   "public_sha256": "cd41b321f3478ea5e2aa41667f057d6f81006b1536d0d45759dca2c4c6230b0c",
+   "private_sha256": "effb1ad2ebc74e6e7120fae9dc9f79f94ea0034349063fc9b5391eb7a0b5ea71",
+   "public_sha256": "effb1ad2ebc74e6e7120fae9dc9f79f94ea0034349063fc9b5391eb7a0b5ea71",
    "redactions": {}
   },
   {
@@ -2047,8 +2053,8 @@
   },
   {
    "path": "dataset/release/v1.3/publication.json",
-   "private_sha256": "519e5557d5f59e969caea7817ca6e4d0d9c4fbd1fbf192333081b28f2cd5f25d",
-   "public_sha256": "519e5557d5f59e969caea7817ca6e4d0d9c4fbd1fbf192333081b28f2cd5f25d",
+   "private_sha256": "173f80f7ea4fae97b0c60e8946cd860b8ede65af80df4cc760450c7c390c2ddc",
+   "public_sha256": "173f80f7ea4fae97b0c60e8946cd860b8ede65af80df4cc760450c7c390c2ddc",
    "redactions": {}
   },
   {
@@ -2959,9 +2965,15 @@
    "redactions": {}
   },
   {
+   "path": "docs/teach/diagrams/results_charts.py",
+   "private_sha256": "33b84550ef5d6e9e9c56385789cd495028e6e2efc351a689c47eef11f06ba482",
+   "public_sha256": "33b84550ef5d6e9e9c56385789cd495028e6e2efc351a689c47eef11f06ba482",
+   "redactions": {}
+  },
+  {
    "path": "docs/teach/gold-rails-primer.html",
-   "private_sha256": "584d89658e4aa9e243a51a97cb4dad1d6c97c7bbc13153334c90384d491624d2",
-   "public_sha256": "584d89658e4aa9e243a51a97cb4dad1d6c97c7bbc13153334c90384d491624d2",
+   "private_sha256": "da4ab38b85c3f099f70b9b3d0f2b2ceb3cb9edd6023b16748f809bad897a42c8",
+   "public_sha256": "da4ab38b85c3f099f70b9b3d0f2b2ceb3cb9edd6023b16748f809bad897a42c8",
    "redactions": {}
   },
   {
@@ -3106,14 +3118,14 @@
   },
   {
    "path": "site/leaderboard/index.html",
-   "private_sha256": "c3ea96886b700ac1ef57e3600324c1b722a0dc69771c0ce29ecd61f2bb9a6bb1",
-   "public_sha256": "c3ea96886b700ac1ef57e3600324c1b722a0dc69771c0ce29ecd61f2bb9a6bb1",
+   "private_sha256": "e01c6c9e591f11b00dee7ae32a2bffe6a5f37c9303e278de582231d676a7c7e1",
+   "public_sha256": "e01c6c9e591f11b00dee7ae32a2bffe6a5f37c9303e278de582231d676a7c7e1",
    "redactions": {}
   },
   {
    "path": "site/leaderboard/leaderboard.js",
-   "private_sha256": "74d475a8033cd6110d92d99202139003a12ce935df9be0e60bd576a533d60d17",
-   "public_sha256": "74d475a8033cd6110d92d99202139003a12ce935df9be0e60bd576a533d60d17",
+   "private_sha256": "d7194e5daf2e22d3e071416abec3d0b7c3df2dea203c8eb9d282b76548ea010f",
+   "public_sha256": "d7194e5daf2e22d3e071416abec3d0b7c3df2dea203c8eb9d282b76548ea010f",
    "redactions": {}
   },
   {

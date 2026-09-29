@@ -7,42 +7,55 @@
 <meta name="description" content="[gold]rails: decision-model guardrails measured against Amazon Bedrock Guardrails on quality, cost and latency.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300..800;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* Palette from the approved chart design: warm paper, brown secondary text, Jev blue, Bedrock coral, grey for the rest. */
 :root {
-  --paper: #f5f6f4;
-  --raise: #ffffff;
-  --ink: #14161a;
-  --ink-2: #474c54;
-  --ink-3: #676d76;
-  --rule: #d8dbdf;
-  --grid: #e7e9ec;
-  --dm: #2140c9;
-  --dm-soft: rgba(33, 64, 201, 0.34);
-  --dm-faint: rgba(33, 64, 201, 0.14);
-  --br: #a0560a;
-  --br-soft: rgba(160, 86, 10, 0.34);
-  --base: #7b8089;
-  --focus: #2140c9;
-  --shadow: 0 1px 2px rgba(20, 22, 26, 0.06), 0 12px 32px -8px rgba(20, 22, 26, 0.18);
+  --paper: #f2efea;
+  --raise: #fbf9f6;
+  --ink: #18120c;
+  --ink-2: #3a2d20;
+  --ink-3: #6f5237;
+  --rule: #d9cfc2;
+  --grid: #e3d9cc;
+  --axis: #a8977f;
+  --dm: #3457d5;
+  --dm-soft: rgba(52, 87, 213, 0.34);
+  --dm-faint: rgba(52, 87, 213, 0.1);
+  --br: #a84329;
+  --br-soft: rgba(168, 67, 41, 0.34);
+  --base: #8a7d6d;
+  --focus: #3457d5;
+  --jev: #3457d5; --jev-ring: #1f3aa3;
+  --bed: #e76f51; --bed-ring: #a84329; --bed-ink: #a84329;
+  --open: #c2b8ab; --open-ring: #8a7d6d;
+  --ok: #248a7e;
+  --pill: #e7e0d6; --pill-ink: #3a2d20; --pill-bed: #f3ded6;
+  --shadow: 0 1px 2px rgba(24, 18, 12, 0.06), 0 12px 32px -8px rgba(24, 18, 12, 0.18);
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #101215;
-    --raise: #181b1f;
-    --ink: #eceef1;
-    --ink-2: #b4bac2;
-    --ink-3: #8e959e;
-    --rule: #2b2f35;
-    --grid: #1f2226;
-    --dm: #86a0ff;
-    --dm-soft: rgba(134, 160, 255, 0.4);
-    --dm-faint: rgba(134, 160, 255, 0.16);
-    --br: #f0a552;
-    --br-soft: rgba(240, 165, 82, 0.4);
-    --base: #8f959e;
-    --focus: #86a0ff;
+    --paper: #15120e;
+    --raise: #1e1a15;
+    --ink: #f2ece4;
+    --ink-2: #ddd2c4;
+    --ink-3: #bba891;
+    --rule: #3a322a;
+    --grid: #2a241e;
+    --axis: #6d5f50;
+    --dm: #8ea5ff;
+    --dm-soft: rgba(142, 165, 255, 0.4);
+    --dm-faint: rgba(142, 165, 255, 0.14);
+    --br: #f4a58c;
+    --br-soft: rgba(244, 165, 140, 0.4);
+    --base: #9b8f81;
+    --focus: #8ea5ff;
+    --jev: #6f8cf2; --jev-ring: #b4c3ff;
+    --bed: #e8795d; --bed-ring: #ffb49c; --bed-ink: #f4a58c;
+    --open: #6b6157; --open-ring: #a89c8e;
+    --ok: #3cb3a4;
+    --pill: #2d2721; --pill-ink: #e9e0d4; --pill-bed: #3d2620;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 16px 40px -8px rgba(0, 0, 0, 0.6);
     color-scheme: dark;
   }
@@ -53,8 +66,7 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font: 400 16px/1.55 "Public Sans", system-ui, sans-serif;
-  font-variant-numeric: tabular-nums;
+  font: 400 16px/1.55 "Inter", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 ::selection { background: var(--dm-faint); color: var(--ink); }
@@ -91,48 +103,67 @@ h1 .br { color: var(--br); }
 section { padding: 64px 0 0; }
 h2 { font-size: 1.5rem; line-height: 1.2; letter-spacing: -0.02em; font-weight: 680; margin: 0 0 8px; text-wrap: balance; }
 .sub { color: var(--ink-2); margin: 0 0 28px; max-width: 70ch; }
-.ledger { border-top: 1px solid var(--ink); }
-.lrow {
-  display: grid;
-  grid-template-columns: 200px minmax(0, 1fr) 148px 200px;
-  gap: 0 28px;
-  align-items: center;
-  padding: 18px 0;
-  border-bottom: 1px solid var(--rule);
-  cursor: pointer;
+/* ---------- charts (approved design): question heading, category pill, no text inside the plot ---------- */
+.chart-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px 24px; margin: 0 0 14px; }
+.chart-head .q { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.22; color: var(--ink); max-width: 46ch; text-wrap: balance; }
+.chart-head h2.q, .cpanel-wide .chart-head .q { font-size: clamp(1.4rem, 1.05rem + 1.1vw, 2rem); max-width: 34ch; line-height: 1.15; }
+.q .dm { color: var(--jev); }
+.q .br { color: var(--bed-ink); }
+.pills { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; margin-top: 3px; }
+.pill { padding: 6px 14px; border-radius: 999px; background: var(--pill); color: var(--pill-ink); font-size: 14px; font-weight: 600; line-height: 1.25; white-space: nowrap; }
+.pill-bed { background: var(--pill-bed); color: var(--bed-ink); }
+.pill-muted { background: transparent; box-shadow: inset 0 0 0 1px var(--rule); color: var(--ink-3); }
+@media (max-width: 640px) {
+  .chart-head { flex-direction: column-reverse; }
+  .pills { flex-direction: row; flex-wrap: wrap; align-items: flex-start; margin-top: 0; }
 }
-.lrow:hover .lname, .lrow:focus-visible .lname { color: var(--dm); }
-.lrow-overall { border-top: 1px solid var(--ink); border-bottom: 0; }
-.lrow-overall .lname { font-size: 17px; }
-.lhead { cursor: default; padding: 10px 0; font-size: 13px; color: var(--ink-3); border-bottom: 1px solid var(--rule); }
-.lname { font-weight: 600; letter-spacing: -0.01em; transition: color 160ms ease-out; }
-.lname small { display: block; font-weight: 400; font-size: 13px; color: var(--ink-3); letter-spacing: 0; }
-.lscale { position: relative; height: 34px; }
-.lscale svg { display: block; width: 100%; height: 34px; overflow: visible; }
-.ltick { display: none; position: absolute; top: 48px; transform: translateX(-50%); font-size: 11px; color: var(--ink-3); }
-.lverdict { font-weight: 620; font-size: 15px; }
-.lverdict small { display: block; font-weight: 400; font-size: 13px; color: var(--ink-3); }
-.v-dm { color: var(--dm); }
-.v-br { color: var(--br); }
-.v-level { color: var(--ink); }
-.v-wait, .v-unpaired { color: var(--ink-3); font-weight: 500; }
-.lcost { font-size: 14px; color: var(--ink-2); }
-.lcost b { color: var(--ink); font-weight: 600; }
-.lcost small { display: block; font-size: 13px; color: var(--ink-3); }
-.key { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 18px 0 0; font-size: 13px; color: var(--ink-2); }
-.key span { display: inline-flex; align-items: center; gap: 8px; }
-.key svg { width: 26px; height: 12px; overflow: visible; }
-@media (max-width: 900px) {
-  .lrow { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 16px; }
-  .lhead { display: none; }
-  .lscale { grid-column: 1 / -1; grid-row: 2; height: 62px; margin-top: 8px; }
-  .ltick { display: block; }
-  .ltick:first-of-type { transform: none; }
-  .ltick:last-of-type { transform: translateX(-100%); }
-  .lname { grid-row: 1; }
-  .lverdict { grid-row: 1; text-align: right; }
-  .lcost { grid-column: 1 / -1; grid-row: 3; }
-}
+.chart-box { min-height: 120px; }
+.chart-box svg, svg.plot { display: block; width: 100%; height: auto; overflow: visible; }
+.chart-notes { margin-top: 10px; max-width: 92ch; }
+.chart-notes .off { margin: 6px 0 0; font-size: 13px; line-height: 1.5; color: var(--ink-3); }
+.chart-notes .notes-h { margin: 14px 0 2px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.chart-notes .notes { margin: 0; padding: 0; list-style: none; font-size: 13px; line-height: 1.5; color: var(--ink-3); }
+.chart-notes .notes li { padding: 4px 0; }
+.chart-notes .notes strong { color: var(--ink-2); font-weight: 600; }
+.bias-chart { margin: 28px 0 22px; }
+/* SVG marks and text; sizes are set per chart (14px floor, 16px on wide charts) */
+.c-g { stroke: var(--grid); stroke-width: 1; }
+.c-t { fill: var(--ink-3); }
+.c-axt { fill: var(--ink-2); font-weight: 500; }
+.c-eff { fill: var(--ink-3); font-style: italic; }
+.c-open { fill: var(--ink-3); font-weight: 500; pointer-events: none; }
+.c-jev { fill: var(--jev); pointer-events: none; }
+.c-bed { fill: var(--bed-ink); pointer-events: none; }
+.c-empty { fill: var(--ink-3); }
+.mark { stroke-width: 1.5; transition: stroke-width 160ms ease-out; }
+.m-jev { fill: var(--jev); stroke: var(--jev-ring); }
+.m-bed { fill: var(--bed); stroke: var(--bed-ring); }
+.m-open { fill: var(--open); stroke: var(--open-ring); }
+.g-lead { stroke: var(--jev); stroke-opacity: 0.5; stroke-width: 6; stroke-linecap: round; }
+.g-lead-br { stroke: var(--bed); }
+.g-name { fill: var(--ink-2); font-weight: 500; }
+.g-top { fill: var(--ink); font-weight: 700; }
+.g-gap { fill: var(--jev); font-weight: 700; }
+.g-gap-br { fill: var(--bed-ink); }
+.g-lvl { fill: var(--ink-3); font-weight: 500; }
+.g-hair { stroke: var(--rule); stroke-width: 1; }
+.lrow { cursor: pointer; }
+.lrow:focus { outline: none; }
+.lrow-hit { fill: transparent; stroke: none; }
+.lrow:hover .lrow-hit { fill: var(--dm-faint); }
+.lrow:focus-visible .lrow-hit { stroke: var(--focus); stroke-width: 2; }
+.f-pt { fill: var(--ink-2); font-weight: 600; }
+.f-bar { fill: var(--open); stroke: var(--open-ring); stroke-width: 1; }
+.f-bv { fill: var(--ink-2); font-weight: 600; }
+.f-need { stroke: var(--ink-3); stroke-width: 1.5; stroke-dasharray: 6 4; }
+.f-needt { fill: var(--ink-3); font-weight: 600; }
+.f-base { stroke: var(--axis); stroke-width: 1; }
+.f-nm { fill: var(--ink-3); font-weight: 500; }
+.f-ok { fill: var(--ok); }
+.f-chg { fill: var(--ink-2); }
+.f-box { fill: none; stroke: var(--ink-3); stroke-width: 1.5; }
+.f-x { stroke: var(--ink-3); stroke-width: 1.5; }
+.f-lg { fill: var(--ink-2); }
 
 /* ---------- small multiples ---------- */
 .bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 20px; }
@@ -149,13 +180,11 @@ h2 { font-size: 1.5rem; line-height: 1.2; letter-spacing: -0.02em; font-weight: 
 .panel h3 { font-size: 16px; font-weight: 650; letter-spacing: -0.01em; margin: 0 0 2px; }
 .panel .desc { font-size: 13px; color: var(--ink-3); margin: 0 0 10px; min-height: 2.9em; }
 .panel svg.plot { display: block; width: 100%; height: auto; overflow: visible; }
-.panel .off { font-size: 12.5px; color: var(--ink-3); margin: 8px 0 0; }
-.grid-lead { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
-.grid + .grid { border-top: 0; }
-.aside .notes { margin: 6px 0 0; padding: 0; list-style: none; font-size: 14px; color: var(--ink-2); max-width: 64ch; }
-.aside .notes li { padding: 7px 0; border-bottom: 1px solid var(--grid); }
-.aside .notes li:last-child { border-bottom: 0; }
-.aside .notes strong { color: var(--ink); font-weight: 600; }
+.panel .off { font-size: 13px; line-height: 1.5; color: var(--ink-3); margin: 8px 0 0; }
+.cgrid { display: grid; grid-template-columns: minmax(0, 1fr); border-top: 1px solid var(--ink); }
+@media (min-width: 861px) { .cgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; } }   /* JS twoCol() matches this */
+.cgrid .panel { padding: 30px 0 24px; border-left: 0; }
+.cgrid .cpanel-wide { grid-column: 1 / -1; }
 .panel-wide { grid-column: 1 / -1; padding-left: 0 !important; border-left: 0 !important; }
 .wide-head { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 8px 48px; align-items: end; margin-bottom: 12px; }
 .wide-head .desc { min-height: 0; max-width: 72ch; margin: 0; }
@@ -201,26 +230,18 @@ h2 { font-size: 1.5rem; line-height: 1.2; letter-spacing: -0.02em; font-weight: 
   .grid .panel { padding-left: 22px !important; border-left: 1px solid var(--rule) !important; }
   .grid .panel:nth-child(2n+1) { padding-left: 0 !important; border-left: 0 !important; }
 }
-@media (max-width: 1000px) { .grid-lead { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px) {
-  .grid, .grid-lead { grid-template-columns: 1fr; }
+  .grid { grid-template-columns: 1fr; }
   .grid .panel { padding: 22px 0 18px !important; border-left: 0 !important; }
 }
-svg text { font-family: "Public Sans", system-ui, sans-serif; font-variant-numeric: tabular-nums; }
-.tick { font-size: 11px; fill: var(--ink-3); }
-.axis-label { font-size: 11px; fill: var(--ink-3); }
-.gl { stroke: var(--grid); stroke-width: 1; }
-.frame { stroke: var(--rule); stroke-width: 1; fill: none; }
+svg text { font-family: "Inter", system-ui, sans-serif; }
+table { font-variant-numeric: tabular-nums; }
+table .name, table th[scope=row] { font-variant-numeric: normal; }
 .pt { cursor: pointer; transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1), opacity 200ms ease-out; }
 .pt:hover .mark, .pt:focus-visible .mark { stroke-width: 2.5; }
 .pt:focus { outline: none; }
 .pt:focus-visible .halo { stroke: var(--focus); stroke-width: 2; }
 .halo { fill: transparent; stroke: none; }
-.lbl { font-size: 11.5px; fill: var(--ink-2); pointer-events: none; }
-.lbl.strong { font-weight: 650; font-size: 12px; }
-.lbl.dm { fill: var(--dm); }
-.lbl.br { fill: var(--br); }
-.empty-note { font-size: 12.5px; fill: var(--ink-3); }
 
 /* ---------- detail card ---------- */
 .detail {
@@ -315,12 +336,16 @@ section { scroll-margin-top:24px; }
 details.review-details { border-top:1px solid var(--rule); padding:16px 0; }
 details.review-details summary { cursor:pointer; font-weight:600; }
 
+table.compare3 { table-layout: fixed; width: 100%; }
+table.compare3 th, table.compare3 td { text-align: left; white-space: normal; vertical-align: top; }
+table.compare3 th[scope=row] { width: 9rem; color: var(--ink-3); font-weight: 500; }
+table.compare3 thead th { color: var(--ink); font-weight: 600; }
 </style>
 </head>
 <body>
 <!--
-THESIS: One question, answered per capability: do decision models hold up against Amazon Bedrock Guardrails? A verdict ledger answers it; seven same-scale quality-against-cost charts carry the evidence. Refuses the category default of a tabbed single chart under a ranked leaderboard.
-OWN-WORLD: A research datasheet. Cool paper white, near-black ink rules, Public Sans with tabular figures throughout. Two committed hues only: cobalt for decision models, ochre for Bedrock; baselines in grey. Hairline-ruled small multiples, no cards.
+THESIS: One question, answered per capability: do decision models hold up against Amazon Bedrock Guardrails? A gap chart answers it, one row per category; seven quality-against-cost charts on one shared linear cost axis carry the evidence. Refuses the category default of a tabbed single chart under a ranked leaderboard.
+OWN-WORLD: The raxIT house style. Cream ground, warm ink, Inter with tabular figures in tables. Two hero hues: byzantine blue for Jev, burnt sienna for Bedrock; every other system in grey. Each chart is headed by the question it answers, with its category as a pill.
 STORY: The reader learns where Jev is ahead, level or behind Bedrock, at what cost, how sure we are, and what is still missing; then checks any point down to its configuration.
 FIRST VIEWPORT: Masthead line; the question as a large headline with the two hues; a two-sentence computed answer; the interim status line; the verdict ledger starting below the fold line on laptops.
 FORM: Datasheet small multiples, first on my own list of seven. Seed: none. concept-seed.mjs --scope direction --mode read (and --grain view) exited 0 with empty stdout on 2026-09-23; no key or assignment was printed, so the direction was chosen without the roll and this is disclosed to the user.
@@ -374,18 +399,6 @@ const profProv = () => isProvisional("profanity");
 const isProvisional = (s) => !!(state.data && state.data.provisional && (state.data.provisional.suites || []).includes(s === WF ? "profanity" : s));
 const label = (s) => baseLabel(s) + (isProvisional(s) ? (s === "overall" ? " · includes unreviewed labels" : " · labels awaiting review") : "");
 const VIEW = Object.fromEntries(G.VIEWS.map((v) => [v.id, v]));
-const DESC = {
-  content: "Harmful requests and unsafe replies",
-  prompt_attacks: "Jailbreaks and injections, with benign instructions",
-  denied_topics: "Messages inside a supplied topic definition",
-  word_filters: "Configured terms under the declared matching rule",
-  sensitive_information: "Personal data present in a message (detection)",
-  grounding: "Claims not supported by the supplied evidence",
-  bias: "Guardrail fairness and decision-model bias diagnostics, outside the six-category score",
-  overall: "Equal-weight mean of all six categories",
-  profanity: "Word filters, profanity half: swear words and obscene language, against Civil Comments' rater labels",
-  [WF]: "Component average of the custom-word and profanity scores, each from its own test rows; cost sums the two checks",
-};
 const DECISION = new Set(["hosted_api", "self_hosted"]);
 const state = { data: null, axis: "cost", openKey: null };
 
@@ -508,236 +521,292 @@ function renderOpening() {
   $("status").innerHTML = items.map((x) => `<li class="${x.warn ? "warn" : ""}">${esc(x.t)}</li>`).join("");
 }
 
-/* ---------- verdict ledger ---------- */
+/* ---------- chart kit: the approved [gold]rails chart design ----------
+   Jev and Bedrock are the heroes (larger dots, bold two-line labels); every other system is a grey dot with its name.
+   Each chart is headed by the question it answers, with the category in a pill. SVGs are drawn at the width they are
+   shown, so the type sizes below are real pixels: 14px floor, 16px on wide charts. */
+const QUESTION = {
+  overall: 'How do <span class="dm">Jev</span> and <span class="br">Bedrock</span> compare across all six categories, and at what cost?',
+  gaps: 'Where does <span class="dm">Jev</span> lead <span class="br">Bedrock</span>, and by how many points?',
+  content: "Can it spot messages that are violent, hateful, sexual or otherwise unsafe?",
+  prompt_attacks: "Can it spot someone tricking the AI into ignoring its rules, such as a jailbreak?",
+  denied_topics: "Can it spot personal investment, medical and legal advice that a business has chosen to block?",
+  [WF]: "Can it catch banned words, from a custom list and from a profanity list?",
+  sensitive_information: "Can it spot personal details such as names, phone numbers and card numbers?",
+  grounding: "Can it spot an AI answer that claims things its source document doesn't say?",
+  fairness: "Does it judge a message differently depending on which group of people it mentions?",
+  stereotypes: "When the text doesn't give the answer, does the model guess by stereotype instead of saying it can't tell?",
+};
+const PILL = {
+  overall: "Overall", gaps: "By category", content: "Harmful content", prompt_attacks: "Prompt attacks", denied_topics: "Denied topics",
+  [WF]: "Word filters", sensitive_information: "Sensitive information", grounding: "Grounding",
+  fairness: "Bias · fairness", stereotypes: "Bias · stereotypes",
+};
+const role = (impl) => (impl.id === "jev" ? "jev" : impl.id === "bedrock" ? "bed" : "open");
+const chartName = (impl) => (impl.id === "jev" ? "Jev" : impl.id === "bedrock" ? "Bedrock" : short(impl));
+const tw = (t, s, bold) => String(t).length * s * (bold ? 0.6 : 0.56);          // Inter width estimate
+const n1 = (v) => (Math.round(v * 10) / 10).toFixed(1);
+const signed = (v) => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1);
+const overallScore = (id) => { const e = entry(id, "overall"); return scored(e) ? e.quality.score : -1; };
+const heroFirst = (a, b) => ({ jev: 0, bedrock: 1 }[a] ?? 2) - ({ jev: 0, bedrock: 1 }[b] ?? 2) || overallScore(b) - overallScore(a);
+const twoCol = () => matchMedia("(min-width: 861px)").matches;                    // same breakpoint as .cgrid
+const colWidth = () => Math.max(280, Math.floor(($("main") || document.body).clientWidth || 1100));
+function txt(x, y, cls, t, size, anchor, extra = "") {
+  return `<text class="${cls}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="${size}"${anchor ? ` text-anchor="${anchor}"` : ""}${extra}>${esc(t)}</text>`;
+}
+const dotSVG = (x, y, r, k) => `<circle class="mark m-${k}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}"/>`;
+function chartHead(key, { tag = "h3", id = "", extra = "" } = {}) {
+  return `<div class="chart-head"><${tag} class="q"${id ? ` id="${id}"` : ""}>${QUESTION[key]}</${tag}><div class="pills"><span class="pill">${esc(PILL[key])}</span>${extra}</div></div>`;
+}
+/* Two lines at most, split at the space that best balances them. */
+function wrap2(t, maxW, size) {
+  if (tw(t, size) <= maxW || !t.includes(" ")) return [t];
+  const w = t.split(" ");
+  let best = [t], bw = Infinity;
+  for (let i = 1; i < w.length; i++) {
+    const a = w.slice(0, i).join(" "), b = w.slice(i).join(" "), m = Math.max(tw(a, size), tw(b, size));
+    if (m < bw) { bw = m; best = [a, b]; }
+  }
+  return best;
+}
+/* Greedy label placement (the design's place()): each label tries right, left, above, below, the corners, then nudged
+   right/left spots, and keeps the first box inside the bounds that touches no dot, obstacle or placed label.
+   A grey label with no free spot is left off and reported; Jev and Bedrock are always named. */
+function placeLabels(labels, dots, obstacles, b) {
+  const hit = (p, q, pad = 2) => !(p[2] + pad <= q[0] || q[2] + pad <= p[0] || p[3] + pad <= q[1] || q[3] + pad <= p[1]);
+  const inside = (box) => box[0] >= b[0] && box[2] <= b[2] && box[1] >= b[1] && box[3] <= b[3];
+  const out = [];
+  for (const lab of labels) {
+    const bw = Math.max(...lab.lines.map(([t, s, bo]) => tw(t, s, bo)));
+    const bh = lab.lines.reduce((a, [, s]) => a + s, 0) + 3 * (lab.lines.length - 1);
+    const { x, y, r } = lab, g = r + 6;
+    const c = [["start", x + g, y - bh / 2], ["end", x - g, y - bh / 2], ["middle", x, y - g - bh], ["middle", x, y + g],
+      ["end", x - g + 2, y - g - bh + 4], ["start", x + g - 2, y - g - bh + 4], ["end", x - g + 2, y + g - 4], ["start", x + g - 2, y + g - 4],
+      ["end", x - g, y - bh - 4], ["end", x - g, y + 4]];
+    c.push(["end", x + r + 2, y - g - bh], ["start", x - r - 2, y - g - bh], ["end", x + r + 2, y + g], ["start", x - r - 2, y + g]);
+    for (const k of [6, 12, -6, -12, 18, -18, 26, -26, 36, -36]) for (const [a, ax, top] of c.slice(0, 2)) c.push([a, ax, top + k]);
+    for (const k of [0, 10, 20, 32, 44]) for (const dx of [0, -bw / 3, bw / 3]) {   // above and below, further out and shifted
+      c.push(["middle", x + dx, y - g - bh - k], ["middle", x + dx, y + g + k]);
+    }
+    const boxOf = ([a, ax, top]) => { const x0 = a === "start" ? ax : a === "end" ? ax - bw : ax - bw / 2; return [x0, top, x0 + bw, top + bh]; };
+    const free = (cand) => { const box = boxOf(cand); return inside(box) && !dots.some((d) => hit(box, d)) && !obstacles.some((o) => hit(box, o)); };
+    let pick = c.find(free);
+    if (!pick && lab.hero) {   // least-bad spot: fewest labels, then fewest dots, touched
+      const cost = (cand) => { const box = boxOf(cand); return obstacles.filter((o) => hit(box, o)).length * 10 + dots.filter((d) => hit(box, d)).length; };
+      pick = c.filter((cand) => inside(boxOf(cand))).sort((p, q) => cost(p) - cost(q))[0] || c[0];
+    }
+    if (!pick) { out.push({ lab, hidden: true }); continue; }
+    obstacles.push(boxOf(pick));
+    const [anchor, ax, top] = pick;
+    let base = top;
+    const lines = lab.lines.map(([t, s, bo], i) => {
+      base += i === 0 ? s * 0.8 : s + 3;
+      const ln = { t, s, bo, anchor, x: ax, y: base };
+      if (i === 0) base += s * 0.2;
+      return ln;
+    });
+    out.push({ lab, lines });
+  }
+  return out;
+}
+
+/* ---------- gaps: where Jev leads Bedrock (was the verdict ledger) ---------- */
 /* The composed word-filters suite score per implementation, from the overall's per-suite breakdown. */
 function suiteOf(impl, suite) {
   const e = entry(impl, "overall");
   return e && e.suites ? e.suites[suite] || null : null;
 }
-const LX = (v) => ((v - 40) / 60) * 100;     // quality 40..100 to percent
-function ledgerScale(suite, c) {
-  const others = state.data.implementations
-    .filter((i) => DECISION.has(i.type) && i.id !== "jev")
-    .map((i) => entry(i.id, suite)).filter(scored);
-  let svg = `<svg viewBox="0 0 100 34" preserveAspectRatio="none" aria-hidden="true">`;
-  for (const t of [50, 60, 70, 80, 90, 100]) svg += `<line x1="${LX(t)}" x2="${LX(t)}" y1="4" y2="30" class="gl" vector-effect="non-scaling-stroke"/>`;
-  svg += `<line x1="0" x2="100" y1="17" y2="17" stroke="var(--rule)" vector-effect="non-scaling-stroke"/>`;
-  for (const e of others) svg += `<line x1="${LX(e.quality.score)}" x2="${LX(e.quality.score)}" y1="11" y2="23" stroke="var(--dm-soft)" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
-  const bar = (e, y, col) => {
-    const i = iv(e);
-    if (i) svg += `<line x1="${LX(i.low)}" x2="${LX(i.high)}" y1="${y}" y2="${y}" stroke="${col}" stroke-width="5" stroke-linecap="round" opacity="0.32" vector-effect="non-scaling-stroke"/>`;
-  };
-  if (c.kind !== "wait") {
-    bar(c.j, 12, "var(--dm)"); bar(c.b, 22, "var(--br)");
-  }
-  svg += `</svg>`;
-  svg += `<span class="ltick" style="left:0">40</span><span class="ltick" style="left:50%">70</span><span class="ltick" style="left:100%">100</span>`;
-  // dots drawn as HTML so they stay round under a stretched viewBox
-  let dots = "";
-  const dot = (e, col, y, above) => {
-    if (!scored(e)) return;
-    dots += `<span style="position:absolute;left:${LX(e.quality.score)}%;top:${y}px;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:${col};box-shadow:0 0 0 2px var(--paper)"></span>`;
-    const lx = LX(e.quality.score), shift = lx > 94 ? "-100%" : lx < 6 ? "0" : "-50%";
-    dots += `<span style="position:absolute;left:${lx}%;top:${above ? y - 21 : y + 6}px;transform:translateX(${shift});font-size:11.5px;line-height:14px;font-weight:650;color:${col};white-space:nowrap">${fmtScore(e.quality.score)}</span>`;
-  };
-  if (c.kind !== "wait") {
-    dot(c.j, "var(--dm)", 12, true);
-    dot(c.b, "var(--br)", 22, false);
-  } else {
-    dots += `<span style="position:absolute;left:0;top:7px;font-size:13px;color:var(--ink-3);background:var(--paper);padding-right:10px">${suite === "overall" ? "Ranked only when all six categories are scored." : "Not scored. Test rows await human review."}</span>`;
-  }
-  return svg + dots;
+/* The six categories, sorted: Jev ahead by the paired gap, then level, unpaired, Bedrock ahead, not scored. The gap and
+   the verdict are the evaluator's paired Jev-minus-Bedrock interval (compare()), never recomputed here. */
+function gapRows() {
+  const rank = { dm: 0, level: 1, unpaired: 2, br: 3, wait: 4 };
+  const d = (r) => (r.c.pair ? r.c.pair.difference : -Infinity);
+  return CHARTS.map((s) => ({ s, c: compare(s) })).sort((a, b) => rank[a.c.kind] - rank[b.c.kind] || d(b) - d(a));
 }
-function verdictHTML(c, note) {
-  if (c.kind === "wait") return c.overall ? `<div class="lverdict v-wait">Not ranked yet<small>Never averaged over five</small></div>`
-    : `<div class="lverdict v-wait">Not scored<small>Not drawn as zero</small></div>`;
-  const gap = c.js - c.bs;
-  const identical = Math.abs(gap) < 1e-9;
-  const txt = { dm: "Jev ahead", br: "Bedrock ahead", unpaired: "No paired verdict", level: identical ? `Both ${fmtScore(c.js)}` : "No clear difference" }[c.kind];
-  const pi = c.pair ? ` [${c.pair.ci.low.toFixed(1)}, ${c.pair.ci.high.toFixed(1)}]` : "";
-  const sub = c.kind === "unpaired" ? "No paired interval for this row"
-    : identical ? (c.js === 100 ? "No errors on these rows" : "On this subset")
-    : `${gap > 0 ? "+" : ""}${gap.toFixed(1)} points, paired interval${pi}`;
-  return `<div class="lverdict v-${c.kind}">${txt}<small>${esc(sub)}</small>${note ? `<small>${esc(note)}</small>` : ""}</div>`;
+const pairIv = (c) => (c.pair && c.pair.ci ? `[${n1(c.pair.ci.low)}, ${n1(c.pair.ci.high)}]` : "");
+function gapSpoken(s, c) {
+  if (c.kind === "wait") return `${PILL[s]}: not scored yet`;
+  const iv = c.pair && c.pair.ci ? `, paired 95% interval ${n1(c.pair.ci.low)} to ${n1(c.pair.ci.high)}` : "";
+  const v = { dm: `Jev ahead by ${n1(c.pair ? c.pair.difference : 0)} points`, br: `Bedrock ahead by ${n1(c.pair ? -c.pair.difference : 0)} points`,
+    level: "no clear difference", unpaired: "no paired interval" }[c.kind];
+  return `${PILL[s]}: Jev ${fmtScore(c.js)}, Bedrock ${fmtScore(c.bs)}, ${v}${iv}`;
 }
-function costHTML(c) {
-  if (c.kind === "wait") return `<div class="lcost"><small>No cost without a score</small></div>`;
-  const jc = c.j.cost && c.j.cost.usd_per_1000, bc = c.b.cost && c.b.cost.usd_per_1000;
-  const bz = c.b.cost && c.b.cost.zero_tariff && bc === 0;
-  let ratio = "";
-  if (isNum(jc) && isNum(bc) && bc > 0 && jc > 0) {
-    const r = bc / jc;
-    ratio = r >= 1 ? `Jev ${r.toFixed(1)}x cheaper` : `Bedrock ${(1 / r).toFixed(1)}x cheaper`;
-  } else if (bz) ratio = "Bedrock word filters are free";
-  return `<div class="lcost"><b>${fmtUSD(jc)}</b> <span aria-hidden="true">·</span> <b>${bz ? "$0" : fmtUSD(bc)}</b><small>${esc(ratio)}</small></div>`;
+function gapsSVG(W) {
+  const narrow = W < 640;
+  const fsRow = narrow ? 15 : 18, fsTop = narrow ? 17 : 20, fsGap = narrow ? 17 : 20, fsT = narrow ? 14 : 16;
+  const rows = gapRows(), ov = compare("overall");
+  const all = [ov, ...rows.map((r) => r.c)].filter((c) => c.kind !== "wait").flatMap((c) => [c.js, c.bs]);
+  const lo = Math.min(50, Math.floor(Math.min(100, ...all) / 10) * 10);
+  const nameW = narrow ? 0 : Math.min(300, Math.round(W * 0.24));
+  const X0 = narrow ? 10 : nameW, X1 = W - (narrow ? 64 : 110);
+  const sx = (v) => X0 + ((v - lo) / (100 - lo)) * (X1 - X0);
+  const rH = narrow ? 8 : 9, rTop = narrow ? 10 : 11, off = narrow ? 7 : 8;
+  const ticks = []; for (let v = lo; v <= 100; v += 10) ticks.push(v);
+  const yOv = narrow ? 92 : 90;
+  const hair = yOv + (narrow ? 44 : 46);
+  const y1 = hair + (narrow ? 64 : 50), step = narrow ? 72 : 66;
+  const yLast = y1 + (rows.length - 1) * step;
+  let g = txt(X0, 24, "c-axt", "Task score", fsT);
+  if (!narrow) for (const v of ticks) g += `<line class="c-g" x1="${sx(v).toFixed(1)}" x2="${sx(v).toFixed(1)}" y1="40" y2="${yLast + 32}"/>`;
+  const seg = (y) => narrow ? ticks.map((v) => `<line class="c-g" x1="${sx(v).toFixed(1)}" x2="${sx(v).toFixed(1)}" y1="${y - 14}" y2="${y + 14}"/>`).join("") : "";
+  const row = (s, c, y, top) => {
+    const hitTop = narrow ? y - (top ? 52 : 44) : y - (top ? 50 : 30), hitBot = narrow ? y + (top ? 40 : 24) : y + (top ? 30 : 30);
+    let inner = `<rect class="lrow-hit" x="${narrow ? -6 : -12}" y="${hitTop}" width="${W + (narrow ? 12 : 24)}" height="${hitBot - hitTop}" rx="8"/>` + seg(y);
+    const nm = top ? "Overall" : PILL[s];
+    inner += narrow ? txt(0, y - 22, top ? "g-top" : "g-name", nm, top ? fsTop : fsRow) : txt(0, y + 6, top ? "g-top" : "g-name", nm, top ? fsTop : fsRow);
+    if (c.kind === "wait") {
+      inner += txt(W, y + 6, "g-lvl", "not scored", fsRow, "end");
+    } else {
+      const jx = sx(c.js), bx = sx(c.bs), R = top ? rTop : rH;
+      let jy = y, by = y;
+      if (c.kind === "dm" || c.kind === "br") {
+        inner += `<line class="g-lead${c.kind === "br" ? " g-lead-br" : ""}" x1="${bx.toFixed(1)}" x2="${jx.toFixed(1)}" y1="${y}" y2="${y}"/>`;
+        inner += dotSVG(bx, y, R, "bed") + dotSVG(jx, y, R, "jev");
+        inner += txt(W, y + 7, `g-gap${c.kind === "br" ? " g-gap-br" : ""}`, signed(c.pair.difference), top ? fsGap + 2 : fsGap, "end");
+      } else {
+        by = y - off; jy = y + off;
+        inner += dotSVG(bx, by, R - 1, "bed") + dotSVG(jx, jy, R - 1, "jev");
+        inner += txt(W, y + 6, "g-lvl", c.kind === "level" ? "level" : "unpaired", fsRow, "end");
+      }
+      if (top) {   // name the two dots on the Overall row
+        const near = Math.abs(jx - bx) < (tw("Bedrock", 16, true) + tw("Jev", 16, true)) / 2 + 10;
+        const lx = bx <= jx ? "bed" : "jev";
+        const lab = (k, x, yy) => {
+          const anchor = near ? (k === lx ? "end" : "start") : "middle";
+          const ax = near ? (k === lx ? x + R : x - R) : x;
+          return txt(ax, narrow ? yy + R + 20 : yy - R - 9, k === "jev" ? "c-jev" : "c-bed", k === "jev" ? "Jev" : "Bedrock", 16, anchor, ' font-weight="700"');
+        };
+        inner += lab("bed", bx, by) + lab("jev", jx, jy);
+      }
+    }
+    const spoken = gapSpoken(top ? "overall" : s, c);
+    return `<g class="lrow" data-suite="${s}" tabindex="0" role="link" aria-label="${esc(spoken)}. Show the chart."><title>${esc(spoken)}</title>${inner}</g>`;
+  };
+  g += row("overall", ov, yOv, true);
+  g += `<line class="g-hair" x1="0" x2="${W}" y1="${hair}" y2="${hair}"/>`;
+  rows.forEach((r, i) => { g += row(r.s, r.c, y1 + i * step, false); });
+  for (const v of ticks) g += txt(sx(v), yLast + (narrow ? 44 : 56), "c-t", v, fsT, "middle");
+  const H = yLast + (narrow ? 56 : 68);
+  return `<svg viewBox="0 0 ${W} ${H}" role="group" aria-label="Task score, Jev against Bedrock, on a ${lo} to 100 scale. Rows are focusable and open the matching chart.">${g}</svg>`;
+}
+function gapNotes() {
+  const list = [["overall", compare("overall")], ...gapRows().map((r) => [r.s, r.c])].filter(([, c]) => c.pair)
+    .map(([s, c]) => `${PILL[s]} ${signed(c.pair.difference)} ${pairIv(c)}`);
+  const cw = compare("word_filters"), cp = compare("profanity");
+  let wf = "";
+  if (cw.kind !== "wait" && cp.kind !== "wait" && cw.pair && cp.pair) {
+    const same = Math.abs(cw.js - cw.bs) < 1e-9;
+    wf = `Word filters is the component average of two checks. ` +
+      (same ? `On custom words both score ${fmtScore(cw.js)}.${cw.js === 100 ? " That means no errors on these rows, not certain accuracy on every message." : ""}`
+        : `On custom words Jev minus Bedrock is ${signed(cw.pair.difference)} ${pairIv(cw)}.`) +
+      ` On profanity it is ${signed(cp.pair.difference)} ${pairIv(cp)}.`;
+  }
+  return `<p class="off">Task score is the mean of catching violations and passing benign traffic, on held-out test rows with thresholds frozen beforehand. The number on the right is Jev minus Bedrock on the same rows, from the evaluator's paired comparison. Level means its 95% interval includes zero, which does not make the two equal. Select a row to open its chart.</p>
+    ${list.length ? `<p class="off">Paired 95% intervals, Jev minus Bedrock: ${esc(list.join("; "))}.</p>` : ""}
+    ${wf ? `<p class="off">${esc(wf)}</p>` : ""}`;
 }
 function renderLedger() {
-  const rows = [...ROWS, "overall"].map((s) => {
-    const c = compare(s);
-    const best = `<small>${esc(DESC[s])}</small>`;
-    let bestNote = c.best && c.best.i.id !== "jev" && c.kind !== "wait" ? `Top decision model: ${short(c.best.i)} ${fmtScore(c.best.e.quality.score)}` : "";
-    if (s === "profanity" && c.kind !== "wait") {
-      const oj = suiteOf("jev", "word_filters"), ob = suiteOf("bedrock", "word_filters");
-      if (oj && ob) bestNote = `Word filters, component average: ${fmtScore(oj.task_score)} vs ${fmtScore(ob.task_score)}`;
-    }
-    if (c.kind !== "wait" && c.j.sensitivity && c.b.sensitivity)
-      bestNote = `Without format-inferred SSN labels: ${fmtScore(c.j.sensitivity.score)} vs ${fmtScore(c.b.sensitivity.score)}`;
-    return `<div class="lrow${s === "overall" ? " lrow-overall" : ""}" tabindex="0" role="link" data-suite="${s}" aria-label="${esc(label(s))}: show chart">
-      <div class="lname">${esc(label(s))}${best}</div>
-      <div class="lscale">${ledgerScale(s, c)}</div>
-      ${verdictHTML(c, bestNote)}
-      ${costHTML(c)}
-    </div>`;
-  }).join("");
-  const keySvg = (col, soft) => `<svg viewBox="0 0 26 12" aria-hidden="true"><line x1="2" x2="24" y1="6" y2="6" stroke="${col}" stroke-width="5" stroke-linecap="round" opacity="0.32"/><circle cx="13" cy="6" r="5" fill="${col}"/></svg>`;
   return `<section aria-labelledby="h-verdict">
-    <h2 id="h-verdict">Jev against Bedrock, capability by capability</h2>
-    <p class="sub">Task score from 40 to 100: the mean of catching violations and passing benign traffic, on held-out test rows with thresholds frozen beforehand. Bars are each system's own 95% interval. The verdict uses the paired difference, Jev minus Bedrock on the same test rows: "ahead" when its 95% interval excludes zero, "no clear difference" when it includes zero, which does not mean the two are equal. A 100 to 100 interval means no errors on these rows, not certain accuracy on all messages.</p>
-    <div class="ledger">
-      <div class="lrow lhead" aria-hidden="true"><span>Capability</span><span style="display:flex;justify-content:space-between"><span>40</span><span>70</span><span>100</span></span><span>Verdict</span><span>Cost per 1,000: Jev · Bedrock</span></div>
-      ${rows}
-    </div>
-    <div class="key">
-      <span>${keySvg("var(--dm)")}Jev 1.13.0</span>
-      <span>${keySvg("var(--br)")}Amazon Bedrock Guardrails</span>
-      <span><svg viewBox="0 0 26 12" aria-hidden="true"><line x1="13" x2="13" y1="0" y2="12" stroke="var(--dm-soft)" stroke-width="2"/></svg>Other decision models: Kev 0.8B, 4B, 9B, Open-Jev 2B, Laya</span>
-    </div>
+    ${chartHead("gaps", { tag: "h2", id: "h-verdict" })}
+    <div class="chart-box" data-chart="gaps"></div>
+    <div class="chart-notes">${gapNotes()}</div>
   </section>`;
 }
 
-/* ---------- small multiples ---------- */
-const W = 360, H = 250, M = { l: 34, r: 12, t: 10, b: 36 };
-const Y0 = 40, Y1 = 100;
+/* ---------- score against cost (or p95 latency): overall and six categories ---------- */
+/* Plotted points for a chart. On the linear cost axis a documented zero list price is a real position ($0, right edge). */
+function chartPoints(suite, axis) {
+  const plan = G.plotPlan(state.data, rowsOf(suite), axis);
+  if (axis !== "cost") return plan;
+  const free = (x) => x.entry.status === "evaluated" && x.entry.cost && x.entry.cost.zero_tariff && x.entry.cost.usd_per_1000 === 0 && scored(x.entry);
+  for (const x of plan.excluded.filter(free)) plan.points.push({ impl: x.impl, entry: x.entry, x: 0, y: x.entry.quality.score });
+  plan.excluded = plan.excluded.filter((x) => !free(x));
+  return plan;
+}
+/* One x domain for the overall and all six categories: linear from $0 for cost, log for latency. */
 function xDomain(axis) {
   const xs = [];
-  for (const s of ["overall", ...CHARTS]) {
-    const plan = G.plotPlan(state.data, rowsOf(s), axis);
-    plan.points.forEach((p) => xs.push(p.x));
-  }
+  for (const s of ["overall", ...CHARTS]) chartPoints(s, axis).points.forEach((p) => xs.push(p.x));
   if (!xs.length) return null;
-  return G.logTicks(Math.min(...xs) * 0.85, Math.max(...xs) * 1.15);
+  if (axis === "cost") return { ...G.linearTicks(Math.max(...xs)), log: false };
+  const pos = xs.filter((v) => v > 0);
+  return { ...G.logTicks(Math.min(...pos) * 0.85, Math.max(...pos) * 1.15), log: true };
 }
-/* Greedy label placement: main labels first; each tries right, left, above, below and keeps the first spot
-   that clears the plot edge, every point mark and every placed label. */
-function placeLabels(labels, marks, box) {
-  const placed = [];
-  const hit = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
-  const order = labels.slice().sort((a, b) => (b.main - a.main) || (a.y - b.y));
-  for (const l of order) {
-    const w = l.text.length * (l.main ? 7.0 : 6.3) + 2, h = 13;
-    const tries = [
-      { x: l.x + 9, y: l.y - h / 2, a: "start" }, { x: l.x - 9 - w, y: l.y - h / 2, a: "end" },
-      { x: l.x - w / 2, y: l.y - 11 - h, a: "middle" }, { x: l.x - w / 2, y: l.y + 11, a: "middle" },
-      { x: l.x + 9, y: l.y - h - 3, a: "start" }, { x: l.x + 9, y: l.y + 3, a: "start" },
-      { x: l.x - 9 - w, y: l.y - h - 3, a: "end" }, { x: l.x - 9 - w, y: l.y + 3, a: "end" },
-    ];
-    let pick = null;
-    for (const t of tries) {
-      const r = { x: t.x, y: t.y, w, h };
-      if (r.x < box.x0 || r.x + w > box.x1 || r.y < box.y0 || r.y + h > box.y1) continue;
-      const pad = { x: r.x - 2, y: r.y - 1, w: r.w + 4, h: r.h + 2 };
-      if (placed.some((p) => hit(pad, p))) continue;
-      if (marks.some((m) => m.key !== l.key && hit(pad, { x: m.x - 7, y: m.y - 7, w: 14, h: 14 }))) continue;
-      pick = { ...t, r }; break;
-    }
-    if (!pick && l.main) {   // Jev and Bedrock are always named: take the least-crowded spot above or below
-      const t = { x: l.x - w / 2, y: l.y - 11 - h, a: "middle" };
-      pick = { ...t, r: { x: t.x, y: t.y, w, h } };
-    }
-    if (!pick) { l.hidden = true; continue; }
-    placed.push(pick.r);
-    l.tx = pick.a === "start" ? pick.x : pick.a === "end" ? pick.x + w : pick.x + w / 2;
-    l.ty = pick.y + h - 2.5;
-    l.anchor = pick.a;
-  }
-}
-function panelSVG(suite, axis, dom) {
-  const gut = axis === "cost" ? 44 : 0;            // "$0" gutter for documented free policies
-  const pw = W - M.l - M.r - gut, ph = H - M.t - M.b;
-  const sx = (v) => v === 0 ? M.l + 16 : M.l + gut + ((Math.log10(v) - Math.log10(dom.domain[0])) / (Math.log10(dom.domain[1]) - Math.log10(dom.domain[0]))) * pw;
-  const sy = (v) => M.t + (1 - (v - Y0) / (Y1 - Y0)) * ph;
-  const plan = G.plotPlan(state.data, rowsOf(suite), axis);
+function scatterSVG(suite, axis, dom, W) {
+  const big = suite === "overall" && W >= 760;
+  const fs = big ? 16 : 14, fsHero = big ? 22 : 18, rH = big ? 10 : 9, rO = big ? 7 : 6;
+  const H = Math.round(Math.min(big ? 680 : 600, Math.max(W < 480 ? 460 : 400, W * (big ? 0.52 : 0.98))));
+  const X0 = fs * 3 + 10, X1 = W - (big ? 64 : 44), YT = fs + 42, YB = H - (fs * 2 + 44);
+  const [d0, d1] = dom.domain;
+  const frac = (v) => (dom.log ? (Math.log10(v) - Math.log10(d0)) / (Math.log10(d1) - Math.log10(d0)) : (v - d0) / (d1 - d0));
+  const sx = (v) => X1 - frac(v) * (X1 - X0);               // reversed: right is cheaper or faster
+  const plan = chartPoints(suite, axis);
+  const y0 = Math.min(40, ...plan.points.map((p) => Math.floor(p.y / 10) * 10));
+  const sy = (v) => YB - ((v - y0) / (100 - y0)) * (YB - YT);
+  const ty = YT - 26;
   let g = "";
-  for (const t of [40, 50, 60, 70, 80, 90, 100]) {
-    g += `<line class="gl" x1="${M.l}" x2="${W - M.r}" y1="${sy(t)}" y2="${sy(t)}"/>`;
-    g += `<text class="tick" x="${M.l - 8}" y="${sy(t) + 3.5}" text-anchor="end">${t}</text>`;
-  }
+  for (let v = y0; v <= 100; v += 10) g += `<line class="c-g" x1="${X0}" x2="${X1}" y1="${sy(v).toFixed(1)}" y2="${sy(v).toFixed(1)}"/>` + txt(X0 - 12, sy(v) + fs * 0.35, "c-t", v, fs, "end");
+  const tickLabel = (t) => dom.log ? G.fmtTick(t, axis) : t === 0 ? "$0" : "$" + t.toFixed(2);
+  const every = (X1 - X0) / Math.max(1, dom.ticks.length - 1) < fs * 3.8 ? 2 : 1;
   dom.ticks.forEach((t, k) => {
-    g += `<line class="gl" x1="${sx(t)}" x2="${sx(t)}" y1="${M.t}" y2="${H - M.b}"/>`;
-    const first = gut && k === 0;   // keep the first log label clear of the "Free" gutter label
-    g += `<text class="tick" x="${first ? sx(t) - 2 : sx(t)}" y="${H - M.b + 16}" text-anchor="${first ? "start" : "middle"}">${esc(G.fmtTick(t, axis))}</text>`;
+    const x = sx(t);
+    g += `<line class="c-g" x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${YT}" y2="${YB}"/>`;
+    if (k % every === 0) g += txt(x, YB + fs + 12, "c-t", tickLabel(t), fs, "middle");
   });
-  g += `<line x1="${M.l}" x2="${W - M.r}" y1="${H - M.b}" y2="${H - M.b}" stroke="var(--ink-3)"/>`;
-  if (gut) {
-    g += `<line x1="${M.l + gut - 6}" x2="${M.l + gut - 6}" y1="${M.t}" y2="${H - M.b}" stroke="var(--rule)" stroke-dasharray="2 3"/>`;
-    g += `<text class="tick" x="${M.l + 4}" y="${H - M.b + 16}" text-anchor="start">Free</text>`;
-  }
-  g += `<text class="axis-label" x="${W - M.r}" y="${H - 4}" text-anchor="end">${axis === "cost" ? "Cost per 1,000 checks, log scale" : "p95 latency, one request at a time, log scale"} →</text>`;
-  if (axis !== "cost" && COST_ONLY.has(suite)) {
-    g += `<text class="empty-note" x="${M.l + pw / 2}" y="${M.t + ph / 2 - 6}" text-anchor="middle">Compared on cost only.</text>`;
-    g += `<text class="empty-note" x="${M.l + pw / 2}" y="${M.t + ph / 2 + 12}" text-anchor="middle">${suite === "overall" ? "No single call spans six categories." : "Two checks; each has its own latency."}</text>`;
-    return { svg: g, off: [] };
-  }
-  if (!plan.points.length) {
-    g += `<text class="empty-note" x="${M.l + gut + pw / 2}" y="${M.t + ph / 2 - 6}" text-anchor="middle">Not scored yet.</text>`;
-    g += `<text class="empty-note" x="${M.l + gut + pw / 2}" y="${M.t + ph / 2 + 12}" text-anchor="middle">${suite === "overall" ? "Ranked once all six categories are scored." : "Test rows await human review."}</text>`;
-    return { svg: g, off: [] };
-  }
-  const order = { base: 0, dm: 1, br: 2 };
-  if (gut) for (const x of plan.excluded) {
-    const e = x.entry;
-    if (e.status === "evaluated" && e.cost && e.cost.zero_tariff && e.cost.usd_per_1000 === 0 && scored(e))
-      plan.points.push({ impl: x.impl, entry: e, x: 0, y: e.quality.score, lo: iv(e) ? iv(e).low : null, hi: iv(e) ? iv(e).high : null });
-  }
-  plan.excluded = plan.excluded.filter((x) => !(gut && x.entry.cost && x.entry.cost.zero_tariff && x.entry.cost.usd_per_1000 === 0));
-  const pts = plan.points.slice().sort((a, b) => (order[hue(a.impl)] - order[hue(b.impl)]) || (a.impl.id === "jev") - (b.impl.id === "jev"));
-  const labels = [];
+  g += txt(X0, ty, "c-axt", "Task score", fs) + txt(X1, ty, "c-eff", "most efficient ↗", fs, "end");
+  g += txt((X0 + X1) / 2, YB + fs * 2 + 28, "c-axt", axis === "cost" ? "Cost per 1,000 checks (right is cheaper)" : "p95 latency, log scale (right is faster)", fs, "middle");
+  const mid = (a, b) => txt((X0 + X1) / 2, (YT + YB) / 2 - 8, "c-empty", a, fs, "middle") + txt((X0 + X1) / 2, (YT + YB) / 2 + 14, "c-empty", b, fs, "middle");
+  if (axis !== "cost" && COST_ONLY.has(suite)) return { svg: g + mid("Compared on cost only.", suite === "overall" ? "No single call spans six categories." : "Two checks; each has its own latency."), H, off: [], hidden: [] };
+  if (!plan.points.length) return { svg: g + mid("Not scored yet.", suite === "overall" ? "Ranked once all six categories are scored." : "Test rows await human review."), H, off: [], hidden: [] };
+  const rank = { open: 0, bed: 1, jev: 2 };
+  const pts = plan.points.map((p) => ({ ...p, role: role(p.impl), px: sx(p.x), py: sy(p.y) })).sort((a, b) => rank[a.role] - rank[b.role]);
+  const rad = (p) => (p.role === "open" ? rO : rH);
+  const dots = pts.map((p) => [p.px - rad(p) - 1, p.py - rad(p) - 1, p.px + rad(p) + 1, p.py + rad(p) + 1]);
+  const obstacles = [[X0, ty - fs, X0 + tw("Task score", fs), ty + 4], [X1 - tw("most efficient ↗", fs), ty - fs, X1, ty + 4]];
+  const val = (p) => (axis === "cost" ? (p.x === 0 ? "free" : "$" + p.x.toFixed(3)) : G.fmtSeconds(p.x));
+  const order = [...pts.filter((p) => p.role !== "open").sort((a, b) => (a.role === "jev" ? -1 : b.role === "jev" ? 1 : 0)), ...pts.filter((p) => p.role === "open").sort((a, b) => b.y - a.y)];
+  const labels = order.map((p) => ({ p, x: p.px, y: p.py, r: rad(p), hero: p.role !== "open",
+    lines: p.role === "open" ? [[chartName(p.impl), fs, false]] : [[chartName(p.impl), fsHero, true], [`${fmtScore(p.y)} · ${val(p)}`, fs, true]] }));
+  const placed = placeLabels(labels, dots, obstacles, [X0 + 2, ty - fs, W - 4, YB - 2]);
   for (const p of pts) {
-    const h = hue(p.impl), key = p.impl.id, main = key === "jev" || key === "bedrock";
-    const x = sx(p.x), y = sy(p.y);
-    const col = h === "dm" ? "var(--dm)" : h === "br" ? "var(--br)" : "var(--base)";
-    let mark;
-    if (h === "br") mark = `<rect class="mark" x="-5.5" y="-5.5" width="11" height="11" transform="rotate(45)" fill="${col}" stroke="var(--paper)" stroke-width="1.5"/>`;
-    else if (h === "base") mark = `<path class="mark" d="M0,-6 L5.5,4 L-5.5,4 Z" fill="none" stroke="${col}" stroke-width="1.5"/>`;
-    else if (main) mark = `<circle class="mark" r="6" fill="${col}" stroke="var(--paper)" stroke-width="1.5"/>`;
-    else mark = `<circle class="mark" r="4.2" fill="var(--paper)" stroke="${col}" stroke-width="1.6"/>`;
-    const ci = isNum(p.lo) && isNum(p.hi) ? `<line x1="0" x2="0" y1="${sy(p.hi) - y}" y2="${sy(p.lo) - y}" stroke="${col}" stroke-width="${main ? 2.5 : 1.5}" opacity="${main ? 0.45 : 0.3}" stroke-linecap="round"/>` : "";
-    g += `<g class="pt" data-key="${esc(key)}" data-suite="${suite}" tabindex="0" role="button" aria-label="${esc(short(p.impl))}, ${esc(label(suite))}: score ${fmtScore(p.y)}" style="transform:translate(${x.toFixed(1)}px,${y.toFixed(1)}px)"><title>${esc(short(p.impl))}: ${fmtScore(p.y)}</title>${ci}<circle class="halo" r="10"/>${mark}</g>`;
-    labels.push({ x, y, text: short(p.impl), cls: main ? `strong ${h}` : "", key, main: main ? 1 : 0 });
+    const where = axis === "cost" ? (p.x === 0 ? "free policy, $0" : `${fmtUSD(p.x)} per 1,000 checks`) : `p95 ${G.fmtSeconds(p.x)}`;
+    g += `<g class="pt" data-key="${esc(p.impl.id)}" data-suite="${suite}" tabindex="0" role="button" aria-label="${esc(`${short(p.impl)}, ${label(suite)}: score ${fmtScore(p.y)}, ${where}`)}" style="transform:translate(${p.px.toFixed(1)}px,${p.py.toFixed(1)}px)"><title>${esc(short(p.impl))}: ${fmtScore(p.y)}</title><circle class="halo" r="${rad(p) + 5}"/><circle class="mark m-${p.role}" r="${rad(p)}"/></g>`;
   }
-  placeLabels(labels, labels.map((l) => ({ x: l.x, y: l.y, key: l.key })), { x0: M.l + 2, x1: W - 2, y0: 0, y1: H - M.b - 2 });
-  const unlabeled = [];
-  for (const l of labels) {
-    if (l.hidden) { unlabeled.push(l.text); continue; }
-    g += `<text class="lbl lbl-fade ${l.cls}" x="${l.tx.toFixed(1)}" y="${l.ty.toFixed(1)}" text-anchor="${l.anchor}">${esc(l.text)}</text>`;
+  const hidden = [];
+  for (const pl of placed) {
+    if (pl.hidden) { hidden.push(chartName(pl.lab.p.impl)); continue; }
+    pl.lines.forEach((ln, i) => {
+      const cls = pl.lab.hero ? `lbl-fade c-${pl.lab.p.role}` : "lbl-fade c-open";
+      g += txt(ln.x, ln.y, cls, ln.t, ln.s, ln.anchor, pl.lab.hero ? ` font-weight="${i === 0 ? 700 : 600}"` : "");
+    });
   }
-  const off = plan.excluded.filter((x) => x.entry.status === "evaluated").map((x) => {
-    const zero = x.entry.cost && x.entry.cost.zero_tariff && axis === "cost";
-    const why = zero ? "free policy, $0 (no place on a log axis)" : axis === "cost" ? "cost not measured" : (x.impl.type === "code_baseline" ? "under 1 ms" : "latency not measured");
-    return `${short(x.impl)} ${fmtScore(x.entry.quality && x.entry.quality.score)} (${why})`;
-  });
-  return { svg: g, off };
+  const off = plan.excluded.filter((x) => x.entry.status === "evaluated").map((x) =>
+    `${short(x.impl)} ${fmtScore(x.entry.quality && x.entry.quality.score)} (${axis === "cost" ? "cost not measured" : x.impl.type === "code_baseline" ? "under 1 ms" : "latency not measured"})`);
+  return { svg: g, H, off, hidden };
 }
 function renderGrid() {
   const dom = xDomain(state.axis);
+  const cw = colWidth(), two = twoCol();
   const panel = (s) => {
-    const { svg, off } = dom ? panelSVG(s, state.axis, dom) : { svg: "", off: [] };
-    return `<div class="panel" id="panel-${s}" data-suite="${s}">
-      <h3>${esc(label(s))}</h3>
-      <p class="desc">${esc(DESC[s])}</p>
-      <svg class="plot" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(label(s))}: quality against ${state.axis === "cost" ? "cost" : "p95 latency"}">${svg}</svg>
-      ${off.length ? `<p class="off">Off this axis: ${esc(off.join("; "))}.</p>` : ""}
-      ${s === "overall" ? "" : panelNote(s)}
-      ${viewsNote(s)}
-      ${s === "sensitive_information" && (entry("jev", s) || {}).sensitivity ? `<p class="off">Eight test rows carry SSN labels inferred from number format alone. Leaving the SSN type out, Jev scores ${fmtScore((entry("jev", s).sensitivity || {}).score)} and Bedrock ${fmtScore((entry("bedrock", s).sensitivity || {}).score)}; the primary score is kept.</p>` : ""}
+    const W = s === "overall" || !two ? cw : Math.floor((cw - 48) / 2);
+    const { svg, H, off, hidden } = dom ? scatterSVG(s, state.axis, dom, W) : { svg: "", H: 120, off: [], hidden: [] };
+    const prov = isProvisional(s) ? `<span class="pill pill-muted">${s === "overall" ? "includes unreviewed labels" : "labels awaiting review"}</span>` : "";
+    return `<div class="panel cpanel${s === "overall" ? " cpanel-wide" : ""}" id="panel-${s}" data-suite="${s}">
+      ${chartHead(s, { extra: prov })}
+      <svg class="plot" viewBox="0 0 ${W} ${H}" role="group" aria-label="${esc(label(s))}: task score against ${state.axis === "cost" ? "cost per 1,000 checks" : "p95 latency"}">${svg}</svg>
+      <div class="chart-notes">
+        <div class="axis-notes">${off.length ? `<p class="off">Off this axis: ${esc(off.join("; "))}.</p>` : ""}${hidden.length ? `<p class="off">Not labelled for space: ${esc(hidden.join(", "))}. Select a dot for its name.</p>` : ""}</div>
+        ${s === "overall" ? overallAside() : panelNote(s)}
+        ${viewsNote(s)}
+        ${s === "sensitive_information" && (entry("jev", s) || {}).sensitivity ? `<p class="off">Eight test rows carry SSN labels inferred from number format alone. Leaving the SSN type out, Jev scores ${fmtScore((entry("jev", s).sensitivity || {}).score)} and Bedrock ${fmtScore((entry("bedrock", s).sensitivity || {}).score)}; the primary score is kept.</p>` : ""}
+      </div>
     </div>`;
   };
-  return `<div class="grid grid-lead">${panel("overall")}<div class="panel aside">${overallAside()}</div></div>
-    <div class="grid">${CHARTS.map(panel).join("")}</div>`;
+  return `<div class="cgrid">${["overall", ...CHARTS].map(panel).join("")}</div>`;
 }
 function overallAside() {
   const prov = !ownerReviewed() && state.data.provisional;
-  return `<h3>Reading the overall</h3>
+  return `<p class="notes-h">Reading the overall</p>
     <ul class="notes">
       <li><strong>Cost is a mix of category checks.</strong> It is the mean of the six category costs per 1,000 checks, each measured separately; word filters count both of their checks. It is not the price of one call.</li>
       ${prov ? `<li><strong>Human label review pending.</strong> ${profProv() ? "Denied topics and the profanity half of word filters use" : "Denied topics uses"} single-AI reference labels, not independent human review.${profProv() ? "" : " Profanity now scores against Civil Comments' rater labels (dataset v1.3)."} The latest PII result uses the replacement NVIDIA Nemotron-PII test set; the other original categories retain their corrected results.</li>` : ""}
@@ -792,8 +861,29 @@ function renderBias() {
     <div class="combine"><h3>How the three parts fit together</h3><ul class="notes">
       <li>${esc(c.six_category_score)}</li><li>${esc(c.fairness)}</li><li>${esc(c.decision_model)}</li><li><strong>${esc(c.note)}</strong></li>
     </ul></div>
+    ${partsCompare(p)}
     <div class="grid grid-one">${hatePanel(p.hate_detection)}${fairnessPanel(p.guardrail_fairness)}${decisionPanel(p.decision_model_bias)}</div>
   </section>`;
+}
+/* The three parts side by side, and three reasons from this run's own numbers why they are never one figure. */
+function partsCompare(p) {
+  const fs = (id) => (p.guardrail_fairness.systems || []).find((x) => x.implementation === id);
+  const ds = (id) => (p.decision_model_bias.systems || []).find((x) => x.implementation === id);
+  const pct = (v) => isNum(v) ? `${Math.round(v * 100)}%` : "n/a";
+  const rows = [
+    ["The question", "Does it catch hateful content?", "Are its mistakes even across identity groups?", "Does it assume a stereotype?"],
+    ["Correct means", "Matching the source dataset's hate label", "Similar error rates across groups, and the same verdict when only the identity word changes", "The right answer, often 'unknown' when the text does not say"],
+    ["Who can be tested", "All 7 systems", "All 7 systems", "The 6 decision models; Bedrock cannot answer questions"],
+    ["Evidence", "28 messages inside the 560 harmful-content messages", "Weak: 100 comments with every group under 30, and 4 swapped pairs", "150 BBQ questions; the 50 discrim-eval decisions span 31 scenarios, too mixed for demographic claims"],
+  ];
+  const b = fs("bedrock"), j = fs("jev"), k = fs("kev-4b"), dj = ds("jev"), dk = ds("open-jev-2b");
+  const why = [];
+  if (b && j) why.push(["Catching is not fairness", `Bedrock blocks ${pct(b.b1.fpr)} of harmless comments but misses ${pct(b.b1.fnr)} of toxic ones. Jev misses ${pct(j.b1.fnr)} but blocks ${pct(j.b1.fpr)} of harmless ones. An average would describe neither.`]);
+  if (k && k.b2) why.push(["Consistent is not correct", `Kev 4B changed its answer in ${k.b2.flips} of ${k.b2.pairs} identity swaps, yet got both messages wrong in ${k.b2.all_wrong} of ${k.b2.pairs} pairs. Allowing everything would look perfectly consistent too.`]);
+  if (dj && dk && dj.bbq && dk.bbq) why.push(["Filtering is not reasoning", `When a BBQ question does not say who did it, Jev answered 'unknown' ${dj.bbq.ambiguous.correct} of ${dj.bbq.ambiguous.n} times and Open-Jev 2B ${dk.bbq.ambiguous.correct} of ${dk.bbq.ambiguous.n}. Bedrock cannot take this test: not applicable, not zero.`]);
+  return `<div class="tablewrap"><table class="all parttab compare3"><thead><tr><th></th>${[p.hate_detection, p.guardrail_fairness, p.decision_model_bias].map((x, n) => `<th>${n + 1} · ${esc(x.part)}</th>`).join("")}</tr></thead>
+    <tbody>${rows.map((r) => `<tr><th scope="row">${esc(r[0])}</th>${r.slice(1).map((c) => `<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+    <div class="combine"><h3>Why they are never one number</h3><ul class="notes">${why.map(([t, x]) => `<li><strong>${esc(t)}.</strong> ${esc(x)}</li>`).join("")}</ul></div>`;
 }
 function hatePanel(h) {
   const tab = (head, xs) => `<table class="parttab"><thead><tr><th>${esc(head)}</th><th class="num">Test rows</th></tr></thead><tbody>
@@ -809,6 +899,138 @@ function hatePanel(h) {
     <details class="review-details"><summary>What these rows can and cannot show</summary><ul class="notes">${h.caveats.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></details>
   </div>`;
 }
+/* ---------- bias charts (approved design): B1 messages per identity group and B2 pairs; BBQ scatter ---------- */
+const IDENTITY_NAME = { homosexual_gay_or_lesbian: "gay or lesbian" };
+const idName = (x) => IDENTITY_NAME[x] || String(x).replace(/_/g, " ");
+function fairSVG(f, W) {
+  const narrow = W < 600, fs = 14;
+  const sys = f.systems.slice().sort((a, b) => heroFirst(a.implementation, b.implementation));
+  const src = sys.find((s) => s.b1 && s.b1.groups) || {};
+  const groups = ((src.b1 || {}).groups || []).map((g) => ({ name: idName(g.identity), n: g.n_benign + g.n_harmful })).sort((a, b) => b.n - a.n);
+  const none = ((src.b1 || {}).identities_without_rows || []).length;
+  if (none) groups.push({ name: `${none} others`, n: 0 });
+  const need = f.min_support, top = Math.max(need, ...groups.map((g) => g.n));
+  let g = txt(0, 20, "f-pt", "Messages per group", 16);
+  let y;
+  if (!narrow) {
+    const base = 190, scale = 120 / top, needY = base - need * scale;
+    const span = W / groups.length, bw = Math.min(40, span * 0.5);
+    g += `<line class="f-need" x1="0" x2="${W}" y1="${needY.toFixed(1)}" y2="${needY.toFixed(1)}"/>` + txt(W, needY - 8, "f-needt", `${need} needed to compare`, fs, "end");
+    g += `<line class="f-base" x1="0" x2="${W}" y1="${base}" y2="${base}"/>`;
+    groups.forEach((gr, i) => {
+      const cx = (i + 0.5) * span, h = gr.n * scale;
+      if (gr.n) g += `<rect class="f-bar" x="${(cx - bw / 2).toFixed(1)}" y="${(base - h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="2"/>`;
+      g += txt(cx, base - h - 8, "f-bv", gr.n, fs, "middle");
+      wrap2(gr.name, span - 6, fs).forEach((ln, k) => { g += txt(cx, base + 20 + k * 17, "c-t", ln, fs, "middle"); });
+    });
+    y = base + 92;
+  } else {
+    const X0 = 118, X1 = W - 34, scale = (X1 - X0) / top, needX = X0 + need * scale, r0 = 64, step = 26;
+    const last = r0 + (groups.length - 1) * step;
+    g += `<line class="f-need" x1="${needX.toFixed(1)}" x2="${needX.toFixed(1)}" y1="${r0 - 20}" y2="${last + 14}"/>` + txt(needX, r0 - 26, "f-needt", `${need} needed to compare`, fs, "end");
+    g += `<line class="f-base" x1="${X0}" x2="${X0}" y1="${r0 - 14}" y2="${last + 14}"/>`;
+    groups.forEach((gr, i) => {
+      const yy = r0 + i * step, w = gr.n * scale;
+      g += txt(X0 - 8, yy + 5, "c-t", gr.name, fs, "end");
+      if (gr.n) g += `<rect class="f-bar" x="${X0}" y="${yy - 7}" width="${w.toFixed(1)}" height="14" rx="2"/>`;
+      g += txt(X0 + w + 6, yy + 5, "f-bv", gr.n, fs);
+    });
+    y = last + 58;
+  }
+  g += txt(0, y, "f-pt", "Identity-swapped pairs", 16);
+  const legend = (x0, ly) => {
+    let lx = x0, out = "";
+    out += `<rect class="f-ok" x="${lx}" y="${ly - 13}" width="14" height="14" rx="2"/>` + txt(lx + 21, ly, "f-lg", "same, right", fs);
+    lx += 21 + tw("same, right", fs) + 22;
+    out += `<rect class="f-box" x="${lx + 0.75}" y="${ly - 12.25}" width="12.5" height="12.5" rx="2"/><line class="f-x" x1="${lx + 3.5}" y1="${ly - 9.5}" x2="${lx + 10.5}" y2="${ly - 2.5}"/><line class="f-x" x1="${lx + 10.5}" y1="${ly - 9.5}" x2="${lx + 3.5}" y2="${ly - 2.5}"/>` + txt(lx + 21, ly, "f-lg", "same, wrong", fs);
+    lx += 21 + tw("same, wrong", fs) + 22;
+    out += `<rect class="f-chg" x="${lx}" y="${ly - 13}" width="14" height="14" rx="2"/>` + txt(lx + 21, ly, "f-lg", "changed", fs);
+    return { out, w: lx + 21 + tw("changed", fs) - x0 };
+  };
+  const lg0 = legend(0, 0);
+  const inline = W - tw("Identity-swapped pairs", 16, true) - 32 >= lg0.w;
+  const lg = inline ? legend(W - lg0.w - 8, y) : legend(0, y + 28);
+  g += lg.out;
+  const rowsTop = y + (inline ? 26 : 52);
+  const nameW = narrow ? 118 : 168;
+  const maxCells = Math.max(1, ...sys.map((s) => (s.b2 ? s.b2.all_correct + s.b2.all_wrong + s.b2.flips : 0)));
+  const cstep = Math.min(34, (W - nameW) / maxCells), cs = cstep - 8;
+  sys.forEach((s, i) => {
+    const ry = rowsTop + i * 38, k = role(implById(s.implementation) || { id: s.implementation });
+    g += k === "open" ? txt(0, ry + 18, "f-nm", implName(s.implementation), 15)
+      : txt(0, ry + 18, k === "jev" ? "c-jev" : "c-bed", k === "jev" ? "Jev" : "Bedrock", 16, "", ' font-weight="700"');
+    const q = s.b2 || { all_correct: 0, all_wrong: 0, flips: 0 };
+    const cells = [...Array(q.all_correct).fill("R"), ...Array(q.all_wrong).fill("W"), ...Array(q.flips).fill("C")];
+    cells.forEach((c, j) => {
+      const x = nameW + j * cstep;
+      if (c === "R") g += `<rect class="f-ok" x="${x.toFixed(1)}" y="${ry}" width="${cs}" height="${cs}" rx="3"/>`;
+      else if (c === "C") g += `<rect class="f-chg" x="${x.toFixed(1)}" y="${ry}" width="${cs}" height="${cs}" rx="3"/>`;
+      else g += `<rect class="f-box" x="${(x + 0.75).toFixed(1)}" y="${ry + 0.75}" width="${cs - 1.5}" height="${cs - 1.5}" rx="3"/><line class="f-x" x1="${(x + 7).toFixed(1)}" y1="${ry + 7}" x2="${(x + cs - 7).toFixed(1)}" y2="${ry + cs - 7}"/><line class="f-x" x1="${(x + cs - 7).toFixed(1)}" y1="${ry + 7}" x2="${(x + 7).toFixed(1)}" y2="${ry + cs - 7}"/>`;
+    });
+  });
+  const H = rowsTop + sys.length * 38 + 4;
+  const aria = `Messages per identity group against the ${need} needed to compare: ${groups.map((x) => `${x.name} ${x.n}`).join(", ")}. ` +
+    `Identity-swapped pairs per system: ${sys.map((s) => `${implName(s.implementation)} same and right in ${s.b2.all_correct}, same and wrong in ${s.b2.all_wrong}, changed in ${s.b2.flips}, of ${s.b2.evaluable}`).join("; ")}.`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(aria)}">${g}</svg>`;
+}
+function bbqSVG(d, W) {
+  const narrow = W < 600, fs = 14;
+  const sys = d.systems.filter((s) => s.status === "evaluated" && s.bbq).sort((a, b) => heroFirst(a.implementation, b.implementation));
+  const yTitle = `Says "can't tell" when the text doesn't say`;
+  const titleLines = wrap2(yTitle, W - 52 - tw("better ↗", fs) - 40, fs);
+  const X0 = 52, X1 = W - 24, YT = 30 + titleLines.length * 18, H = Math.round(Math.min(560, Math.max(380, W * 0.62))), YB = H - 64;
+  const sx = (v) => X0 + v * (X1 - X0), sy = (v) => YB - v * (YB - YT);
+  let g = "";
+  for (const v of [0, 0.25, 0.5, 0.75, 1]) {
+    g += `<line class="c-g" x1="${X0}" x2="${X1}" y1="${sy(v).toFixed(1)}" y2="${sy(v).toFixed(1)}"/>` + txt(X0 - 12, sy(v) + 5, "c-t", `${v * 100}%`, fs, "end");
+    g += `<line class="c-g" x1="${sx(v).toFixed(1)}" x2="${sx(v).toFixed(1)}" y1="${YT}" y2="${YB}"/>` + txt(sx(v), YB + 26, "c-t", `${v * 100}%`, fs, "middle");
+  }
+  const obstacles = [];
+  titleLines.forEach((ln, i) => {
+    const ly = YT - 18 - (titleLines.length - 1 - i) * 18;
+    g += txt(narrow ? 0 : X0, ly, "c-axt", ln, fs);
+    obstacles.push([narrow ? 0 : X0, ly - fs, (narrow ? 0 : X0) + tw(ln, fs), ly + 4]);
+  });
+  g += txt(X1, YT - 18, "c-eff", "better ↗", fs, "end");
+  obstacles.push([X1 - tw("better ↗", fs), YT - 18 - fs, X1, YT - 14]);
+  g += txt((X0 + X1) / 2, YB + 58, "c-axt", "Right answer when the text does say", fs, "middle");
+  const pts = sys.map((s) => {
+    const impl = implById(s.implementation) || { id: s.implementation, label: s.implementation };
+    const x = s.bbq.disambiguated.correct / s.bbq.disambiguated.n, y = s.bbq.ambiguous.correct / s.bbq.ambiguous.n;
+    const k = role(impl);
+    return { s, impl, k, x, y, px: sx(x), py: sy(y), r: k === "open" ? 6 : 9 };
+  });
+  // grey dots that sit on top of each other share one label ("Kev 9B, Kev 4B")
+  const open = pts.filter((p) => p.k === "open"), clusters = [];
+  for (const p of open) {
+    const c = clusters.find((cl) => cl.some((q) => Math.hypot(q.px - p.px, q.py - p.py) < q.r + p.r + 4));
+    if (c) c.push(p); else clusters.push([p]);
+  }
+  const dots = pts.map((p) => [p.px - p.r - 1, p.py - p.r - 1, p.px + p.r + 1, p.py + p.r + 1]);
+  const labels = [
+    ...pts.filter((p) => p.k !== "open").map((p) => ({ x: p.px, y: p.py, r: p.r, hero: true, k: p.k, lines: [[chartName(p.impl), 18, true]] })),
+    ...clusters.map((cl) => {
+      const xs = cl.map((p) => p.px), ys = cl.map((p) => p.py);
+      const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+      const r = Math.max(...cl.map((p) => Math.max(Math.abs(p.px - cx), Math.abs(p.py - cy)) + p.r));
+      return { x: cx, y: cy, r, hero: false, k: "open", lines: [[cl.map((p) => chartName(p.impl)).join(", "), fs, false]] };
+    }),
+  ];
+  const placed = placeLabels(labels, dots, obstacles, [2, YT - 16, W - 2, YB - 2]);
+  for (const p of pts.slice().sort((a, b) => (a.k === "open" ? 0 : 1) - (b.k === "open" ? 0 : 1))) g += dotSVG(p.px, p.py, p.k === "open" ? p.r : p.r, p.k);
+  const hidden = [];
+  for (const pl of placed) {
+    if (pl.hidden) { hidden.push(pl.lab.lines[0][0]); continue; }
+    for (const ln of pl.lines) g += txt(ln.x, ln.y, pl.lab.hero ? `c-${pl.lab.k}` : "c-open", ln.t, ln.s, ln.anchor, pl.lab.hero ? ' font-weight="700"' : "");
+  }
+  const pct = (v) => `${Math.round(v * 100)}%`;
+  const na = d.systems.filter((s) => s.status === "not_applicable").map((s) => implName(s.implementation));
+  const aria = `Right answer when the text gives it, against answering can't tell when it doesn't. ${pts.map((p) => `${chartName(p.impl)} ${pct(p.x)} and ${pct(p.y)}`).join(". ")}.` +
+    (na.length ? ` Not applicable: ${na.join(", ")}.` : "") + (hidden.length ? ` Unlabelled: ${hidden.join(", ")}.` : "");
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(aria)}">${g}</svg>`;
+}
+const naPills = (list) => (list || []).filter((s) => s.status === "not_applicable" && role(implById(s.implementation) || { id: s.implementation }) !== "open")
+  .map((s) => `<span class="pill pill-bed">${esc(chartName(implById(s.implementation) || { id: s.implementation, label: s.implementation }))}: not applicable</span>`).join("");
 function fairnessPanel(f) {
   const sys = f.systems.slice().sort(byImplOrder);
   const row = (s) => {
@@ -835,6 +1057,7 @@ function fairnessPanel(f) {
       <p class="desc">${esc(f.measures)} ${esc(f.placement)}</p></div>
       <p class="off">B1: ${f.b1_rows.total} Civil Comments comments (${f.b1_rows.benign} benign, ${f.b1_rows.toxic} toxic), each system at its frozen content threshold. B2: ${f.b2_rows.pairs} identity-swapped pairs in ${f.b2_rows.clusters} clusters. Intervals: ${esc(f.interval_method)}. Comparable: ${esc(namesOf(f.systems_comparable))}.</p>
     </div>
+    <div class="bias-chart">${chartHead("fairness", { tag: "h4" })}<div class="chart-box" data-chart="fair"></div></div>
     <div class="biaswrap"><table class="parttab">
       <thead><tr><th>Implementation</th><th>False blocks on benign comments (B1 FPR)</th><th>Missed toxic comments (B1 FNR)</th><th>Identity groups with enough rows</th><th>Pairs: consistency (B2)</th><th>Pairs: correctness (B2)</th></tr></thead>
       <tbody>${sys.map(row).join("")}${(f.not_applicable || []).map((x) => `<tr><td class="name">${swatch(x.implementation)}${esc(implName(x.implementation))}</td><td colspan="5" class="na">Not applicable: ${esc(x.reason)}</td></tr>`).join("")}</tbody>
@@ -866,6 +1089,7 @@ function decisionPanel(d) {
       <p class="desc">${esc(d.measures)} ${esc(d.placement)}</p></div>
       <p class="off">BBQ: ${d.bbq_rows.total} questions (${d.bbq_rows.ambiguous} ambiguous, ${d.bbq_rows.disambiguated} disambiguated) from ${d.bbq_rows.templates} templates. discrim-eval: ${d.discrim_eval_rows.total} cases over ${d.discrim_eval_rows.scenarios} scenarios. Comparable: ${esc(namesOf(d.systems_comparable))}; the rest are listed as not applicable.</p>
     </div>
+    <div class="bias-chart">${chartHead("stereotypes", { tag: "h4", extra: naPills(d.systems) })}<div class="chart-box" data-chart="bbq"></div></div>
     <div class="biaswrap"><table class="parttab">
       <thead><tr><th>Implementation</th><th>BBQ, ambiguous context: answered "unknown"</th><th>BBQ, disambiguated context: correct</th><th>discrim-eval</th></tr></thead>
       <tbody>${sys.map(row).join("")}${(d.not_applicable || []).filter((x) => !sys.some((s) => s.implementation === x.implementation)).map((x) => `<tr><td class="name">${swatch(x.implementation)}${esc(implName(x.implementation))}</td><td colspan="3" class="na">Not applicable: ${esc(x.reason)}</td></tr>`).join("")}</tbody>
@@ -880,7 +1104,7 @@ function renderCharts() {
     <div class="bar">
       <div>
         <h2 id="h-charts">${chartsTitle(state.axis)}</h2>
-        <p class="sub" style="margin:0">One overall chart and six category charts on shared axes. Quality comes from the frozen test split. Costs use recorded API usage or allocated serving time at list prices; latency comes from serial measurements. Missing measurements have no plotted point. Up is better; left is cheaper or faster. Select a point for its details.</p>
+        <p class="sub" style="margin:0">One overall chart and six category charts on shared axes. Quality comes from the frozen test split. Costs use recorded API usage or allocated serving time at list prices; latency comes from serial measurements. Missing measurements have no plotted point. Up is better; right is cheaper or faster. Select a point for its details.</p>
       </div>
       <div class="seg" role="group" aria-label="Horizontal axis">
         <button type="button" data-axis="cost" aria-pressed="${state.axis === "cost"}">Cost per 1,000 checks</button>
@@ -913,10 +1137,8 @@ function switchAxis(axis) {
       requestAnimationFrame(() => { old.setAttribute("style", moved.get(n.dataset.key)); });
     });
     curSvg.replaceWith(nextSvg);
-    const offOld = cur.querySelector(".off"), offNew = next.querySelector(".off");
-    if (offOld) offOld.remove();
-    if (offNew) cur.append(offNew);
-    cur.querySelector("svg.plot").setAttribute("aria-label", nextSvg.getAttribute("aria-label"));
+    const notesOld = cur.querySelector(".axis-notes"), notesNew = next.querySelector(".axis-notes");
+    if (notesOld && notesNew) notesOld.replaceWith(notesNew);
   });
 }
 
@@ -1077,6 +1299,8 @@ function closeDetail() {
 function render() {
   renderOpening();
   $("main").innerHTML = renderOverview() + renderLedger() + renderCharts() + renderTable() + renderBias() + renderScope() + renderMethod();
+  state.width = colWidth();
+  drawCharts();
   $("foot-right").textContent = `Generated ${state.data.benchmark.generated_at}. Tariffs dated ${state.data.cost_basis.tariff_date || "n/a"}.`;
 }
 document.addEventListener("change", (ev) => {
@@ -1099,7 +1323,29 @@ document.addEventListener("click", (ev) => {
 });
 document.addEventListener("keydown", (ev) => {
   if (ev.key === "Escape" && $("detail").classList.contains("on")) return closeDetail();
-  if ((ev.key === "Enter" || ev.key === " ") && ev.target.matches(".pt, tr.row, .lrow[data-suite]")) { ev.preventDefault(); state.viaKey = true; ev.target.click(); state.viaKey = false; }
+  if ((ev.key === "Enter" || ev.key === " ") && ev.target.matches(".pt, tr.row, .lrow[data-suite]")) {
+    ev.preventDefault(); state.viaKey = true;
+    ev.target.dispatchEvent(new MouseEvent("click", { bubbles: true }));   // SVG elements have no .click()
+    state.viaKey = false;
+  }
+});
+/* Charts are drawn at their shown width so type stays at real pixel sizes; redraw them when the column width changes. */
+function drawCharts() {
+  const bp = state.data.bias_parts;
+  document.querySelectorAll("[data-chart]").forEach((el) => {
+    const W = Math.max(280, Math.floor(el.clientWidth));
+    const k = el.dataset.chart;
+    el.innerHTML = k === "gaps" ? gapsSVG(W) : k === "fair" ? fairSVG(bp.guardrail_fairness, W) : k === "bbq" ? bbqSVG(bp.decision_model_bias, W) : "";
+  });
+}
+addEventListener("resize", () => {
+  clearTimeout(state.resizeTimer);
+  state.resizeTimer = setTimeout(() => {
+    if (!state.data || colWidth() === state.width) return;
+    state.width = colWidth();
+    drawCharts();
+    if ($("grid")) $("grid").innerHTML = renderGrid();
+  }, 150);
 });
 function litPanel(suite) {
   const p = $("panel-" + (suite === "word_filters" || suite === "profanity" ? WF : suite));

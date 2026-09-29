@@ -4,6 +4,11 @@ Public version v0.0.1. Internal release numbers identify each revision's rows; e
 
 ## v0.0.1, card update, 29 September 2026
 
+- Bias is described as three parts: hate and discrimination detection (inside the content suite), guardrail fairness diagnostics, and decision-model bias diagnostics. KNOWN_ISSUES.md gains the distinction. No score changed.
+- Data unchanged: every data file is identical to Hub revision `14e7557abf7d79c3acbb4ed44af9b56cb8a45690`.
+
+## v0.0.1, card update, 29 September 2026
+
 - The benchmark's name is styled [gold]rails on the card.
 - Data unchanged: every data file is identical to Hub revision `14e7557abf7d79c3acbb4ed44af9b56cb8a45690`.
 

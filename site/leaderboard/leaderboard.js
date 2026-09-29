@@ -270,6 +270,17 @@
     return { domain: [Math.pow(10, lo), Math.pow(10, hi)], ticks };
   }
 
+  /** Linear ticks from zero with a round step (1, 2, 2.5 or 5 times a power of ten), about six intervals. */
+  function linearTicks(max) {
+    const raw = (isNum(max) && max > 0 ? max : 1) / 6;
+    const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((v) => v >= raw - 1e-12);
+    const n = Math.max(1, Math.ceil(max / step - 1e-9));
+    const ticks = [];
+    for (let i = 0; i <= n; i++) ticks.push(Number((i * step).toPrecision(12)));
+    return { domain: [0, ticks[n]], ticks, step };
+  }
+
   function fmtCost(v) {
     if (!isNum(v)) return "not measured";
     if (v >= 1) return "$" + v.toFixed(2);
@@ -486,7 +497,7 @@
 
   return {
     SCHEMA_VERSION, EVALUATOR_SCHEMA, isEvaluatorDoc, fromEvaluator, normalise, CORE_SUITES, VIEWS, BIAS_TRACKS, TYPES, AXES, STATUS_TEXT, TABLE_COLUMNS,
-    viewOf, validate, rowsFor, axisValue, plotPlan, sweepLines, ranks, tableRows, toCSV, logTicks,
+    viewOf, validate, rowsFor, axisValue, plotPlan, sweepLines, ranks, tableRows, toCSV, logTicks, linearTicks,
     fmtCost, fmtSeconds, fmtTick, fmtPct, isNum,
   };
 });

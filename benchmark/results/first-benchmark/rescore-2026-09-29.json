@@ -1,0 +1,20 @@
+{
+ "date": "2026-09-29",
+ "requested_by": "project owner in chat: run the eval and update score and results site; chose re-score saved results",
+ "model_calls": 0,
+ "commands": [
+  "uv run python benchmark/runs/leaderboard_v13.py --final --out <scratch>/rescore-final.json",
+  "uv run python benchmark/runs/bias_results.py (output compared, then the committed file kept)"
+ ],
+ "leaderboard_final": {
+  "committed_sha256": "9ee37b06ce69873d316a59ff624b9d641b95e5a63011c11cd6f7db7b6b670916",
+  "rescored_sha256": "7d8c4a7ce47ad2b04e5df9f1ee9efb68c2e3f67c43aff3c44c8bed4baa3eebbe",
+  "result": "identical except provenance.seconds (runtime); arms, overall, paired differences and blockers equal"
+ },
+ "bias": {
+  "committed_sha256": "f8c9791166b33cfea6a06f58df2382ea6da00a96b879a07ea99a09a3bdcbc5a5",
+  "rescored_sha256": "f8c9791166b33cfea6a06f58df2382ea6da00a96b879a07ea99a09a3bdcbc5a5",
+  "result": "byte-identical"
+ },
+ "scores_changed": false
+}
