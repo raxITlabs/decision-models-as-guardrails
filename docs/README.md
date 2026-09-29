@@ -18,7 +18,7 @@ Five files at the top of `docs/` and `docs/typesafe-reference/models.md` are one
 
 | File | What it holds |
 |---|---|
-| [teach/gold-rails-primer.html](teach/gold-rails-primer.html) | A one-page walkthrough for newcomers: who is compared, how one message is judged, tune-freeze-test, the score, paired intervals, cost and limits. Download and open in a browser |
+| [teach/gold-rails-primer.html](teach/gold-rails-primer.html) | A one-page walkthrough for newcomers: who is compared, how one message is judged, tune-freeze-test, the score, paired intervals, cost and limits. Read it rendered at https://raxitlabs.github.io/goldrails/teach/gold-rails-primer.html |
 | [benchmark/18-benchmark-structure.md](benchmark/18-benchmark-structure.md) | The six suites and how the harness fits together |
 | [benchmark/19-evaluation-contract-v1.md](benchmark/19-evaluation-contract-v1.md) | The rules a result must follow. Signed as v1.1 on 28 September 2026 (`benchmark/contracts/v1.1-signed.json`) |
 

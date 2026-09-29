@@ -1,6 +1,6 @@
 # Gold Rails
 
-A guardrail benchmark for decision models, built by raxIT Labs. Two deliverables, two folders: [`dataset/`](dataset/) builds the Gold Rails dataset that will live on Hugging Face under `raxITLabs`, and [`benchmark/`](benchmark/) runs decision models and managed guardrail services against it. [`infra/`](infra/gcp/README.md) provisions the model-serving VM in your own GCP project. [`docs/`](docs/README.md) is everything to read. New to the benchmark? Start with [`docs/teach/gold-rails-primer.html`](docs/teach/gold-rails-primer.html), a one-page walkthrough of how it works (download it and open it in a browser). Notebooks are the reference for every step and run from a clean checkout.
+A guardrail benchmark for decision models, built by raxIT Labs. Two deliverables, two folders: [`dataset/`](dataset/) builds the Gold Rails dataset that will live on Hugging Face under `raxITLabs`, and [`benchmark/`](benchmark/) runs decision models and managed guardrail services against it. [`infra/`](infra/gcp/README.md) provisions the model-serving VM in your own GCP project. [`docs/`](docs/README.md) is everything to read. New to the benchmark? Start with the [Gold Rails primer](https://raxitlabs.github.io/goldrails/teach/gold-rails-primer.html), a one-page walkthrough of how it works (source: [`docs/teach/gold-rails-primer.html`](docs/teach/gold-rails-primer.html)). Notebooks are the reference for every step and run from a clean checkout.
 
 ## Run it
 

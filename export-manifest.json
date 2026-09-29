@@ -1,5 +1,5 @@
 {
- "private_commit": "2b44edaca94ef8f54ee1c393879065d4bf64dd53",
+ "private_commit": "f54b312a3f19652a6e18e33307ecc59d2179f33c",
  "tag": "v0.0.1",
  "public_url": "https://github.com/raxITlabs/goldrails",
  "files": [
@@ -31,8 +31,8 @@
   },
   {
    "path": "README.md",
-   "private_sha256": "1e6ffff359629fda4dd5b7bedef823e01a271044ca87ccfb087e641c3cd1edcc",
-   "public_sha256": "1e6ffff359629fda4dd5b7bedef823e01a271044ca87ccfb087e641c3cd1edcc",
+   "private_sha256": "c1a26dc4429fcefb74fcbaeb14b4db02995fdeb8d35bff48d0d2e594eeeb1b0a",
+   "public_sha256": "c1a26dc4429fcefb74fcbaeb14b4db02995fdeb8d35bff48d0d2e594eeeb1b0a",
    "redactions": {}
   },
   {
@@ -444,8 +444,8 @@
   },
   {
    "path": "benchmark/results/first-benchmark/page-check.json",
-   "private_sha256": "ca3f713ebe2527fc5349f8c101c08ee76b8e9091f0a28e9577757dbebb41825e",
-   "public_sha256": "ca3f713ebe2527fc5349f8c101c08ee76b8e9091f0a28e9577757dbebb41825e",
+   "private_sha256": "1e7a1c7591256aa1c7b939f0da40487665effe5cc62d53e1adc95bf8c9762927",
+   "public_sha256": "1e7a1c7591256aa1c7b939f0da40487665effe5cc62d53e1adc95bf8c9762927",
    "redactions": {}
   },
   {
@@ -2017,8 +2017,8 @@
   },
   {
    "path": "dataset/release/v1.3/publication.json",
-   "private_sha256": "6428a35a9ac6c5aa0f3b25dd74af06b2abff5c5ae89af20e756317c7ec38e2c3",
-   "public_sha256": "6428a35a9ac6c5aa0f3b25dd74af06b2abff5c5ae89af20e756317c7ec38e2c3",
+   "private_sha256": "12c4153d7d93a2a836e6223c4b41973ba7ceac301e324d9de0d416b8eeb1b466",
+   "public_sha256": "12c4153d7d93a2a836e6223c4b41973ba7ceac301e324d9de0d416b8eeb1b466",
    "redactions": {}
   },
   {
@@ -2112,6 +2112,12 @@
    "redactions": {}
   },
   {
+   "path": "docs/.nojekyll",
+   "private_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "public_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "redactions": {}
+  },
+  {
    "path": "docs/09-bedrock-guardrails-feature-inventory.md",
    "private_sha256": "b0184adecff519ce6522a9166f6dfa9216d8da7a7a40bdf156056ec59f22484a",
    "public_sha256": "b0184adecff519ce6522a9166f6dfa9216d8da7a7a40bdf156056ec59f22484a",
@@ -2143,8 +2149,8 @@
   },
   {
    "path": "docs/README.md",
-   "private_sha256": "76809c951a8371875bef24c26492e73ac950aa324276c918ef4f7e34fe56f785",
-   "public_sha256": "76809c951a8371875bef24c26492e73ac950aa324276c918ef4f7e34fe56f785",
+   "private_sha256": "167df4df41549747a511d930313013a5b540be30da5e2e5e593f4b0063623dfc",
+   "public_sha256": "167df4df41549747a511d930313013a5b540be30da5e2e5e593f4b0063623dfc",
    "redactions": {}
   },
   {
@@ -2217,6 +2223,12 @@
    "path": "docs/benchmark/24-bias-licence.md",
    "private_sha256": "5c5afdac3a0c7b240418252fbe07ee5994abde987dc8d26ce63e009175d60639",
    "public_sha256": "5c5afdac3a0c7b240418252fbe07ee5994abde987dc8d26ce63e009175d60639",
+   "redactions": {}
+  },
+  {
+   "path": "docs/index.html",
+   "private_sha256": "c91181ae692fe266c3fe5f46e2f78889f7eca2ad8febef71669aecfd5396faf8",
+   "public_sha256": "c91181ae692fe266c3fe5f46e2f78889f7eca2ad8febef71669aecfd5396faf8",
    "redactions": {}
   },
   {

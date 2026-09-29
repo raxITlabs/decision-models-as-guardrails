@@ -33,7 +33,17 @@
    "date": "2026-09-29",
    "by": "the project owner in chat: \"make this repo public please\"",
    "checked_before": "both commits (26b578f, c468c82) scanned for keys, tokens, the AWS account number, local paths and AI4Privacy ids: no hits"
-  }
+  },
+  "later_commits": [
+   {
+    "commit": "06e058531c0063576e5cc413761a7ef4375423b6",
+    "date": "2026-09-29",
+    "exported_from_private_commit": "2b44edaca94e",
+    "what": "docs reorganised into folders; teaching primer (docs/teach/gold-rails-primer.html); every tracked doc plus VISION.md and PRODUCT.md published, except the unsent AI4Privacy draft in docs/requests/",
+    "checks": "export scan 0 problems over 500 files; 301 tests pass and 4 skip from a clean install",
+    "note": "the dataset card's code reference stays c468c822, the code that built Hugging Face revision 14e7557a"
+   }
+  ]
  },
  "open": [],
  "dataset_viewer": "working: preview, viewer, search, filter, statistics",
