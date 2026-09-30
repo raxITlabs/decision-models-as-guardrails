@@ -35,6 +35,38 @@ def test_sample_validates_against_schema():
     assert not errors, [f"{e.json_path}: {e.message}" for e in errors[:5]]
 
 
+
+RESULTS = SITE / "results.json"
+FIRST_RUN = SITE / "runs" / "first-benchmark.json"
+
+
+@pytest.mark.parametrize("path", [RESULTS, FIRST_RUN], ids=["current", "first-run"])
+def test_real_results_validate_against_schema(path):
+    jsonschema = pytest.importorskip("jsonschema")
+    errors = list(jsonschema.Draft202012Validator(load(SCHEMA)).iter_errors(load(path)))
+    assert not errors, [f"{e.json_path}: {e.message}" for e in errors[:5]]
+
+
+def test_current_results_are_a_later_run_that_links_the_first():
+    """results.json is the current run; it names the first run's page data, which exists and has no run block."""
+    cur, first = load(RESULTS), load(FIRST_RUN)
+    run = cur["run"]
+    assert run["id"] != "first-benchmark" and run["previous"]["id"] == "first-benchmark"
+    assert (SITE / run["previous"]["results"]).resolve() == FIRST_RUN.resolve()
+    assert "run" not in first and "first benchmark" in first["benchmark"]["name"]
+    # each run's status is stated as its evaluator gives it
+    lb = lambda r: load(REPO / "benchmark" / "results" / r / "leaderboard-final.json")
+    assert run["valid_for_publication"] is lb(run["id"])["valid_for_publication"]
+    assert run["previous"]["valid_for_publication"] is lb("first-benchmark")["valid_for_publication"]
+    assert all(b in run["previous"]["status"] for b in lb("first-benchmark")["publication_blockers"])
+    assert {c["id"] for c in run["changes"]} >= {"overall", "jev-grounding", "content-question-sets"}
+
+
+def test_page_marks_an_earlier_run_and_shows_the_run_block():
+    page = PAGE.read_text(encoding="utf-8")
+    assert "renderRun()" in page and "An earlier run, kept on file." in page
+    assert 'index.html?results=${esc(p.results)}' in page
+
 def test_sample_is_unmistakably_placeholder():
     data = load(SAMPLE)
     assert data["placeholder"] is True

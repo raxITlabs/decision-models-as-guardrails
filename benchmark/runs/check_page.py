@@ -1,13 +1,18 @@
 """Release check: the results page says exactly what the frozen results say.
 
-    uv run python benchmark/runs/check_page.py
+    uv run python benchmark/runs/check_page.py                                   # the first run (default)
+    GOLDRAILS_RUN=second-benchmark uv run python benchmark/runs/check_page.py    # or --run second-benchmark
 
-Reads ``site/leaderboard/results.json`` (what the page draws) and compares it with the frozen sources: the provisional
-leaderboard, the freeze manifests, the corrected five-category view, ``bias.json`` (and its three-part view
-``bias-parts.json`` with the row audit ``bias-audit.json``) and ``CORRECTIONS.md``. No model calls. Writes ``benchmark/results/first-benchmark/page-check.json`` and exits non-zero if any check fails.
+Reads the run's page data (``site_results.site_json``: ``site/leaderboard/results.json`` for the current run,
+``site/leaderboard/runs/<run>.json`` for any other) and compares it with the frozen sources: the run's final
+leaderboard, its freeze manifests, ``bias.json`` (and its three-part view ``bias-parts.json`` with the row audit
+``bias-audit.json``); for the first run also the corrected five-category view and ``CORRECTIONS.md``, and for a later
+run the first run's leaderboard and the ledgers behind the page's account of what changed. No model calls. Writes
+``benchmark/results/<run>/page-check.json`` and exits non-zero if any check fails.
 """
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import re
@@ -17,12 +22,23 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import run_context as RC  # noqa: E402
+import site_results  # noqa: E402
 from site_results import IMPL, OVERALL_ID  # noqa: E402  the converter's own system-to-page id table
-RES = REPO / "benchmark" / "results" / "first-benchmark"
-SUB = REPO / "benchmark" / "subsets" / "first-benchmark"
-SITE = REPO / "site" / "leaderboard" / "results.json"
-MANIFESTS = ("freeze-manifest.json", "freeze-extension-1.json", "freeze-extension-2.json", "freeze-extension-3.json",
-             "freeze-extension-4.json")
+ALL_MANIFESTS = ("freeze-manifest.json", "freeze-extension-1.json", "freeze-extension-2.json", "freeze-extension-3.json",
+                 "freeze-extension-4.json")
+
+
+def setup(run: str) -> None:
+    """Point the checks at one run: its results, its manifests and its page data."""
+    global CTX, RES, SUB, SITE, MANIFESTS
+    CTX = RC.RunContext(RC.check_run_id(run), RC.check_run_id(run))
+    RES, SUB, SITE = CTX.results, CTX.frozen_subsets, site_results.site_json(run)
+    # the first run has all five manifests; a later run has no extension 2 (run.json explains why)
+    MANIFESTS = ALL_MANIFESTS if CTX.is_first else tuple(m for m in ALL_MANIFESTS if (SUB / m).exists())
+
+
+setup(RC.current().run)
 CORE = ("content", "prompt_attacks", "word_filters", "sensitive_info", "grounding")
 SITE_SUITE = {"sensitive_info": "sensitive_information"}
 TOL = 1e-3   # the page rounds scores to 4 places and costs to 5
@@ -279,13 +295,166 @@ def bias_parts_checks(site: dict, lb: dict, bias: dict) -> None:
           "detector)", not hits, ", ".join(hits) or "none")
 
 
-def main() -> int:
+# --- a later run --------------------------------------------------------------------------------------------------
+
+TEST_LEDGERS = ("test.jsonl", "test-bias.jsonl", "ext-test.jsonl", "ext-test-bias.jsonl", "pii-v12-test.jsonl",
+                "prof-v13-test.jsonl")
+
+
+def _added(path: str) -> tuple[int, str] | None:
+    """(commit time, short hash) of the commit that added a file."""
+    out = git("log", "--diff-filter=A", "--format=%ct %h", "--", path).splitlines()
+    return (int(out[-1].split()[0]), out[-1].split()[1]) if out else None
+
+
+def freeze_order_check(lb: dict) -> None:
+    """A later run froze everything at once: every file in benchmark/subsets/<run>/ (manifests, selections, the run
+    declaration) was committed, once and never rewritten, before any file in benchmark/results/<run>/, and before the
+    earliest test attempt in any of its test ledgers."""
+    from datetime import datetime
+    subs = git("ls-files", RC.rel(SUB)).splitlines()
+    ress = [f for f in git("ls-files", RC.rel(RES)).splitlines() if f.endswith(".jsonl")]
+    bad = []
+    sub_t = {f: _added(f) for f in subs}
+    res_t = {f: _added(f) for f in ress}
+    rewritten = [f for f in subs if len(git("log", "--format=%h", "--", f).splitlines()) != 1]
+    first_test = min(a["at"] for n in TEST_LEDGERS if (RES / n).exists()
+                     for line in (RES / n).open(encoding="utf-8") if line.strip() for a in json.loads(line)["attempts"])
+    first_test_t = datetime.fromisoformat(first_test.replace("Z", "+00:00")).timestamp()
+    last_sub = max(sub_t.values()) if sub_t and all(sub_t.values()) else None
+    first_res = min(res_t.values()) if res_t and all(res_t.values()) else None
+    if not last_sub or not first_res or last_sub[0] >= first_res[0]:
+        bad.append(f"last subsets commit {last_sub} not before first results commit {first_res}")
+    if last_sub and last_sub[0] >= first_test_t:
+        bad.append(f"last subsets commit {last_sub} not before the first test attempt {first_test}")
+    if rewritten:
+        bad.append("rewritten after first commit: " + ", ".join(rewritten))
+    if not all(m in [Path(f).name for f in subs] for m in MANIFESTS) or len(MANIFESTS) < 4:
+        bad.append(f"manifests {MANIFESTS}")
+    if lb["freeze_manifest"]["records"]["earliest_test_attempt"] != first_test:
+        bad.append(f"leaderboard's earliest test attempt {lb['freeze_manifest']['records']['earliest_test_attempt']} vs ledgers {first_test}")
+    check(f"every file in {RC.rel(SUB)} committed once, before any ledger in {RC.rel(RES)} and before the first test call",
+          not bad, "; ".join(bad) or f"{len(subs)} frozen files, last at {last_sub[1]}; {len(ress)} ledgers, first at "
+                                    f"{first_res[1]}; first test call {first_test}")
+
+
+def _grounding(run: str, ledgers: tuple) -> dict:
+    """{row id: (max decision probability, expected)} for Jev on grounding; a later ledger's row replaces an earlier one."""
+    out = {}
+    for n in ledgers:
+        p = RC.RESULTS / run / n
+        for line in (p.open(encoding="utf-8") if p.exists() else []):
+            d = json.loads(line)
+            if d["system"] == "jev-1.13.0" and d["question_set"] == "v1-f6-grounding" and d["ok"]:
+                out[d["id"]] = (max(d["answers"][k]["noul"] for k in d["decision_keys"]), d["expected"])
+    return out
+
+
+def _score(rows: dict, t: float) -> tuple[float, float]:
+    """(task score, false-positive rate) at threshold t; a score at or above t flags."""
+    pos = [v for v, e in rows.values() if e == "yes"]
+    neg = [v for v, e in rows.values() if e == "no"]
+    fpr = sum(v >= t for v in neg) / len(neg)
+    return 100 * 0.5 * (sum(v >= t for v in pos) / len(pos) + 1 - fpr), fpr
+
+
+def run_checks(site: dict, lb: dict) -> None:
+    """The run block: this run's and the first run's publication status, the changes, and the Jev grounding account."""
+    from site_results import f1
+    r = site.get("run") or {}
+    first = load(RC.RESULTS / RC.FIRST / "leaderboard-final.json")
+    prev = r.get("previous") or {}
+    linked = site_results.SITE_DIR / (prev.get("results") or "missing.json")
+    ok = (r.get("id") == CTX.run and r.get("valid_for_publication") is lb["valid_for_publication"]
+          and r.get("publication_blockers") == lb["publication_blockers"]
+          and prev.get("valid_for_publication") is first["valid_for_publication"]
+          and prev.get("publication_blockers") == first["publication_blockers"]
+          and all(b in prev.get("status", "") for b in first["publication_blockers"])
+          and ("is not valid for publication" in prev.get("status", "")) == (not first["valid_for_publication"])
+          and ("valid for publication, with no blockers" in r.get("summary", "") + site.get("notice", ""))
+          == (lb["valid_for_publication"] and not lb["publication_blockers"])
+          and linked.exists() and site_results.RUN_LABEL[RC.FIRST] in load(linked)["benchmark"]["name"])
+    check("the page names this run, links the first run's results, and states each run's publication status and "
+          "blockers as its evaluator does", ok,
+          f"this run valid {lb['valid_for_publication']} ({len(lb['publication_blockers'])} blockers); first run valid "
+          f"{first['valid_for_publication']} ({len(first['publication_blockers'])} blockers); {RC.rel(linked)}")
+
+    # every structured value in the changes equals the two leaderboards, and the text shows it
+    ch = {c["id"]: c for c in r.get("changes") or []}
+    bad = []
+    ov = lambda d: {i["implementation"]: i["overall_score"] for i in d["overall"]["implementations"]}
+    o1, o2 = ov(first), ov(lb)
+    names = {v: k for k, v in site_results.NAME.items()}
+    for name, v in (ch.get("overall") or {}).get("values", {}).items():
+        n = names[name]
+        if not (close(v["first"], o1[n], 1e-4) and close(v["second"], o2[n], 1e-4)):
+            bad.append(f"overall {name}")
+    for n in ("jev-1.13.0", "bedrock-guardrails"):
+        if f"{f1(o1[n])} to {f1(o2[n])}" not in (ch.get("overall") or {}).get("text", ""):
+            bad.append(f"overall text {n}")
+    arm = lambda d, sy, su: next(a for a in d["arms"] if a["system"] == sy and a["suite"] == su)
+    g = ch.get("jev-grounding") or {}
+    g1, g2 = arm(first, "jev-1.13.0", "grounding"), arm(lb, "jev-1.13.0", "grounding")
+    thr = lambda a: a["subtasks"]["grounding"]["threshold"]["threshold"]
+    if not (g.get("first") == g1["suite_score"]["value"] and g.get("second") == g2["suite_score"]["value"]
+            and g.get("first_threshold") == thr(g1) and g.get("second_threshold") == thr(g2)):
+        bad.append("grounding values")
+    qs = (ch.get("content-question-sets") or {}).get("question_sets") or {}
+    for label, sy in (("Jev", "jev-1.13.0"), ("Bedrock", "bedrock-checks")):
+        if qs.get(label) != {"first": arm(first, sy, "content")["question_set"], "second": arm(lb, sy, "content")["question_set"]}:
+            bad.append(f"content question set {label}")
+    same = [n for n in o2 if n not in ("jev-1.13.0", "bedrock-guardrails")]
+    for n in same:
+        i1 = next(i for i in first["overall"]["implementations"] if i["implementation"] == n)
+        i2 = next(i for i in lb["overall"]["implementations"] if i["implementation"] == n)
+        if any(i1["suites"][s]["task_score"] != i2["suites"][s]["task_score"] for s in i2["suites"]):
+            bad.append(f"{n} said unchanged but differs")
+    check("every before-and-after value in the run block equals the two final leaderboards", not bad,
+          "; ".join(bad) or f"{len(ch)} changes; {len(same)} self-hosted models unchanged in every category")
+
+    # the Jev grounding account, recomputed from the ledgers: this method reproduces both frozen scores first
+    t1, t2 = thr(g1), thr(g2)
+    a1 = _grounding(RC.FIRST, ("test.jsonl", "test-rerun.jsonl"))
+    a2, tune2 = _grounding(CTX.run, ("test.jsonl",)), _grounding(CTX.run, ("tune.jsonl",))
+    at_first, _ = _score(a2, t1)
+    tie1, fpr1 = _score(tune2, t1)
+    tie2, fpr2 = _score(tune2, t2)
+    text = g.get("text", "")
+    ok = (close(_score(a1, t1)[0], g1["suite_score"]["value"], 1e-9) and close(_score(a2, t2)[0], g2["suite_score"]["value"], 1e-9)
+          and close(at_first, g.get("at_first_threshold"), 1e-9) and close(tie1, tie2, 1e-9)
+          and close(tie1, g.get("tuning_tie"), 1e-9) and close(fpr1, g.get("tuning_fpr_at_first_threshold"), 1e-9)
+          and fpr2 == 0 and fpr1 > fpr2
+          and all(x in text for x in (f1(at_first), f1(g1["suite_score"]["value"] - at_first),
+                                      f1(at_first - g2["suite_score"]["value"]), f1(tie1), str(t1), str(t2))))
+    check("the Jev grounding account recomputes from the ledgers (API drift at the first run's threshold, tuning tie, "
+          "tie-break by tuning false-positive rate)", ok,
+          f"{f1(g1['suite_score']['value'])} at {t1}; this run's answers {at_first:.3f} at {t1}, {_score(a2, t2)[0]:.3f} at "
+          f"{t2}; tuning {tie1:.1f} at both, FPR {fpr1:.2f} vs {fpr2:.2f}; {len(set(a1) & set(a2))} common test rows, "
+          f"{sum(1 for i in set(a1) & set(a2) if a1[i][0] != a2[i][0])} with different answers")
+
+    # Kev 0.8B: the first run's hung calls, as the cost change says
+    hung = [a["latency_s"] for line in (RC.RESULTS / RC.FIRST / "test.jsonl").open(encoding="utf-8")
+            for d in [json.loads(line)] if d["system"] == "kev-0-8b" and d["question_set"] in ("v1-f2-attacks", "v1-f4-words")
+            for a in d["attempts"] if not a["ok"]]
+    t = (ch.get("self-hosted-cost") or {}).get("text", "")
+    check("the Kev 0.8B cost account matches the first run's ledger (failed calls, each over a minute)",
+          bool(hung) and min(hung) > 60 and f"{len(hung)} of its calls hung for over a minute" in t,
+          f"{len(hung)} failed calls, {min(hung) if hung else 0:.1f} to {max(hung) if hung else 0:.1f} s")
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("--run", help="benchmark run id (default: GOLDRAILS_RUN, else first-benchmark)")
+    args = ap.parse_args(argv)
+    if args.run:
+        setup(args.run)
     pick = next(p for p in (RES / "leaderboard-final.json", RES / "leaderboard-v1.3.json", RES / "leaderboard-v1.2.json",
                             RES / "leaderboard-provisional.json") if p.exists())
     v13 = pick.name == "leaderboard-v1.3.json" or "v1_3" in (load(pick).get("provenance") or {})   # Civil Comments profanity
     v12 = v13 or pick.name == "leaderboard-v1.2.json"   # PII replaced; the corrected view's PII arms are the old source
     site, lb = load(SITE), load(pick)
-    corrected, bias = load(RES / "leaderboard-corrected.json"), load(RES / "bias.json")["bias"]
+    corrected = load(RES / "leaderboard-corrected.json") if CTX.is_first else None
+    bias = load(RES / "bias.json")["bias"]
     site_impl = {i["id"]: i for i in site["implementations"]}
     by_hash = {}
     for e in site["entries"]:
@@ -343,33 +512,36 @@ def main() -> int:
     check("every arm used its freeze manifest's thresholds", not bad, "; ".join(bad) or f"{len(frozen)} frozen arms")
     check("freeze manifests are committed and unchanged", not dirty, ", ".join(dirty) or ", ".join(s[:12] for s in sha_ok))
 
-    # 3. Extension manifests were committed before their test ledgers.
-    order = []
-    for manifest, ledger in (("freeze-extension-1.json", "ext-test.jsonl"), ("freeze-extension-2.json", "ext-test.jsonl")):
-        m = git("log", "--diff-filter=A", "--format=%ct %h", "--", f"benchmark/subsets/first-benchmark/{manifest}").splitlines()
-        rows = git("log", "--reverse", "--format=%ct %h", "--", f"benchmark/results/first-benchmark/{ledger}").splitlines()
-        order.append((manifest, m[-1] if m else None, rows))
-    bad = []
-    ext1 = order[0][1]
-    first_ext_test = order[0][2][0] if order[0][2] else None
-    if not ext1 or not first_ext_test or int(ext1.split()[0]) > int(first_ext_test.split()[0]):
-        bad.append(f"extension 1 {ext1} not before first ext-test commit {first_ext_test}")
-    ext2 = order[1][1]
-    later = [r for r in order[1][2] if ext2 and int(r.split()[0]) > int(ext2.split()[0])]
-    if not ext2 or not later:
-        bad.append(f"extension 2 {ext2}: no ext-test commit after it (Bedrock rows)")
-    if (SUB / "freeze-extension-3.json").exists():
-        m3 = git("log", "--diff-filter=A", "--format=%ct %h", "--", "benchmark/subsets/first-benchmark/freeze-extension-3.json").splitlines()
-        t3 = git("log", "--diff-filter=A", "--format=%ct %h", "--", "benchmark/results/first-benchmark/pii-v12-test.jsonl").splitlines()
-        if not m3 or not t3 or int(m3[-1].split()[0]) > int(t3[-1].split()[0]):
-            bad.append(f"extension 3 {m3[-1] if m3 else None} not before the PII test ledger {t3[-1] if t3 else None}")
-    if (SUB / "freeze-extension-4.json").exists():
-        m4 = git("log", "--diff-filter=A", "--format=%ct %h", "--", "benchmark/subsets/first-benchmark/freeze-extension-4.json").splitlines()
-        t4 = git("log", "--diff-filter=A", "--format=%ct %h", "--", "benchmark/results/first-benchmark/prof-v13-test.jsonl").splitlines()
-        if not m4 or not t4 or int(m4[-1].split()[0]) > int(t4[-1].split()[0]):
-            bad.append(f"extension 4 {m4[-1] if m4 else None} not before the profanity test ledger {t4[-1] if t4 else None}")
-    check("extension manifests committed before the test rows they govern", not bad,
-          "; ".join(bad) or f"ext1 {ext1.split()[1]} before {first_ext_test.split()[1]}; ext2 {ext2.split()[1]} before {later[0].split()[1]}")
+    # 3. Extension manifests were committed before their test ledgers (a later run: every manifest before any ledger).
+    if not CTX.is_first:
+        freeze_order_check(lb)
+    else:
+        order = []
+        for manifest, ledger in (("freeze-extension-1.json", "ext-test.jsonl"), ("freeze-extension-2.json", "ext-test.jsonl")):
+            m = git("log", "--diff-filter=A", "--format=%ct %h", "--", f"benchmark/subsets/first-benchmark/{manifest}").splitlines()
+            rows = git("log", "--reverse", "--format=%ct %h", "--", f"benchmark/results/first-benchmark/{ledger}").splitlines()
+            order.append((manifest, m[-1] if m else None, rows))
+        bad = []
+        ext1 = order[0][1]
+        first_ext_test = order[0][2][0] if order[0][2] else None
+        if not ext1 or not first_ext_test or int(ext1.split()[0]) > int(first_ext_test.split()[0]):
+            bad.append(f"extension 1 {ext1} not before first ext-test commit {first_ext_test}")
+        ext2 = order[1][1]
+        later = [r for r in order[1][2] if ext2 and int(r.split()[0]) > int(ext2.split()[0])]
+        if not ext2 or not later:
+            bad.append(f"extension 2 {ext2}: no ext-test commit after it (Bedrock rows)")
+        if (SUB / "freeze-extension-3.json").exists():
+            m3 = git("log", "--diff-filter=A", "--format=%ct %h", "--", "benchmark/subsets/first-benchmark/freeze-extension-3.json").splitlines()
+            t3 = git("log", "--diff-filter=A", "--format=%ct %h", "--", "benchmark/results/first-benchmark/pii-v12-test.jsonl").splitlines()
+            if not m3 or not t3 or int(m3[-1].split()[0]) > int(t3[-1].split()[0]):
+                bad.append(f"extension 3 {m3[-1] if m3 else None} not before the PII test ledger {t3[-1] if t3 else None}")
+        if (SUB / "freeze-extension-4.json").exists():
+            m4 = git("log", "--diff-filter=A", "--format=%ct %h", "--", "benchmark/subsets/first-benchmark/freeze-extension-4.json").splitlines()
+            t4 = git("log", "--diff-filter=A", "--format=%ct %h", "--", "benchmark/results/first-benchmark/prof-v13-test.jsonl").splitlines()
+            if not m4 or not t4 or int(m4[-1].split()[0]) > int(t4[-1].split()[0]):
+                bad.append(f"extension 4 {m4[-1] if m4 else None} not before the profanity test ledger {t4[-1] if t4 else None}")
+        check("extension manifests committed before the test rows they govern", not bad,
+              "; ".join(bad) or f"ext1 {ext1.split()[1]} before {first_ext_test.split()[1]}; ext2 {ext2.split()[1]} before {later[0].split()[1]}")
 
     # 3b. v1.3: the implementations file that changed the profanity question set predates every profanity call.
     if v13:
@@ -434,8 +606,11 @@ def main() -> int:
     check("overall has no pooled latency (compared on cost only)",
           all(e.get("latency") is None for e in site["entries"] if e["suite"] == "overall"))
 
-    # 5. The five core categories are the corrected five-category view, unchanged.
-    cm = {(a["system"], a["question_set"]): a for a in corrected["arms"]}
+    # 5. The five core categories are the corrected five-category view, unchanged (the first run only). A later run
+    #    instead checks its account of what changed since the first run against both leaderboards and the ledgers.
+    if not CTX.is_first:
+        run_checks(site, lb)
+    cm = {(a["system"], a["question_set"]): a for a in (corrected or {"arms": []})["arms"]}
     bad, n = [], 0
     for a in lb["arms"]:
         c = cm.get((a["system"], a["question_set"]))
@@ -450,8 +625,8 @@ def main() -> int:
                 bad.append(f"{a['arm_id']}/{sub}")
         if a["cost"].get("usd_per_1000") != c["cost"].get("usd_per_1000"):
             bad.append(f"{a['arm_id']}: cost")
-    want_n = len([a for a in corrected["arms"] if not (v12 and a["suite"] == "sensitive_info")])
-    check("core categories identical to the corrected five-category view" + (" (PII excepted: replaced in v1.2)" if v12 else ""),
+    want_n = len([a for a in corrected["arms"] if not (v12 and a["suite"] == "sensitive_info")]) if corrected else 0
+    if corrected: check("core categories identical to the corrected five-category view" + (" (PII excepted: replaced in v1.2)" if v12 else ""),
           not bad and n == want_n, "; ".join(bad) or f"{n} of {want_n} corrected arms")
 
     # 6. Provisional marking: the AI-labelled categories and the overall, and their label basis on the page.
@@ -547,7 +722,10 @@ def main() -> int:
     selfhosted = [e for e in site["entries"] if site_impl.get(e["implementation"], {}).get("type") == "self_hosted"
                   and e["suite"] not in ("overall", "bias") and (e.get("cost") or {}).get("usd_per_1000") is not None]
     check("self-hosted costs are labelled normalized estimates, with each pass's actual zone recorded apart from pricing",
-          cb.get("self_hosted_cost") == "normalized estimate" and {r["zone"] for r in cb.get("run_locations", [])} >= {"us-east4-a", "us-central1-a"}
+          cb.get("self_hosted_cost") == "normalized estimate"
+          and ({r["zone"] for r in cb.get("run_locations", [])} >= {"us-east4-a", "us-central1-a"} if CTX.is_first
+               else {r["zone"] for r in cb.get("run_locations", [])} == {CTX.vm_zone()}
+               and all(CTX.vm_zone() in e["cost"].get("estimate", "") for e in selfhosted))
           and all("normalized" in e["cost"].get("estimate", "") for e in selfhosted),
           f"{len(selfhosted)} entries; zones {sorted({r['zone'] for r in cb.get('run_locations', [])})}")
     wf = [e for e in site["entries"] if e["suite"] == "overall"]
@@ -571,11 +749,19 @@ def main() -> int:
     check("bias matches bias.json and stays outside the overall", not bad and not in_overall, "; ".join(bad) or "B1 and B2 per system")
 
     # 8. Corrections on the page are in the corrections log, with their commits.
-    log = (RES / "CORRECTIONS.md").read_text(encoding="utf-8")
-    bad = [c["title"] for c in site.get("corrections") or [] if c.get("code_commit") and c["code_commit"] not in log]
+    log = (RC.RESULTS / RC.FIRST / "CORRECTIONS.md").read_text(encoding="utf-8")   # the only corrections log so far
+    # a later run's page keeps the first run's corrections as history, titled "First run: ", and adds its own entries,
+    # whose commits must exist and be in this run's history
+    hist = [c for c in site.get("corrections") or [] if CTX.is_first or c["title"].startswith("First run: ")]
+    own = [c for c in site.get("corrections") or [] if c not in hist]
+    bad = [c["title"] for c in hist if c.get("code_commit") and c["code_commit"] not in log]
+    bad += [c["title"] for c in own if not c.get("code_commit")
+            or subprocess.run(["git", "merge-base", "--is-ancestor", c["code_commit"], "HEAD"], cwd=REPO).returncode]
     commits = set(re.findall(r"\b[0-9a-f]{7}\b", log))
     missing = [c for c in commits if not git("cat-file", "-t", c)]
-    check("every page correction's commit is in CORRECTIONS.md", not bad, ", ".join(bad) or f"{len(site.get('corrections') or [])} corrections")
+    check("every page correction's commit is in CORRECTIONS.md" + ("" if CTX.is_first else
+          " (first-run history), and this run's own entries name a commit in its history"), not bad,
+          ", ".join(bad) or f"{len(site.get('corrections') or [])} corrections" + ("" if CTX.is_first else f", {len(own)} of this run"))
     check("every commit named in CORRECTIONS.md exists", not missing, ", ".join(missing) or f"{len(commits)} commits")
 
     # 9. Post-hoc views match their computed file, and their rules were committed before the views.
@@ -590,6 +776,11 @@ def main() -> int:
         ordered = bool(rules_t) and (not views_t or int(rules_t.split()[-1]) < int(views_t.split()[-1]))
         check("post-hoc views on the page match sensitivity-2026-09-24.json, with rules committed first", not bad and ordered,
               "; ".join(bad) or f"{len(sens['views'])} views")
+
+    elif not CTX.is_first:
+        claims = [q["suite"] for q in site.get("data_quality") or [] if "shown under the chart" in q.get("limits", "")]
+        check("no post-hoc views on file for this run, and no text says one is shown", site.get("sensitivity_views") is None
+              and not claims, ", ".join(claims) or "none claimed")
 
     # 10. Nothing on the page claims publication: blockers present, notice says not for publication.
     blocked = bool(lb["publication_blockers"])

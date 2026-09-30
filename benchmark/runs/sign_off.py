@@ -42,7 +42,14 @@ def sha256(p: Path) -> str:
     return hashlib.sha256(p.read_bytes()).hexdigest()
 
 
+STALE = ("sign_off.py is retired and refuses to run. It did its one job on 28 September 2026: contract v1.1 is signed "
+         "(benchmark/contracts/v1.1-signed.json) and the approval-5 records exist. Running it again would rewrite "
+         "benchmark/contracts/v1.1.json and the first benchmark's approval records. A later run that needs a sign-off "
+         "gets its own record, written by the owner for that run.")
+
+
 def main() -> int:
+    raise SystemExit(STALE)
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--by", required=True, help="your full name, as the approver")
     ap.add_argument("--statement", required=True, help="your confirmation, in your own words")

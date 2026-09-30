@@ -2,6 +2,11 @@
 
 Public version v0.0.1. Internal release numbers identify each revision's rows; earlier results stay traceable through the Hub revision they used.
 
+## v0.0.1, card update, 30 September 2026
+
+- The benchmark is renamed jev-as-a-guardrails on the card, SOURCES.md and sources.json; it was called [gold]rails. The dataset moves from raxITLabs/goldrails to raxITLabs/jev-as-a-guardrails, and the code repository to https://github.com/raxITlabs/jev-as-a-guardrails, which RECONSTRUCT.md now clones.
+- Data unchanged: every data file is identical to Hub revision `14e7557abf7d79c3acbb4ed44af9b56cb8a45690`.
+
 ## v0.0.1, card update, 29 September 2026
 
 - Bias is described as three parts: hate and discrimination detection (inside the content suite), guardrail fairness diagnostics, and decision-model bias diagnostics. KNOWN_ISSUES.md gains the distinction. No score changed.

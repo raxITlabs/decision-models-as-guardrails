@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raxit.ai/goldrails/leaderboard/results.schema.json",
-  "title": "Gold Rails leaderboard results",
+  "title": "jev-as-a-guardrails leaderboard results",
   "description": "What site/leaderboard/index.html renders. One entry per (implementation, view). The page also accepts the evaluator's native document (benchmark/goldrails_bench/leaderboard.py, schema goldrails-leaderboard/0.1) and converts it with leaderboard.js fromEvaluator, so a published run needs no hand conversion. Scoring follows the completion plan: task score = 100 x 0.5 x (violation recall + benign pass rate), suites averaged equally, overall ranked only when all six suites are evaluated.",
   "type": "object",
   "required": [
@@ -1066,6 +1066,93 @@
         "type": "string"
       },
       "description": "Known limits that do not block publication, e.g. a local baseline whose cost is not measured."
+    },
+    "run": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Which benchmark run this file shows, written for any run after the first (benchmark/runs/site_results.py). Its publication status from the evaluator, the previous run's status and results file (relative to the page, for index.html?results=), and what changed between the runs, copied from both final leaderboards.",
+      "required": [
+        "id",
+        "label",
+        "summary",
+        "valid_for_publication",
+        "previous",
+        "changes"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "valid_for_publication": {
+          "type": "boolean"
+        },
+        "publication_blockers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "previous": {
+          "type": "object",
+          "required": [
+            "id",
+            "label",
+            "results",
+            "valid_for_publication",
+            "status"
+          ],
+          "additionalProperties": true,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "results": {
+              "type": "string"
+            },
+            "valid_for_publication": {
+              "type": "boolean"
+            },
+            "status": {
+              "type": "string"
+            }
+          }
+        },
+        "changes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "title",
+              "text"
+            ],
+            "additionalProperties": true,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
     },
     "provisional": {
       "type": [

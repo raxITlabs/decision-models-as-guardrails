@@ -32,7 +32,10 @@ from .sources import SOURCES
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parent
-INTENDED_USE = ("[gold]rails is a non-commercial research benchmark by raxIT Labs. It compares guardrail systems and "
+BRAND = "jev-as-a-guardrails"   # display name; called [gold]rails until 30 September 2026
+PUBLIC_REPO = "https://github.com/raxITlabs/jev-as-a-guardrails"
+HF_DATASET = "https://huggingface.co/datasets/raxITLabs/jev-as-a-guardrails"   # renamed from raxITLabs/goldrails
+INTENDED_USE = (f"{BRAND} is a non-commercial research benchmark by raxIT Labs. It compares guardrail systems and "
                 "publishes the results for research, with credit to every upstream source. It is not a commercial product "
                 "or deployment. Publishing it changes no source's licence: each row stays under its source's own terms, "
                 "listed in SOURCES.md.")
@@ -61,7 +64,7 @@ UPSTREAM = {
     "orbench": ["orbench"], "ragtruth": ["ragtruth"], "nemotron_pii": ["nemotron_pii"],
 }
 AUTHORED = {"f2_controls", "f3_controls", "f3_test_candidates", "f4_words", "f5_controls"}
-AUTHORED_NOTE = ("Authored for [gold]rails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the "
+AUTHORED_NOTE = (f"Authored for {BRAND} by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the "
                  "author's intended labels (label_basis llm or deterministic), not independent annotation.")
 
 
@@ -129,7 +132,7 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--version", default="v1.1-ai")
     ap.add_argument("--no-load-check", action="store_true", help="skip the datasets-library load check")
-    ap.add_argument("--public-repo", default="https://github.com/raxITlabs/goldrails",
+    ap.add_argument("--public-repo", default=PUBLIC_REPO,
                     help="public code repository the card and reconstruction steps point to")
     ap.add_argument("--public-ref", default="v0.0.1", help="public version: the tag in the code repository and on the dataset")
     ap.add_argument("--previous", type=Path,
@@ -162,7 +165,7 @@ def main(argv=None) -> int:
     if out.exists():
         shutil.rmtree(out)
     commit = _git("rev-parse", "HEAD")
-    rebuild = (f"git clone {a.public_repo} && git -C goldrails checkout {a.public_ref} && uv sync && "
+    rebuild = (f"git clone {a.public_repo} && git -C {_clone_dir(a.public_repo)} checkout {a.public_ref} && uv sync && "
                "uv run python -m goldrails_dataset.rehydrate --data <this dataset folder> --out <folder> (see RECONSTRUCT.md)")
 
     staged, held = defaultdict(list), Counter()
@@ -463,6 +466,11 @@ def changelog_md(ref: str, version: str, man: dict, rows: list, previous: dict, 
     return "\n".join(lines) + "\n"
 
 
+def _clone_dir(repo: str) -> str:
+    """The folder git clone makes for a repository URL."""
+    return repo.rstrip("/").rsplit("/", 1)[-1].removesuffix(".git")
+
+
 def reconstruct_md(version: str, repo: str, ref: str, held: Counter, rows: list) -> str:
     ids_only = Counter(r["provenance"]["source"] for r in rows if r.get("redistribution") == "ids_only")
     from .rehydrate import REBUILDABLE
@@ -472,7 +480,7 @@ def reconstruct_md(version: str, repo: str, ref: str, held: Counter, rows: list)
         return "\n".join([
             "# Rebuilding from the original sources", "",
             "Every row here carries its text. To rebuild the whole release from the original publishers and check it:", "",
-            "```bash", f"git clone {repo}", "cd goldrails", f"git checkout {ref}", "uv sync",
+            "```bash", f"git clone {repo}", f"cd {_clone_dir(repo)}", f"git checkout {ref}", "uv sync",
             f"uv run python -m goldrails_dataset.release --version {version}", "```", "",
             "The command downloads each source at its pinned revision, rebuilds every row, and compares the result with "
             "the committed release manifest before writing anything. Each row's `canonical_row_hash` lets you check a "
@@ -480,7 +488,7 @@ def reconstruct_md(version: str, repo: str, ref: str, held: Counter, rows: list)
     lines = [f"# Rebuilding ids-only text", "",
              "Rows marked `\"redistribution\": \"ids_only\"` ship without their text, context, source or query. Rebuild "
              "them from the original publishers with the public code at the tag that matches this dataset:", "",
-             "```bash", f"git clone {repo}", "cd goldrails", f"git checkout {ref}", "uv sync",
+             "```bash", f"git clone {repo}", f"cd {_clone_dir(repo)}", f"git checkout {ref}", "uv sync",
              "uv run python -m goldrails_dataset.rehydrate --data <folder holding data/> --out <new folder>", "```", "",
              "The command downloads each source at its pinned revision, puts the stripped fields back, and keeps a row only "
              "if it then matches the row's `canonical_row_hash`. Matching rows are marked `rebuilt_locally`. You need "
@@ -519,11 +527,11 @@ def card(version: str, man: dict, files: list, rows: list, held: Counter, reg: l
             if c["field"] == "label_policy":
                 policy = c["now"]
     mode = Counter(r.get("redistribution") for r in rows)
-    lines = ["---", "pretty_name: \"[gold]rails\"", "license: other", "license_name: mixed-per-source",
-             "license_link: https://huggingface.co/datasets/raxITLabs/goldrails/blob/main/SOURCES.md", "language:", "  - en", "task_categories:", "  - text-classification",
+    lines = ["---", f"pretty_name: \"{BRAND}\"", "license: other", "license_name: mixed-per-source",
+             f"license_link: {HF_DATASET}/blob/main/SOURCES.md", "language:", "  - en", "task_categories:", "  - text-classification",
              "tags:", "  - guardrails", "  - content-moderation", "  - prompt-injection", "  - pii-detection",
              "  - hallucination-detection", "  - fairness", *yaml, "---", "",
-             f"# [gold]rails {ref if rights else version}", "",
+             f"# {BRAND} {ref if rights else version}", "",
              (f"**{ref}, revised {_today()}. Research release, complete text.** This revision is built from internal "
               f"release {version}. The first upload of {ref}, built from internal release {previous['release']}, stays at "
               f"Hub revision `{previous['hub_commit']}` (tag `{previous.get('hub_tag') or ref}`), so results computed on it "
@@ -540,7 +548,7 @@ def card(version: str, man: dict, files: list, rows: list, held: Counter, reg: l
               f"**Provisional research release.** Code: {repo} at tag `{ref}`. This is the public part of internal release "
               f"{version} (release sha `{man['release_sha256'][:12]}`, {man['counts']['total']} rows); "
               f"{sum(held.values())} rows are withheld, listed below."), "",
-             "[gold]rails measures guardrails on six capabilities: harmful content, prompt attacks, denied topics, word "
+             f"{BRAND} measures guardrails on six capabilities: harmful content, prompt attacks, denied topics, word "
              "filters (custom words and profanity), sensitive information and grounding. Bias is covered in three parts, "
              "set out under Label rules. Hate and discrimination detection is part of harmful content. The `bias` "
              "config holds the rows for guardrail fairness diagnostics and decision-model bias diagnostics, which sit "

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "diagram_type": "dataflow",
   "meta": {
-    "title": "[gold]rails: how a benchmark run flows",
+    "title": "jev-as-a-guardrails: how a benchmark run flows",
     "subtitle": "From pinned source rows to a published result. Arrows name the artifact that moves. Coral steps are committed evidence gates.",
     "output": "docs/teach/benchmark-pipeline.html",
     "viewBox": [
@@ -158,7 +158,7 @@
       "id": "checks",
       "type": "security",
       "label": "Release checks",
-      "sublabel": "27 page checks",
+      "sublabel": "36 page checks",
       "stage": 4,
       "row": 2,
       "tag": "gate"

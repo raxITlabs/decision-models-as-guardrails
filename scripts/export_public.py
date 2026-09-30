@@ -1,4 +1,4 @@
-"""Build the public [gold]rails repository as a clean, allowlisted export of this private repository. No push.
+"""Build the public jev-as-a-guardrails repository as a clean, allowlisted export of this private repository. No push.
 
     uv run python scripts/export_public.py                      # build and scan into ../goldrails, report only
     uv run python scripts/export_public.py --commit              # also create the export's single commit and tag
@@ -39,14 +39,15 @@ REPO = Path(__file__).resolve().parents[1]
 TAG = "v0.0.1"
 FIRST_UPLOAD = "internal dataset release v1.2, Hugging Face revision 3e3ed7f3bbed, code commit 26b578fea60c"
 CURRENT = "v1.3"   # internal dataset release of the current revision of the public version
-DATASET_URL = "https://huggingface.co/datasets/raxITLabs/goldrails"
-PUBLIC_URL = "https://github.com/raxITlabs/goldrails"
+DATASET_URL = "https://huggingface.co/datasets/raxITLabs/jev-as-a-guardrails"
+BRAND = "jev-as-a-guardrails"   # display name; the benchmark was called [gold]rails until 30 September 2026
+PUBLIC_URL = "https://github.com/raxITlabs/jev-as-a-guardrails"
 
 INCLUDE = [
     "README.md", "VISION.md", "PRODUCT.md", "pyproject.toml", "uv.lock", "Makefile", ".gitignore", ".env.example",
     "benchmark/pyproject.toml", "benchmark/contracts/*", "benchmark/goldrails_bench/*", "benchmark/question_sets/*",
     "benchmark/runs/*", "benchmark/subsets/*", "benchmark/suites/*", "benchmark/tests/*",
-    "benchmark/results/first-benchmark/*", "benchmark/results/smoke-word-filters*",
+    "benchmark/results/first-benchmark/*", "benchmark/results/second-benchmark/*", "benchmark/results/smoke-word-filters*",
     "dataset/pyproject.toml", "dataset/goldrails_dataset/*", "dataset/tests/*", "dataset/release/*",
     "dataset/publish/v1.2-full/*", "dataset/publish/v1.3-full/*", "dataset/frozen/*",
     "site/leaderboard/*", "infra/*", "scripts/export_public.py",
@@ -210,7 +211,7 @@ def export_md(private: str, files: list, notes: dict) -> str:
     for n in notes.values():
         total.update(n)
     lines = ["# About this repository", "",
-             f"This is the public export of the [gold]rails benchmark, public version `{TAG}`, revision built from internal "
+             f"This is the public export of the {BRAND} benchmark, public version `{TAG}`, revision built from internal "
              f"dataset release {CURRENT}. The first upload of `{TAG}` used {FIRST_UPLOAD} (tag `{TAG}` in both places). "
              f"This export was built from commit `{private}` "
              "of the private development repository by `scripts/export_public.py`, from an allowlist of files. The "
@@ -219,6 +220,9 @@ def export_md(private: str, files: list, notes: dict) -> str:
              "before the test runs. This repository starts fresh, so its own history does not prove when anything was "
              "frozen. The freeze manifests, approvals, ledgers and their sha256 values are included; "
              "`export-manifest.json` maps every file to its private sha256.", "",
+             f"The benchmark was called [gold]rails until 30 September 2026. Code identifiers keep the old name "
+             "(the `goldrails_bench` and `goldrails_dataset` packages, `GOLDRAILS_*` variables, file names), and so do "
+             "dated records written before the rename. The Hugging Face dataset moved from `raxITLabs/goldrails` to `raxITLabs/jev-as-a-guardrails`.", "",
              "## What was left out or changed", "",
              "- AI4Privacy, the PII source before dataset v1.2: its rows, ids, labels and audit files are withheld "
              "(its licence needs written permission to redistribute). The v1.1 PII results that used it are kept as "
@@ -228,7 +232,7 @@ def export_md(private: str, files: list, notes: dict) -> str:
              "- The AWS account number and local file paths are masked.", "",
              "| Redaction | Count |", "|---|---|"]
     lines += [f"| {k} | {v} |" for k, v in sorted(total.items())]
-    lines += ["", f"{len(files)} files. [gold]rails is a non-commercial research benchmark; each source's rows stay under "
+    lines += ["", f"{len(files)} files. {BRAND} is a non-commercial research benchmark; each source's rows stay under "
               "that source's licence (dataset/publish/v1.1-ai/SOURCES.md).", ""]
     return "\n".join(lines)
 
@@ -286,7 +290,7 @@ def main(argv=None) -> int:
             g("init", "-q", "-b", "main")
         g("add", "-A")
         g("-c", f"user.name={git('config', 'user.name')}", "-c", f"user.email={git('config', 'user.email')}", "commit", "-q",
-          "-m", f"[gold]rails {TAG}{' revision (internal dataset ' + CURRENT + ')' if revise else ''}: public export of "
+          "-m", f"{BRAND} {TAG}{' revision (internal dataset ' + CURRENT + ')' if revise else ''}: public export of "
                 f"private commit {private[:12]}")
         if not revise:
             g("tag", TAG)

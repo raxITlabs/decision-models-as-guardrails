@@ -1,6 +1,6 @@
-# [gold]rails
+# jev-as-a-guardrails
 
-A guardrail benchmark for decision models, built by raxIT Labs. Two deliverables, two folders: [`dataset/`](dataset/) builds the [gold]rails dataset that will live on Hugging Face under `raxITLabs`, and [`benchmark/`](benchmark/) runs decision models and managed guardrail services against it. [`infra/`](infra/gcp/README.md) provisions the model-serving VM in your own GCP project. [`docs/`](docs/README.md) is everything to read. New to the benchmark? Start with the [[gold]rails primer](https://raxitlabs.github.io/goldrails/teach/gold-rails-primer.html), a one-page walkthrough of how it works (source: [`docs/teach/gold-rails-primer.html`](docs/teach/gold-rails-primer.html)). Notebooks are the reference for every step and run from a clean checkout.
+A guardrail benchmark for decision models, built by raxIT Labs. Two deliverables, two folders: [`dataset/`](dataset/) builds the jev-as-a-guardrails dataset, published on Hugging Face as [`raxITLabs/jev-as-a-guardrails`](https://huggingface.co/datasets/raxITLabs/jev-as-a-guardrails), and [`benchmark/`](benchmark/) runs decision models and managed guardrail services against it. [`infra/`](infra/gcp/README.md) provisions the model-serving VM in your own GCP project. [`docs/`](docs/README.md) is everything to read. New to the benchmark? Start with the [jev-as-a-guardrails primer](https://raxitlabs.github.io/jev-as-a-guardrails/teach/gold-rails-primer.html), a one-page walkthrough of how it works (source: [`docs/teach/gold-rails-primer.html`](docs/teach/gold-rails-primer.html)). Notebooks are the reference for every step and run from a clean checkout.
 
 ## Run it
 
@@ -37,10 +37,12 @@ infra/       gcp/ Terraform for the model VM, ctl.sh (up/pause/down/status), tun
 docs/        numbered research notes, reports/, specs/, prior-art/, transcripts/, typesafe-reference/, research-raw/, ts-spikes/
 ```
 
-`dataset/samples/` is checked in only until the Hugging Face push exists; after that `benchmark/` pulls from `raxITLabs/goldrails` and `samples/` becomes a local cache. `benchmark/results/` holds per-run JSONL and receipts, which is what the raxit.ai results section reads.
+`dataset/samples/` is checked in only until the Hugging Face push exists; after that `benchmark/` pulls from `raxITLabs/jev-as-a-guardrails` and `samples/` becomes a local cache. `benchmark/results/` holds per-run JSONL and receipts, which is what the raxit.ai results section reads.
 
 The Python side is a uv workspace: `goldrails-bench` depends on `goldrails-dataset`, one lockfile at the root.
 
 The record schema (`dataset/goldrails_dataset/records.py`) is adapted from [JevBench](https://github.com/fstandhartinger/jevbench) (MIT). Sources keep their own licences; see each loader's docstring.
 
-Status: pilot. Nothing here is a result.
+Status: two benchmark runs. The results site (`site/leaderboard/`) shows the second run, whose leaderboard the evaluator marks valid for publication. The first run's results stay on file beside it.
+
+Renamed on 30 September 2026: the benchmark was called [gold]rails. Code identifiers keep the old name (the `goldrails_bench` and `goldrails_dataset` packages, `GOLDRAILS_*` variables, file names), and so do dated records written before the rename. The Hugging Face dataset moved from `raxITLabs/goldrails` to `raxITLabs/jev-as-a-guardrails` the same day.

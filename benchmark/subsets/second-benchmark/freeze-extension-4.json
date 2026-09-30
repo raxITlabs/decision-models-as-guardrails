@@ -1,0 +1,354 @@
+{
+ "arms": [
+  {
+   "config_hash": "beef8b3a9be5ac50",
+   "dataset_sha256": "3cea975fb89f9ea91b4565cc47cc9188de12b90dabf5a593c5856317c4f0045c",
+   "question_set": "v1-f4-obscenity",
+   "score_scale": "service_score",
+   "suite": "word_filters",
+   "system": "bedrock-apply-words",
+   "thresholds": {
+    "profanity": {
+     "basis": "fit_on_tuning_max_task_score",
+     "secondary": {
+      "basis": "fit_on_tuning_max_recall_within_budget",
+      "budget": 0.05,
+      "status": "met",
+      "threshold": 0.5,
+      "tuning_false_positive_rate": 0.04,
+      "tuning_recall": 0.28
+     },
+     "threshold": 0.5,
+     "tuning_false_positive_rate": 0.04,
+     "tuning_task_score": 62.0
+    }
+   },
+   "tuned_on": {
+    "arm_id": "bedrock-apply-words|v1-f4-obscenity|beef8b3a9be5ac50|813d59af4558",
+    "dataset_sha256": "813d59af4558746e0a3ea5ec26b1a595cf5878b53e1c5f91320a6ad8d9ba5acd",
+    "fit_rows": 50
+   }
+  },
+  {
+   "config_hash": "79d59e33e6c64159",
+   "dataset_sha256": "3cea975fb89f9ea91b4565cc47cc9188de12b90dabf5a593c5856317c4f0045c",
+   "question_set": "v1-f4-obscenity",
+   "score_scale": "probability",
+   "suite": "word_filters",
+   "system": "jev-1.13.0",
+   "thresholds": {
+    "profanity": {
+     "basis": "fit_on_tuning_max_task_score",
+     "secondary": {
+      "basis": "fit_on_tuning_max_recall_within_budget",
+      "budget": 0.05,
+      "status": "met",
+      "threshold": 0.21500000000000002,
+      "tuning_false_positive_rate": 0.04,
+      "tuning_recall": 0.84
+     },
+     "threshold": 0.10500000000000001,
+     "tuning_false_positive_rate": 0.08,
+     "tuning_task_score": 94.0
+    }
+   },
+   "tuned_on": {
+    "arm_id": "jev-1.13.0|v1-f4-obscenity|79d59e33e6c64159|813d59af4558",
+    "dataset_sha256": "813d59af4558746e0a3ea5ec26b1a595cf5878b53e1c5f91320a6ad8d9ba5acd",
+    "fit_rows": 50
+   }
+  },
+  {
+   "config_hash": "84491b3e4e8e0679",
+   "dataset_sha256": "3cea975fb89f9ea91b4565cc47cc9188de12b90dabf5a593c5856317c4f0045c",
+   "question_set": "v1-f4-obscenity",
+   "score_scale": "probability",
+   "suite": "word_filters",
+   "system": "kev-0-8b",
+   "thresholds": {
+    "profanity": {
+     "basis": "fit_on_tuning_max_task_score",
+     "secondary": {
+      "basis": "fit_on_tuning_max_recall_within_budget",
+      "budget": 0.05,
+      "status": "met",
+      "threshold": 0.55,
+      "tuning_false_positive_rate": 0.0,
+      "tuning_recall": 0.32
+     },
+     "threshold": 0.33499999999999996,
+     "tuning_false_positive_rate": 0.28,
+     "tuning_task_score": 76.0
+    }
+   },
+   "tuned_on": {
+    "arm_id": "kev-0-8b|v1-f4-obscenity|84491b3e4e8e0679|813d59af4558",
+    "dataset_sha256": "813d59af4558746e0a3ea5ec26b1a595cf5878b53e1c5f91320a6ad8d9ba5acd",
+    "fit_rows": 50
+   }
+  },
+  {
+   "config_hash": "aed5a5babe8eeeaa",
+   "dataset_sha256": "3cea975fb89f9ea91b4565cc47cc9188de12b90dabf5a593c5856317c4f0045c",
+   "question_set": "v1-f4-obscenity",
+   "score_scale": "probability",
+   "suite": "word_filters",
+   "system": "kev-4b",
+   "thresholds": {
+    "profanity": {
+     "basis": "fit_on_tuning_max_task_score",
+     "secondary": {
+      "basis": "fit_on_tuning_max_recall_within_budget",
+      "budget": 0.05,
+      "status": "met",
+      "threshold": 0.335,
+      "tuning_false_positive_rate": 0.04,
+      "tuning_recall": 0.64
+     },
+     "threshold": 0.175,
+     "tuning_false_positive_rate": 0.2,
+     "tuning_task_score": 82.0
+    }
+   },
+   "tuned_on": {
+    "arm_id": "kev-4b|v1-f4-obscenity|aed5a5babe8eeeaa|813d59af4558",
+    "dataset_sha256": "813d59af4558746e0a3ea5ec26b1a595cf5878b53e1c5f91320a6ad8d9ba5acd",
+    "fit_rows": 50
+   }
+  },
+  {
+   "config_hash": "35432caa2617b950",
+   "dataset_sha256": "3cea975fb89f9ea91b4565cc47cc9188de12b90dabf5a593c5856317c4f0045c",
+   "question_set": "v1-f4-obscenity",
+   "score_scale": "probability",
+   "suite": "word_filters",
+   "system": "kev-9b",
+   "thresholds": {
+    "profanity": {
+     "basis": "fit_on_tuning_max_task_score",
+     "secondary": {
+      "basis": "fit_on_tuning_max_recall_within_budget",
+      "budget": 0.05,
+      "status": "met",
+      "threshold": 0.305,
+      "tuning_false_positive_rate": 0.04,
+      "tuning_recall": 0.76
+     },
+     "threshold": 0.2,
+     "tuning_false_positive_rate": 0.12,
+     "tuning_task_score": 88.0
+    }
+   },
+   "tuned_on": {
+    "arm_id": "kev-9b|v1-f4-obscenity|35432caa2617b950|813d59af4558",
+    "dataset_sha256": "813d59af4558746e0a3ea5ec26b1a595cf5878b53e1c5f91320a6ad8d9ba5acd",
+    "fit_rows": 50
+   }
+  },
+  {
+   "config_hash": "fc85636dc43360c0",
+   "dataset_sha256": "3cea975fb89f9ea91b4565cc47cc9188de12b90dabf5a593c5856317c4f0045c",
+   "question_set": "v1-f4-obscenity",
+   "score_scale": "probability",
+   "suite": "word_filters",
+   "system": "laya",
+   "thresholds": {
+    "profanity": {
+     "basis": "fit_on_tuning_max_task_score",
+     "secondary": {
+      "basis": "fit_on_tuning_max_recall_within_budget",
+      "budget": 0.05,
+      "status": "met",
+      "threshold": 0.3117,
+      "tuning_false_positive_rate": 0.04,
+      "tuning_recall": 0.68
+     },
+     "threshold": 0.1906,
+     "tuning_false_positive_rate": 0.12,
+     "tuning_task_score": 90.0
+    }
+   },
+   "tuned_on": {
+    "arm_id": "laya|v1-f4-obscenity|fc85636dc43360c0|813d59af4558",
+    "dataset_sha256": "813d59af4558746e0a3ea5ec26b1a595cf5878b53e1c5f91320a6ad8d9ba5acd",
+    "fit_rows": 50
+   }
+  },
+  {
+   "config_hash": "bf71b666c99bee84",
+   "dataset_sha256": "3cea975fb89f9ea91b4565cc47cc9188de12b90dabf5a593c5856317c4f0045c",
+   "question_set": "v1-f4-obscenity",
+   "score_scale": "probability",
+   "suite": "word_filters",
+   "system": "open-jev-2b",
+   "thresholds": {
+    "profanity": {
+     "basis": "fit_on_tuning_max_task_score",
+     "secondary": {
+      "basis": "fit_on_tuning_max_recall_within_budget",
+      "budget": 0.05,
+      "status": "met",
+      "threshold": 0.05168896304180701,
+      "tuning_false_positive_rate": 0.0,
+      "tuning_recall": 0.44
+     },
+     "threshold": 0.010336594821521432,
+     "tuning_false_positive_rate": 0.2,
+     "tuning_task_score": 88.0
+    }
+   },
+   "tuned_on": {
+    "arm_id": "open-jev-2b|v1-f4-obscenity|bf71b666c99bee84|813d59af4558",
+    "dataset_sha256": "813d59af4558746e0a3ea5ec26b1a595cf5878b53e1c5f91320a6ad8d9ba5acd",
+    "fit_rows": 50
+   }
+  }
+ ],
+ "contract": {
+  "bootstrap": {
+   "ci": 0.95,
+   "replicates": 2000,
+   "seed": 20260923
+  },
+  "fpr_budget": 0.05,
+  "hash": "77180f6520c3ee4a",
+  "operating_point": 0.5,
+  "required_suites": [
+   "content",
+   "prompt_attacks",
+   "denied_topics",
+   "word_filters",
+   "sensitive_info",
+   "grounding"
+  ],
+  "status": "signed by the project owner, 28 September 2026",
+  "subtasks": {
+   "content": {
+    "optional_subtasks": [],
+    "subtasks": [
+     "request",
+     "reply"
+    ]
+   },
+   "denied_topics": {
+    "optional_subtasks": [],
+    "subtasks": [
+     "topic"
+    ]
+   },
+   "grounding": {
+    "optional_subtasks": [
+     "relevance"
+    ],
+    "subtasks": [
+     "grounding"
+    ]
+   },
+   "prompt_attacks": {
+    "optional_subtasks": [],
+    "subtasks": [
+     "direct"
+    ]
+   },
+   "sensitive_info": {
+    "optional_subtasks": [],
+    "subtasks": [
+     "entity_detection"
+    ]
+   },
+   "word_filters": {
+    "optional_subtasks": [],
+    "subtasks": [
+     "word",
+     "profanity"
+    ]
+   }
+  },
+  "version": "v1.1",
+  "weights": {
+   "subtasks": {
+    "content": {
+     "reply": 0.5,
+     "request": 0.5
+    },
+    "denied_topics": {
+     "topic": 1.0
+    },
+    "grounding": {
+     "grounding": 1.0
+    },
+    "prompt_attacks": {
+     "direct": 1.0
+    },
+    "sensitive_info": {
+     "entity_detection": 1.0
+    },
+    "word_filters": {
+     "profanity": 0.5,
+     "word": 0.5
+    }
+   },
+   "suites": {
+    "content": 0.16666666666666666,
+    "denied_topics": 0.16666666666666666,
+    "grounding": 0.16666666666666666,
+    "prompt_attacks": 0.16666666666666666,
+    "sensitive_info": 0.16666666666666666,
+    "word_filters": 0.16666666666666666
+   }
+  }
+ },
+ "extends": {
+  "manifest_sha256": "4c72d30e31a87ade30de98bb542d6d62ef945bb7d6f38d2d124bd1fb88b6d631",
+  "reason": "profanity subtask replaced by 'Profanity or obscenity \u2014 Civil Comments' (dataset v1.3): original obscene rater fractions, >= 0.5 yes, 0 no; every system answers the raters' question; thresholds fitted on the new tuning rows (contract v1.1)",
+  "subset": "first-benchmark-v1.3",
+  "systems": [
+   "bedrock-apply-words",
+   "jev-1.13.0",
+   "kev-0-8b",
+   "kev-4b",
+   "kev-9b",
+   "laya",
+   "open-jev-2b"
+  ]
+ },
+ "frozen_at": "2026-09-30T06:12:17Z",
+ "manifest_version": "goldrails-freeze/1",
+ "retry_policy": {
+  "backoff_s": 2.0,
+  "max_retries": 3,
+  "name": "transient-3",
+  "retry_on": [
+   "APIConnectionError",
+   "APITimeoutError",
+   "ConnectError",
+   "ConnectTimeout",
+   "ReadTimeout",
+   "ReadError",
+   "RemoteProtocolError",
+   "TimeoutException",
+   "ConnectionError",
+   "EndpointConnectionError",
+   "ReadTimeoutError",
+   "ConnectTimeoutError",
+   "ThrottlingException",
+   "TooManyRequestsException",
+   "ServiceUnavailableException",
+   "InternalServerException",
+   "InternalServerError",
+   "RateLimitError",
+   "ServiceUnavailableError"
+  ]
+ },
+ "run": {
+  "contract": "benchmark/contracts/v1.1-signed.json",
+  "declaration": "benchmark/subsets/second-benchmark/run.json",
+  "id": "second-benchmark",
+  "subset": "first-benchmark-v1.3"
+ },
+ "scoring": {
+  "module": "goldrails_bench.leaderboard",
+  "schema": "goldrails-leaderboard/0.1",
+  "sha256": "92a74bcc31c20f5b099019feea79742d2a8b30b5743a84f7450d8fcbf75f9fe0"
+ }
+}

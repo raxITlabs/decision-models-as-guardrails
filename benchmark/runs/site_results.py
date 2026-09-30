@@ -1,13 +1,19 @@
-"""Convert the first benchmark's corrected leaderboard and bias results into the leaderboard page's format.
+"""Convert a benchmark run's final leaderboard and bias results into the leaderboard page's format.
 
-    uv run python benchmark/runs/site_results.py
+    uv run python benchmark/runs/site_results.py                                   # the first run (default)
+    GOLDRAILS_RUN=second-benchmark uv run python benchmark/runs/site_results.py    # or --run second-benchmark
 
-Reads benchmark/results/first-benchmark/{leaderboard-corrected.json, bias.json, latency.jsonl} and writes
-site/leaderboard/results.json (schema goldrails-leaderboard-site/0.1). No new numbers are computed here except
-serial-latency percentiles; everything else is copied from the leaderboard and bias outputs. The three Bedrock arms
-(InvokeGuardrailChecks, word-filter guardrail, grounding guardrail) are one implementation, Amazon Bedrock
-Guardrails, with each entry's own configuration hash in its ledger block. Denied topics has no eligible test rows and
-is listed as not evaluated, so there is no overall entry.
+The run comes from ``--run``, else ``GOLDRAILS_RUN`` (benchmark/runs/run_context.py; default ``first-benchmark``).
+``CURRENT_RUN`` is the run the page shows by default: it is written to site/leaderboard/results.json, and every other
+run to site/leaderboard/runs/<run>.json (index.html?results=runs/<run>.json shows it). The first run's file is
+byte-identical to what this script wrote for it before runs existed.
+
+Reads benchmark/results/<run>/{leaderboard-final.json, bias.json, latency.jsonl} (the first run falls back to its
+earlier views when the final one is absent) and writes schema goldrails-leaderboard-site/0.1. No new numbers are
+computed here except serial-latency percentiles; everything else is copied from the leaderboard and bias outputs. The
+three Bedrock arms (InvokeGuardrailChecks, word-filter guardrail, grounding guardrail) are one implementation, Amazon
+Bedrock Guardrails, with each entry's own configuration hash in its ledger block. A later run also carries a ``run``
+block: its publication status, the first run's, and what changed between them, copied from both final leaderboards.
 
 The bias results are shown in three parts (bias_parts): hate and discrimination detection, which stays inside the
 content score; guardrail fairness diagnostics; and decision-model bias diagnostics. Values come from bias-parts.json
@@ -15,16 +21,45 @@ content score; guardrail fairness diagnostics; and decision-model bias diagnosti
 """
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
+import sys
 from collections import defaultdict
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import run_context as RC  # noqa: E402
+
 REPO = Path(__file__).resolve().parents[2]
-RES = REPO / "benchmark" / "results" / "first-benchmark"
-V12 = (RES / "leaderboard-v1.2.json").exists()   # PII on Nemotron-PII (dataset v1.2); earlier views stay on disk
-V13 = (RES / "leaderboard-v1.3.json").exists()   # profanity on Civil Comments' own obscene labels (dataset v1.3)
-OUT = REPO / "site" / "leaderboard" / "results.json"
+CURRENT_RUN = "second-benchmark"   # the run site/leaderboard/results.json shows
+HF_DATASET = "https://huggingface.co/datasets/raxITLabs/jev-as-a-guardrails"   # renamed from raxITLabs/goldrails, 30 Sep 2026
+BRAND = "jev-as-a-guardrails"            # the benchmark's display name in every generated string; change it here only
+RUN_LABEL = {"first-benchmark": "first benchmark", "second-benchmark": "second benchmark"}   # "<BRAND>, <label>"
+SITE_DIR = REPO / "site" / "leaderboard"
+
+
+def site_json(run: str) -> Path:
+    """Where a run's page data goes: results.json for the current run, runs/<run>.json for any other."""
+    return SITE_DIR / "results.json" if run == CURRENT_RUN else SITE_DIR / "runs" / f"{run}.json"
+
+
+def use_run(run: str) -> None:
+    """Point every path and flag at one run's results."""
+    global CTX, RES, V12, V13, OUT, BIAS_PARTS, BIAS_AUDIT
+    CTX = RC.RunContext(RC.check_run_id(run), RC.check_run_id(run))
+    RES = CTX.results
+    # PII on Nemotron-PII (dataset v1.2) and profanity on Civil Comments' own obscene labels (dataset v1.3). The first
+    # run marks them with their own leaderboard views; a later run ran both passes from the start.
+    V12 = (RES / "leaderboard-v1.2.json").exists() or (not CTX.is_first and (RES / "pii-v12-test.jsonl").exists())
+    V13 = (RES / "leaderboard-v1.3.json").exists() or (not CTX.is_first and (RES / "prof-v13-test.jsonl").exists())
+    OUT = site_json(run)
+    BIAS_PARTS = RES / "bias-parts.json"   # benchmark/runs/bias_parts.py: bias.json values grouped into the three parts
+    BIAS_AUDIT = RES / "bias-audit.json"   # developer action 1: what each bias task and the content hate rows are
+
+
+use_run(RC.current().run)
 SUITE_ID = {"sensitive_info": "sensitive_information"}
 # Where each self-hosted GPU pass ran, from GCP audit logs (compute.instances insert and delete). Every pass is priced at
 # one third-party us-east4 g2-standard-24 on-demand rate, so self-hosted costs are normalized estimates.
@@ -59,8 +94,27 @@ CLAIM = {
 }
 
 
+TEST_LEDGERS = ("test.jsonl", "test-rerun.jsonl", "ext-test.jsonl", "pii-v12-test.jsonl", "prof-v13-test.jsonl")
+
+
+def gpu_runs() -> list:
+    """Where the self-hosted GPU passes ran. The first run's come from GCP audit logs (GPU_RUNS); a later run records
+    its VM's zone in vm-zone.txt, and its test-call window is read from its own test ledgers."""
+    if CTX.is_first:
+        return GPU_RUNS
+    ts = [x["at"] for n in TEST_LEDGERS for r in jl(RES / n) if RC.provider_of(r["system"]) == "gpu"
+          for x in r.get("attempts") or []]
+    day = lambda t: f"{int(t[8:10])} {'Sep' if t[5:7] == '09' else t[5:7]}"
+    lo, hi = min(ts), max(ts)
+    return [{"run": "every pass: core, extension 1, sensitive information (dataset v1.2) and profanity (dataset v1.3)",
+             "zone": CTX.vm_zone(), "when_utc": f"test calls {day(lo)} {lo[11:16]} to "
+                                               f"{'' if day(lo) == day(hi) else day(hi) + ' '}{hi[11:16]}"}]
+
+
 def gpu_zone(a: dict) -> str:
     """The zone the arm's test calls ran in (GPU_RUNS)."""
+    if not CTX.is_first:
+        return CTX.vm_zone()
     if a["question_set"] == "v1-f4-obscenity":
         return "us-central1-a"
     if V12 and a["suite"] == "sensitive_info":
@@ -171,14 +225,22 @@ def entry_for(a: dict, method: str) -> dict:
                     if IMPL[a["system"]][2] == "self_hosted" and c.get("usd_per_1000") is not None else {})},
         "latency": serial_latency(a, lat),
         "bias": None,
-        "ledger": {"path": ("benchmark/results/first-benchmark/prof-v13-test.jsonl" if a["question_set"] == "v1-f4-obscenity"
-                            else "benchmark/results/first-benchmark/pii-v12-test.jsonl" if V12 and a["suite"] == "sensitive_info"
-                            else "benchmark/results/first-benchmark/ext-test.jsonl"
-                            if (a.get("freeze") or {}).get("via") == "extension"
-                            else "benchmark/results/first-benchmark/test.jsonl (+ test-rerun.jsonl)"),
+        "ledger": {"path": ledger_path(a),
                    "config_hash": a["config_hash"], "dataset_sha256": a["dataset"]["sha256"],
                    "rows": a["sample_sizes"]["report_rows"]},
     }
+
+
+def ledger_path(a: dict) -> str:
+    """The test ledger an arm's rows are in."""
+    r = f"benchmark/results/{CTX.run}/"
+    if a["question_set"] == "v1-f4-obscenity":
+        return r + "prof-v13-test.jsonl"
+    if V12 and a["suite"] == "sensitive_info":
+        return r + "pii-v12-test.jsonl"
+    if (a.get("freeze") or {}).get("via") == "extension":
+        return r + "ext-test.jsonl"
+    return r + "test.jsonl" + (" (+ test-rerun.jsonl)" if (RES / "test-rerun.jsonl").exists() else "")
 
 
 def serial_latency(a: dict, loaded: dict) -> dict:
@@ -320,6 +382,9 @@ def data_quality() -> list:
                 tt[json.loads(r["provenance"].get("notes") or "{}").get("task_type", "unknown")] += 1
             extra = " Task types: " + ", ".join(f"{k} {v}" for k, v in sorted(tt.items())) + "."
         supports, limits = REVIEWED_SCOPE[suite] if suite in REVIEWED_SCOPE and label_review() else SCOPE[suite]
+        if sensitivity_block() is None:   # views are computed per run; a later run has none on file
+            limits = limits.replace("a view without them is shown under the chart.",
+                                    "the first run's results show a view without them, not recomputed for this run.")
         out.append({"suite": suite, "test_cases": len(rs), "groups": len({r["group"] for r in rs}),
                     "sources": [{"source": a, "label_basis": b, "role": c, "n": n,
                                  **({"review": "project owner"} if label_review() else {})} for (a, b, c), n in sorted(src.items())],
@@ -396,6 +461,11 @@ def open_blockers(lb: dict) -> list:
 def notice(lb: dict) -> str:
     blocked = bool(open_blockers(lb))
     version = lb["contract"]["version"]
+    if not CTX.is_first and label_review():
+        return ("All six categories are scored. The project owner reviewed every current label; this is owner review, "
+                f"not independent two-reviewer adjudication. Evaluation contract {version} is signed, and the evaluator "
+                + ("marks this run's leaderboard valid for publication, with no blockers." if lb.get("valid_for_publication")
+                   and not blocked else "does not mark this run's leaderboard valid for publication. Not for publication."))
     if label_review():
         return (("INTERIM. " if blocked else "") + "All six categories are scored. The project owner reviewed every "
                 "current label; this is owner review, not independent two-reviewer adjudication. "
@@ -475,9 +545,17 @@ def overall_entries(lb: dict, method: str) -> list:
     return out
 
 
-def freeze_validation_note() -> str:
+def freeze_validation_note(lb: dict | None = None) -> str:
     """The two implementations-file blockers, read against the per-arm check in validate_extension_freeze.py."""
     v = json.loads((RES / "extension-freeze-validation.json").read_text(encoding="utf-8"))
+    if not CTX.is_first:
+        fm = lb["freeze_manifest"]
+        return (f"The evaluator lists no publication blockers for this run. Its freeze manifests were committed at "
+                f"{fm['commit'][:7]} ({fm['committed_at'][:16].replace('T', ' ')} UTC), before the first test call "
+                f"({fm['records']['earliest_test_attempt'][:16].replace('T', ' ')} UTC). The extension-specific check "
+                f"(extension-freeze-validation.json) also passed: for {v['arms_checked'] - len(v['arms_failed'])} of "
+                f"{v['arms_checked']} arms, the first declaration naming the arm and the manifest holding its thresholds "
+                "were both committed before that arm's first test call.")
     chain = " to ".join(f"{Path(x['file']).name} ({x['committed_at'][:16].replace('T', ' ')} UTC)"
                         for x in v["declaration_chain"])
     comp = [x["composition_note"] for x in v["declaration_links"] if x.get("composition_note")]
@@ -598,7 +676,8 @@ def bias_entries(bias: dict) -> list:
                                     "does not say), 88 questions from 95 templates. discrim-eval group gaps are not shown: "
                                     "the 50 selected cases span 31 scenarios, so demographic groups mostly answered "
                                     "different scenarios and a gap can reflect scenario difficulty rather than demographic "
-                                    "sensitivity. Diagnostics are in benchmark/results/first-benchmark/bias.json."),
+                                    "sensitivity. Diagnostics are in "
+                                    f"{RC.rel(RES / 'bias.json')}."),
                     "quality": {"score": round(100 * acc, 2)},
                     "sample": {"total": sum(c["n"] for c in amb), "positive": None, "negative": None,
                                "groups": len(cats)},
@@ -609,8 +688,6 @@ def bias_entries(bias: dict) -> list:
     return out
 
 
-BIAS_PARTS = RES / "bias-parts.json"   # benchmark/runs/bias_parts.py: bias.json values grouped into the three parts
-BIAS_AUDIT = RES / "bias-audit.json"   # developer action 1: what each bias task and the content hate rows are
 NOT_CLASSIFIER = "not a content classifier"
 
 
@@ -818,7 +895,258 @@ def bias_parts_block() -> dict | None:
     }
 
 
-def main() -> int:
+# --- a later run: its relation to the first run --------------------------------------------------------------------
+
+NAME = {"jev-1.13.0": "Jev", "bedrock-guardrails": "Bedrock", "kev-9b": "Kev 9B", "kev-4b": "Kev 4B",
+        "kev-0-8b": "Kev 0.8B", "open-jev-2b": "Open-Jev 2B", "laya": "Laya"}
+SUITE_NAME = {"content": "harmful content", "prompt_attacks": "prompt attacks", "denied_topics": "denied topics",
+              "word_filters": "word filters", "sensitive_info": "sensitive information", "grounding": "grounding"}
+FIRST_LB = RC.RESULTS / RC.FIRST / "leaderboard-final.json"
+# The Jev grounding change, split into API drift and threshold refit. These three numbers are not in either
+# leaderboard: check_page.py recomputes them from the ledgers and fails if they differ.
+JEV_GROUNDING_AT_FIRST_THRESHOLD = 79.375   # this run's test answers scored at the first run's frozen 0.515
+JEV_GROUNDING_TUNING_TIE = 90.0             # both 0.515 and the frozen 0.74 on this run's 50 tuning rows
+JEV_GROUNDING_TUNING_FPR_AT_FIRST = 0.12    # tuning false-positive rate at 0.515 (0.0 at 0.74)
+
+
+def f1(x: float) -> str:
+    """One decimal, half up, as the page's own formatting shows it."""
+    return str(Decimal(repr(float(x))).quantize(Decimal("0.1"), rounding=ROUND_HALF_UP))
+
+
+def _arm(lb: dict, system: str, suite: str, qs_suffix: str | None = None) -> dict:
+    xs = [a for a in lb["arms"] if a["system"] == system and a["suite"] == suite
+          and (qs_suffix is None or a["question_set"].endswith(qs_suffix))]
+    if len(xs) != 1:
+        raise SystemExit(f"expected one {system} {suite} arm, found {len(xs)}")
+    return xs[0]
+
+
+def _thr(a: dict) -> list:
+    return [v["threshold"]["threshold"] for v in a["subtasks"].values()
+            if v["status"] == "evaluated" and (v.get("threshold") or {}).get("threshold") is not None]
+
+
+def _paired(lb: dict, suite: str, a_sys: str, b_prefix: str, qs_suffix: str | None = None) -> dict:
+    by = {a["arm_id"]: a for a in lb["arms"]}
+    for p in lb["suites"][suite]["paired_differences"]:
+        A, B = by[p["a"]], by[p["b"]]
+        if qs_suffix and not A["question_set"].endswith(qs_suffix):
+            continue
+        if A["system"] == a_sys and B["system"].startswith(b_prefix):
+            return {"difference": p["difference"], "low": p["ci"]["low"], "high": p["ci"]["high"], "separated": p["separated"]}
+        if B["system"] == a_sys and A["system"].startswith(b_prefix):
+            return {"difference": -p["difference"], "low": -p["ci"]["high"], "high": -p["ci"]["low"], "separated": p["separated"]}
+    raise SystemExit(f"no paired difference for {a_sys} and {b_prefix} in {suite}")
+
+
+def run_block(lb: dict) -> dict | None:
+    """What this run is, how it relates to the first run, and what changed. Every number is copied from the two final
+    leaderboards and bias-parts files, except the three JEV_GROUNDING_* values, which check_page.py recomputes."""
+    if CTX.is_first:
+        return None
+    first = json.loads(FIRST_LB.read_text(encoding="utf-8"))
+    decl = json.loads((CTX.subsets / "run.json").read_text(encoding="utf-8"))
+    fm = lb["freeze_manifest"]
+    ov = lambda d: {i["implementation"]: i for i in d["overall"]["implementations"]}
+    o1, o2 = ov(first), ov(lb)
+    ovd = lambda d: next(p for p in d["overall"]["paired_differences"] if {p["a"], p["b"]} == {"jev-1.13.0", "bedrock-guardrails"})
+    p1, p2 = ovd(first), ovd(lb)
+    sgn = lambda p: 1 if p["a"] == "jev-1.13.0" else -1
+    same = [NAME[n] for n in o2 if n not in ("jev-1.13.0", "bedrock-guardrails")
+            and all(o1[n]["suites"][su]["task_score"] == o2[n]["suites"][su]["task_score"] for su in o2[n]["suites"])]
+    rank = lambda d: [r["implementation"] for r in d["overall"]["ranking"]]
+
+    g1, g2 = _arm(first, "jev-1.13.0", "grounding"), _arm(lb, "jev-1.13.0", "grounding")
+    t1, t2 = _thr(g1)[0], _thr(g2)[0]
+    n1, n2 = g1["subtasks"]["grounding"]["n"], g2["subtasks"]["grounding"]["n"]
+    gp1, gp2 = _paired(first, "grounding", "jev-1.13.0", "bedrock"), _paired(lb, "grounding", "jev-1.13.0", "bedrock")
+    drift = JEV_GROUNDING_AT_FIRST_THRESHOLD - g1["suite_score"]["value"]
+    refit = g2["suite_score"]["value"] - JEV_GROUNDING_AT_FIRST_THRESHOLD
+
+    cj1, cj2 = _arm(first, "jev-1.13.0", "content"), _arm(lb, "jev-1.13.0", "content")
+    cb1, cb2 = _arm(first, "bedrock-checks", "content"), _arm(lb, "bedrock-checks", "content")
+    cp2 = _paired(lb, "content", "jev-1.13.0", "bedrock")
+
+    other = []
+    for su, qs in (("prompt_attacks", None), ("denied_topics", None), ("word_filters", "f4-obscenity"),
+                   ("word_filters", "f4-words"), ("sensitive_info", None)):
+        a, b = _arm(first, "jev-1.13.0", su, qs), _arm(lb, "jev-1.13.0", su, qs)
+        x, y = a["suite_score"]["value"], b["suite_score"]["value"]
+        if x != y:
+            other.append((("profanity" if qs == "f4-obscenity" else SUITE_NAME[su]), x, y))
+
+    k1, k2 = o1["kev-0-8b"], o2["kev-0-8b"]
+    kp1 = _arm(first, "kev-0-8b", "prompt_attacks")["cost"]["usd_per_1000"]
+    kp2 = _arm(lb, "kev-0-8b", "prompt_attacks")["cost"]["usd_per_1000"]
+    kw1 = _arm(first, "kev-0-8b", "word_filters", "f4-words")["cost"]["usd_per_1000"]
+    kw2 = _arm(lb, "kev-0-8b", "word_filters", "f4-words")["cost"]["usd_per_1000"]
+    retried = sum(_arm(first, "kev-0-8b", su, qs)["sample_sizes"].get("recovered_after_failure", 0)
+                  for su, qs in (("prompt_attacks", None), ("word_filters", "f4-words")))
+    win = lambda d: next(r for r in json.loads((d / "serving-v13.json").read_text(encoding="utf-8"))
+                         if r["system"] == "kev-0-8b" and r["stage"] == "test.jsonl" and r["question_set"] == "v1-f2-attacks")
+    w1, w2 = win(FIRST_LB.parent), win(RES)
+
+    bp = lambda d: {s["system"]: s for s in json.loads((d / "bias-parts.json").read_text(encoding="utf-8"))["guardrail_fairness"]["systems"]}
+    b1, b2 = bp(FIRST_LB.parent), bp(RES)
+    jb1, jb2, bb1, bb2 = b1["jev-1.13.0"], b2["jev-1.13.0"], b1["bedrock-checks"], b2["bedrock-checks"]
+    fp = lambda s: s["B1"]["overall"]["fpr_numerator"]
+    fn = lambda s: s["B1"]["overall"]["fnr_numerator"]
+    nb = jb2["B1"]["overall"]["fpr_denominator"]
+    nh = jb2["B1"]["overall"]["fnr_denominator"]
+    c = lambda s, k: s["B2"]["counts"][k]
+
+    changes = [
+        {"id": "overall", "title": "Overall", "suite": "overall",
+         "values": {NAME[n]: {"first": round(o1[n]["overall_score"], 4), "second": round(o2[n]["overall_score"], 4)} for n in o2},
+         "text": (f"Jev {f1(o1['jev-1.13.0']['overall_score'])} to {f1(o2['jev-1.13.0']['overall_score'])}, Bedrock "
+                  f"{f1(o1['bedrock-guardrails']['overall_score'])} to {f1(o2['bedrock-guardrails']['overall_score'])}. "
+                  + (f"{', '.join(same[:-1])} and {same[-1]} score exactly as before in every category. " if len(same) > 1 else "")
+                  + ("The ranking is unchanged. " if rank(first) == rank(lb) else "The ranking changed. ")
+                  + f"Jev leads Bedrock by {f1(sgn(p2) * p2['difference'])} points (paired 95% interval "
+                  f"{f1(min(sgn(p2) * p2['ci']['low'], sgn(p2) * p2['ci']['high']))} to "
+                  f"{f1(max(sgn(p2) * p2['ci']['low'], sgn(p2) * p2['ci']['high']))}), down from "
+                  f"{f1(sgn(p1) * p1['difference'])}.")},
+        {"id": "jev-grounding", "title": "Jev on grounding", "suite": "grounding", "implementation": "jev",
+         "first": g1["suite_score"]["value"], "second": g2["suite_score"]["value"], "first_threshold": t1,
+         "second_threshold": t2, "at_first_threshold": JEV_GROUNDING_AT_FIRST_THRESHOLD,
+         "tuning_tie": JEV_GROUNDING_TUNING_TIE, "tuning_fpr_at_first_threshold": JEV_GROUNDING_TUNING_FPR_AT_FIRST,
+         "text": (f"Jev's grounding score fell from {f1(g1['suite_score']['value'])} to {f1(g2['suite_score']['value'])}, "
+                  f"for two reasons. Jev's hosted API gave slightly different answers this run. Scored at the first run's "
+                  f"threshold of {t1}, this run's answers give {f1(JEV_GROUNDING_AT_FIRST_THRESHOLD)}, about "
+                  f"{f1(-drift)} points lower. The rest, about {f1(-refit)} points, comes from the new threshold. On this "
+                  f"run's tuning rows, {t1} and {t2} both scored {f1(JEV_GROUNDING_TUNING_TIE)}. The fit rule breaks a "
+                  f"tie toward the lower tuning false-positive rate, {int(round(100 * JEV_GROUNDING_TUNING_FPR_AT_FIRST))}% "
+                  f"at {t1} against 0% at {t2}, so it froze {t2}. The higher threshold caught {n2['tp']} of "
+                  f"{n2['positive']} unsupported answers instead of {n1['tp']}, and wrongly flagged {n2['fp']} of "
+                  f"{n2['negative']} supported ones instead of {n1['fp']}. Jev still leads Bedrock on grounding, by "
+                  f"{f1(gp2['difference'])} points instead of {f1(gp1['difference'])} (paired 95% interval "
+                  f"{f1(gp2['low'])} to {f1(gp2['high'])}).")},
+        {"id": "content-question-sets", "title": "Harmful content question sets", "suite": "content",
+         "question_sets": {"Jev": {"first": cj1["question_set"], "second": cj2["question_set"]},
+                           "Bedrock": {"first": cb1["question_set"], "second": cb2["question_set"]}},
+         "text": (f"The tuning fit picked a different question set for both. Jev moved from {cj1['question_set']} to "
+                  f"{cj2['question_set']}, and Bedrock from {cb1['question_set']} to {cb2['question_set']}. Jev scores "
+                  f"{f1(cj2['suite_score']['value'])} ({f1(cj1['suite_score']['value'])} in the first run) and Bedrock "
+                  f"{f1(cb2['suite_score']['value'])} ({f1(cb1['suite_score']['value'])}). "
+                  + ("The paired interval still includes zero, so there is no clear difference."
+                     if not cp2["separated"] else "The paired interval now excludes zero."))},
+        {"id": "jev-other", "title": "Jev elsewhere", "suite": None,
+         "text": ("Jev's other scores moved by " + f1(max(abs(y - x) for _, x, y in other)) + " points or less: "
+                  + ", ".join(f"{n} {f1(x)} to {f1(y)}" for n, x, y in other)
+                  + ". Its thresholds were refitted too; custom words stays at 100.0.")},
+        {"id": "self-hosted-cost", "title": "Self-hosted cost", "suite": None,
+         "text": (f"Kev 0.8B's overall cost fell from ${k1['usd_per_1000']:.3f} to ${k2['usd_per_1000']:.3f} per 1,000 "
+                  f"checks. In the first run, {retried} of its calls hung for over a minute each before their connections "
+                  f"dropped, and that time sat inside its serving windows. Its prompt-attack window ran "
+                  f"{round(w1['allocated_seconds'])} seconds for {w1['evaluations']} checks, against "
+                  f"{round(w2['allocated_seconds'])} seconds this run, so prompt attacks cost ${kp1:.3f} then and "
+                  f"${kp2:.3f} now, and custom words ${kw1:.3f} and ${kw2:.3f}. This run recorded each call's start "
+                  f"time, so windows are measured rather than reconstructed. The other self-hosted costs moved by "
+                  f"smaller amounts. All are normalized estimates.")},
+        {"id": "bias", "title": "Bias diagnostics", "suite": "bias",
+         "text": (f"Jev's frozen content threshold moved from {jb1['threshold']} to {jb2['threshold']}, so on the B1 "
+                  f"comments it blocked {fp(jb2)} of {nb} harmless ones instead of {fp(jb1)}, and missed {fn(jb2)} of "
+                  f"{nh} toxic ones instead of {fn(jb1)}. Bedrock blocked {fp(bb2)} harmless comments instead of "
+                  f"{fp(bb1)}. On the {c(bb2, 'evaluable')} identity-swapped pairs, Bedrock changed its verdict on "
+                  f"{c(bb2, 'flips')} ({c(bb1, 'flips')} in the first run) and got {c(bb2, 'all_wrong')} pair wrong on "
+                  "both sides. The other systems' bias results are unchanged.")},
+    ]
+    blockers = first.get("publication_blockers") or []
+    return {
+        "id": CTX.run, "label": RUN_LABEL.get(CTX.run, CTX.run).capitalize(),
+        "record": RC.rel(CTX.subsets / "run.json"), "mode": decl["mode"],
+        "contract": f"{lb['contract']['version']} ({lb['contract']['status']})",
+        "valid_for_publication": lb["valid_for_publication"], "publication_blockers": lb["publication_blockers"],
+        "manifests_commit": fm["commit"][:7], "manifests_committed_at": fm["committed_at"],
+        "earliest_test_attempt": fm["records"]["earliest_test_attempt"],
+        "summary": (f"These are the results of the second run. Every system was tuned again on the same tuning rows and "
+                    f"frozen under signed contract {lb['contract']['version']}. The freeze manifests were committed at "
+                    f"{fm['commit'][:7]}, {fm['committed_at'][:10]} {fm['committed_at'][11:16]} UTC, before the first "
+                    f"test call at {fm['records']['earliest_test_attempt'][11:16]} UTC. "
+                    + ("The evaluator marks this leaderboard valid for publication, with no blockers."
+                       if lb["valid_for_publication"] and not lb["publication_blockers"] else
+                       "The evaluator does not mark this leaderboard valid for publication.")),
+        "previous": {
+            "id": RC.FIRST, "label": "First run", "results": RC.rel(site_json(RC.FIRST)).replace("site/leaderboard/", ""),
+            "leaderboard": RC.rel(FIRST_LB), "valid_for_publication": first["valid_for_publication"],
+            "publication_blockers": blockers,
+            "status": ("The first run's leaderboard is not valid for publication. Its evaluator reports "
+                       + ("two blockers" if len(blockers) == 2 else f"{len(blockers)} blockers")
+                       + ": " + "; ".join(blockers) + ". The project owner accepted a per-arm freeze check in their "
+                       "place on 28 September 2026 (analysis-approval-5.json), but the evaluator still reports them. "
+                       "The first run's results stay on file unchanged.")},
+        "changes": changes,
+    }
+
+
+def later_run(doc: dict, lb: dict) -> dict:
+    """The first run's page data, adjusted for a later run: its name and date, where it ran, its own disclosures, the
+    run block, and the first run's corrections kept as history under their own label."""
+    arms_failed = sum(v["n"]["failed"] + v["n"]["no_decision"] for a in lb["arms"] for v in a["subtasks"].values()
+                      if v["status"] == "evaluated")
+    retried = sum(a["sample_sizes"].get("recovered_after_failure", 0) for a in lb["arms"])
+    fm = lb["freeze_manifest"]
+    prof = _arm(lb, "bedrock-apply-words", "word_filters", "f4-obscenity")["subtasks"]["profanity"]
+    dis = []
+    for d in doc["disclosures"]:
+        if d.startswith("51 test rows failed"):
+            d = (f"{arms_failed} test rows failed and {retried} were re-attempted in this run" if arms_failed or retried
+                 else "No test row failed or was re-attempted in this run")
+        elif d.startswith("Content, prompt attacks, custom words and grounding retain"):
+            d = ("Every category was tuned again and frozen in this run, under signed contract "
+                 f"{lb['contract']['version']}. Two superseded arms were not run: sensitive information on AI4Privacy, "
+                 "replaced by NVIDIA Nemotron-PII, and the lexicon-selected profanity rows, replaced by Civil Comments.")
+        elif d.startswith("Profanity now scores against Civil Comments"):
+            d = ("Profanity scores against Civil Comments' rater labels (dataset v1.3). For Bedrock's managed profanity "
+                 "filter this is performance against an external dataset, not identical implementation or vocabulary. "
+                 f"Bedrock flagged {prof['n']['tp']} of the {prof['n']['positive']} profane test comments (recall "
+                 f"{round(prof['recall'], 3)}). Why it missed the others was not investigated.")
+        dis.append(d)
+    out = {}
+    for k, v in doc.items():
+        out[k] = v
+        if k == "notice":
+            out["run"] = run_block(lb)
+    b = out["benchmark"]
+    b["name"] = f"{BRAND}, {RUN_LABEL.get(CTX.run, CTX.run)}"
+    b["generated_at"] = fm["records"]["earliest_test_attempt"][:10]
+    zone = CTX.vm_zone()
+    cb = out["cost_basis"]
+    cb["run_locations"] = gpu_runs()
+    cb["notes"] = ("Jev: measured tokens x list price. Bedrock: text units x list price. Self-hosted: allocated serving "
+                   "cost under the tested setup, one g2-standard-24 VM with two L4 GPUs. Each model's serving window runs "
+                   "from the start of its first test call to the end of its last, as this run's ledgers record them to "
+                   "the millisecond, and is divided by the cases it served. No two models' windows overlapped. These are "
+                   f"normalized estimates, priced at the us-east4 rate; this run's VM ran in {zone} (vm-zone.txt). The "
+                   "rate is a third-party list price, not a verified regional tariff. Setup and idle VM time are "
+                   "excluded here and counted in the project spend. Regex baseline: cost not measured, shown without a "
+                   "cost point. List prices, not reconciled against a bill.")
+    out["latency_basis"]["client_location"] = (f"measured from the operator's machine over an IAP tunnel to the GPU VM "
+                                               f"in {zone}; Bedrock us-east-1")
+    out["disclosures"] = dis
+    first_hist = [{**c, "title": "First run: " + c["title"]} for c in out["corrections"]]
+    out["corrections"] = [
+        {"date": fm["records"]["earliest_test_attempt"][:10],
+         "title": "Second run: tuned and frozen again under signed contract " + lb["contract"]["version"],
+         "detail": ("The first run's leaderboard was not valid for publication, so the benchmark was run again from the "
+                    "tuning step on the same data subsets. The owner's run declaration "
+                    f"({RC.rel(CTX.subsets / 'run.json')}) was committed before any call. Every freeze manifest was "
+                    f"committed at {fm['commit'][:7]} before the first test call. The five self-hosted models froze "
+                    "the same settings as before and score the same; Jev and Bedrock moved, and the largest change is "
+                    "Jev's grounding score. See the changes listed under the overview. The first run's results, "
+                    "corrections and approvals stay on file unchanged; its entries below are history."),
+         "code_commit": fm["commit"][:7]},
+    ] + first_hist
+    return out
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("--run", help="benchmark run id (default: GOLDRAILS_RUN, else first-benchmark)")
+    a = ap.parse_args(argv)
+    if a.run:
+        use_run(a.run)
     # six categories once the extension has run: the final view (built after the owner's sign-off) if it exists, else
     # the provisional one; the five-category corrected view stays in leaderboard-corrected.json either way
     pick = next(p for p in (RES / "leaderboard-final.json", RES / "leaderboard-v1.3.json", RES / "leaderboard-v1.2.json", RES / "leaderboard-provisional.json",
@@ -873,21 +1201,21 @@ def main() -> int:
         "schema_version": "goldrails-leaderboard-site/0.1",
         "placeholder": False,
         "notice": notice(lb),
-        "benchmark": {"name": "[gold]rails, first benchmark" + (" (interim)" if open_blockers(lb) else ""),
+        "benchmark": {"name": f"{BRAND}, {RUN_LABEL[RC.FIRST]}" + (" (interim)" if open_blockers(lb) else ""),
                       "dataset_version": f"{sub['release']} subset {sub['name']}",
                       "dataset_sha256": sub["subset_sha256"],
-                      "dataset_url": ((publication.get("destination") + (f"/tree/{publication['hub_commit']}"
+                      "dataset_url": ((HF_DATASET + (f"/tree/{publication['hub_commit']}"
                                                                          if publication.get("hub_commit") else ""))
                                       if publication.get("visibility") == "public" else None),
                       "public_release": publication.get("public_release") or publication.get("hub_tag"), "split": "test",
-                      "public_note": ((f"The public dataset is [gold]rails {publication['public_release']}, Hugging Face "
+                      "public_note": ((f"The public dataset is {BRAND} {publication['public_release']}, Hugging Face "
                                        f"revision {publication['hub_commit'][:12]} ({publication['uploaded']}, internal release "
                                        f"{publication['release']}), the revision these results use. The first upload of "
                                        f"{publication['public_release']} stays at revision "
                                        f"{publication['revises']['hub_commit'][:12]} (tag {publication['public_release']}).")
                                       if publication.get("revises") and publication.get("release") == sub["release"] else
                                       None if not publication or publication.get("release") == sub["release"] else
-                                      f"The public dataset is [gold]rails {publication.get('hub_tag')} on Hugging Face "
+                                      f"The public dataset is {BRAND} {publication.get('hub_tag')} on Hugging Face "
                                       f"(revision {publication.get('hub_commit', '')[:12]}, built from internal release "
                                       f"{publication.get('release')}). These results use internal release {sub['release']}, "
                                       f"which differs only in the profanity rows; it is a proposed revision of "
@@ -924,7 +1252,7 @@ def main() -> int:
             "original and corrected results are both kept",
             "The original freeze chronology is preserved in local development Git history. The clean code export has fresh "
             "history and does not independently establish when the original test configurations were frozen.",
-            "[gold]rails is a non-commercial research benchmark, published for research with credit to every upstream "
+            f"{BRAND} is a non-commercial research benchmark, published for research with credit to every upstream "
             "source; each source's rows stay under that source's licence. "
             + ("The public dataset built from internal v1.2 uses NVIDIA Nemotron-PII and contains no AI4Privacy rows." if V12 else
                "AI4Privacy rows are excluded from the public package.")]
@@ -955,7 +1283,7 @@ def main() -> int:
                 "filter this is performance against an external dataset, not identical implementation or vocabulary. "
                 "Bedrock flagged 26 of the 80 profane test comments (recall 0.325). Why it missed the others was not "
                 "investigated.",
-                freeze_validation_note()] if V13 else [
+                freeze_validation_note(lb)] if V13 else [
                 "Bedrock's profanity score is against a written definition, not AWS's undisclosed managed list; its low "
                 "recall reflects that mismatch as much as detection quality."]) if any(a["suite"] == "denied_topics" for a in lb["arms"]) else []),
         "accepted_blockers": accepted_blockers(lb),
@@ -1074,6 +1402,9 @@ def main() -> int:
         "implementations": list(impls.values()),
         "entries": entries,
     }
+    if not CTX.is_first:
+        doc = later_run(doc, lb)
+    OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
     print(f"{len(impls)} implementations, {len(entries)} entries; wrote {OUT.relative_to(REPO)}")
     return 0

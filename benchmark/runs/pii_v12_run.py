@@ -10,6 +10,10 @@ is fitted again, on the new tuning rows, by the same rule (maximise tuning task 
 manifest's sha256 and is committed before any test call; the runner refuses test rows until then. Ledgers:
 ``pii-v12-tune.jsonl``, ``pii-v12-test.jsonl``, ``pii-v12-latency.jsonl``. The first benchmark's PII results stay as
 they were.
+
+Which run: ``GOLDRAILS_RUN`` and ``GOLDRAILS_FROZEN_RUN`` (run_context.py). A run that skipped the core F5 arm has no
+PII entry in its core selection; each system then answers the sole PII candidate the implementations declaration names
+(``v2-f5-pii``), and the selection file records that rule. ``--dry-run`` prints what a stage would run.
 """
 from __future__ import annotations
 
@@ -23,20 +27,48 @@ from dotenv import find_dotenv, load_dotenv
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import first_benchmark as FB  # noqa: E402
+import run_context as RC  # noqa: E402
 
 from goldrails_bench.runner import run_matrix  # noqa: E402
 from goldrails_bench.subset import load_subset_rows  # noqa: E402
 
 SUBSET = "first-benchmark-v1.2"
 SUITE = "sensitive_info"
-EXT = FB.REPO / "benchmark" / "subsets" / FB.SUBSET / "freeze-extension-3.json"
-SELECTION = FB.OUT / "pii-v12-selection.json"
-CONTRACT = FB.REPO / "benchmark" / "contracts" / "v1.1.json"
+CTX = FB.CTX
+EXT = CTX.frozen_subsets / "freeze-extension-3.json"
+SELECTION = CTX.frozen_selections / "pii-v12-selection.json"
+CONTRACT = CTX.default_contract(FB.REPO / "benchmark" / "contracts" / "v1.1.json")
+RULE_FROZEN = "each system's PII question set frozen in the first benchmark (selection.json); threshold refitted on v1.2 tuning rows"
+
+
+def sole_candidate(impl: dict = None) -> str:
+    cands = (impl or FB.IMPL)["candidate_question_sets"][SUITE]
+    if len(cands) != 1:
+        raise SystemExit(f"no PII question set in the core selection and {len(cands)} declared candidates {cands}: "
+                         "the fallback needs exactly one; freeze a core F5 arm or decide the set first")
+    return cands[0]
+
+
+def question_set_rule(selection_path=None, impl: dict = None) -> tuple[dict, str]:
+    """({system: question set}, rule). The core selection's PII choice when it has one (the first run); otherwise
+    the sole declared candidate for every system, because the superseded core F5 arm was never run."""
+    path = Path(selection_path or FB.SELECTION)
+    if path.exists():
+        sel = json.loads(path.read_text())
+        chosen = {c["system"]: c["question_set"] for c in sel["chosen"] if c["suite"] == SUITE}
+        if chosen:
+            return chosen, RULE_FROZEN
+    q = sole_candidate(impl)
+    names = [n for n in (impl or FB.IMPL)["systems"]["decision_models"]]
+    names.append((impl or FB.IMPL)["systems"]["managed_service"]["composite_of"][SUITE])
+    return ({n: q for n in names},
+            f"core F5 (AI4Privacy) was skipped as superseded, so {RC.rel(path)} has no PII choice; every system "
+            f"answers {q}, the sole sensitive_info candidate declared in {RC.rel(RC.IMPL_DIR / 'implementations.json')}; "
+            "threshold fitted on v1.2 tuning rows")
 
 
 def frozen_question_sets() -> dict:
-    sel = json.loads((FB.OUT / "selection.json").read_text())
-    return {c["system"]: c["question_set"] for c in sel["chosen"] if c["suite"] == SUITE}
+    return question_set_rule()[0]
 
 
 def rows(split: str) -> list:
@@ -72,6 +104,7 @@ def freeze(kinds: set):
     args = [str(x) for p in ledgers for x in (p, p.with_suffix(".arms.jsonl")) if x.exists()]
     doc = build(args, contract_path=CONTRACT, mode="smoke")   # a successful re-attempt supersedes its failed original
     names = set(systems(kinds))
+    EXT.parent.mkdir(parents=True, exist_ok=True)
     arms = [a for a in doc["arms"] if a["system"] in names and a["suite"] == SUITE]
     primary_sha = hashlib.sha256(FB.MANIFEST.read_bytes()).hexdigest()
     test_sha = rows("test")[0].dataset["sha256"]
@@ -84,9 +117,17 @@ def freeze(kinds: set):
     probs = F.validate(m)
     if probs:
         raise SystemExit("extension manifest invalid: " + "; ".join(probs))
+    if not CTX.is_first:
+        m["run"] = {"id": CTX.run, "declaration": RC.rel(CTX.subsets / "run.json"), "subset": SUBSET,
+                    "contract": RC.rel(CONTRACT), "question_set_rule": question_set_rule()[1]}
     EXT.write_text(json.dumps(m, indent=1, sort_keys=True) + "\n")
+    sel_rule = question_set_rule()[1]
+    SELECTION.parent.mkdir(parents=True, exist_ok=True)
     SELECTION.write_text(json.dumps({
-        "rule": "each system's PII question set frozen in the first benchmark (selection.json); threshold refitted on v1.2 tuning rows",
+        "rule": sel_rule,
+        **({} if CTX.is_first else {"run": {"id": CTX.run, "contract": RC.rel(CONTRACT),
+                                            "question_set_source": "core selection" if sel_rule == RULE_FROZEN
+                                            else "sole declared candidate (core F5 skipped as superseded)"}}),
         "chosen": [{"system": a["system"], "suite": SUITE, "question_set": a["question_set"],
                     "tune_task_score": (a.get("suite_score") or {}).get("value")} for a in sorted(arms, key=lambda a: a["system"])]},
         indent=1) + "\n")
@@ -94,14 +135,31 @@ def freeze(kinds: set):
 
 
 def main(argv=None) -> int:
+    global CONTRACT
     load_dotenv(find_dotenv(usecwd=True))
+    RC.check_env_unchanged(CTX)
     ap = argparse.ArgumentParser()
     ap.add_argument("stage", choices=("tune", "freeze", "test", "latency"))
     ap.add_argument("--systems", default="open,jev,bedrock")
     ap.add_argument("--limit", type=int)
     ap.add_argument("--rerun", action="store_true", help="write to the -rerun ledger (re-attempts of failed rows)")
+    ap.add_argument("--contract", help=f"contract the freeze fits under (default {RC.rel(CONTRACT)})")
+    ap.add_argument("--dry-run", "--plan", dest="dry_run", action="store_true",
+                    help="print paths, systems, rows and already-recorded rows; build no client, call nothing")
+    ap.add_argument(RC.I_KNOW_FLAG, dest="i_know", action="store_true", help=argparse.SUPPRESS)
     a = ap.parse_args(argv)
     kinds = set(a.systems.split(","))
+    if a.contract:
+        CONTRACT = Path(a.contract).resolve()
+    if a.stage in ("tune", "freeze"):
+        RC.require_same_run(CTX, a.stage)
+    if a.dry_run:
+        return dry_run(a, kinds)
+    if a.stage == "freeze":
+        RC.refuse_protected([EXT, SELECTION], a.i_know, "freeze")
+        RC.refuse_existing([EXT, SELECTION], "freeze")
+    else:
+        RC.refuse_protected([FB.OUT], a.i_know, a.stage)
     if a.stage == "tune":
         run("tune", kinds, "tune", limit=a.limit, rerun=a.rerun)
     elif a.stage == "freeze":
@@ -110,6 +168,36 @@ def main(argv=None) -> int:
         run("test", kinds, "test", manifest=EXT, rerun=a.rerun)
     else:
         run("latency", kinds, "tune", serial=True, limit=a.limit or 50, manifest=EXT)
+    return 0
+
+
+def plan(stage: str, kinds: set, split: str, limit=None, manifest=None, rerun=False) -> RC.Plan:
+    """What ``run`` would run, from the implementations declaration: no clients, no calls."""
+    p = RC.Plan(CTX, "pii_v12_run.py", stage)
+    p.path("results", FB.OUT)
+    p.path("subset", FB.REPO / "benchmark" / "subsets" / SUBSET / "manifest.json")
+    if manifest is not None:
+        p.path("manifest (read)", manifest)
+    rs = rows(split)[: limit or None]
+    ledger = FB.OUT / f"pii-v12-{stage}{'-rerun' if rerun else ''}.jsonl"
+    for name in (k for k in RC.declared_systems(FB.IMPL, kinds, SUITE) if k != "regex-baseline"):
+        p.add(SUITE, name, [frozen_question_sets()[name]], rs, ledger)
+    return p
+
+
+def dry_run(a, kinds) -> int:
+    import json as _json
+    print(_json.dumps(CTX.describe()))
+    if a.stage == "freeze":
+        print(f"== pii_v12_run.py freeze (run {CTX.run}) — DRY RUN\n   reads   {RC.rel(FB.OUT / 'pii-v12-tune.jsonl')}"
+              f" (+ pii-v12-tune-rerun.jsonl if present)\n   reads   {RC.rel(FB.MANIFEST)} (primary manifest sha256 goes in extends)\n"
+              f"   writes  {RC.rel(EXT)}{'  (EXISTS: freeze would refuse)' if EXT.exists() else ''}\n"
+              f"   writes  {RC.rel(SELECTION)}\n   contract {RC.rel(CONTRACT)}\n"
+              f"   protected first-benchmark location: {RC.is_protected(EXT)}")
+        return 0
+    split = "test" if a.stage == "test" else "tune"
+    limit = (a.limit or 50) if a.stage == "latency" else a.limit
+    plan(a.stage, kinds, split, limit, EXT if a.stage == "test" else None, a.rerun and a.stage != "latency").print()
     return 0
 
 

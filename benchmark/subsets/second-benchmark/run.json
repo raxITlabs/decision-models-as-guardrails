@@ -1,0 +1,56 @@
+{
+ "run": "second-benchmark",
+ "record": "goldrails-run-declaration/0.1",
+ "note": "A plan record, not an approval. It writes down the owner's decisions for this run before any call is made. It approves no scoring change, contract change or result, and the evaluator does not read it.",
+ "mode": "fresh: re-tune and re-freeze",
+ "mode_detail": "Thresholds and question-set choices are fitted again on the tuning rows of the same data subsets, frozen into new manifests in benchmark/subsets/second-benchmark/, and those manifests are committed before any test call. The test and latency passes follow. Nothing is read from or written to the first benchmark's results or manifests.",
+ "run_context": {
+  "env": "GOLDRAILS_RUN=second-benchmark (GOLDRAILS_FROZEN_RUN unset, so equal to the run)",
+  "results": "benchmark/results/second-benchmark/",
+  "manifests_and_selections": "benchmark/subsets/second-benchmark/",
+  "data_subsets": ["first-benchmark", "first-benchmark-v1.1-ai", "first-benchmark-v1.2", "first-benchmark-v1.3"],
+  "implementations_declarations": "benchmark/subsets/first-benchmark/implementations.json, implementations-v1.1.json, implementations-v1.3.json (unchanged, read in place)"
+ },
+ "contract": {
+  "path": "benchmark/contracts/v1.1-signed.json",
+  "file_sha256": "ab8aac28be407b74bdaf5a75733672102aa163d00b0a9b245709b74d14bbd4c3",
+  "contract_hash": "77180f6520c3ee4a",
+  "contract_hash_basis": "goldrails_bench.leaderboard._stable_hash of the contract, as the evaluator computes it",
+  "version": "v1.1",
+  "status": "signed by the project owner, 28 September 2026",
+  "rule": "every freeze in this run (core, extension 1, extension 3, extension 4) fits and freezes under this contract, so the final leaderboard's contract hash equals every manifest's and no contract-change approval is needed"
+ },
+ "scoring_code": {
+  "module": "goldrails_bench.leaderboard",
+  "sha256": "92a74bcc31c20f5b099019feea79742d2a8b30b5743a84f7450d8fcbf75f9fe0",
+  "rule": "the manifests freeze this code; if benchmark/goldrails_bench/leaderboard.py changes before the final leaderboard is built, the result needs an analysis approval, so it stays unedited for this run"
+ },
+ "arms_run": {
+  "core (first_benchmark.py)": ["content (F1)", "prompt_attacks (F2)", "word_filters custom words (F4)", "grounding (F6)", "bias_b1", "bias_b3"],
+  "extension 1 (extension_run.py, subset first-benchmark-v1.1-ai)": ["denied_topics (F3)", "bias_b2"],
+  "extension 3 (pii_v12_run.py, subset first-benchmark-v1.2)": ["sensitive_info on Nemotron-PII"],
+  "extension 4 (profanity_v13_run.py, subset first-benchmark-v1.3)": ["word_filters profanity on Civil Comments"]
+ },
+ "skipped_superseded": {
+  "core sensitive_info (F5 on AI4Privacy)": "replaced by the v1.2 Nemotron-PII pass; leaderboard-final.json does not score it",
+  "extension lexicon profanity (and its masked-spelling diagnostic, profanity_obfuscated)": "replaced by the v1.3 Civil Comments pass; leaderboard-final.json does not score it"
+ },
+ "manifests": {
+  "numbering": "freeze-manifest.json (core), freeze-extension-1.json (denied topics and B2, every system in one extension), freeze-extension-3.json (PII v1.2), freeze-extension-4.json (profanity v1.3). There is no extension 2: the first run needed it only because Bedrock credentials arrived late. Keeping 3 and 4 lets every script and builder use the first run's file names."
+ },
+ "pii_question_set_rule": "The core selection has no sensitive_info entry because core F5 is skipped. pii_v12_run.py then gives every system the sole sensitive_info candidate declared in implementations.json (v2-f5-pii), refuses if more than one is declared, and records the rule in pii-v12-selection.json. In the first run every system had chosen v2-f5-pii too.",
+ "zone_policy": "us-east4-a first, fallback zones allowed, zone recorded",
+ "zone_detail": "make up is run with GOLDRAILS_ZONES=\"us-east4-a us-east4-c us-central1-a us-central1-b us-central1-c us-west1-a us-west1-b us-west4-a\" (infra/ctl.sh replaces its default list with this one and tries it in order). The zone the VM runs in is written to benchmark/results/second-benchmark/vm-zone.txt and carried on every serving record.",
+ "gpu_pricing_rule": "GPU time is priced at the tariff key g2-standard-24/us-east4/on-demand/third-party wherever the VM runs. No new tariff entry is added. When the VM runs outside us-east4, every serving record holds the actual zone and a pricing_note saying the cost uses the us-east4 tariff.",
+ "latency": {
+  "rule": "matches the first run",
+  "core": "all 10 systems (Jev, five open models, bedrock-checks, bedrock-apply-words, bedrock-apply-grounding, regex baseline), serial, up to 100 tuning rows per suite including bias B1 and B3",
+  "extension": "Jev and Bedrock only (jev-1.13.0, bedrock-apply-topics), serial, denied topics only now that lexicon profanity is skipped (42 rows each)",
+  "pii_v12": "7 systems x 50 tuning rows, serial",
+  "prof_v13": "7 systems x 50 tuning rows, serial"
+ },
+ "tune_bias": "The core tune also runs the 780 bias tuning rows (tune-bias.jsonl), as the first run did. No freeze reads them; they can be cut if the owner wants a cheaper run.",
+ "decided_by": "project owner",
+ "decided_at": "2026-09-29",
+ "source": "owner answers in the Claude Code session, 2026-09-29"
+}

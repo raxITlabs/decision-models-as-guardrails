@@ -1,8 +1,8 @@
 ---
-pretty_name: "[gold]rails"
+pretty_name: "jev-as-a-guardrails"
 license: other
 license_name: mixed-per-source
-license_link: https://huggingface.co/datasets/raxITLabs/goldrails/blob/main/SOURCES.md
+license_link: https://huggingface.co/datasets/raxITLabs/jev-as-a-guardrails/blob/main/SOURCES.md
 language:
   - en
 task_categories:
@@ -63,15 +63,15 @@ configs:
         path: data/candidates/tune.jsonl
 ---
 
-# [gold]rails v0.0.1
+# jev-as-a-guardrails v0.0.1
 
-**v0.0.1, revised 29 September 2026. Research release, complete text.** This revision is built from internal release v1.3. The first upload of v0.0.1, built from internal release v1.2, stays at Hub revision `3e3ed7f3bbed83b6d12316d2b5b396acdfc40873` (tag `v0.0.1`), so results computed on it remain traceable; CHANGELOG.md lists every change. Code: https://github.com/raxITlabs/goldrails at `c468c82204cf3acb20821cf41df17e0d4ead9e78`. Every row of release v1.3 (release sha `818c9e00f9f8`, 8807 rows) ships with its text, context, labels and span annotations. RIGHTS.md records the basis for publishing the sources that earlier shipped without text.
+**v0.0.1, revised 30 September 2026. Research release, complete text.** This revision is built from internal release v1.3. The first upload of v0.0.1, built from internal release v1.2, stays at Hub revision `3e3ed7f3bbed83b6d12316d2b5b396acdfc40873` (tag `v0.0.1`), so results computed on it remain traceable; CHANGELOG.md lists every change. Code: https://github.com/raxITlabs/jev-as-a-guardrails at `c468c82204cf3acb20821cf41df17e0d4ead9e78`. Every row of release v1.3 (release sha `818c9e00f9f8`, 8807 rows) ships with its text, context, labels and span annotations. RIGHTS.md records the basis for publishing the sources that earlier shipped without text.
 
-[gold]rails measures guardrails on six capabilities: harmful content, prompt attacks, denied topics, word filters (custom words and profanity), sensitive information and grounding. Bias is covered in three parts, set out under Label rules. Hate and discrimination detection is part of harmful content. The `bias` config holds the rows for guardrail fairness diagnostics and decision-model bias diagnostics, which sit outside the six-capability score. Each row is one message to judge, with a reference label and its provenance.
+jev-as-a-guardrails measures guardrails on six capabilities: harmful content, prompt attacks, denied topics, word filters (custom words and profanity), sensitive information and grounding. Bias is covered in three parts, set out under Label rules. Hate and discrimination detection is part of harmful content. The `bias` config holds the rows for guardrail fairness diagnostics and decision-model bias diagnostics, which sit outside the six-capability score. Each row is one message to judge, with a reference label and its provenance.
 
 ## Intended use
 
-[gold]rails is a non-commercial research benchmark by raxIT Labs. It compares guardrail systems and publishes the results for research, with credit to every upstream source. It is not a commercial product or deployment. Publishing it changes no source's licence: each row stays under its source's own terms, listed in SOURCES.md.
+jev-as-a-guardrails is a non-commercial research benchmark by raxIT Labs. It compares guardrail systems and publishes the results for research, with credit to every upstream source. It is not a commercial product or deployment. Publishing it changes no source's licence: each row stays under its source's own terms, listed in SOURCES.md.
 
 ## Read this first
 

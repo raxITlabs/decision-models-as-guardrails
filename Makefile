@@ -1,4 +1,4 @@
-# Gold Rails. `make help` lists these.
+# jev-as-a-guardrails. `make help` lists these.
 NB ?= benchmark/notebooks/04_cloud_pass_pilot.ipynb
 LEDGER ?= benchmark/results/pilot-cloud-pass.jsonl
 

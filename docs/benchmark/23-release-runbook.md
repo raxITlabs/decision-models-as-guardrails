@@ -83,7 +83,7 @@ contract by hand without the approvals leaves three blockers.
 
 ## 6. Publication (owner; outward-facing)
 
-Gold Rails is a non-commercial research benchmark, published with credit to every upstream source. The dataset card
+jev-as-a-guardrails is a non-commercial research benchmark, published with credit to every upstream source. The dataset card
 and the page say so. AI4Privacy's rows and annotations stay out of the public upload while its research and
 redistribution terms are clarified; the request is drafted in `docs/requests/ai4privacy-permission-request.md` and
 does not hold up the other sources. The PII result stays qualified; a fresh PII confirmation can follow once the

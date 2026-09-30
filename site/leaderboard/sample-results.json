@@ -1,9 +1,9 @@
 {
  "schema_version": "goldrails-leaderboard-site/0.1",
  "placeholder": true,
- "notice": "PLACEHOLDER. Every number, name and hash in this file is invented to exercise the page layout. None of it is a Gold Rails result, a smoke result or an estimate of one.",
+ "notice": "PLACEHOLDER. Every number, name and hash in this file is invented to exercise the page layout. None of it is a benchmark result, a smoke result or an estimate of one.",
  "benchmark": {
-  "name": "Gold Rails (PLACEHOLDER)",
+  "name": "Benchmark (PLACEHOLDER)",
   "dataset_version": "PLACEHOLDER",
   "dataset_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
   "dataset_url": null,

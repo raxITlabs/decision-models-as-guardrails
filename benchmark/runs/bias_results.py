@@ -11,26 +11,37 @@ B2 is absent: the counterfactual pairs are not reviewed yet, so they are outside
 
 Every ledger record must carry the committed freeze stamp and match a frozen bias arm (system, question set, config
 hash); anything else stops the script. Writes benchmark/results/first-benchmark/bias.json.
+
+Run-aware (run_context.py): ``--res`` defaults to ``benchmark/results/<GOLDRAILS_RUN>`` (ledgers in, bias.json out)
+and ``--sub`` to ``benchmark/subsets/<GOLDRAILS_FROZEN_RUN>`` (freeze manifests); ``--out`` overrides the output.
 """
 from __future__ import annotations
 
+import argparse
 import json
+import sys
 from collections import Counter
 from pathlib import Path
 
 from goldrails_bench.bias_metrics import build_bias_section, mentions_from_attribute
 from goldrails_bench.score import score_of
 
-REPO = Path(__file__).resolve().parents[2]
-RES = REPO / "benchmark" / "results" / "first-benchmark"
-MANIFEST = REPO / "benchmark" / "subsets" / "first-benchmark" / "freeze-manifest.json"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import run_context as RC  # noqa: E402
+
+REPO = RC.REPO
+CTX = RC.current()
+RES = CTX.results
+SUB = CTX.frozen_subsets
+MANIFEST = SUB / "freeze-manifest.json"
 RELEASE = REPO / "dataset" / "release" / "v1.0" / "build" / "F7.test.jsonl"
-EXTENSIONS = sorted((REPO / "benchmark" / "subsets" / "first-benchmark").glob("freeze-extension-*.json"))
+EXTENSIONS = sorted(SUB.glob("freeze-extension-*.json"))
 
 
-def extension_release() -> Path:
+def extension_release(extensions=None) -> Path:
     """The F7 test file of the release the extension subset was drawn from (v1.1, or provisional v1.1-ai)."""
-    subset = json.loads(EXTENSIONS[0].read_text(encoding="utf-8"))["extends"].get("subset", "first-benchmark-v1.1")
+    ext = (extensions or EXTENSIONS)[0]
+    subset = json.loads(ext.read_text(encoding="utf-8"))["extends"].get("subset", "first-benchmark-v1.1")
     release = json.loads((REPO / "benchmark" / "subsets" / subset / "manifest.json").read_text(encoding="utf-8"))["release"]
     return REPO / "dataset" / "release" / release / "build" / "F7.test.jsonl"
 B1_ROLE = "request"          # Civil Comments rows are user comments
@@ -40,17 +51,26 @@ def jsonl(p: Path) -> list:
     return [json.loads(l) for l in p.read_text(encoding="utf-8").splitlines() if l.strip()]
 
 
-def main() -> int:
-    man = json.loads(MANIFEST.read_text(encoding="utf-8"))
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--res", default=str(RES), help="results directory (default benchmark/results/<GOLDRAILS_RUN>)")
+    ap.add_argument("--sub", default=str(SUB), help="manifests directory (default benchmark/subsets/<GOLDRAILS_FROZEN_RUN>)")
+    ap.add_argument("--out", help="output file (default <res>/bias.json)")
+    a = ap.parse_args(argv)
+    res, sub = Path(a.res), Path(a.sub)
+    out_path = Path(a.out) if a.out else res / "bias.json"
+    manifest = sub / "freeze-manifest.json"
+    extensions = sorted(sub.glob("freeze-extension-*.json"))
+    man = json.loads(manifest.read_text(encoding="utf-8"))
     arms = {(a["system"], a["question_set"], a["config_hash"]): a for a in man["arms"] if a["suite"].startswith("bias_")}
     rows = {r["id"]: r for r in jsonl(RELEASE)}
-    ledger = jsonl(RES / "test-bias.jsonl")
-    b2_ledger = jsonl(RES / "ext-test-bias.jsonl") if (RES / "ext-test-bias.jsonl").exists() else []
+    ledger = jsonl(res / "test-bias.jsonl")
+    b2_ledger = jsonl(res / "ext-test-bias.jsonl") if (res / "ext-test-bias.jsonl").exists() else []
     if b2_ledger:   # B2 arms are frozen by the extension manifest, B2 rows live in release v1.1
-        for p in EXTENSIONS:
+        for p in extensions:
             ext = json.loads(p.read_text(encoding="utf-8"))
             arms.update({(a["system"], a["question_set"], a["config_hash"]): a for a in ext["arms"] if a["suite"] == "bias_b2"})
-        rows.update({r["id"]: r for r in jsonl(extension_release())})
+        rows.update({r["id"]: r for r in jsonl(extension_release(extensions))})
         ledger = ledger + b2_ledger
 
     problems = [r["id"] for r in ledger if not r.get("freeze") or (r["system"], r["question_set"], r["config_hash"]) not in arms]
@@ -100,13 +120,13 @@ def main() -> int:
                 ("B2: evaluated on reviewed pairs" if b2 else "B2 counterfactual pairs are not yet reviewed and not evaluated")],
         "next_run": ("select a small number of discrim-eval scenarios with every matched demographic variant, and sample "
                      "enough harmful and benign comments per compared identity group; grouping matters more than total rows")}
-    out["bias"]["inputs"] = {"ledger": "benchmark/results/first-benchmark/test-bias.jsonl",
-                             "freeze_manifest": str(MANIFEST.relative_to(REPO)), "b1_threshold_role": B1_ROLE,
+    out["bias"]["inputs"] = {"ledger": str((res / "test-bias.jsonl").resolve().relative_to(REPO)),
+                             "freeze_manifest": str(manifest.resolve().relative_to(REPO)), "b1_threshold_role": B1_ROLE,
                              "counts": dict(Counter(f"{r['system']}|{r['question_set']}" for r in ledger)),
                              "b2": (f"{len(b2)} items from ext-test-bias.jsonl under freeze-extension-1.json" if b2 else
                                     "not evaluated: counterfactual pairs await human review (outside the scored subset)")}
-    (RES / "bias.json").write_text(json.dumps(out, indent=1, sort_keys=True) + "\n", encoding="utf-8")
-    print(f"B1 {len(b1)} items, B2 {len(b2)}, discrim-eval {len(de)}, BBQ {len(bbq)}; wrote {(RES / 'bias.json').relative_to(REPO)}")
+    out_path.write_text(json.dumps(out, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+    print(f"B1 {len(b1)} items, B2 {len(b2)}, discrim-eval {len(de)}, BBQ {len(bbq)}; wrote {RC.rel(out_path)}")
     return 0
 
 

@@ -1,0 +1,103 @@
+{
+ "rule": "denied topics and profanity: the candidate question set with the highest tuning task score per system, ties to the lower name; B2: the system's frozen content question set and request threshold",
+ "contract": "benchmark/contracts/v1.1-signed.json",
+ "chosen": [
+  {
+   "system": "bedrock-apply-topics",
+   "suite": "denied_topics",
+   "question_set": "v1-f3-topics",
+   "tune_task_score": 90.389016
+  },
+  {
+   "system": "jev-1.13.0",
+   "suite": "denied_topics",
+   "question_set": "v1-f3-topics",
+   "tune_task_score": 100.0
+  },
+  {
+   "system": "kev-0-8b",
+   "suite": "denied_topics",
+   "question_set": "v1-f3-topics",
+   "tune_task_score": 86.498856
+  },
+  {
+   "system": "kev-4b",
+   "suite": "denied_topics",
+   "question_set": "v1-f3-topics",
+   "tune_task_score": 100.0
+  },
+  {
+   "system": "kev-9b",
+   "suite": "denied_topics",
+   "question_set": "v1-f3-topics",
+   "tune_task_score": 97.826087
+  },
+  {
+   "system": "laya",
+   "suite": "denied_topics",
+   "question_set": "v1-f3-topics",
+   "tune_task_score": 80.778032
+  },
+  {
+   "system": "open-jev-2b",
+   "suite": "denied_topics",
+   "question_set": "v1-f3-topics",
+   "tune_task_score": 97.368421
+  },
+  {
+   "system": "jev-1.13.0",
+   "suite": "bias_b2",
+   "question_set": "v1-f1-bedrock5",
+   "tune_task_score": null
+  },
+  {
+   "system": "kev-0-8b",
+   "suite": "bias_b2",
+   "question_set": "v1-f1-bedrock5",
+   "tune_task_score": null
+  },
+  {
+   "system": "kev-4b",
+   "suite": "bias_b2",
+   "question_set": "v1-f1-bedrock5",
+   "tune_task_score": null
+  },
+  {
+   "system": "open-jev-2b",
+   "suite": "bias_b2",
+   "question_set": "v1-f1-bedrock5",
+   "tune_task_score": null
+  },
+  {
+   "system": "kev-9b",
+   "suite": "bias_b2",
+   "question_set": "v2-f1-bedrock5",
+   "tune_task_score": null
+  },
+  {
+   "system": "laya",
+   "suite": "bias_b2",
+   "question_set": "v1-f1-bedrock5",
+   "tune_task_score": null
+  },
+  {
+   "system": "bedrock-checks",
+   "suite": "bias_b2",
+   "question_set": "v2-f1-bedrock5",
+   "tune_task_score": null
+  }
+ ],
+ "run": {
+  "id": "second-benchmark",
+  "declaration": "benchmark/subsets/second-benchmark/run.json",
+  "subset": "first-benchmark-v1.1-ai",
+  "contract": "benchmark/contracts/v1.1-signed.json",
+  "stages": [
+   "denied_topics",
+   "bias_b2"
+  ],
+  "skipped_superseded": {
+   "profanity": "lexicon-selected profanity (and its masked-spelling diagnostic), replaced by the v1.3 Civil Comments pass (profanity_v13_run.py)"
+  }
+ }
+}

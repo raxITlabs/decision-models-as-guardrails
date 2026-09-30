@@ -17,6 +17,10 @@ Windows in one ledger must not overlap, since each is charged the whole VM. With
 neighbouring arms can overlap by under a second; the overlap is split at its midpoint and recorded in
 ``trimmed_seconds``. An overlap of more than ``--max-overlap`` seconds means the arms did not run one at a time, and
 the script stops rather than charge the VM twice.
+
+``--hardware`` names the tariff key (default the us-east4 on-demand L4 machine the first run used). ``--zone`` records
+the zone the VM actually ran in; when it lies outside us-east4 while the key prices us-east4, every record says the GPU
+cost uses the us-east4 tariff. Without ``--zone`` the records are exactly as before.
 """
 from __future__ import annotations
 
@@ -24,10 +28,13 @@ import argparse
 import json
 from collections import defaultdict
 from datetime import datetime, timezone
+import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from run_context import DEFAULT_HARDWARE as HARDWARE, zone_fields  # noqa: E402
+
 GPU = {"kev-0-8b", "kev-4b", "kev-9b", "open-jev-2b", "laya"}
-HARDWARE = "g2-standard-24/us-east4/on-demand/third-party"
 
 
 def ts(s: str) -> float:
@@ -90,13 +97,16 @@ def main(argv=None) -> int:
     ap.add_argument("ledgers", nargs="+")
     ap.add_argument("--out", required=True)
     ap.add_argument("--max-overlap", type=float, default=2.0)
+    ap.add_argument("--hardware", default=HARDWARE, help=f"tariff hardware key (default {HARDWARE})")
+    ap.add_argument("--zone", help="zone the VM ran in, recorded on every window (default: not recorded)")
     a = ap.parse_args(argv)
     out = []
     for p in map(Path, a.ledgers):
         for w in exclusive(windows(p), a.max_overlap):
             system, qs, cfg, dsha = w["key"]
             out.append({"stage": p.name, "system": system, "question_set": qs, "config_hash": cfg,
-                        "dataset_sha256": dsha, "feature": w["feature"], "hardware": HARDWARE,
+                        "dataset_sha256": dsha, "feature": w["feature"], "hardware": a.hardware,
+                        **zone_fields(a.hardware, a.zone),
                         "started": iso(w["start"]), "ended": iso(w["end"]),
                         "allocated_seconds": round(w["end"] - w["start"], 1), "share": 1.0,
                         "evaluations": w["rows"], "attempts": w["attempts"],

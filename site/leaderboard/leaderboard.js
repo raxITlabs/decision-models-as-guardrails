@@ -1,4 +1,4 @@
-/* [gold]rails leaderboard: data rules, kept apart from rendering so they can be tested without a browser.
+/* jev-as-a-guardrails leaderboard: data rules, kept apart from rendering so they can be tested without a browser.
  *
  * Loaded by index.html as a classic script (window.GoldRails) and by the pytest suite through node
  * (module.exports). Nothing here touches the DOM.
@@ -472,7 +472,7 @@
       blockers: (doc.publication_blockers || []).slice(),
       source: { schema: doc.schema, mode: doc.mode, valid_for_publication: doc.valid_for_publication === true },
       benchmark: {
-        name: "[gold]rails",
+        name: "jev-as-a-guardrails",
         dataset_version: versions.length === 1 ? versions[0].slice(0, 12) : `${versions.length} dataset versions`,
         dataset_sha256: versions.length === 1 ? versions[0] : "multiple",
         dataset_url: null,

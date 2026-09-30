@@ -14,16 +14,23 @@ organised into the three parts of the assessment:
 
 Every number is copied, never recomputed. The only new fields are grouping, labels and evidence flags derived from
 fields bias.json already holds. bias.json, the leaderboards and the six-suite overall are untouched.
+
+Run-aware (run_context.py): ``--res`` defaults to ``benchmark/results/<GOLDRAILS_RUN>``; ``--out`` overrides the output.
 """
 from __future__ import annotations
 
+import argparse
 import copy
 import hashlib
 import json
+import sys
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[2]
-RES = REPO / "benchmark" / "results" / "first-benchmark"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import run_context as RC  # noqa: E402
+
+REPO = RC.REPO
+RES = RC.current().results
 SOURCE = RES / "bias.json"
 OUT = RES / "bias-parts.json"
 SCHEMA = "goldrails-bias-parts/0.1"
@@ -180,10 +187,10 @@ def hate_part() -> dict:
                      "The dataset audit records which rows and labels belong to it.")}
 
 
-def build(bias_doc: dict, source_sha256: str) -> dict:
+def build(bias_doc: dict, source_sha256: str, source: Path = None) -> dict:
     bias = bias_doc["bias"]
     return {"meta": {"schema": SCHEMA,
-                     "source": str(SOURCE.relative_to(REPO)),
+                     "source": str(Path(source or SOURCE).resolve().relative_to(REPO)),
                      "source_sha256": source_sha256,
                      "source_schema": bias["schema"],
                      "generated_by": GENERATED_BY,
@@ -198,11 +205,17 @@ def build(bias_doc: dict, source_sha256: str) -> dict:
             "decision_model_bias": decision_part(bias)}
 
 
-def main() -> int:
-    out = build(json.loads(SOURCE.read_text(encoding="utf-8")), sha256(SOURCE))
-    OUT.write_text(json.dumps(out, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--res", default=str(RES), help="results directory (default benchmark/results/<GOLDRAILS_RUN>)")
+    ap.add_argument("--out", help="output file (default <res>/bias-parts.json)")
+    a = ap.parse_args(argv)
+    source = Path(a.res) / "bias.json"
+    out_path = Path(a.out) if a.out else Path(a.res) / "bias-parts.json"
+    out = build(json.loads(source.read_text(encoding="utf-8")), sha256(source), source)
+    out_path.write_text(json.dumps(out, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     gf, db = out["guardrail_fairness"]["systems"], out["decision_model_bias"]["systems"]
-    print(f"{len(gf)} fairness systems, {len(db)} decision-model systems; wrote {OUT.relative_to(REPO)}")
+    print(f"{len(gf)} fairness systems, {len(db)} decision-model systems; wrote {RC.rel(out_path)}")
     return 0
 
 

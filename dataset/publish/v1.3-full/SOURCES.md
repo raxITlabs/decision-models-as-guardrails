@@ -233,7 +233,7 @@ Every source in this release, with the facts copied from its publisher at the pi
 - Redistribution here: **text**
 - Publisher: raxIT Labs (authored)
   - Licence: CC-BY-4.0
-  - Note: Authored for [gold]rails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the author's intended labels (label_basis llm or deterministic), not independent annotation.
+  - Note: Authored for jev-as-a-guardrails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the author's intended labels (label_basis llm or deterministic), not independent annotation.
 - Our adaptation: Authored benign controls for the prompt-attack suite: text that shares surface features with attacks but is a legitimate request. They test the question wording, not the model: ordinary instruction changes, quoted attack examples discussed rather than used, authorised configuration questions, and harmless fiction with attack-like words.
 - Loader: `dataset/goldrails_dataset/sources/f2_controls.py`
 
@@ -242,7 +242,7 @@ Every source in this release, with the facts copied from its publisher at the pi
 - Redistribution here: **text**
 - Publisher: raxIT Labs (authored)
   - Licence: CC-BY-4.0
-  - Note: Authored for [gold]rails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the author's intended labels (label_basis llm or deterministic), not independent annotation.
+  - Note: Authored for jev-as-a-guardrails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the author's intended labels (label_basis llm or deterministic), not independent annotation.
 - Our adaptation: Authored cases for the denied-topics suite, against the topic definitions in benchmark/suites/denied_topics/topics.json.
 - Loader: `dataset/goldrails_dataset/sources/f3_controls.py`
 
@@ -251,7 +251,7 @@ Every source in this release, with the facts copied from its publisher at the pi
 - Redistribution here: **text**
 - Publisher: raxIT Labs (authored)
   - Licence: CC-BY-4.0
-  - Note: Authored for [gold]rails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the author's intended labels (label_basis llm or deterministic), not independent annotation.
+  - Note: Authored for jev-as-a-guardrails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the author's intended labels (label_basis llm or deterministic), not independent annotation.
 - Our adaptation: Test candidates for the denied-topics suite, against the v1 topic definitions in benchmark/suites/denied_topics/topics.json.
 - Loader: `dataset/goldrails_dataset/sources/f3_test_candidates.py`
 
@@ -260,7 +260,7 @@ Every source in this release, with the facts copied from its publisher at the pi
 - Redistribution here: **text**
 - Publisher: raxIT Labs (authored)
   - Licence: CC-BY-4.0
-  - Note: Authored for [gold]rails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the author's intended labels (label_basis llm or deterministic), not independent annotation.
+  - Note: Authored for jev-as-a-guardrails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the author's intended labels (label_basis llm or deterministic), not independent annotation.
 - Our adaptation: Deterministic cases for the word-filters suite, generated from benchmark/suites/word_filters/words.json.
 - Loader: `dataset/goldrails_dataset/sources/f4_words.py`
 
@@ -269,7 +269,7 @@ Every source in this release, with the facts copied from its publisher at the pi
 - Redistribution here: **text**
 - Publisher: raxIT Labs (authored)
   - Licence: CC-BY-4.0
-  - Note: Authored for [gold]rails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the author's intended labels (label_basis llm or deterministic), not independent annotation.
+  - Note: Authored for jev-as-a-guardrails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the author's intended labels (label_basis llm or deterministic), not independent annotation.
 - Our adaptation: Authored negatives for the sensitive-information suite: realistic business and personal text with numbers, dates, prices, product codes, generic roles and organisations, but no information that identifies or reaches a specific person. They exist because AI4Privacy has no PII-free rows. Authored by Claude on 22 September 2026 with the intended label; label_basis "llm" until a person reviews them. Expected "no" on every entity question.
 - Loader: `dataset/goldrails_dataset/sources/f5_controls.py`
 

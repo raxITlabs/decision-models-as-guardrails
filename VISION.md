@@ -1,4 +1,4 @@
-# [gold]rails: vision
+# jev-as-a-guardrails: vision
 
 ## Why
 

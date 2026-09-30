@@ -1,7 +1,8 @@
 // Rendered-page check: paste into the browser console on the served results page (or run through a browser tool).
-// Compares every plotted point and every table score with results.json. Returns {checked, mismatches}.
+// Compares every plotted point and every table score with the results file the page loaded (?results=, else
+// results.json). Returns {checked, mismatches}.
 (async () => {
-  const d = await (await fetch("results.json", { cache: "no-store" })).json();
+  const d = await (await fetch(new URLSearchParams(location.search).get("results") || "results.json", { cache: "no-store" })).json();
   const byId = Object.fromEntries(d.implementations.map((i) => [i.label.replace(/\s*\(.*\)\s*$/, "").replace("Amazon Bedrock Guardrails", "Bedrock"), i.id]));
   const want = (impl, suite) => {
     if (suite === "word_filters_category") {
@@ -15,7 +16,7 @@
   const bad = [];
   let n = 0;
   for (const g of document.querySelectorAll("#grid .pt")) {
-    const m = g.getAttribute("aria-label").match(/^(.*?), .*: score ([\d.]+)$/);
+    const m = g.getAttribute("aria-label").match(/^(.*?), .*: score ([\d.]+)(?:,|$)/);   // the label may go on with the cost
     const impl = byId[m[1]], exp = want(impl, g.dataset.suite);
     n++;
     if (exp === null || f1(exp) !== m[2]) bad.push(`chart ${g.dataset.suite}/${impl}: page ${m[2]}, data ${exp}`);

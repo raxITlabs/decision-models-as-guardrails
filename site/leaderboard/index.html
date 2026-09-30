@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>[gold]rails results</title>
-<meta name="description" content="[gold]rails: decision-model guardrails measured against Amazon Bedrock Guardrails on quality, cost and latency.">
+<title>jev-as-a-guardrails results</title>
+<meta name="description" content="jev-as-a-guardrails: decision-model guardrails measured against Amazon Bedrock Guardrails on quality, cost and latency.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -353,7 +353,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 -->
 <div class="wrap">
   <header class="open">
-    <div class="masthead"><strong>raxIT Labs · [gold]rails</strong><span id="meta">Loading results</span></div>
+    <div class="masthead"><strong>raxIT Labs · jev-as-a-guardrails</strong><span id="meta">Loading results</span></div>
     <h1>Can <span class="dm">decision models</span> stand in for <span class="br">Amazon Bedrock Guardrails</span>?</h1>
     <p class="answer" id="answer"></p>
     <ul class="status" id="status"></ul>
@@ -365,7 +365,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   </main>
 
   <footer>
-    <span id="foot-left">[gold]rails is an open benchmark. Every number traces to a freeze manifest and a raw ledger.</span>
+    <span id="foot-left">jev-as-a-guardrails is an open benchmark. Every number traces to a freeze manifest and a raw ledger.</span>
     <span id="foot-right"></span>
   </footer>
 </div>
@@ -381,6 +381,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 <script>
 "use strict";
 const G = window.GoldRails;
+const BRAND = "jev-as-a-guardrails";   // display name; the static title, masthead and footer above repeat it
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const isNum = G.isNum;
@@ -497,10 +498,22 @@ function answerText() {
 }
 
 /* ---------- opening ---------- */
+/* A run after the first carries a run block: what this run is, the previous run's status and results file, and what
+   changed. Any results file other than results.json is an earlier run kept on file, and says so. */
+const archived = () => resultsPath() !== "results.json";
+function renderRun() {
+  const r = state.data.run;
+  if (archived()) return `<p class="review-note"><strong>An earlier run, kept on file.</strong> This page shows ${esc(state.data.benchmark.name)}. <a href="index.html">See the current results</a>.</p>`;
+  if (!r) return "";
+  const p = r.previous || {};
+  return `<p class="review-note"><strong>${esc(r.label)}.</strong> ${esc(r.summary)}${p.status ? ` ${esc(p.status)}` : ""}${p.results ? ` <a href="index.html?results=${esc(p.results)}">See the ${esc(p.label.toLowerCase())}'s results</a>.` : ""}</p>
+    ${(r.changes || []).length ? `<details class="review-details" id="run-changes"><summary>What changed from the ${esc((p.label || "previous run").toLowerCase())}</summary><ul>${r.changes.map((c) => `<li><strong>${esc(c.title)}.</strong> ${esc(c.text)}</li>`).join("")}</ul></details>` : ""}`;
+}
 function renderOverview() {
   const rows = rowsOf("overall").filter(r => scored(r.entry)).sort((a,b) => b.entry.quality.score - a.entry.quality.score);
   return `<section aria-labelledby="h-overview"><h2 id="h-overview">All models at a glance</h2>
     <p class="sub">Score averages violations caught and benign examples passed; blocking everything scores 50. Overall averages six categories equally. Select a model for details.</p>
+    ${renderRun()}
     ${ownerReviewed() ? `<p class="review-note"><strong>Labels reviewed by the project owner.</strong> ${esc(state.data.label_review.reviewer)} (${esc(state.data.label_review.role)}) reviewed ${esc(state.data.label_review.scope.charAt(0).toLowerCase() + state.data.label_review.scope.slice(1))}. Rows keep their original label origins, shown under <a href="#h-scope">data scope</a>. This is owner review, not independent two-reviewer adjudication.</p>` : state.data.provisional ? `<p class="review-note"><strong>One answer key still needs human review.</strong> Denied-topic labels were assigned by AI. Those labels contribute to every overall score below; the scores may change after review. The model runs are complete. <a href="#h-scope">See label sources</a>.</p>` : ""}
     <div class="tablewrap"><table class="all overview"><thead><tr><th>Implementation / hosting</th><th>Overall score</th><th>95% interval</th><th>Cost per 1,000 category checks</th></tr></thead><tbody>
     ${rows.map(({impl,entry:e}) => {const ci=iv(e)||{};const host=impl.id.includes("bedrock")?"Managed service · AWS":impl.id.includes("jev")&&!impl.id.includes("open")?"Hosted API · TypeSafe":"Self-hosted · GCP GPUs · allocated VM cost";return `<tr class="row" tabindex="0" data-key="${esc(impl.id)}" data-suite="overall"><td class="name">${esc(short(impl))}<span class="hosting">${host}</span></td><td>${fmtScore(e.quality.score)}</td><td>${isNum(ci.low)?ci.low.toFixed(1)+"–"+ci.high.toFixed(1):"Not available"}</td><td>${e.cost&&isNum(e.cost.usd_per_1000)?fmtUSD(e.cost.usd_per_1000):"Not measured"}</td></tr>`;}).join("")}
@@ -509,19 +522,20 @@ function renderOverview() {
 
 function renderOpening() {
   const d = state.data, b = d.benchmark;
-  $("meta").textContent = `First benchmark · ${b.dataset_version ? "Results: " + b.dataset_version.split(" ")[0] + " · " : ""}${b.public_release ? "Public dataset: " + b.public_release + " · " : ""}${b.generated_at || ""}`;
+  $("meta").textContent = `${d.run ? d.run.label : "First benchmark"} · ${b.dataset_version ? "Results: " + b.dataset_version.split(" ")[0] + " · " : ""}${b.public_release ? "Public dataset: " + b.public_release + " · " : ""}${b.generated_at || ""}`;
   $("answer").textContent = "Compare decision models and Amazon Bedrock Guardrails on the same held-out examples. Quality, cost and response time are reported by category, with an equal-weight overall score.";
   const evaluated = SUITES.filter((s) => d.entries.some((e) => e.suite === s && e.status === "evaluated")).length;
   const items = [
     { t: `Contract ${b.evaluation_contract}`, warn: /draft/i.test(b.evaluation_contract || "") },
-    { t: d.placeholder ? "Placeholder values" : (d.blockers || []).length ? "Local results · publication checks pending" : "Contract signed, analysis confirmed", warn: !!(d.placeholder || (d.blockers || []).length) },
+    { t: d.placeholder ? "Placeholder values" : (d.blockers || []).length ? "Local results · publication checks pending" : d.run && d.run.valid_for_publication ? "Contract signed · valid for publication" : "Contract signed, analysis confirmed", warn: !!(d.placeholder || (d.blockers || []).length) },
+    ...(archived() ? [{ t: "Earlier run, kept on file", warn: true }] : []),
     ...(ownerReviewed() ? [{ t: "Labels: project-owner review, not independent", warn: false }] : d.provisional ? [{ t: profProv() ? "Denied topics and profanity: human label review pending" : "Denied topics: human label review pending", warn: true }] : []),
     { t: `Test split, frozen thresholds` },
   ];
   $("status").innerHTML = items.map((x) => `<li class="${x.warn ? "warn" : ""}">${esc(x.t)}</li>`).join("");
 }
 
-/* ---------- chart kit: the approved [gold]rails chart design ----------
+/* ---------- chart kit: the approved chart design ----------
    Jev and Bedrock are the heroes (larger dots, bold two-line labels); every other system is a grey dot with its name.
    Each chart is headed by the question it answers, with the category in a pill. SVGs are drawn at the width they are
    shown, so the type sizes below are real pixels: 14px floor, 16px on wide charts. */
@@ -1236,7 +1250,7 @@ function renderMethod() {
         <details class="review-details"><summary>Review status, publication checks and limitations</summary><ul>${accepted}${blockers}</ul></details>
         ${(d.corrections || []).length ? `<details class="review-details"><summary>Corrections and run history</summary><ul>${d.corrections.map((c) => `<li><strong>${esc(c.title)}.</strong> ${esc(c.detail)}${c.code_commit ? ` Code <code>${esc(c.code_commit)}</code>.` : ""}</li>`).join("")}</ul></details>` : ""}
         <h3>Reproduce</h3>
-        ${d.benchmark.dataset_url ? `<p>Public dataset: <a href="${esc(d.benchmark.dataset_url)}">[gold]rails ${esc(d.benchmark.public_release || "")}</a>. ${esc(d.benchmark.public_note || "")} This page is served locally. Review status and publication checks are listed above.</p>` : ""}
+        ${d.benchmark.dataset_url ? `<p>Public dataset: <a href="${esc(d.benchmark.dataset_url)}">${esc(BRAND)} ${esc(d.benchmark.public_release || "")}</a>. ${esc(d.benchmark.public_note || "")} This page is served locally. Review status and publication checks are listed above.</p>` : ""}
         <p>Results file <a href="${esc(resultsPath())}">${esc(resultsPath())}</a>, dataset ${esc(d.benchmark.dataset_version)} (<code>${esc((d.benchmark.dataset_sha256 || "").slice(0, 12))}</code>), release manifest <code>${esc(d.benchmark.release_manifest || "n/a")}</code>.</p>
       </div>
     </div>
