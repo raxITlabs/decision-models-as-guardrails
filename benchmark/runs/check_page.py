@@ -9,6 +9,10 @@ leaderboard, its freeze manifests, ``bias.json`` (and its three-part view ``bias
 ``bias-audit.json``); for the first run also the corrected five-category view and ``CORRECTIONS.md``, and for a later
 run the first run's leaderboard and the ledgers behind the page's account of what changed. No model calls. Writes
 ``benchmark/results/<run>/page-check.json`` and exits non-zero if any check fails.
+
+The order checks date files by git. Files committed before 2 October 2026, when this repository stopped being an
+export of a private working repository, are dated by that private history through
+``benchmark/history/private-history.json`` (see ``private_history.py``), and only while their bytes are unchanged.
 """
 from __future__ import annotations
 
@@ -23,6 +27,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import run_context as RC  # noqa: E402
+from private_history import History  # noqa: E402
 import site_results  # noqa: E402
 from site_results import IMPL, OVERALL_ID  # noqa: E402  the converter's own system-to-page id table
 ALL_MANIFESTS = ("freeze-manifest.json", "freeze-extension-1.json", "freeze-extension-2.json", "freeze-extension-3.json",
@@ -66,6 +71,11 @@ def load(p: Path):
 
 def git(*args: str) -> str:
     return subprocess.run(["git", *args], cwd=REPO, capture_output=True, text=True, check=False).stdout.strip()
+
+
+# Commit dates of the frozen files: this repository's git, or for files from before 2 October 2026 the archived private
+# history's record (benchmark/runs/private_history.py says when each applies).
+H = History(REPO)
 
 
 PARTS = ["Hate and discrimination detection", "Guardrail fairness diagnostics", "Decision-model bias diagnostics"]
@@ -303,7 +313,7 @@ TEST_LEDGERS = ("test.jsonl", "test-bias.jsonl", "ext-test.jsonl", "ext-test-bia
 
 def _added(path: str) -> tuple[int, str] | None:
     """(commit time, short hash) of the commit that added a file."""
-    out = git("log", "--diff-filter=A", "--format=%ct %h", "--", path).splitlines()
+    out = H.log(path, added=True).splitlines()
     return (int(out[-1].split()[0]), out[-1].split()[1]) if out else None
 
 
@@ -317,7 +327,7 @@ def freeze_order_check(lb: dict) -> None:
     bad = []
     sub_t = {f: _added(f) for f in subs}
     res_t = {f: _added(f) for f in ress}
-    rewritten = [f for f in subs if len(git("log", "--format=%h", "--", f).splitlines()) != 1]
+    rewritten = [f for f in subs if len(H.log(f, fmt="%h").splitlines()) != 1]
     first_test = min(a["at"] for n in TEST_LEDGERS if (RES / n).exists()
                      for line in (RES / n).open(encoding="utf-8") if line.strip() for a in json.loads(line)["attempts"])
     first_test_t = datetime.fromisoformat(first_test.replace("Z", "+00:00")).timestamp()
@@ -333,9 +343,11 @@ def freeze_order_check(lb: dict) -> None:
         bad.append(f"manifests {MANIFESTS}")
     if lb["freeze_manifest"]["records"]["earliest_test_attempt"] != first_test:
         bad.append(f"leaderboard's earliest test attempt {lb['freeze_manifest']['records']['earliest_test_attempt']} vs ledgers {first_test}")
+    if H.stale(subs + ress):
+        bad.append("changed since the private history record: " + ", ".join(H.stale(subs + ress)))
     check(f"every file in {RC.rel(SUB)} committed once, before any ledger in {RC.rel(RES)} and before the first test call",
           not bad, "; ".join(bad) or f"{len(subs)} frozen files, last at {last_sub[1]}; {len(ress)} ledgers, first at "
-                                    f"{first_res[1]}; first test call {first_test}")
+                                    f"{first_res[1]}; first test call {first_test}" + H.note(subs + ress))
 
 
 def _grounding(run: str, ledgers: tuple) -> dict:
@@ -518,8 +530,8 @@ def main(argv=None) -> int:
     else:
         order = []
         for manifest, ledger in (("freeze-extension-1.json", "ext-test.jsonl"), ("freeze-extension-2.json", "ext-test.jsonl")):
-            m = git("log", "--diff-filter=A", "--format=%ct %h", "--", f"benchmark/subsets/first-benchmark/{manifest}").splitlines()
-            rows = git("log", "--reverse", "--format=%ct %h", "--", f"benchmark/results/first-benchmark/{ledger}").splitlines()
+            m = H.log(f"benchmark/subsets/first-benchmark/{manifest}", added=True).splitlines()
+            rows = H.log(f"benchmark/results/first-benchmark/{ledger}", reverse=True).splitlines()
             order.append((manifest, m[-1] if m else None, rows))
         bad = []
         ext1 = order[0][1]
@@ -531,28 +543,36 @@ def main(argv=None) -> int:
         if not ext2 or not later:
             bad.append(f"extension 2 {ext2}: no ext-test commit after it (Bedrock rows)")
         if (SUB / "freeze-extension-3.json").exists():
-            m3 = git("log", "--diff-filter=A", "--format=%ct %h", "--", "benchmark/subsets/first-benchmark/freeze-extension-3.json").splitlines()
-            t3 = git("log", "--diff-filter=A", "--format=%ct %h", "--", "benchmark/results/first-benchmark/pii-v12-test.jsonl").splitlines()
+            m3 = H.log("benchmark/subsets/first-benchmark/freeze-extension-3.json", added=True).splitlines()
+            t3 = H.log("benchmark/results/first-benchmark/pii-v12-test.jsonl", added=True).splitlines()
             if not m3 or not t3 or int(m3[-1].split()[0]) > int(t3[-1].split()[0]):
                 bad.append(f"extension 3 {m3[-1] if m3 else None} not before the PII test ledger {t3[-1] if t3 else None}")
         if (SUB / "freeze-extension-4.json").exists():
-            m4 = git("log", "--diff-filter=A", "--format=%ct %h", "--", "benchmark/subsets/first-benchmark/freeze-extension-4.json").splitlines()
-            t4 = git("log", "--diff-filter=A", "--format=%ct %h", "--", "benchmark/results/first-benchmark/prof-v13-test.jsonl").splitlines()
+            m4 = H.log("benchmark/subsets/first-benchmark/freeze-extension-4.json", added=True).splitlines()
+            t4 = H.log("benchmark/results/first-benchmark/prof-v13-test.jsonl", added=True).splitlines()
             if not m4 or not t4 or int(m4[-1].split()[0]) > int(t4[-1].split()[0]):
                 bad.append(f"extension 4 {m4[-1] if m4 else None} not before the profanity test ledger {t4[-1] if t4 else None}")
+        dated = [f"benchmark/subsets/first-benchmark/{m}" for m in ("freeze-extension-1.json", "freeze-extension-2.json",
+                                                                    "freeze-extension-3.json", "freeze-extension-4.json")] + \
+            [f"benchmark/results/first-benchmark/{t}" for t in ("ext-test.jsonl", "pii-v12-test.jsonl", "prof-v13-test.jsonl")]
+        if H.stale(dated):
+            bad.append("changed since the private history record: " + ", ".join(H.stale(dated)))
         check("extension manifests committed before the test rows they govern", not bad,
-              "; ".join(bad) or f"ext1 {ext1.split()[1]} before {first_ext_test.split()[1]}; ext2 {ext2.split()[1]} before {later[0].split()[1]}")
+              "; ".join(bad) or f"ext1 {ext1.split()[1]} before {first_ext_test.split()[1]}; ext2 {ext2.split()[1]} before {later[0].split()[1]}"
+              + H.note(dated))
 
     # 3b. v1.3: the implementations file that changed the profanity question set predates every profanity call.
     if v13:
         from datetime import datetime, timezone
-        ct = git("log", "--diff-filter=A", "--format=%ct %h", "--", "benchmark/subsets/first-benchmark/implementations-v1.3.json").split()
+        impl = "benchmark/subsets/first-benchmark/implementations-v1.3.json"
+        ct = H.log(impl, added=True).split()
         first = min(a["at"] for n in ("prof-v13-tune", "prof-v13-test") for line in (RES / f"{n}.jsonl").open(encoding="utf-8")
                     for a in json.loads(line)["attempts"])
         first_t = datetime.fromisoformat(first.replace("Z", "+00:00")).timestamp()
         check("implementations-v1.3 committed before the first profanity call (tuning or test)",
-              bool(ct) and int(ct[0]) < first_t,
-              f"{ct[1] if ct else None} at {datetime.fromtimestamp(int(ct[0]), timezone.utc).isoformat() if ct else None}; first call {first}")
+              bool(ct) and int(ct[0]) < first_t and not H.stale([impl]),
+              f"{ct[1] if ct else None} at {datetime.fromtimestamp(int(ct[0]), timezone.utc).isoformat() if ct else None}; first call {first}"
+              + ("; changed since the private history record" if H.stale([impl]) else H.note([impl])))
 
     # 3c. v1.3: the extension-specific freeze validation passed on this exact leaderboard.
     if v13:
@@ -756,13 +776,15 @@ def main(argv=None) -> int:
     own = [c for c in site.get("corrections") or [] if c not in hist]
     bad = [c["title"] for c in hist if c.get("code_commit") and c["code_commit"] not in log]
     bad += [c["title"] for c in own if not c.get("code_commit")
-            or subprocess.run(["git", "merge-base", "--is-ancestor", c["code_commit"], "HEAD"], cwd=REPO).returncode]
+            or not H.in_history(c["code_commit"])]
     commits = set(re.findall(r"\b[0-9a-f]{7}\b", log))
-    missing = [c for c in commits if not git("cat-file", "-t", c)]
+    missing = [c for c in commits if not H.commit_exists(c)]
     check("every page correction's commit is in CORRECTIONS.md" + ("" if CTX.is_first else
           " (first-run history), and this run's own entries name a commit in its history"), not bad,
-          ", ".join(bad) or f"{len(site.get('corrections') or [])} corrections" + ("" if CTX.is_first else f", {len(own)} of this run"))
-    check("every commit named in CORRECTIONS.md exists", not missing, ", ".join(missing) or f"{len(commits)} commits")
+          ", ".join(bad) or f"{len(site.get('corrections') or [])} corrections" + ("" if CTX.is_first else f", {len(own)} of this run")
+          + H.note(commits=[c["code_commit"] for c in own if c.get("code_commit")]))
+    check("every commit named in CORRECTIONS.md exists", not missing,
+          ", ".join(missing) or f"{len(commits)} commits" + H.note(commits=commits))
 
     # 9. Post-hoc views match their computed file, and their rules were committed before the views.
     sens_p = RES / "sensitivity-2026-09-24.json"
@@ -771,11 +793,14 @@ def main(argv=None) -> int:
         page = {v["id"]: v for v in (site.get("sensitivity_views") or {}).get("views", [])}
         bad = [n for n, v in sens["views"].items() if not (v12 and n.startswith("pii-"))
                if n not in page or any(not close(page[n]["scores"].get(k), x["score"], 0.01) for k, x in v["suite"].items())]
-        rules_t = git("log", "--diff-filter=A", "--format=%ct", "--", "benchmark/subsets/first-benchmark/sensitivity-rules-2026-09-24.json")
-        views_t = git("log", "--diff-filter=A", "--format=%ct", "--", "benchmark/results/first-benchmark/sensitivity-2026-09-24.json")
+        dated = ["benchmark/subsets/first-benchmark/sensitivity-rules-2026-09-24.json",
+                 "benchmark/results/first-benchmark/sensitivity-2026-09-24.json"]
+        rules_t = H.log(dated[0], fmt="%ct", added=True)
+        views_t = H.log(dated[1], fmt="%ct", added=True)
         ordered = bool(rules_t) and (not views_t or int(rules_t.split()[-1]) < int(views_t.split()[-1]))
+        bad += [f"changed since the private history record: {p}" for p in H.stale(dated)]
         check("post-hoc views on the page match sensitivity-2026-09-24.json, with rules committed first", not bad and ordered,
-              "; ".join(bad) or f"{len(sens['views'])} views")
+              "; ".join(bad) or f"{len(sens['views'])} views" + H.note(dated))
 
     elif not CTX.is_first:
         claims = [q["suite"] for q in site.get("data_quality") or [] if "shown under the chart" in q.get("limits", "")]
