@@ -19,6 +19,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import time
 from typing import Any
 
@@ -59,6 +60,23 @@ def _mapping_sha() -> str:
 # the mapping tables are hashed in, so editing a category map is a new arm without anyone remembering to bump.
 # 2 (23 September 2026): role "tool" is sent as a tagged user message instead of an assistant turn.
 ADAPTER = {"name": "bedrock-checks", "version": f"2+map-{_mapping_sha()}"}
+
+
+# The AWS account id inside an ARN (``arn:aws:bedrock:us-east-1:<12 digits>:guardrail/...``). Responses and error
+# messages go into the ledgers verbatim, so the account is masked before they are kept. Only ``raw`` and ``error`` are
+# masked: the identity and the config hash never held an ARN, so frozen arms keep their hashes.
+ARN_ACCOUNT = re.compile(r"(arn:aws[a-z-]*:[a-z0-9-]*:[a-z0-9-]*:)[0-9]{12}(?=:)")
+
+
+def mask_account_ids(x):
+    """A copy of ``x`` (dict, list or str, nested) with the account id in every ARN replaced by ``<account>``."""
+    if isinstance(x, str):
+        return ARN_ACCOUNT.sub(r"\1<account>", x)
+    if isinstance(x, dict):
+        return {k: mask_account_ids(v) for k, v in x.items()}
+    if isinstance(x, (list, tuple)):
+        return [mask_account_ids(v) for v in x]
+    return x
 
 
 def no_retry_config():
@@ -170,10 +188,11 @@ class BedrockChecksClient:
         try:
             resp = self.client.invoke_guardrail_checks(messages=messages_of(state), checks=checks)
         except Exception as e:  # recorded, never retried
-            return SystemOneCall(system=self.system, ok=False, model=self.model, error=f"{type(e).__name__}: {e}",
-                                 latency_s=time.perf_counter() - t0)
+            return SystemOneCall(system=self.system, ok=False, model=self.model,
+                                 error=f"{type(e).__name__}: {mask_account_ids(str(e))}", latency_s=time.perf_counter() - t0)
         dt = time.perf_counter() - t0
         resp.pop("ResponseMetadata", None)
+        resp = mask_account_ids(resp)
         usage = {k: v.get("textUnits") for k, v in (resp.get("usage") or {}).items()}
         return SystemOneCall(system=self.system, ok=True, model=self.model, answers=answers_of(resp.get("results") or {}, mapping, checks),
                              usage={"input_tokens": None, "text_units": usage}, latency_s=dt,

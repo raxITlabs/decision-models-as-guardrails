@@ -21,6 +21,7 @@ import time
 from pathlib import Path
 from typing import Any
 
+from .bedrock import mask_account_ids
 from .question_sets import SEP
 from .systemone import UNTRUSTED_ROLE, SystemOneCall, unrepresentable, untrusted
 
@@ -114,9 +115,11 @@ class BedrockApplyClient:
             resp = self.client.apply_guardrail(guardrailIdentifier=self.guardrail_id, guardrailVersion=self.version,
                                                source=source, content=content, outputScope="FULL")
         except Exception as e:  # recorded, never retried
-            return SystemOneCall(system=self.system, ok=False, model=self.model, error=f"{type(e).__name__}: {e}", latency_s=time.perf_counter() - t0)
+            return SystemOneCall(system=self.system, ok=False, model=self.model,
+                                 error=f"{type(e).__name__}: {mask_account_ids(str(e))}", latency_s=time.perf_counter() - t0)
         dt = time.perf_counter() - t0
         resp.pop("ResponseMetadata", None)
+        resp = mask_account_ids(resp)   # the guardrail ARN carries the account id; ledgers keep <account> instead
         answers, unanswered, extra = self.answers_of(resp, questions)
         return SystemOneCall(system=self.system, ok=True, model=self.model, answers=answers, usage={"input_tokens": None, **(resp.get("usage") or {})},
                              latency_s=dt, raw={**resp, "source": source, "unanswered": unanswered, **extra})
