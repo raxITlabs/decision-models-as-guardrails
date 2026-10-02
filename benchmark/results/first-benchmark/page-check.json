@@ -1,5 +1,5 @@
 {
- "checked_at_commit": "3e2fa3b",
+ "checked_at_commit": "d639246",
  "results": "site/leaderboard/runs/first-benchmark.json",
  "frozen": "benchmark/results/first-benchmark/leaderboard-final.json",
  "passed": 33,
@@ -23,12 +23,12 @@
   {
    "check": "extension manifests committed before the test rows they govern",
    "ok": true,
-   "detail": "ext1 3c88be6 before 9186507; ext2 a08a3b3 before 9c3e8e8"
+   "detail": "ext1 3c88be6 before 9186507; ext2 a08a3b3 before 9c3e8e8; dated by benchmark/history/private-history.json (private history, jev-powered-guardrails-archive-2026-10-02.bundle)"
   },
   {
    "check": "implementations-v1.3 committed before the first profanity call (tuning or test)",
    "ok": true,
-   "detail": "bb064b1 at 2026-09-28T07:23:30+00:00; first call 2026-09-28T07:23:41Z"
+   "detail": "bb064b1 at 2026-09-28T07:23:30+00:00; first call 2026-09-28T07:23:41Z; dated by benchmark/history/private-history.json (private history, jev-powered-guardrails-archive-2026-10-02.bundle)"
   },
   {
    "check": "extension-specific freeze validation passed for every arm of this leaderboard",
@@ -128,12 +128,12 @@
   {
    "check": "every commit named in CORRECTIONS.md exists",
    "ok": true,
-   "detail": "29 commits"
+   "detail": "29 commits; dated by benchmark/history/private-history.json (private history, jev-powered-guardrails-archive-2026-10-02.bundle)"
   },
   {
    "check": "post-hoc views on the page match sensitivity-2026-09-24.json, with rules committed first",
    "ok": true,
-   "detail": "5 views"
+   "detail": "5 views; dated by benchmark/history/private-history.json (private history, jev-powered-guardrails-archive-2026-10-02.bundle)"
   },
   {
    "check": "page carries every open evaluator blocker, owner-accepted ones only with a confirmed approval, and says not for publication while any stay open",

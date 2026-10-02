@@ -1,5 +1,5 @@
 {
- "checked_at_commit": "3e2fa3b",
+ "checked_at_commit": "d639246",
  "results": "site/leaderboard/results.json",
  "frozen": "benchmark/results/second-benchmark/leaderboard-final.json",
  "passed": 36,
@@ -23,12 +23,12 @@
   {
    "check": "every file in benchmark/subsets/second-benchmark committed once, before any ledger in benchmark/results/second-benchmark and before the first test call",
    "ok": true,
-   "detail": "9 frozen files, last at bfbcc38; 33 ledgers, first at c1a596c; first test call 2026-09-30T06:13:08Z"
+   "detail": "9 frozen files, last at bfbcc38; 33 ledgers, first at c1a596c; first test call 2026-09-30T06:13:08Z; dated by benchmark/history/private-history.json (private history, jev-powered-guardrails-archive-2026-10-02.bundle)"
   },
   {
    "check": "implementations-v1.3 committed before the first profanity call (tuning or test)",
    "ok": true,
-   "detail": "bb064b1 at 2026-09-28T07:23:30+00:00; first call 2026-09-30T06:08:46Z"
+   "detail": "bb064b1 at 2026-09-28T07:23:30+00:00; first call 2026-09-30T06:08:46Z; dated by benchmark/history/private-history.json (private history, jev-powered-guardrails-archive-2026-10-02.bundle)"
   },
   {
    "check": "extension-specific freeze validation passed for every arm of this leaderboard",
@@ -138,12 +138,12 @@
   {
    "check": "every page correction's commit is in CORRECTIONS.md (first-run history), and this run's own entries name a commit in its history",
    "ok": true,
-   "detail": "14 corrections, 1 of this run"
+   "detail": "14 corrections, 1 of this run; dated by benchmark/history/private-history.json (private history, jev-powered-guardrails-archive-2026-10-02.bundle)"
   },
   {
    "check": "every commit named in CORRECTIONS.md exists",
    "ok": true,
-   "detail": "29 commits"
+   "detail": "29 commits; dated by benchmark/history/private-history.json (private history, jev-powered-guardrails-archive-2026-10-02.bundle)"
   },
   {
    "check": "no post-hoc views on file for this run, and no text says one is shown",
