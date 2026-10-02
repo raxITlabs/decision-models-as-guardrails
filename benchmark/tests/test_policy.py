@@ -165,7 +165,7 @@ def test_unverifiable_rows_are_never_pooled_with_verified_rows():
 
 
 @pytest.mark.skipif(not (REPO / "benchmark/results/pilot-cloud-pass.jsonl").exists(),
-                    reason="checks the private repository's pilot evidence, which the public export leaves out")
+                    reason="checks the committed pilot ledger, benchmark/results/pilot-cloud-pass.jsonl, which is missing")
 def test_existing_ledgers_report_their_earliest_rows_as_origin_unverifiable():
     """Read-only check against committed evidence: the word-filter smoke ledger's first 21 rows name a dataset version
     that is in no commit, and the pilot ledger predates dataset tags altogether."""

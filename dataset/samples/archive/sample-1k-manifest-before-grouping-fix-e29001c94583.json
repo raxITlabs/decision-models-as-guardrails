@@ -1,0 +1,75 @@
+{
+  "protocol": "gold-rails::pilot",
+  "files": [
+    {
+      "path": "F1.test.jsonl",
+      "feature": "F1",
+      "split": "test",
+      "n": 579,
+      "sha256": "e29001c9458372b8ce499ca7ce589e96cf52c8d4ea78d26803a2704f38372213"
+    },
+    {
+      "path": "F1.tune.jsonl",
+      "feature": "F1",
+      "split": "tune",
+      "n": 121,
+      "sha256": "d3217e76a8b185b7f42b2513157c504693837ff73dfc11c8a8311943ab381681"
+    },
+    {
+      "path": "F2.test.jsonl",
+      "feature": "F2",
+      "split": "test",
+      "n": 318,
+      "sha256": "b68c47aa0ce6e3fec16a753179198a7d1d2e34ce556f151219a4b54db688f934"
+    },
+    {
+      "path": "F2.tune.jsonl",
+      "feature": "F2",
+      "split": "tune",
+      "n": 78,
+      "sha256": "e5ef48fc9a5ba7bcb5bfe72a1ad84a9522c6a9e364a38f8961f1c47112ccab4f"
+    },
+    {
+      "path": "F3.tune.jsonl",
+      "feature": "F3",
+      "split": "tune",
+      "n": 28,
+      "sha256": "0bb8e982b989c277b38f4fec4dfd217d153fff21dc3763b19bb6c2a8467a1d94"
+    },
+    {
+      "path": "F4.tune.jsonl",
+      "feature": "F4",
+      "split": "tune",
+      "n": 41,
+      "sha256": "a609fc4da6f308477c71b1709e7b55f7f9aa4b16b5ba4c8288c9cf3310180012"
+    },
+    {
+      "path": "F5.test.jsonl",
+      "feature": "F5",
+      "split": "test",
+      "n": 152,
+      "sha256": "a1c4d68f848ed94d116a4147e95eca3d644fb690caf0a1e592f66925646f92d9"
+    },
+    {
+      "path": "F5.tune.jsonl",
+      "feature": "F5",
+      "split": "tune",
+      "n": 48,
+      "sha256": "5a08ebefb6761bd70ef4a09de9abde9402819515a43ceb45d206b828718a2bfe"
+    },
+    {
+      "path": "F6.test.jsonl",
+      "feature": "F6",
+      "split": "test",
+      "n": 170,
+      "sha256": "7053e6110a576f6441847e2186c77e5a2a775ab96ab9f54ce7d685ce94d5b896"
+    },
+    {
+      "path": "F6.tune.jsonl",
+      "feature": "F6",
+      "split": "tune",
+      "n": 30,
+      "sha256": "73edc279f9d1c6b890c85150e2ec251568383547adc3f1df4fd53981348c1bc2"
+    }
+  ]
+}

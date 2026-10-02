@@ -5,9 +5,9 @@ import pytest
 from goldrails_bench.data import load_rows
 
 REPO = Path(__file__).resolve().parents[2]
-# the pilot samples hold AI4Privacy text, so the public export leaves them out
+# dataset/samples holds the pilot and the 1k sample, except sample-1k's F5 (PII) files: those held AI4Privacy text
 needs_samples = pytest.mark.skipif(not (REPO / "dataset/samples/sample-1k").exists(),
-                                   reason="dataset/samples is not in the public repository")
+                                   reason="dataset/samples is missing")
 
 
 @needs_samples
