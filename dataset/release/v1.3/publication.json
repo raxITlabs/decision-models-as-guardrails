@@ -63,14 +63,28 @@
     "exported_from_private_commit": "23575a6e855e",
     "what": "bias reported as three parts (hate detection, guardrail fairness diagnostics, decision-model bias diagnostics); bias audit; owner decisions",
     "checks": "export scan 0 problems over 513 files; 316 tests pass and 4 skip from a clean install; Pages built 300f8f5"
+   },
+   {
+    "commit": "89cf766a8764123806828f4fb41400fc76ca2964",
+    "date": "2026-09-30",
+    "exported_from_private_commit": "c58ce56703e6",
+    "what": "second benchmark run (valid for publication) as the current results; site and primer switched to it; renamed jev-as-a-guardrails",
+    "checks": "export scan 0 problems over 571 files; 353 tests pass and 1 skips; page checks 36/36 (second run) and 33/33 (first run); Pages built 89cf766"
    }
   ],
   "pages": {
-   "url": "https://raxitlabs.github.io/goldrails/",
+   "url": "https://raxitlabs.github.io/jev-as-a-guardrails/",
    "source": "main /docs, no Jekyll",
    "enabled": "2026-09-29, owner request",
-   "primer": "https://raxitlabs.github.io/goldrails/teach/gold-rails-primer.html",
+   "primer": "https://raxitlabs.github.io/jev-as-a-guardrails/teach/gold-rails-primer.html",
    "not_served": "site/leaderboard/ (the results site stays local)"
+  },
+  "renamed": {
+   "date": "2026-09-30",
+   "from": "https://github.com/raxITlabs/goldrails",
+   "to": "https://github.com/raxITlabs/jev-as-a-guardrails",
+   "pages": "https://raxitlabs.github.io/jev-as-a-guardrails/ (the old Pages URL does not redirect)",
+   "authorised_by": "the project owner in chat, 30 September 2026: rename everything, including the repository"
   }
  },
  "open": [],
@@ -92,6 +106,21 @@
    "what": "bias described as three parts (hate and discrimination detection, guardrail fairness diagnostics, decision-model bias diagnostics); KNOWN_ISSUES.md and CHANGELOG.md updated",
    "data": "unchanged: all 15 data files byte-identical to hub main before upload (checked by download)",
    "authorised_by": "the project owner in chat, 29 September 2026: update the Hugging Face card too"
+  },
+  {
+   "hub_commit": "33f381985bddfc25f0de779e56883d795f11e8e2",
+   "date": "2026-09-30",
+   "parent": "c79de801001c74fa9f815eb3a038620053763b38",
+   "what": "name jev-as-a-guardrails on the card, SOURCES.md, sources.json and RECONSTRUCT.md; links to the renamed code repository and dataset id; CHANGELOG.md entry; staging-report code_commit",
+   "data": "unchanged: all 29 hub files byte-identical to dataset/publish/v1.3-full after upload (checked by download)",
+   "authorised_by": "the project owner in chat, 30 September 2026: rename everything, including the Hugging Face dataset"
   }
- ]
+ ],
+ "dataset_renamed": {
+  "date": "2026-09-30",
+  "from": "raxITLabs/goldrails",
+  "to": "raxITLabs/jev-as-a-guardrails",
+  "by": "the project owner in the Hugging Face UI",
+  "redirect": "the old dataset URL answers 307 to the new id (checked 2026-09-30)"
+ }
 }

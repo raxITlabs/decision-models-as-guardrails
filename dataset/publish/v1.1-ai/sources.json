@@ -1,0 +1,647 @@
+[
+ {
+  "source": "aegis2",
+  "mode": "text",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "NVIDIA Aegis AI Content Safety Dataset 2.0, test split. CC-BY-4.0. Prompts are human-labelled; responses are labelled by humans or an LLM jury (recorded in label_basis). Rows whose prompt is REDACTED are skipped. Response rows carry their prompt as context, because a reply is only judgeable next to the request that caused it.",
+  "loader": "dataset/goldrails_dataset/sources/aegis2.py",
+  "pinned": {
+   "revision": "d86bb8bedff51d25ac834ab7838f1cc61acb7a2c",
+   "url": "https://huggingface.co/datasets/nvidia/Aegis-AI-Content-Safety-Dataset-2.0"
+  },
+  "upstream": [
+   {
+    "key": "aegis2",
+    "publisher": "NVIDIA (card: \"Curated by: NeMo Guardrails team, Nvidia.\")",
+    "original_url": "https://huggingface.co/datasets/nvidia/Aegis-AI-Content-Safety-Dataset-2.0",
+    "mirror_url": null,
+    "revision": "d86bb8bedff51d25ac834ab7838f1cc61acb7a2c",
+    "licence_id": "CC-BY-4.0",
+    "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+    "copyright_notice": null,
+    "notice_required": true,
+    "restrictions": "Card: \"The data are intended for research purposes, especially research that can make models less harmful.\" \"These data are not intended for training dialogue agents as this will likely lead to harmful model behavior.\" \"Non-Identification: Users of this data agree to not attempt to determine the identity of individuals in this dataset.\" The ~358 Suicide Detection (Kaggle) samples are not distributed; their prompts read \"REDACTED\".",
+    "requested_citation": "@inproceedings{ghosh-etal-2025-aegis2,\n    title = \"{AEGIS}2.0: A Diverse {AI} Safety Dataset and Risks Taxonomy for Alignment of {LLM} Guardrails\",\n    author = \"Ghosh, Shaona and Varshney, Prasoon and Sreedhar, Makesh Narsimhan and Padmakumar, Aishwarya and Rebedea, Traian and Varghese, Jibin Rajan and Parisien, Christopher\",\n    editor = \"Chiruzzo, Luis and Ritter, Alan and Wang, Lu\",\n    booktitle = \"Proceedings of the 2025 Conference of the Nations of the Americas Chapter of the Association for Computational Linguistics: Human Language Technologies (Volume 1: Long Papers)\",\n    month = apr,\n    year = \"2025\",\n    address = \"Albuquerque, New Mexico\",\n    publisher = \"Association for Computational Linguistics\",\n    url = \"https://aclanthology.org/2025.naacl-long.306/\",\n    doi = \"10.18653/v1/2025.naacl-long.306\",\n    pages = \"5992--6026\",\n    ISBN = \"979-8-89176-189-6\"\n}",
+    "fetched_urls": [
+     "https://huggingface.co/datasets/nvidia/Aegis-AI-Content-Safety-Dataset-2.0/raw/d86bb8bedff51d25ac834ab7838f1cc61acb7a2c/README.md",
+     "https://huggingface.co/datasets/nvidia/Aegis-AI-Content-Safety-Dataset-2.0/raw/d86bb8bedff51d25ac834ab7838f1cc61acb7a2c/LICENSE (404)"
+    ],
+    "gaps": "No LICENSE file at this revision (repo tree: .gitattributes, README.md, json splits); licence taken from card YAML 'license: cc-by-4.0' and card text 'License: CC-BY-4.0'. No copyright line anywhere. Card says prompts come from Anthropic HH-RLHF, Do-Anything-Now (verazuo/jailbreak_llms) and AI-assisted Red-Teaming (Kaggle), and responses from Mistral-7B-v0.1; the licences of those upstream sources are not stated on the card."
+   }
+  ]
+ },
+ {
+  "source": "ai4privacy",
+  "mode": "ids_only",
+  "withheld": true,
+  "withheld_reason": "The AI4Privacy licence separates research use from redistribution: making the dataset or derived annotations available needs written permission, even for a non-commercial project, and its research terms mention a licensing process. Ids-only rows still carry its span annotations and derived labels, so they are withheld while we clarify both with AI4Privacy (request drafted in docs/requests/ai4privacy-permission-request.md). The benchmark results that used these rows are unchanged and stay qualified.",
+  "adaptation": "AI4Privacy pii-masking-300k, English rows: synthetic texts with labelled PII spans and a masked target text.",
+  "loader": "dataset/goldrails_dataset/sources/ai4privacy.py",
+  "pinned": {
+   "revision": "c8c77895a005822682b66ab547fc0422579bc1d3",
+   "repo": "ai4privacy/pii-masking-300k"
+  },
+  "upstream": [
+   {
+    "key": "ai4privacy",
+    "publisher": "Ai4Privacy (card: \"AI4Privacy is a project affiliated with Ai Suisse SA\")",
+    "original_url": "https://huggingface.co/datasets/ai4privacy/pii-masking-300k",
+    "mirror_url": null,
+    "revision": "c8c77895a005822682b66ab547fc0422579bc1d3",
+    "licence_id": "LicenseRef-AI4Privacy-Dataset-and-Derivative-Products-License (card YAML: license: other, license_name: license.md)",
+    "licence_url": "https://huggingface.co/datasets/ai4privacy/pii-masking-300k/blob/c8c77895a005822682b66ab547fc0422579bc1d3/LICENSE.md",
+    "copyright_notice": "Copyright Ai4Privacy 2024. All rights reserved.",
+    "notice_required": true,
+    "restrictions": "LICENSE.md: access \"granted exclusively for academic research and non-commercial purposes\", AI4Privacy must be acknowledged in scholarly output; \"To utilize this dataset beyond these conditions, including any form of redistribution, uploading to databases, sharing through any medium, or the creation and dissemination of derivative works, an explicit written license must be obtained from AI4Privacy.\" Commercial use needs contact with licensing@ai4privacy.com. States the dataset is watermarked and unauthorized use is traceable.",
+    "requested_citation": null,
+    "fetched_urls": [
+     "https://huggingface.co/datasets/ai4privacy/pii-masking-300k/raw/c8c77895a005822682b66ab547fc0422579bc1d3/README.md",
+     "https://huggingface.co/datasets/ai4privacy/pii-masking-300k/raw/c8c77895a005822682b66ab547fc0422579bc1d3/LICENSE.md"
+    ],
+    "gaps": "Proprietary licence, not MIT/BSD/Apache; copyright_notice holds the licence's own verbatim copyright line. Card says 'Academic use is encouraged with proper citation' but gives no citation text or BibTeX. As written, the licence does not allow redistribution or derivative works without a written licence from AI4Privacy, which bears directly on any public release that includes these rows."
+   }
+  ]
+ },
+ {
+  "source": "ailuminate_demo",
+  "mode": "text",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "MLCommons AILuminate v1.0 demo prompt set (en_US), 1,200 human-written prompts across the 12 hazards. CC-BY-4.0. All rows are hazardous by construction; the benign side of F1 input comes from other sources.",
+  "loader": "dataset/goldrails_dataset/sources/ailuminate_demo.py",
+  "pinned": {
+   "commit": "769cc2be9d20c8d4fb26ce53b68865ed41dfb8e2",
+   "url": "https://raw.githubusercontent.com/mlcommons/ailuminate/769cc2be9d20c8d4fb26ce53b68865ed41dfb8e2/airr_official_1.0_demo_en_us_prompt_set_release.csv"
+  },
+  "upstream": [
+   {
+    "key": "ailuminate_demo",
+    "publisher": "MLCommons (AI Risk & Reliability working group)",
+    "original_url": "https://github.com/mlcommons/ailuminate",
+    "mirror_url": null,
+    "revision": "769cc2be9d20c8d4fb26ce53b68865ed41dfb8e2",
+    "licence_id": "CC-BY-4.0 (data, per README); repo LICENSE.md is Apache-2.0",
+    "licence_url": "https://creativecommons.org/licenses/by/4.0/deed.en",
+    "copyright_notice": null,
+    "notice_required": true,
+    "restrictions": null,
+    "requested_citation": null,
+    "fetched_urls": [
+     "https://raw.githubusercontent.com/mlcommons/ailuminate/769cc2be9d20c8d4fb26ce53b68865ed41dfb8e2/README.md",
+     "https://raw.githubusercontent.com/mlcommons/ailuminate/769cc2be9d20c8d4fb26ce53b68865ed41dfb8e2/LICENSE (404)",
+     "https://raw.githubusercontent.com/mlcommons/ailuminate/769cc2be9d20c8d4fb26ce53b68865ed41dfb8e2/LICENSE.md"
+    ],
+    "gaps": "The licence file is LICENSE.md, not LICENSE. It holds the Apache License 2.0 text with no copyright line and no filled-in appendix. The README's License section reads: \"MLCommons licenses this data under a [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/deed.en). Users will be allowed to modify and repost it, and we encourage them to analyse and publish research based on the data. The dataset is provided \\\"AS IS\\\" without any warranty, express or implied. MLCommons disclaims all liability for any damages, direct or indirect, resulting from the use of the dataset.\". The README has a 'Papers' section listing Vidgen et al. 2024 (arXiv 2404.12241) and Ghosh et al. 2025 (arXiv 2503.05731), but it does not ask users to cite them and gives no BibTeX, so requested_citation is null."
+   }
+  ]
+ },
+ {
+  "source": "bbq",
+  "mode": "text",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "BBQ, the Bias Benchmark for QA (Parrish et al., Findings of ACL 2022), for F7 B3. CC-BY-4.0.",
+  "loader": "dataset/goldrails_dataset/sources/bbq.py",
+  "pinned": {
+   "commit": "bea11bd97d79217245b5871acd247b9d6eb24598",
+   "url": "https://github.com/nyu-mll/BBQ/tree/bea11bd97d79217245b5871acd247b9d6eb24598",
+   "raw": "https://raw.githubusercontent.com/nyu-mll/BBQ/{commit}/{path}"
+  },
+  "upstream": [
+   {
+    "key": "bbq",
+    "publisher": "NYU Machine Learning for Language (nyu-mll); authors Parrish, Chen, Nangia, Padmakumar, Phang, Thompson, Htut, Bowman",
+    "original_url": "https://github.com/nyu-mll/BBQ",
+    "mirror_url": null,
+    "revision": "bea11bd97d79217245b5871acd247b9d6eb24598",
+    "licence_id": "CC-BY-4.0",
+    "licence_url": "https://creativecommons.org/licenses/by/4.0/legalcode",
+    "copyright_notice": null,
+    "notice_required": true,
+    "restrictions": null,
+    "requested_citation": null,
+    "fetched_urls": [
+     "https://raw.githubusercontent.com/nyu-mll/BBQ/bea11bd97d79217245b5871acd247b9d6eb24598/README.md",
+     "https://raw.githubusercontent.com/nyu-mll/BBQ/bea11bd97d79217245b5871acd247b9d6eb24598/LICENSE"
+    ],
+    "gaps": "LICENSE is the full 'Attribution 4.0 International' Creative Commons text with no copyright line. The README gives no BibTeX and no request to cite. It points to the paper 'BBQ: A Hand-Built Bias Benchmark for Question Answering' (Findings of ACL 2022, https://aclanthology.org/2022.findings-acl.165/)."
+   }
+  ]
+ },
+ {
+  "source": "bias_pairs_reviewed",
+  "mode": "ids_only",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "B2 counterfactual pairs that passed review, as scorable F7 rows: human review in v1.1, single-AI reference review (label_basis llm, review_status ai_reviewed) in the provisional v1.1-ai.",
+  "loader": "dataset/goldrails_dataset/sources/bias_pairs_reviewed.py",
+  "pinned": {},
+  "upstream": [
+   {
+    "key": "holistic_bias",
+    "publisher": "Meta (facebookresearch/ResponsibleNLP)",
+    "original_url": "https://github.com/facebookresearch/ResponsibleNLP/tree/main/holistic_bias",
+    "mirror_url": null,
+    "revision": "0ec714eb084217f44cd9ac466d9e988c795302f9",
+    "licence_id": "CC-BY-SA-4.0 (HolisticBias dataset); MIT (HolisticBias and AdvPromptSet code)",
+    "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "copyright_notice": "Copyright (c) Facebook, Inc. and its affiliates.",
+    "notice_required": true,
+    "restrictions": "ShareAlike: the repo LICENSE applies 'Creative Commons Attribution-ShareAlike 4.0 International Public License' to the HolisticBias dataset, so adapted material shared publicly must carry the same or a BY-SA-compatible licence.",
+    "requested_citation": "@article{smith2022imsorry,\n  doi = {10.48550/ARXIV.2205.09209},\n  url = {https://arxiv.org/abs/2205.09209},\n  author = {Smith, Eric Michael and Hall, Melissa and Kambadur, Melanie and Presani, Eleonora and Williams, Adina},\n  keywords = {Computation and Language (cs.CL), Computers and Society (cs.CY), FOS: Computer and information sciences, FOS: Computer and information sciences},\n  title = {\"I'm sorry to hear that\": Finding New Biases in Language Models with a Holistic Descriptor Dataset},\n  publisher = {arXiv},\n  year = {2022},\n  copyright = {Creative Commons Attribution Share Alike 4.0 International}\n}",
+    "fetched_urls": [
+     "https://raw.githubusercontent.com/facebookresearch/ResponsibleNLP/0ec714eb084217f44cd9ac466d9e988c795302f9/holistic_bias/README.md",
+     "https://raw.githubusercontent.com/facebookresearch/ResponsibleNLP/0ec714eb084217f44cd9ac466d9e988c795302f9/LICENSE",
+     "https://raw.githubusercontent.com/facebookresearch/ResponsibleNLP/0ec714eb084217f44cd9ac466d9e988c795302f9/holistic_bias/LICENSE (404)"
+    ],
+    "gaps": "The holistic_bias folder has no LICENSE of its own. Its README links to the repo LICENSE on main; this record uses the pinned-revision copy. That file has two sections: '***** For the HolisticBias and the AdvPromptSet code: *****' (MIT, copyright line recorded above) and '***** For the HolisticBias dataset: *****' (CC BY-SA 4.0 full text). The MIT copyright line covers the code, not the dataset."
+   }
+  ]
+ },
+ {
+  "source": "civil_comments_identity",
+  "mode": "ids_only",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "Civil Comments with identity-mention annotations, for F7 B1 (guardrail error rates by identity mention). CC0-1.0.",
+  "loader": "dataset/goldrails_dataset/sources/civil_comments_identity.py",
+  "pinned": {
+   "revision": "c227534cc0a34cf21db6a0bf0edd0f9050c8b305",
+   "url": "https://huggingface.co/datasets/pietrolesci/civilcomments-wilds/tree/c227534cc0a34cf21db6a0bf0edd0f9050c8b305/raw",
+   "repo": "pietrolesci/civilcomments-wilds"
+  },
+  "upstream": [
+   {
+    "key": "civil_comments",
+    "publisher": "Civil Comments platform archive with Jigsaw labels (google/civil_comments card: 'Jigsaw extended this dataset by adding additional labels for toxicity and identity mentions')",
+    "original_url": "https://huggingface.co/datasets/google/civil_comments",
+    "mirror_url": "https://huggingface.co/datasets/pietrolesci/civilcomments-wilds",
+    "revision": "google/civil_comments@f2970eb3a55777454c94069077cc8d9b5866312d (profanity rows); pietrolesci/civilcomments-wilds@c227534cc0a34cf21db6a0bf0edd0f9050c8b305 (identity rows)",
+    "licence_id": "CC0-1.0",
+    "licence_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "copyright_notice": null,
+    "notice_required": false,
+    "restrictions": null,
+    "requested_citation": "@article{DBLP:journals/corr/abs-1903-04561,\n  author    = {Daniel Borkan and\n               Lucas Dixon and\n               Jeffrey Sorensen and\n               Nithum Thain and\n               Lucy Vasserman},\n  title     = {Nuanced Metrics for Measuring Unintended Bias with Real Data for Text\n               Classification},\n  journal   = {CoRR},\n  volume    = {abs/1903.04561},\n  year      = {2019},\n  url       = {http://arxiv.org/abs/1903.04561},\n  archivePrefix = {arXiv},\n  eprint    = {1903.04561},\n  timestamp = {Sun, 31 Mar 2019 19:01:24 +0200},\n  biburl    = {https://dblp.org/rec/bib/journals/corr/abs-1903-04561},\n  bibsource = {dblp computer science bibliography, https://dblp.org}\n}",
+    "cards": [
+     {
+      "repo": "google/civil_comments",
+      "revision": "f2970eb3a55777454c94069077cc8d9b5866312d",
+      "licence": "cc0-1.0 (YAML); 'This dataset is released under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).' Summary also says 'This dataset is released under CC0, as is the underlying comment text.'",
+      "citation": "@article{DBLP:journals/corr/abs-1903-04561,\n  author    = {Daniel Borkan and\n               Lucas Dixon and\n               Jeffrey Sorensen and\n               Nithum Thain and\n               Lucy Vasserman},\n  title     = {Nuanced Metrics for Measuring Unintended Bias with Real Data for Text\n               Classification},\n  journal   = {CoRR},\n  volume    = {abs/1903.04561},\n  year      = {2019},\n  url       = {http://arxiv.org/abs/1903.04561},\n  archivePrefix = {arXiv},\n  eprint    = {1903.04561},\n  timestamp = {Sun, 31 Mar 2019 19:01:24 +0200},\n  biburl    = {https://dblp.org/rec/bib/journals/corr/abs-1903-04561},\n  bibsource = {dblp computer science bibliography, https://dblp.org}\n}"
+     },
+     {
+      "repo": "pietrolesci/civilcomments-wilds",
+      "revision": "c227534cc0a34cf21db6a0bf0edd0f9050c8b305",
+      "licence": null,
+      "citation": null
+     }
+    ],
+    "fetched_urls": [
+     "https://huggingface.co/datasets/google/civil_comments/raw/f2970eb3a55777454c94069077cc8d9b5866312d/README.md",
+     "https://huggingface.co/datasets/pietrolesci/civilcomments-wilds/raw/c227534cc0a34cf21db6a0bf0edd0f9050c8b305/README.md"
+    ],
+    "gaps": "The mirror card (pietrolesci/civilcomments-wilds) declares no licence and gives no citation. It only says the data is the WILDS CivilComments release, with links to the wilds library and a CodaLab bundle. The WILDS/CodaLab licence was not fetched. The licence and citation here come from the google/civil_comments card only."
+   }
+  ]
+ },
+ {
+  "source": "civil_comments_profanity",
+  "mode": "text",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "Profanity-presence candidates for the word-filters suite (F4 subtask ``profanity``), from Civil Comments. CC0-1.0.",
+  "loader": "dataset/goldrails_dataset/sources/civil_comments_profanity.py",
+  "pinned": {
+   "revision": "f2970eb3a55777454c94069077cc8d9b5866312d",
+   "repo": "google/civil_comments",
+   "lexicon_url": "https://raw.githubusercontent.com/dsojevic/profanity-list/c27924319aa9bd6f917e3782b4f4b6604a50b652/en.json"
+  },
+  "upstream": [
+   {
+    "key": "civil_comments",
+    "publisher": "Civil Comments platform archive with Jigsaw labels (google/civil_comments card: 'Jigsaw extended this dataset by adding additional labels for toxicity and identity mentions')",
+    "original_url": "https://huggingface.co/datasets/google/civil_comments",
+    "mirror_url": "https://huggingface.co/datasets/pietrolesci/civilcomments-wilds",
+    "revision": "google/civil_comments@f2970eb3a55777454c94069077cc8d9b5866312d (profanity rows); pietrolesci/civilcomments-wilds@c227534cc0a34cf21db6a0bf0edd0f9050c8b305 (identity rows)",
+    "licence_id": "CC0-1.0",
+    "licence_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "copyright_notice": null,
+    "notice_required": false,
+    "restrictions": null,
+    "requested_citation": "@article{DBLP:journals/corr/abs-1903-04561,\n  author    = {Daniel Borkan and\n               Lucas Dixon and\n               Jeffrey Sorensen and\n               Nithum Thain and\n               Lucy Vasserman},\n  title     = {Nuanced Metrics for Measuring Unintended Bias with Real Data for Text\n               Classification},\n  journal   = {CoRR},\n  volume    = {abs/1903.04561},\n  year      = {2019},\n  url       = {http://arxiv.org/abs/1903.04561},\n  archivePrefix = {arXiv},\n  eprint    = {1903.04561},\n  timestamp = {Sun, 31 Mar 2019 19:01:24 +0200},\n  biburl    = {https://dblp.org/rec/bib/journals/corr/abs-1903-04561},\n  bibsource = {dblp computer science bibliography, https://dblp.org}\n}",
+    "cards": [
+     {
+      "repo": "google/civil_comments",
+      "revision": "f2970eb3a55777454c94069077cc8d9b5866312d",
+      "licence": "cc0-1.0 (YAML); 'This dataset is released under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).' Summary also says 'This dataset is released under CC0, as is the underlying comment text.'",
+      "citation": "@article{DBLP:journals/corr/abs-1903-04561,\n  author    = {Daniel Borkan and\n               Lucas Dixon and\n               Jeffrey Sorensen and\n               Nithum Thain and\n               Lucy Vasserman},\n  title     = {Nuanced Metrics for Measuring Unintended Bias with Real Data for Text\n               Classification},\n  journal   = {CoRR},\n  volume    = {abs/1903.04561},\n  year      = {2019},\n  url       = {http://arxiv.org/abs/1903.04561},\n  archivePrefix = {arXiv},\n  eprint    = {1903.04561},\n  timestamp = {Sun, 31 Mar 2019 19:01:24 +0200},\n  biburl    = {https://dblp.org/rec/bib/journals/corr/abs-1903-04561},\n  bibsource = {dblp computer science bibliography, https://dblp.org}\n}"
+     },
+     {
+      "repo": "pietrolesci/civilcomments-wilds",
+      "revision": "c227534cc0a34cf21db6a0bf0edd0f9050c8b305",
+      "licence": null,
+      "citation": null
+     }
+    ],
+    "fetched_urls": [
+     "https://huggingface.co/datasets/google/civil_comments/raw/f2970eb3a55777454c94069077cc8d9b5866312d/README.md",
+     "https://huggingface.co/datasets/pietrolesci/civilcomments-wilds/raw/c227534cc0a34cf21db6a0bf0edd0f9050c8b305/README.md"
+    ],
+    "gaps": "The mirror card (pietrolesci/civilcomments-wilds) declares no licence and gives no citation. It only says the data is the WILDS CivilComments release, with links to the wilds library and a CodaLab bundle. The WILDS/CodaLab licence was not fetched. The licence and citation here come from the google/civil_comments card only."
+   },
+   {
+    "key": "dsojevic_profanity_list",
+    "publisher": "David Sojevic",
+    "original_url": "https://github.com/dsojevic/profanity-list",
+    "mirror_url": null,
+    "revision": "main (resolved c27924319aa9bd6f917e3782b4f4b6604a50b652 on 2026-09-24)",
+    "licence_id": "MIT",
+    "licence_url": "https://github.com/dsojevic/profanity-list/blob/main/LICENSE",
+    "copyright_notice": "Copyright (c) 2021 David Sojevic",
+    "notice_required": true,
+    "restrictions": null,
+    "requested_citation": null,
+    "fetched_urls": [
+     "https://raw.githubusercontent.com/dsojevic/profanity-list/main/README.md",
+     "https://raw.githubusercontent.com/dsojevic/profanity-list/main/LICENSE",
+     "https://api.github.com/repos/dsojevic/profanity-list/commits/main"
+    ],
+    "gaps": "Fetched at 'main', not a pinned commit. The README has no citation request; it ends with the same copyright line as the LICENSE."
+   }
+  ]
+ },
+ {
+  "source": "deepset_injections",
+  "mode": "text",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "deepset/prompt-injections: 546 short texts labelled injection (1) or not (0). Apache-2.0. Small and old (2023); kept for the pilot and as anchor rows.",
+  "loader": "dataset/goldrails_dataset/sources/deepset_injections.py",
+  "pinned": {
+   "revision": "4f61ecb038e9c3fb77e21034b22511b523772cdd",
+   "url": "https://huggingface.co/datasets/deepset/prompt-injections"
+  },
+  "upstream": [
+   {
+    "key": "deepset_injections",
+    "publisher": "deepset",
+    "original_url": "https://huggingface.co/datasets/deepset/prompt-injections",
+    "mirror_url": null,
+    "revision": "4f61ecb038e9c3fb77e21034b22511b523772cdd",
+    "licence_id": "Apache-2.0 (top-level card YAML); card also declares cc-by-4.0 nested under dataset_info",
+    "licence_url": "https://www.apache.org/licenses/LICENSE-2.0",
+    "copyright_notice": null,
+    "notice_required": true,
+    "restrictions": null,
+    "requested_citation": null,
+    "fetched_urls": [
+     "https://huggingface.co/datasets/deepset/prompt-injections/raw/4f61ecb038e9c3fb77e21034b22511b523772cdd/README.md"
+    ],
+    "gaps": "The card declares two licences. 'license: apache-2.0' is at the top level of the YAML, which is what the Hub displays. 'license: cc-by-4.0' sits inside the dataset_info block. The card body is only a heading and '[More Information needed]'. No LICENSE file was fetched or checked. There is no copyright line and no citation. Both licences require attribution or keeping notices, so notice_required is true either way."
+   }
+  ]
+ },
+ {
+  "source": "discrim_eval",
+  "mode": "text",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "Anthropic discrim-eval (Tamkin et al., 2023), for F7 B3 (decision-model sensitivity to demographics). CC-BY-4.0.",
+  "loader": "dataset/goldrails_dataset/sources/discrim_eval.py",
+  "pinned": {
+   "revision": "6986d6ea802e019d01e94dd59597e94fbd8f8c4a",
+   "url": "https://huggingface.co/datasets/Anthropic/discrim-eval/tree/6986d6ea802e019d01e94dd59597e94fbd8f8c4a",
+   "repo": "Anthropic/discrim-eval",
+   "raw": "https://huggingface.co/datasets/{repo}/resolve/{revision}/{file}"
+  },
+  "upstream": [
+   {
+    "key": "discrim_eval",
+    "publisher": "Anthropic",
+    "original_url": "https://huggingface.co/datasets/Anthropic/discrim-eval",
+    "mirror_url": null,
+    "revision": "6986d6ea802e019d01e94dd59597e94fbd8f8c4a",
+    "licence_id": "CC-BY-4.0",
+    "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+    "copyright_notice": null,
+    "notice_required": true,
+    "restrictions": "Card disclaimer (not a licence term): \"We do not permit or endorse the use of LMs for high-risk automated decision making.\"",
+    "requested_citation": "@misc{tamkin2023discrim,\n      title={Evaluating and Mitigating Discrimination in Language Model Decisions}, \n      author={Alex Tamkin and Amanda Askell and Liane Lovitt and Esin Durmus and Nicholas Joseph and Shauna Kravec and Karina Nguyen and Jared Kaplan and Deep Ganguli},\n      year={2023},\n      eprint={},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL}\n}",
+    "fetched_urls": [
+     "https://huggingface.co/datasets/Anthropic/discrim-eval/raw/6986d6ea802e019d01e94dd59597e94fbd8f8c4a/README.md"
+    ],
+    "gaps": "Licence comes from the card YAML only. No LICENSE file was fetched. The BibTeX is copied as given, including the empty 'eprint={}'. The card links the paper as arXiv 2312.03689."
+   }
+  ]
+ },
+ {
+  "source": "f2_controls",
+  "mode": "text",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "Authored benign controls for the prompt-attack suite: text that shares surface features with attacks but is a legitimate request. They test the question wording, not the model: ordinary instruction changes, quoted attack examples discussed rather than used, authorised configuration questions, and harmless fiction with attack-like words.",
+  "loader": "dataset/goldrails_dataset/sources/f2_controls.py",
+  "pinned": {},
+  "upstream": [
+   {
+    "publisher": "raxIT Labs (authored)",
+    "licence_id": "CC-BY-4.0",
+    "note": "Authored for Gold Rails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the author's intended labels (label_basis llm or deterministic), not independent annotation."
+   }
+  ]
+ },
+ {
+  "source": "f3_controls",
+  "mode": "text",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "Authored cases for the denied-topics suite, against the topic definitions in benchmark/suites/denied_topics/topics.json.",
+  "loader": "dataset/goldrails_dataset/sources/f3_controls.py",
+  "pinned": {},
+  "upstream": [
+   {
+    "publisher": "raxIT Labs (authored)",
+    "licence_id": "CC-BY-4.0",
+    "note": "Authored for Gold Rails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the author's intended labels (label_basis llm or deterministic), not independent annotation."
+   }
+  ]
+ },
+ {
+  "source": "f3_test_candidates",
+  "mode": "text",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "Test candidates for the denied-topics suite, against the v1 topic definitions in benchmark/suites/denied_topics/topics.json.",
+  "loader": "dataset/goldrails_dataset/sources/f3_test_candidates.py",
+  "pinned": {},
+  "upstream": [
+   {
+    "publisher": "raxIT Labs (authored)",
+    "licence_id": "CC-BY-4.0",
+    "note": "Authored for Gold Rails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the author's intended labels (label_basis llm or deterministic), not independent annotation."
+   }
+  ]
+ },
+ {
+  "source": "f4_words",
+  "mode": "text",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "Deterministic cases for the word-filters suite, generated from benchmark/suites/word_filters/words.json.",
+  "loader": "dataset/goldrails_dataset/sources/f4_words.py",
+  "pinned": {},
+  "upstream": [
+   {
+    "publisher": "raxIT Labs (authored)",
+    "licence_id": "CC-BY-4.0",
+    "note": "Authored for Gold Rails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the author's intended labels (label_basis llm or deterministic), not independent annotation."
+   }
+  ]
+ },
+ {
+  "source": "f5_controls",
+  "mode": "text",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "Authored negatives for the sensitive-information suite: realistic business and personal text with numbers, dates, prices, product codes, generic roles and organisations, but no information that identifies or reaches a specific person. They exist because AI4Privacy has no PII-free rows. Authored by Claude on 22 September 2026 with the intended label; label_basis \"llm\" until a person reviews them. Expected \"no\" on every entity question.",
+  "loader": "dataset/goldrails_dataset/sources/f5_controls.py",
+  "pinned": {},
+  "upstream": [
+   {
+    "publisher": "raxIT Labs (authored)",
+    "licence_id": "CC-BY-4.0",
+    "note": "Authored for Gold Rails by raxIT Labs with an AI assistant (Claude), CC-BY-4.0. Labels are the author's intended labels (label_basis llm or deterministic), not independent annotation."
+   }
+  ]
+ },
+ {
+  "source": "gandalf",
+  "mode": "text",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "Lakera gandalf_ignore_instructions: 777 real user attempts to make the model ignore its instructions and reveal a secret. MIT. All rows are attacks (prompt leakage subtype); benign counterparts come from other sources.",
+  "loader": "dataset/goldrails_dataset/sources/gandalf.py",
+  "pinned": {
+   "revision": "04737b65e90a6794ec227012e4a255a7def6344b",
+   "url": "https://huggingface.co/datasets/Lakera/gandalf_ignore_instructions"
+  },
+  "upstream": [
+   {
+    "key": "gandalf",
+    "publisher": "Lakera",
+    "original_url": "https://huggingface.co/datasets/Lakera/gandalf_ignore_instructions",
+    "mirror_url": null,
+    "revision": "04737b65e90a6794ec227012e4a255a7def6344b",
+    "licence_id": "MIT",
+    "licence_url": "https://opensource.org/license/mit/",
+    "copyright_notice": null,
+    "notice_required": true,
+    "restrictions": null,
+    "requested_citation": "@article{gandalf_paper,\n  title={Gandalf the Red: Adaptive Security for LLMs},\n  author={Pfister, Niklas and Volhejn, V{\\'a}clav and Knott, Manuel and Arias, Santiago and Bazi{\\'n}ska, Julia and Bichurin, Mykhailo and Commike, Alan and Darling, Janet and Dienes, Peter and Fiedler, Matthew and others},\n  journal={arXiv preprint arXiv:2501.07927},\n  year={2025}\n}",
+    "fetched_urls": [
+     "https://huggingface.co/datasets/Lakera/gandalf_ignore_instructions/raw/04737b65e90a6794ec227012e4a255a7def6344b/README.md",
+     "https://huggingface.co/datasets/Lakera/gandalf_ignore_instructions/raw/04737b65e90a6794ec227012e4a255a7def6344b/LICENSE (404)",
+     "https://huggingface.co/datasets/Lakera/gandalf_ignore_instructions/raw/04737b65e90a6794ec227012e4a255a7def6344b/LICENSE.md (404)"
+    ],
+    "gaps": "No LICENSE file at this revision (repo tree: data/, .gitattributes, README.md). The card says 'distributed under the [MIT License]', but no copyright holder or year is stated anywhere, so there is no copyright line to reproduce. The MIT permission notice still has to be kept. The card also warns the dataset may be updated occasionally."
+   }
+  ]
+ },
+ {
+  "source": "jailbreakbench",
+  "mode": "text",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "JailbreakBench behaviors: 100 harmful goals and 100 benign lookalikes. MIT.",
+  "loader": "dataset/goldrails_dataset/sources/jailbreakbench.py",
+  "pinned": {
+   "revision": "886acc352a31533ffbcf4ef22c744658688086fc",
+   "url": "https://huggingface.co/datasets/JailbreakBench/JBB-Behaviors"
+  },
+  "upstream": [
+   {
+    "key": "jailbreakbench_behaviors",
+    "publisher": "JailbreakBench Team",
+    "original_url": "https://huggingface.co/datasets/JailbreakBench/JBB-Behaviors",
+    "mirror_url": null,
+    "revision": "886acc352a31533ffbcf4ef22c744658688086fc",
+    "licence_id": "MIT",
+    "licence_url": "https://huggingface.co/datasets/JailbreakBench/JBB-Behaviors/blob/886acc352a31533ffbcf4ef22c744658688086fc/LICENSE",
+    "copyright_notice": "Copyright (c) 2023 JailbreakBench Team",
+    "notice_required": true,
+    "restrictions": null,
+    "requested_citation": "@inproceedings{chao2024jailbreakbench,\n  title={JailbreakBench: An Open Robustness Benchmark for Jailbreaking Large Language Models},\n  author={Patrick Chao and Edoardo Debenedetti and Alexander Robey and Maksym Andriushchenko and Francesco Croce and Vikash Sehwag and Edgar Dobriban and Nicolas Flammarion and George J. Pappas and Florian Tramèr and Hamed Hassani and Eric Wong},\n  booktitle={NeurIPS Datasets and Benchmarks Track},\n  year={2024}\n}\n\n@misc{zou2023universal,\n  title={Universal and Transferable Adversarial Attacks on Aligned Language Models},\n  author={Andy Zou and Zifan Wang and J. Zico Kolter and Matt Fredrikson},\n  year={2023},\n  eprint={2307.15043},\n  archivePrefix={arXiv},\n  primaryClass={cs.CL}\n}\n@inproceedings{tdc2023,\n  title={TDC 2023 (LLM Edition): The Trojan Detection Challenge},\n  author={Mantas Mazeika and Andy Zou and Norman Mu and Long Phan and Zifan Wang and Chunru Yu and Adam Khoja and Fengqing Jiang and Aidan O'Gara and Ellie Sakhaee and Zhen Xiang and Arezoo Rajabi and Dan Hendrycks and Radha Poovendran and Bo Li and David Forsyth},\n  booktitle={NeurIPS Competition Track},\n  year={2023}\n}\n@article{mazeika2024harmbench,\n  title={HarmBench: A Standardized Evaluation Framework for Automated Red Teaming and Robust Refusal},\n  author={Mazeika, Mantas and Phan, Long and Yin, Xuwang and Zou, Andy and Wang, Zifan and Mu, Norman and Sakhaee, Elham and Li, Nathaniel and Basart, Steven and Li, Bo and Forsyth, David and Hendrycks, Dan},\n  journal={arXiv preprint arXiv:2402.04249},\n  year={2024}\n}",
+    "fetched_urls": [
+     "https://huggingface.co/datasets/JailbreakBench/JBB-Behaviors/raw/886acc352a31533ffbcf4ef22c744658688086fc/README.md",
+     "https://huggingface.co/datasets/JailbreakBench/JBB-Behaviors/raw/886acc352a31533ffbcf4ef22c744658688086fc/LICENSE"
+    ],
+    "gaps": "requested_citation holds two verbatim BibTeX blocks joined by a blank line. The first is the JailbreakBench citation ('please consider citing it as follows'). The second is the constituent-dataset block (AdvBench zou2023universal, tdc2023, mazeika2024harmbench), introduced as 'we ask that you also consider citing its constituent datasets'. Card: 'This dataset, like the code, is released under [MIT License]'. Behaviors are drawn in part from AdvBench and TDC/HarmBench; the licences of those upstream sources are not stated on the card."
+   }
+  ]
+ },
+ {
+  "source": "jbb_artifacts",
+  "mode": "text",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "JailbreakBench attack artifacts: jailbreak prompts produced by published attacks (PAIR, GCG, JBC) against each of the 100 JBB behaviors. MIT. Pinned to one commit of github.com/JailbreakBench/artifacts.",
+  "loader": "dataset/goldrails_dataset/sources/jbb_artifacts.py",
+  "pinned": {
+   "commit": "909e68c01d94222b8ad2e397a017e2e12e2adb73",
+   "raw": "https://raw.githubusercontent.com/JailbreakBench/artifacts/{commit}/attack-artifacts/{method}/{kind}/{model}.json"
+  },
+  "upstream": [
+   {
+    "key": "jbb_artifacts",
+    "publisher": "JailbreakBench Team and artifacts authors",
+    "original_url": "https://github.com/JailbreakBench/artifacts",
+    "mirror_url": null,
+    "revision": "909e68c01d94222b8ad2e397a017e2e12e2adb73",
+    "licence_id": "MIT",
+    "licence_url": "https://github.com/JailbreakBench/artifacts/blob/909e68c01d94222b8ad2e397a017e2e12e2adb73/LICENSE",
+    "copyright_notice": "Copyright (c) 2024 JailbreakBench Team and artifacts authors",
+    "notice_required": true,
+    "restrictions": null,
+    "requested_citation": "@misc{chao2024jailbreakbench,\n      title={JailbreakBench: An Open Robustness Benchmark for Jailbreaking Large Language Models}, \n      author={Patrick Chao and Edoardo Debenedetti and Alexander Robey and Maksym Andriushchenko and Francesco Croce and Vikash Sehwag and Edgar Dobriban and Nicolas Flammarion and George J. Pappas and Florian Tramèr and Hamed Hassani and Eric Wong},\n      year={2024},\n      eprint={2404.01318},\n      archivePrefix={arXiv},\n      primaryClass={cs.CR}\n}",
+    "fetched_urls": [
+     "https://api.github.com/repos/JailbreakBench/artifacts/commits/909e68c",
+     "https://raw.githubusercontent.com/JailbreakBench/artifacts/909e68c01d94222b8ad2e397a017e2e12e2adb73/LICENSE",
+     "https://raw.githubusercontent.com/JailbreakBench/artifacts/909e68c01d94222b8ad2e397a017e2e12e2adb73/README.md"
+    ],
+    "gaps": "The short commit 909e68c resolves to 909e68c01d94222b8ad2e397a017e2e12e2adb73 (GitHub API). README: 'Each artifact is released under MIT license owned by the artifacts authors.' The citation request adds '(apart from the work from which the artifacts are!)', which asks users to also cite the attack-method papers behind each artifact. Those papers are not listed in the README."
+   },
+   {
+    "key": "jailbreakbench_behaviors",
+    "publisher": "JailbreakBench Team",
+    "original_url": "https://huggingface.co/datasets/JailbreakBench/JBB-Behaviors",
+    "mirror_url": null,
+    "revision": "886acc352a31533ffbcf4ef22c744658688086fc",
+    "licence_id": "MIT",
+    "licence_url": "https://huggingface.co/datasets/JailbreakBench/JBB-Behaviors/blob/886acc352a31533ffbcf4ef22c744658688086fc/LICENSE",
+    "copyright_notice": "Copyright (c) 2023 JailbreakBench Team",
+    "notice_required": true,
+    "restrictions": null,
+    "requested_citation": "@inproceedings{chao2024jailbreakbench,\n  title={JailbreakBench: An Open Robustness Benchmark for Jailbreaking Large Language Models},\n  author={Patrick Chao and Edoardo Debenedetti and Alexander Robey and Maksym Andriushchenko and Francesco Croce and Vikash Sehwag and Edgar Dobriban and Nicolas Flammarion and George J. Pappas and Florian Tramèr and Hamed Hassani and Eric Wong},\n  booktitle={NeurIPS Datasets and Benchmarks Track},\n  year={2024}\n}\n\n@misc{zou2023universal,\n  title={Universal and Transferable Adversarial Attacks on Aligned Language Models},\n  author={Andy Zou and Zifan Wang and J. Zico Kolter and Matt Fredrikson},\n  year={2023},\n  eprint={2307.15043},\n  archivePrefix={arXiv},\n  primaryClass={cs.CL}\n}\n@inproceedings{tdc2023,\n  title={TDC 2023 (LLM Edition): The Trojan Detection Challenge},\n  author={Mantas Mazeika and Andy Zou and Norman Mu and Long Phan and Zifan Wang and Chunru Yu and Adam Khoja and Fengqing Jiang and Aidan O'Gara and Ellie Sakhaee and Zhen Xiang and Arezoo Rajabi and Dan Hendrycks and Radha Poovendran and Bo Li and David Forsyth},\n  booktitle={NeurIPS Competition Track},\n  year={2023}\n}\n@article{mazeika2024harmbench,\n  title={HarmBench: A Standardized Evaluation Framework for Automated Red Teaming and Robust Refusal},\n  author={Mazeika, Mantas and Phan, Long and Yin, Xuwang and Zou, Andy and Wang, Zifan and Mu, Norman and Sakhaee, Elham and Li, Nathaniel and Basart, Steven and Li, Bo and Forsyth, David and Hendrycks, Dan},\n  journal={arXiv preprint arXiv:2402.04249},\n  year={2024}\n}",
+    "fetched_urls": [
+     "https://huggingface.co/datasets/JailbreakBench/JBB-Behaviors/raw/886acc352a31533ffbcf4ef22c744658688086fc/README.md",
+     "https://huggingface.co/datasets/JailbreakBench/JBB-Behaviors/raw/886acc352a31533ffbcf4ef22c744658688086fc/LICENSE"
+    ],
+    "gaps": "requested_citation holds two verbatim BibTeX blocks joined by a blank line. The first is the JailbreakBench citation ('please consider citing it as follows'). The second is the constituent-dataset block (AdvBench zou2023universal, tdc2023, mazeika2024harmbench), introduced as 'we ask that you also consider citing its constituent datasets'. Card: 'This dataset, like the code, is released under [MIT License]'. Behaviors are drawn in part from AdvBench and TDC/HarmBench; the licences of those upstream sources are not stated on the card."
+   }
+  ]
+ },
+ {
+  "source": "openai_moderation",
+  "mode": "text",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "OpenAI's 2022 moderation evaluation set (1,680 prompts, 8 categories). MIT. Anchor-only: every guard model reports on it. A row is unsafe if any category column is 1; the first set column decides the AILuminate mapping.",
+  "loader": "dataset/goldrails_dataset/sources/openai_moderation.py",
+  "pinned": {
+   "revision": "84e5cf3bcd6acb3dfc70b6760451645872218a3e",
+   "url": "https://huggingface.co/datasets/mmathys/openai-moderation-api-evaluation"
+  },
+  "upstream": [
+   {
+    "key": "openai_moderation",
+    "publisher": "OpenAI",
+    "original_url": "https://github.com/openai/moderation-api-release",
+    "mirror_url": "https://huggingface.co/datasets/mmathys/openai-moderation-api-evaluation",
+    "revision": "mirror mmathys/openai-moderation-api-evaluation@84e5cf3bcd6acb3dfc70b6760451645872218a3e; original openai/moderation-api-release main (resolved f4ab51b5edd3bfbcb349a56324274235b674e0e4 on 2026-09-24)",
+    "licence_id": "MIT",
+    "licence_url": "https://github.com/openai/moderation-api-release/blob/main/LICENSE",
+    "copyright_notice": "Copyright (c) 2022 OpenAI",
+    "notice_required": true,
+    "restrictions": null,
+    "requested_citation": "@article{openai2022moderation,\n  title={A Holistic Approach to Undesired Content Detection},\n  author={Todor Markov and Chong Zhang and Sandhini Agarwal and Tyna Eloundou and Teddy Lee and Steven Adler and Angela Jiang and Lilian Weng},\n  journal={arXiv preprint arXiv:2208.03274},\n  year={2022}\n}",
+    "cards": [
+     {
+      "repo": "mmathys/openai-moderation-api-evaluation",
+      "revision": "84e5cf3bcd6acb3dfc70b6760451645872218a3e",
+      "licence": "mit (card YAML)",
+      "citation": null
+     },
+     {
+      "repo": "openai/moderation-api-release",
+      "revision": "f4ab51b5edd3bfbcb349a56324274235b674e0e4",
+      "licence": "MIT (LICENSE: Copyright (c) 2022 OpenAI)",
+      "citation": "@article{openai2022moderation,\n  title={A Holistic Approach to Undesired Content Detection},\n  author={Todor Markov and Chong Zhang and Sandhini Agarwal and Tyna Eloundou and Teddy Lee and Steven Adler and Angela Jiang and Lilian Weng},\n  journal={arXiv preprint arXiv:2208.03274},\n  year={2022}\n}"
+     }
+    ],
+    "fetched_urls": [
+     "https://huggingface.co/datasets/mmathys/openai-moderation-api-evaluation/raw/84e5cf3bcd6acb3dfc70b6760451645872218a3e/README.md",
+     "https://raw.githubusercontent.com/openai/moderation-api-release/main/README.md",
+     "https://raw.githubusercontent.com/openai/moderation-api-release/main/LICENSE",
+     "https://api.github.com/repos/openai/moderation-api-release/commits/main"
+    ],
+    "gaps": "The original repo was fetched at 'main', not a pinned commit; main resolved to the SHA above on the fetch date. The mirror card has no BibTeX; it links the paper (arXiv 2208.03274) and says 'Parsed from the GitHub repo'. Citation and copyright line come from the original repo."
+   }
+  ]
+ },
+ {
+  "source": "orbench",
+  "mode": "text",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "OR-Bench hard-1k: benign prompts that look unsafe, for over-refusal. CC-BY-4.0. Labels are by construction (the set is curated to be benign), recorded as automated: membership in the curated set, not a human judgment per row.",
+  "loader": "dataset/goldrails_dataset/sources/orbench.py",
+  "pinned": {
+   "revision": "e36d8b80e81837c8a8f264bbb2a49f1b32c7e272",
+   "url": "https://huggingface.co/datasets/bench-llm/or-bench"
+  },
+  "upstream": [
+   {
+    "key": "orbench",
+    "publisher": "bench-llm (OR-Bench authors)",
+    "original_url": "https://huggingface.co/datasets/bench-llm/or-bench",
+    "mirror_url": null,
+    "revision": "e36d8b80e81837c8a8f264bbb2a49f1b32c7e272",
+    "licence_id": "CC-BY-4.0",
+    "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+    "copyright_notice": null,
+    "notice_required": true,
+    "restrictions": null,
+    "requested_citation": null,
+    "fetched_urls": [
+     "https://huggingface.co/datasets/bench-llm/or-bench/raw/e36d8b80e81837c8a8f264bbb2a49f1b32c7e272/README.md"
+    ],
+    "gaps": "Licence comes from the card YAML only ('license: \"cc-by-4.0\"'). No LICENSE file was fetched. The card has no citation, BibTeX, paper link or named authors; publisher is the HF org name. The card body is plots and a link to a HF Spaces demo."
+   }
+  ]
+ },
+ {
+  "source": "ragtruth",
+  "mode": "ids_only",
+  "withheld": false,
+  "withheld_reason": null,
+  "adaptation": "RAGTruth (Particle Media, MIT): sources, model-generated replies, and human-annotated hallucination spans.",
+  "loader": "dataset/goldrails_dataset/sources/ragtruth.py",
+  "pinned": {
+   "commit": "c103204b9ce28d6bbad859304bf30de72b8ed8fe",
+   "raw": "https://raw.githubusercontent.com/ParticleMedia/RAGTruth/{commit}/dataset/{file}"
+  },
+  "upstream": [
+   {
+    "key": "ragtruth",
+    "publisher": "Particle Media",
+    "original_url": "https://github.com/ParticleMedia/RAGTruth",
+    "mirror_url": null,
+    "revision": "main (resolved c103204b9ce28d6bbad859304bf30de72b8ed8fe on 2026-09-24)",
+    "licence_id": "MIT",
+    "licence_url": "https://github.com/ParticleMedia/RAGTruth/blob/main/LICENSE",
+    "copyright_notice": "Copyright (c) 2023 Particle Media",
+    "notice_required": true,
+    "restrictions": null,
+    "requested_citation": "@misc{wu2023ragtruth,\n      title={RAGTruth: A Hallucination Corpus for Developing Trustworthy Retrieval-Augmented Language Models}, \n      author={Yuanhao Wu and Juno Zhu and Siliang Xu and Kashun Shum and Cheng Niu and Randy Zhong and Juntong Song and Tong Zhang},\n      year={2023},\n      eprint={2401.00396},\n      archivePrefix={arXiv},\n      primaryClass={cs.CL}\n}",
+    "fetched_urls": [
+     "https://raw.githubusercontent.com/ParticleMedia/RAGTruth/main/README.md",
+     "https://raw.githubusercontent.com/ParticleMedia/RAGTruth/main/LICENSE",
+     "https://api.github.com/repos/ParticleMedia/RAGTruth/commits/main"
+    ],
+    "gaps": "Fetched at 'main', not a pinned commit. The README has no licence statement of its own; MIT comes from the repo LICENSE, which does not say whether it covers the dataset files as well as the code. The README does not state licences for the upstream source passages or for the LLM responses."
+   }
+  ]
+ }
+]

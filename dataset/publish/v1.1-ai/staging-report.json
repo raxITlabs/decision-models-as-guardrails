@@ -1,0 +1,103 @@
+{
+ "version": "v1.1-ai",
+ "code_commit": "dbd7cb9c5255f639193be02eddd8002ecbec9da3",
+ "files": [
+  {
+   "config": "content",
+   "split": "test",
+   "path": "data/content/test.jsonl",
+   "n": 1943,
+   "sha256": "5785e5874a13d7eea8fa10f2761f03c31a4f9c985efa018992d27c04ae3fe8b4"
+  },
+  {
+   "config": "content",
+   "split": "tune",
+   "path": "data/content/tune.jsonl",
+   "n": 383,
+   "sha256": "917dcfc4704cd8f3cddf33e62a402ee46187a522cb7c88307efdf03a81cf421f"
+  },
+  {
+   "config": "prompt_attacks",
+   "split": "test",
+   "path": "data/prompt_attacks/test.jsonl",
+   "n": 947,
+   "sha256": "5f97ce3a3a63cf5c41f1f6c98624e81ad89101a72eb0a970e39754bc2686628f"
+  },
+  {
+   "config": "prompt_attacks",
+   "split": "tune",
+   "path": "data/prompt_attacks/tune.jsonl",
+   "n": 169,
+   "sha256": "0fcdb106b5b11fc09086699704333274985c9ad0c28ac931435d84cc24a84402"
+  },
+  {
+   "config": "denied_topics",
+   "split": "test",
+   "path": "data/denied_topics/test.jsonl",
+   "n": 73,
+   "sha256": "6601496cea510c968ad34bde05664f8cc410e385373d11902d915fbaf6b4bcf2"
+  },
+  {
+   "config": "denied_topics",
+   "split": "tune",
+   "path": "data/denied_topics/tune.jsonl",
+   "n": 42,
+   "sha256": "301724801f07fd19749351c95a09ed935b5d75403f179c59dadf244d74ab33fc"
+  },
+  {
+   "config": "word_filters",
+   "split": "test",
+   "path": "data/word_filters/test.jsonl",
+   "n": 673,
+   "sha256": "a2f99f49018abe89cdab2407f4917a5f4e384c626618b781a12fdc0dcb2e2708"
+  },
+  {
+   "config": "word_filters",
+   "split": "tune",
+   "path": "data/word_filters/tune.jsonl",
+   "n": 199,
+   "sha256": "71e818754fc3bb59bc359fa6cf07d66058ead9c63452227414bd148f4dd8fbeb"
+  },
+  {
+   "config": "grounding",
+   "split": "test",
+   "path": "data/grounding/test.jsonl",
+   "n": 741,
+   "sha256": "b2fad1c70dbd9071a634fa91de7d1e1c0f40fab718244601328ae5ee5f5b105d"
+  },
+  {
+   "config": "grounding",
+   "split": "tune",
+   "path": "data/grounding/tune.jsonl",
+   "n": 159,
+   "sha256": "ba1ceb644b20e5ef146eb106e58702c5a3d890d21caba2b3d4a8112dec3ca293"
+  },
+  {
+   "config": "bias",
+   "split": "test",
+   "path": "data/bias/test.jsonl",
+   "n": 2282,
+   "sha256": "b5699da6b7a93e0c723c86dcea25820946bb6ac378e0872f8dad060d605a73ca"
+  },
+  {
+   "config": "bias",
+   "split": "tune",
+   "path": "data/bias/tune.jsonl",
+   "n": 434,
+   "sha256": "c24d33e9a0a945b6aba1a24bb1880b324bf64e75a97e93a332c70816db7d007e"
+  },
+  {
+   "config": "candidates",
+   "split": "tune",
+   "path": "data/candidates/tune.jsonl",
+   "n": 40,
+   "sha256": "a1a6e15e12dd2d0b56c5c40862def0810db3c7a13c310ff70f9223d6134011b1"
+  }
+ ],
+ "rows": 8085,
+ "withheld": {
+  "ai4privacy/sensitive_information/test": 748,
+  "ai4privacy/sensitive_information/tune": 132
+ },
+ "problems": []
+}
