@@ -37,7 +37,7 @@ infra/       gcp/ Terraform for the model VM, ctl.sh (up/pause/down/status), tun
 docs/        numbered research notes, reports/, specs/, prior-art/, transcripts/, typesafe-reference/, research-raw/, ts-spikes/
 ```
 
-`dataset/samples/` is checked in only until the Hugging Face push exists; after that `benchmark/` pulls from `raxITLabs/jev-as-a-guardrails` and `samples/` becomes a local cache. `benchmark/results/` holds per-run JSONL and receipts, which is what the raxit.ai results section reads.
+`dataset/samples/` holds the 250-row pilot and the older 1k sample that the notebooks and early smoke runs used. Its manifest lists two PII files, `F5.test.jsonl` and `F5.tune.jsonl`, that are not here: their rows came from AI4Privacy, whose licence needs written permission to redistribute. `load_rows` reads the pilot unless `GOLDRAILS_DATA` names another sample or the Hugging Face dataset. The benchmark runs pick their rows through the frozen subsets in `benchmark/subsets/`. `benchmark/results/` holds per-run JSONL and receipts, which is what the raxit.ai results section reads.
 
 The Python side is a uv workspace: `goldrails-bench` depends on `goldrails-dataset`, one lockfile at the root.
 
@@ -46,3 +46,9 @@ The record schema (`dataset/goldrails_dataset/records.py`) is adapted from [JevB
 Status: two benchmark runs. The results site (`site/leaderboard/`) shows the second run, whose leaderboard the evaluator marks valid for publication. The first run's results stay on file beside it.
 
 Renamed on 30 September 2026: the benchmark was called [gold]rails. Code identifiers keep the old name (the `goldrails_bench` and `goldrails_dataset` packages, `GOLDRAILS_*` variables, file names), and so do dated records written before the rename. The Hugging Face dataset moved from `raxITLabs/goldrails` to `raxITLabs/jev-as-a-guardrails` the same day.
+
+## History
+
+Until 2026-10-02 this repository was an export of a private working repo; that history is archived offline. Since then this is the only working repository. Commits land here directly, and `scripts/export_public.py` is no longer how a release gets built.
+
+The export history matters in one place. The page checks (`benchmark/runs/check_page.py`) confirm that each run's freeze manifests were committed before its test ledgers, and here those files arrived together in export commits. So the checks read the dates from `benchmark/history/private-history.json`, a record of the private `git log` for every frozen file and ledger, and only for files whose bytes still match it. `scripts/record_private_history.py --check` rebuilds that record from the archive bundle and compares the two. [EXPORT.md](EXPORT.md) lists what the export left out, and why.

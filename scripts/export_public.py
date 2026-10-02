@@ -1,4 +1,10 @@
-"""Build the public jev-as-a-guardrails repository as a clean, allowlisted export of this private repository. No push.
+"""Retired on 2 October 2026. Kept as the record of how commits 26b578f to 89cf766 were built; it no longer runs.
+
+This repository is the working repository now (EXPORT.md). Run here, the script would treat this repository as the
+private source and, with the default ``--out``, wipe this working tree. ``ACCOUNT`` also holds the masked placeholder
+the export wrote over the real account number, so ``scan`` no longer detects that number.
+
+Build the public jev-as-a-guardrails repository as a clean, allowlisted export of this private repository. No push.
 
     uv run python scripts/export_public.py                      # build and scan into ../goldrails, report only
     uv run python scripts/export_public.py --commit              # also create the export's single commit and tag
@@ -238,6 +244,8 @@ def export_md(private: str, files: list, notes: dict) -> str:
 
 
 def main(argv=None) -> int:
+    raise SystemExit("scripts/export_public.py is retired (2 October 2026): this repository is the working repository, "
+                     "and there is no private repository to export from. See EXPORT.md.")
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", type=Path, default=REPO.parent / "goldrails")
     ap.add_argument("--commit", action="store_true", help="create the export's single commit and tag")
