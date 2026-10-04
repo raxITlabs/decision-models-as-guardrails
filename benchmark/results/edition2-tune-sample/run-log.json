@@ -8,6 +8,15 @@
     "started": "2026-10-04T19:33:32Z",
     "finished": "2026-10-04T19:33:32Z",
     "blocked": "TokenRetrievalError: Error when retrieving token from sso: Token has expired and refresh failed"
+   },
+   {
+    "seconds": 722.3,
+    "sent": 1422,
+    "failed": 0,
+    "started": "2026-10-04T20:28:03Z",
+    "finished": "2026-10-04T20:40:06Z",
+    "blocked": null,
+    "retry_failed_only": false
    }
   ],
   "jev-1.13.0": [

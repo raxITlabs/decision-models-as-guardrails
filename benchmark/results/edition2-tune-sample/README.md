@@ -33,12 +33,13 @@ provisional. Tiers come from Holm-adjusted paired bootstrap tests against each t
 | 4 | Clef-flash | 82.8 (80.9 to 84.8) | 2 | 79.6 | 79.4 | 89.2 | 83.6 | 98.1 | 67.0 | fail (75) |
 | 5 | Kev-9B | 81.7 (79.7 to 83.6) | 2 | 75.1 | 80.5 | 93.9 | 72.7 | 98.2 | 69.5 | fail (58) |
 | 6 | Kev-4B | 81.1 (79.1 to 82.9) | 2 | 72.3 | 78.4 | 99.3 | 72.1 | 96.8 | 67.9 | fail (67) |
-| 7 | Strands Decider 2B | 77.2 (74.9 to 79.5) | 3 | 67.7 | 67.2 | 88.1 | 77.2 | 92.9 | 70.4 | fail (67) |
-| 8 | Kev-0.8B | 65.8 (63.8 to 68.0) | 4 | 61.9 | 55.8 | 67.8 | 59.3 | 91.7 | 58.6 | fail (58) |
-| 9 | Open-Jev-2B | 65.1 (63.1 to 67.0) | 4 | 61.3 | 52.1 | 79.3 | 54.8 | 89.8 | 53.4 | fail (75) |
-| 10 | Laya | 61.9 (59.3 to 64.2) | 4 | 65.0 | 63.2 | 64.5 | 63.2 | 71.7 | 43.6 | fail (65) |
+| 7 | Bedrock Guardrails | 78.3 (76.1 to 80.4) | 3 | 76.2 | 78.7 | 81.2 | 64.6 | 98.1 | 71.2 | pass (100) |
+| 8 | Strands Decider 2B | 77.2 (74.9 to 79.5) | 3 | 67.7 | 67.2 | 88.1 | 77.2 | 92.9 | 70.4 | fail (67) |
+| 9 | Kev-0.8B | 65.8 (63.8 to 68.0) | 4 | 61.9 | 55.8 | 67.8 | 59.3 | 91.7 | 58.6 | fail (58) |
+| 10 | Open-Jev-2B | 65.1 (63.1 to 67.0) | 4 | 61.3 | 52.1 | 79.3 | 54.8 | 89.8 | 53.4 | fail (75) |
+| 11 | Laya | 61.9 (59.3 to 64.2) | 4 | 65.0 | 63.2 | 64.5 | 63.2 | 71.7 | 43.6 | fail (65) |
 
-Bedrock Guardrails did not run (see "Failures" below), so it has no row.
+Bedrock Guardrails ran on 5 October 2026 after a fresh AWS login (1,422 rows, 0 failed, 722 s). It is the only system that passes the custom-words check, because its word filter matches the listed phrases exactly.
 
 | System | Catch rate | False-block rate | Wall time | USD per 1,000 checks | Total | p50 / p95 latency (s) | First-pass failures | Truncated rows |
 |---|---|---|---|---|---|---|---|---|
@@ -89,10 +90,7 @@ profanity 0.9. Its rank and tier stay the same. The other systems move by -0.5 t
 
 ## Failures, retries and truncation
 
-Bedrock Guardrails did not run. The AWS SSO session for the `.env` profile had expired:
-`TokenRetrievalError: Error when retrieving token from sso: Token has expired and refresh failed`
-(`bedrock-guardrails.blocked.json`). Nothing was sent. After `aws sso login`, rerun only Bedrock with
-`uv run python benchmark/runs/e2_sample.py run --systems bedrock`, then `score` and the plots.
+Bedrock Guardrails first failed on an expired AWS SSO session (`bedrock-guardrails.blocked.json`); it was rerun on 5 October 2026 after `aws sso login`, with no failures.
 
 Sixteen VM rows failed on the first pass, all with HTTP 500 "model inference failed" after four attempts: Kev-4B on 9
 PII rows, Open-Jev-2B on 5 PII rows and 2 grounding rows. Kev-4B's 9 of 118 is above the 2% cap, which would have made
@@ -130,13 +128,12 @@ each `make pause`. The whole sample cost about $1.96: $0.54 hosted and $1.42 for
 - The scorer lists `e2-f1-bedrock5`, `e2-f4-*` and `e2-f6-grounding` as differing from the contract's `v1-` sets. They
   are copies with the same questions and decision lists (`sample.question_set_names`), so those disclosures are about
   the name only.
-- Bedrock is missing until its run is redone.
 
 ## Files
 
 - `<system>.jsonl`: one ledger per system. Row ids, labels, source names and system outputs, never row text.
 - `run-log.json`: wall time per run and the VM sessions. `logs/`: console output of each run, `make up` and `make pause`.
-- `bedrock-guardrails.blocked.json`: why Bedrock did not run.
+- `bedrock-guardrails.blocked.json`: why Bedrock's first attempt did not run.
 - `leaderboard.json`: the diagnostic leaderboard, the run summary, cost, the content views and the pplx-decider
   sensitivity view.
 - `plots/`: `overall`, `heatmap-subtasks`, `catch-vs-false-block`, `score-vs-cost-latency` and `pplx-overlap`, each as
