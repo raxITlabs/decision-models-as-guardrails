@@ -34,7 +34,7 @@ started. "Correct" is a sanity reading at the fixed 0.5 rule on at most 20 rows.
 | bedrock-guardrails | content/reply | 20 | 0 | 0 | n/a | n/a | 12/20 |
 | bedrock-guardrails | content/request | 20 | 0 | 0 | n/a | n/a | 15/20 |
 | bedrock-guardrails | denied_topics/topic | 20 | 0 | 20 | n/a | n/a | 0/0 |
-| bedrock-guardrails | grounding/grounding | 20 | 6 | 0 | n/a | n/a | 11/14 |
+| bedrock-guardrails | grounding/grounding | 20 | 0 | 0 | n/a | n/a | 16/20 |
 | bedrock-guardrails | prompt_attacks/direct | 20 | 0 | 0 | n/a | n/a | 16/20 |
 | bedrock-guardrails | sensitive_info/entity_detection | 20 | 0 | 0 | n/a | n/a | 18/20 |
 | bedrock-guardrails | word_filters/profanity | 20 | 0 | 0 | n/a | n/a | 9/20 |
@@ -94,11 +94,14 @@ The table counts only rows in the current selection. Reruns for the determinism 
 
 **No transport failures.** Every Noul call came back, and every decision answer was a probability in [0, 1].
 
-**Bedrock fails 6 of 20 grounding rows, and the adapter causes it.** All six are `UnrepresentableState`. The ApplyGuardrail
-grounding call cannot carry a row's `context`, so the adapter refuses those rows before sending them. That is 30%,
-far over the contract's 2% invalid line. Before the full run, either map `context` into the grounding source or mark
-those rows `not_offered` with a reason. Denied topics stay `not_offered` because the 8-topic edition 2 guardrail does
-not exist yet.
+**Bedrock grounding, rerun on 4 October.** The first run failed 6 of 20 grounding rows, all FaithDial rows with earlier
+turns in `context`, which the adapter refused (`UnrepresentableState`). The adapter now folds those turns into the
+query block as a role-labelled transcript, keeps the source block as the source alone, and marks a row over Bedrock's
+documented character caps `not_offered` (none of these 20 is over). The rerun sent the 20 grounding rows again: 20
+decided, 0 failed, 0 not offered, 16 of 20 correct. The first run's 20 grounding records are kept in
+`round2/bedrock-guardrails.grounding.jsonl`. Bedrock says conversational QA is not a supported grounding use case, and
+each result records the mapping in `serving.grounding_mapping`. Denied topics stay `not_offered` because the 8-topic
+edition 2 guardrail does not exist yet.
 
 **Laya's server on the VM does not report truncation yet.** All 151 Laya rows have `truncation_reported: false` and
 `truncated: null`. The disk still holds the old `laya_server.py`, because `terraform plan` shows the new script only as
@@ -117,7 +120,7 @@ words subtask but only 9/20 on profanity. Jev got 10/11 and 15/20.
 ## Before the full run
 
 1. Apply the pending metadata change so Laya's server reports truncation, and decide whether to raise its `--max-len`.
-2. Fix or declare the Bedrock grounding rows that carry `context`.
+2. Done: Bedrock grounding rows that carry `context` now run (see above).
 3. Create the 8-topic edition 2 Bedrock guardrail, or keep denied topics `not_offered` for Bedrock.
 4. Terraform state for this VM lives in the worktree (`infra/gcp/terraform.tfstate`), not in the main checkout.
    Move it back before anyone runs `make down` from the main checkout, or that command will not see the VM.

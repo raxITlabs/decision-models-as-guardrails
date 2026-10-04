@@ -365,12 +365,12 @@
    "subtask": "grounding",
    "rows": 20,
    "sent": 20,
-   "decided": 14,
-   "failed": 6,
-   "failure_rate": 0.3,
+   "decided": 20,
+   "failed": 0,
+   "failure_rate": 0.0,
    "not_offered": 0,
    "adapter_errors": 0,
-   "transport_errors": 6,
+   "transport_errors": 0,
    "near_limit": 0,
    "at_cap": 0,
    "truncated": 0,
@@ -379,12 +379,10 @@
    "max_usage_input_tokens": null,
    "limit_tokens": null,
    "limit_basis": "service",
-   "correct": 11,
+   "correct": 16,
    "probs_out_of_range": 0,
-   "p50_latency_s": 0.493,
-   "error_kinds": {
-    "UnrepresentableState": 6
-   }
+   "p50_latency_s": 0.474,
+   "error_kinds": {}
   },
   {
    "system": "bedrock-guardrails",
