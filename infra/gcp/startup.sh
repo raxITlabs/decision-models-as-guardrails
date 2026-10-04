@@ -70,13 +70,23 @@ if echo "$MODELS_JSON" | jq -e 'any(.[]; .kind == "strands")' >/dev/null; then
       || { echo "refusing strands model entry: $sname"; exit 1; }
     sudo -u goldrails -H env HF_HOME=/opt/goldrails/.cache/huggingface /opt/goldrails/strands/.venv/bin/python - "$sref" "$srev" "/opt/goldrails/checkpoints/$sname" <<'PY' \
       && echo "strands checkpoint $sname at $srev ready" || echo "strands checkpoint download FAILED for $sname"
-import pathlib, sys
+import json, os, pathlib, re, sys
 from huggingface_hub import snapshot_download
 ref, rev, out = sys.argv[1:4]
 marker = pathlib.Path(out) / ".goldrails-revision"
 if not (marker.exists() and marker.read_text().strip() == rev):
     snapshot_download(ref, revision=rev, local_dir=out)
     marker.write_text(rev + "\n")
+# The checkpoint is a LoRA adapter; the server loads its base model by name with the Hub offline, so the base must be in
+# the shared cache. Pin it to the revision provenance.json records and point the cache's refs/main at that commit.
+prov = json.loads((pathlib.Path(out) / "provenance.json").read_text())
+base, base_rev = prov["base_model"], prov["base_model_revision"]
+assert re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", base) and re.fullmatch(r"[0-9a-f]{40}", base_rev), (base, base_rev)
+snapshot_download(base, revision=base_rev)
+refs = pathlib.Path(os.environ["HF_HOME"]) / "hub" / ("models--" + base.replace("/", "--")) / "refs"
+refs.mkdir(parents=True, exist_ok=True)
+(refs / "main").write_text(base_rev)
+print(f"strands base {base} at {base_rev} cached")
 PY
   done
 fi
