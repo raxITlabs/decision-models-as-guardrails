@@ -9,4 +9,6 @@ models = [
   { name = "open-jev-2b", kind = "openjev", ref = "ZefanCai/Open-Jev-2B",  revision = "0c7aa498b1627be8da4acf34c863ff0ee0a92785",  port = 8791, gpu = 2 },
   { name = "open-jev-9b", kind = "openjev", ref = "ZefanCai/Open-Jev-9B",  revision = "47e966881e489511c0c7f5633a9e1960a676a551",  port = 8792, gpu = 3 },
   { name = "laya", kind = "laya", ref = "convaiinnovations/laya", revision = "1c5edc17a7acd8701df6fc341c0d179f1c62c982", port = 8012, gpu = 1 },
+  # Strands Decider 2B (about 5 GB bf16), beside Open-Jev-2B on the third card. 4,096-token window.
+  { name = "strands-decider-2b", kind = "strands", ref = "StrandsAgents/strands-decider-2B-hobson-v19", revision = "bb282d786bc251fd4e3068de3ada9ddbb38127cd", port = 8013, gpu = 2 },
 ]

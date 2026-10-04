@@ -56,8 +56,8 @@ variable "models" {
     error_message = "model.name: lowercase letters, digits, hyphen; max 41 chars; no dots."
   }
   validation {
-    condition     = alltrue([for m in var.models : contains(["kev", "openjev", "laya"], m.kind)])
-    error_message = "model.kind must be kev, openjev or laya."
+    condition     = alltrue([for m in var.models : contains(["kev", "openjev", "laya", "strands"], m.kind)])
+    error_message = "model.kind must be kev, openjev, laya or strands."
   }
   validation {
     condition     = alltrue([for m in var.models : can(regex("^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$", m.ref))])
@@ -90,6 +90,16 @@ variable "laya_version" {
   validation {
     condition     = can(regex("^[0-9]+\\.[0-9]+\\.[0-9]+$", var.laya_version))
     error_message = "laya_version must be an exact x.y.z release."
+  }
+}
+
+variable "strands_decider_version" {
+  description = "Pinned PyPI release of strands-decider, whose create_app serves kind = \"strands\" models (StrandsAgents/strands-decider-2B-hobson-v19)."
+  type        = string
+  default     = "0.1.0"
+  validation {
+    condition     = can(regex("^[0-9]+\\.[0-9]+\\.[0-9]+$", var.strands_decider_version))
+    error_message = "strands_decider_version must be an exact x.y.z release."
   }
 }
 

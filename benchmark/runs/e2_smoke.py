@@ -2,6 +2,7 @@
 
     uv run python benchmark/runs/e2_smoke.py plan                      # offline: the row selection and token estimates
     uv run python benchmark/runs/e2_smoke.py run --systems jev,open,bedrock
+    uv run python benchmark/runs/e2_smoke.py run --systems clef,clef-flash,perplexity,strands   # new models (docs/28)
     uv run python benchmark/runs/e2_smoke.py report                    # offline: summary from the ledgers
 
 Rows come only from ``dataset/edition2/build/F*.tune.jsonl`` (public tune split; the private slice is test-only and
@@ -9,6 +10,11 @@ is checked to be disjoint). Rows the owner excluded (``dataset/edition2/EXCLUDED
 ``*/private/EXCLUDED.jsonl``) are never picked. Nothing from the test split is read. Ledgers in ``benchmark/results/edition2-smoke/`` keep
 row ids, labels and system outputs, never the row text, because many tune rows come from ids-only sources
 (owner ruling 10). Error strings are cut to 300 characters and checked for row text before they are written.
+
+New decision models (docs/benchmark/28): ``clef`` and ``clef-flash`` (Cloudflare Workers AI), ``perplexity``
+(pplx-decider-v1-27b), ``strands`` (Strands Decider 2B on the GCP VM) and ``openai`` (gpt-6-luna, unverified stub).
+A system whose credentials or VM slot are missing is skipped as ``not_configured`` before any row is read for it;
+nothing is sent and nothing is written for it.
 
 This is a compatibility check (docs/benchmark/28, "Smoke test for every new model"), not a scored run: no manifest,
 no freeze, nothing here enters a leaderboard.
@@ -52,10 +58,16 @@ NOT_RUN = {("grounding", "relevance"): "no edition 2 tune row carries a relevanc
 # 32k tokens for state plus the longest question (docs/reference/typesafe/models.md). Kev and Laya do not document
 # theirs here, so the 4096 reference is applied to them as a conservative proxy and labelled as such.
 LIMITS = {"jev-1.13.0": (32000, "documented"), "open-jev-2b": (4096, "served --max-length"),
+          "clef": (65536, "hosted context (Workers AI)"), "clef-flash": (65536, "hosted context (Workers AI)"),
+          "pplx-decider-v1-27b": (262144, "hosted input limit (Perplexity docs)"),
+          "strands-decider-2b": (4096, "documented window; cut silently, no truncation flag"),
+          "gpt-6-luna": (None, "undocumented (limited preview)"),
           "laya": (512, "observed: usage.input_tokens tops out at 512 x questions, so each prompt is cut at 512"),
           "bedrock-guardrails": (None, "service")}
 # Servers whose usage.input_tokens is the sum over one prompt per question: per-prompt tokens = usage / questions.
 PER_PROMPT_USAGE = {"open-jev-2b", "laya"}
+# Hosted joint-schema models report one input count for the whole request: at the limit means the input was capped.
+WHOLE_REQUEST_USAGE = {"clef", "clef-flash", "pplx-decider-v1-27b"}
 DEFAULT_LIMIT = (4096, "proxy: undocumented, 4096 reference")
 NEAR = 0.8   # a row is near the limit at >= 80% of it
 CHARS_PER_TOKEN = 3.5   # conservative (over-)estimate for English with a BPE tokenizer
@@ -179,10 +191,17 @@ def leak_check(paths, rows_by_id: dict) -> list:
 
 # --- systems ---------------------------------------------------------------------------------------------------
 
-def build_systems(kinds: set) -> dict:
-    """{system name: (adapter, workers)}"""
+NEW_KINDS = ("clef", "clef-flash", "perplexity", "strands", "openai")
+KINDS = ("jev", "open", "bedrock") + NEW_KINDS
+
+
+def build_systems(kinds: set, env=None) -> tuple[dict, dict]:
+    """({system name: (adapter, workers)}, {kind: why it is not configured}). A missing credential or VM slot is
+    reported, never raised, so one unconfigured system does not stop the others."""
+    import os
     from goldrails_bench.systemone import SystemOneClient
-    out = {}
+    env = os.environ if env is None else env
+    out, skipped = {}, {}
     if "jev" in kinds:
         c = SystemOneClient("jev-1.13.0", model="jev-1.13.0", identity={"model": "jev-1.13.0", "provider": "api.typesafe.ai"})
         out["jev-1.13.0"] = (NoulAdapter(c, endpoint="https://api.typesafe.ai"), 8)
@@ -195,7 +214,53 @@ def build_systems(kinds: set) -> dict:
         a = BedrockAdapter(config=bedrock_config())
         a.blocked = bedrock_blocked()
         out["bedrock-guardrails"] = (a, 1)
-    return out
+    out_new, skipped = build_new_systems(kinds, env)
+    out.update({k: v for k, v in out_new.items() if k not in out})   # "open" may already hold the Strands slot
+    return out, skipped
+
+
+def build_new_systems(kinds: set, env) -> tuple[dict, dict]:
+    """The docs/benchmark/28 systems. Hosted ones come from env (names in .env.example); Strands from the VM."""
+    from goldrails_bench import hosted
+    out, skipped = {}, {}
+    for kind in ("clef", "clef-flash"):
+        if kind in kinds:
+            c = hosted.CloudflareSystemOneClient.from_env(kind, env=env)
+            if c is None:
+                skipped[kind] = hosted.not_configured(kind)
+            else:
+                out[c.system] = (NoulAdapter(c, endpoint=c.endpoint), 4)
+    if "perplexity" in kinds:
+        c = hosted.PerplexityDecisionsClient.from_env(env=env)
+        if c is None:
+            skipped["perplexity"] = hosted.not_configured("perplexity")
+        else:
+            out[c.system] = (NoulAdapter(c, endpoint=c.endpoint), 4)   # the client throttles the pool to 5/s
+    if "openai" in kinds:
+        c = hosted.OpenAIDecisionsClient.from_env(env=env)
+        if c is None:
+            skipped["openai"] = hosted.not_configured("openai")
+        else:
+            out[c.system] = (NoulAdapter(c, endpoint=c.endpoint), 2)
+    if "strands" in kinds:
+        found, why = strands_models()
+        if not found:
+            skipped["strands"] = f"not_configured: strands needs a kind=strands model on the GCP VM ({why})"
+        from goldrails_bench.systemone import SystemOneClient
+        for m in found:
+            c = SystemOneClient(m["name"], base_url=m["url"], model=m["model"], identity=m["identity"], timeout=300)
+            out[m["name"]] = (NoulAdapter(c, endpoint=m["url"]), 2)
+    return out, skipped
+
+
+def strands_models() -> tuple[list, str | None]:
+    """([served kind=strands models], why there are none)."""
+    try:
+        from goldrails_bench.endpoints import resolve_models
+        found = [m for m in resolve_models(mode="tunnel") if m["kind"] == "strands"]
+    except Exception as e:  # noqa: BLE001  no gcloud, no VM, VM stopped: the system is not configured
+        return [], f"{type(e).__name__}: {str(e)[:160]}"
+    return found, None if found else "the VM serves no kind=strands model; add it to terraform.tfvars and apply"
 
 
 def bedrock_config() -> dict | None:
@@ -244,7 +309,7 @@ def record(system, suite, sub, r, res, ids_only, rerun=False) -> dict:
     tokens_basis = "per-prompt chars/3.5 estimate (state + longest question)"
     if system in PER_PROMPT_USAGE and isinstance(used, int):
         tok, tokens_basis = round(used / nq), "usage.input_tokens / questions (mean per prompt)"
-    at_cap = bool(lim and isinstance(used, int) and system in PER_PROMPT_USAGE and used >= nq * lim)
+    at_cap = capped(system, used, nq, lim)
     return {"system": system, "suite": suite, "subtask": sub, "row_id": r["id"], "row_tag": r["subtask"],
             "expected": exp, "source": r["provenance"]["source"], "ids_only_source": ids_only,
             "outcome": d["outcome"], "decision": d["decision"], "score": d["score"], "correct": correct,
@@ -256,6 +321,17 @@ def record(system, suite, sub, r, res, ids_only, rerun=False) -> dict:
             "truncated": d.get("truncated"), "truncation_reported": srv.get("truncation_reported"),
             "truncation": trunc_summary(d.get("truncation")),
             "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+
+
+def capped(system: str, used, nq: int, lim) -> bool:
+    """usage.input_tokens shows the input reached the system's limit (so part of it was probably cut)."""
+    if not lim or not isinstance(used, int) or isinstance(used, bool):
+        return False
+    if system in PER_PROMPT_USAGE:
+        return used >= nq * lim
+    if system in WHOLE_REQUEST_USAGE:
+        return used >= 0.99 * lim
+    return False
 
 
 def trunc_summary(t: dict | None) -> dict | None:
@@ -280,7 +356,7 @@ def recompute(path: Path, rows: dict) -> None:
         tok, tb = est_tokens(r, suite, sub, system), "per-prompt chars/3.5 estimate (state + longest question)"
         if system in PER_PROMPT_USAGE and isinstance(used, int):
             tok, tb = round(used / nq), "usage.input_tokens / questions (mean per prompt)"
-        at_cap = bool(lim and isinstance(used, int) and system in PER_PROMPT_USAGE and used >= nq * lim)
+        at_cap = capped(system, used, nq, lim)
         d.update(est_tokens=tok, tokens_basis=tb, usage_input_tokens=used, questions=nq, at_cap=at_cap,
                  limit_tokens=lim, limit_basis=basis, near_limit=bool(lim and (tok >= NEAR * lim or at_cap)))
         out.append(json.dumps(d, ensure_ascii=False))
@@ -288,10 +364,18 @@ def recompute(path: Path, rows: dict) -> None:
 
 
 def run(kinds: set, only: set | None = None) -> None:
+    unknown = kinds - set(KINDS)
+    if unknown:
+        raise SystemExit(f"unknown --systems {sorted(unknown)}; known: {', '.join(KINDS)}")
+    systems, skipped = build_systems(kinds)
+    for kind, why in skipped.items():
+        print(f"{kind:20s} NOT_CONFIGURED, nothing sent: {why}", flush=True)
+    if not systems:
+        print("no configured system: nothing to run", flush=True)
+        return
     OUT.mkdir(parents=True, exist_ok=True)
     sel = select()
     is_ids_only = ids_only_flags()
-    systems = build_systems(kinds)
     for name, (adapter, workers) in systems.items():
         if only and name not in only:
             continue

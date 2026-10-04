@@ -51,6 +51,36 @@ else
   echo "laya $LAYA_VERSION venv present"
 fi
 
+# Strands Decider: the vendor's package at a pinned release in its own venv, launched by our create_app + uvicorn
+# wrapper (shipped via metadata) so it binds 0.0.0.0. Built only when a strands model is listed. The checkpoint is
+# downloaded here at its pinned revision, before the unit starts; the server then runs with HF_HUB_OFFLINE=1.
+STRANDS_VERSION=$(md strands-version || echo "")
+if echo "$MODELS_JSON" | jq -e 'any(.[]; .kind == "strands")' >/dev/null; then
+  [[ "$STRANDS_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "refusing strands-decider version: $STRANDS_VERSION"; exit 1; }
+  mkdir -p /opt/goldrails/strands && md strands-server-py > /opt/goldrails/strands/strands_server.py && chown -R goldrails:goldrails /opt/goldrails/strands
+  if ! sudo -u goldrails -H bash -c "cd /opt/goldrails/strands && [ -x .venv/bin/python ] && .venv/bin/python -c 'import sys; from importlib.metadata import version; sys.exit(0 if version(\"strands-decider\") == \"$STRANDS_VERSION\" else 1)'" 2>/dev/null; then
+    sudo -u goldrails -H bash -c "cd /opt/goldrails/strands && rm -rf .venv && /usr/local/bin/uv venv -q .venv && /usr/local/bin/uv pip install -q 'strands-decider==$STRANDS_VERSION' 'huggingface_hub>=0.34' 'uvicorn>=0.30'" \
+      && echo "strands-decider $STRANDS_VERSION venv ready" || echo "strands-decider venv build FAILED (service will not start)"
+  else
+    echo "strands-decider $STRANDS_VERSION venv present"
+  fi
+  echo "$MODELS_JSON" | jq -c '.[] | select(.kind == "strands")' | while read -r m; do
+    sname=$(echo "$m" | jq -r '.name'); sref=$(echo "$m" | jq -r '.ref'); srev=$(echo "$m" | jq -r '.revision')
+    [[ "$sname" =~ ^[a-z0-9][a-z0-9-]{0,40}$ && "$sref" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ && "$srev" =~ ^[0-9a-f]{40}$ ]] \
+      || { echo "refusing strands model entry: $sname"; exit 1; }
+    sudo -u goldrails -H env HF_HOME=/opt/goldrails/.cache/huggingface /opt/goldrails/strands/.venv/bin/python - "$sref" "$srev" "/opt/goldrails/checkpoints/$sname" <<'PY' \
+      && echo "strands checkpoint $sname at $srev ready" || echo "strands checkpoint download FAILED for $sname"
+import pathlib, sys
+from huggingface_hub import snapshot_download
+ref, rev, out = sys.argv[1:4]
+marker = pathlib.Path(out) / ".goldrails-revision"
+if not (marker.exists() and marker.read_text().strip() == rev):
+    snapshot_download(ref, revision=rev, local_dir=out)
+    marker.write_text(rev + "\n")
+PY
+  done
+fi
+
 # Triton builds its CUDA driver shim with gcc on first use. Do that here, outside the service sandbox, into the cache
 # the units share, and let any compiler error reach the serial console instead of a bare 500 from the server.
 dpkg -s python3-dev >/dev/null 2>&1 || { apt-get update -q >/dev/null; apt-get install -y -q python3-dev build-essential >/dev/null; }
@@ -108,14 +138,24 @@ cd /opt/goldrails/laya
 exec env CUDA_VISIBLE_DEVICES="$MODEL_GPU" .venv/bin/python laya_server.py --ref "$MODEL_REF" --revision "$MODEL_REVISION" \
   --model-name "$MODEL_NAME" --device cuda:0 --host 0.0.0.0 --port "$MODEL_PORT"
 RUN
-chmod +x /usr/local/bin/goldrails-run-kev /usr/local/bin/goldrails-run-openjev /usr/local/bin/goldrails-run-laya
+cat > /usr/local/bin/goldrails-run-strands <<'RUN'
+#!/usr/bin/env bash
+set -euo pipefail
+cd /opt/goldrails/strands
+ckpt="/opt/goldrails/checkpoints/${MODEL_NAME}"
+# Serve only the pinned revision that startup.sh downloaded; never fetch at serve time.
+[ "$(cat "$ckpt/.goldrails-revision" 2>/dev/null || true)" = "$MODEL_REVISION" ] || { echo "checkpoint $ckpt is not at $MODEL_REVISION"; exit 1; }
+exec env CUDA_VISIBLE_DEVICES="$MODEL_GPU" HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python strands_server.py \
+  --checkpoint "$ckpt" --model-name "$MODEL_NAME" --device cuda:0 --host 0.0.0.0 --port "$MODEL_PORT"
+RUN
+chmod +x /usr/local/bin/goldrails-run-kev /usr/local/bin/goldrails-run-openjev /usr/local/bin/goldrails-run-laya /usr/local/bin/goldrails-run-strands
 
 # One unit per model. Values are shell-quoted by jq @sh before they touch a file.
 echo "$MODELS_JSON" | jq -c '.[]' | while read -r m; do
   name=$(echo "$m" | jq -r '.name'); kind=$(echo "$m" | jq -r '.kind')
   # Allowlist: lowercase alnum and hyphen only, no dots, so the name is safe as a path component.
   [[ "$name" =~ ^[a-z0-9][a-z0-9-]{0,40}$ ]] || { echo "refusing model name: $name"; exit 1; }
-  [[ "$kind" =~ ^(kev|openjev|laya)$ ]] || { echo "refusing model kind: $kind"; exit 1; }
+  [[ "$kind" =~ ^(kev|openjev|laya|strands)$ ]] || { echo "refusing model kind: $kind"; exit 1; }
   echo "$m" | jq -r '@sh "MODEL_NAME=\(.name)\nMODEL_REF=\(.ref)\nMODEL_REVISION=\(.revision)\nMODEL_PORT=\(.port|tostring)\nMODEL_GPU=\(.gpu|tostring)"' > "/tmp/${name}.env"
   install -m 0640 -o root -g goldrails -T "/tmp/${name}.env" "/etc/goldrails/${name}.env"
   cat > "/tmp/goldrails-${name}.service" <<UNIT

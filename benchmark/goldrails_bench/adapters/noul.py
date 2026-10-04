@@ -82,7 +82,7 @@ class NoulAdapter(Adapter):
         self.system = client.system
         ident = getattr(client, "identity", None) or {}
         sdk_url = getattr(getattr(client, "client", None), "base_url", None)
-        self.endpoint = endpoint or (str(sdk_url) if sdk_url else None)
+        self.endpoint = endpoint or getattr(client, "endpoint", None) or (str(sdk_url) if sdk_url else None)
         self.revision = revision or ident.get("revision")
         self.precision = precision or ident.get("precision")
         self.max_length = max_length or ident.get("max_length")
@@ -121,8 +121,8 @@ class NoulAdapter(Adapter):
             trunc = usage_truncation(call, len(qs["questions"]), self.max_length or LAYA_MAX_LEN)
             if trunc:
                 ctx["truncation_basis"] = "usage"
-        elif trunc:
-            ctx["truncation_basis"] = "server"
+        elif trunc:   # a hosted client's own flag (Clef: usage at the hosted context) says so in basis_kind
+            ctx["truncation_basis"] = trunc.get("basis_kind", "server")
         srv = self.serving(served_model=call.model, **extra, **ctx)
         cut = {"truncated": trunc["truncated"], "truncation": trunc} if trunc else {}
         if not call.ok:
@@ -141,7 +141,7 @@ class NoulAdapter(Adapter):
         checkpoint's ``max_len``) fills ``max_length`` when the identity did not pin one. A Laya result without a
         report says so, so a ledger from a server that predates the report cannot pass as untruncated."""
         if trunc:
-            out = {"truncation_reported": True, "head_max_length": trunc.get("head_max_len"),
+            out = {"truncation_reported": trunc.get("basis_kind", "server") == "server", "head_max_length": trunc.get("head_max_len"),
                    "encoder_max_positions": trunc.get("encoder_max_positions")}
             if trunc.get("max_len") is not None:
                 out["served_max_length"] = trunc["max_len"]

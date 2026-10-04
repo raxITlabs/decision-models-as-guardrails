@@ -98,6 +98,8 @@ resource "google_compute_instance" "serve" {
     openjev-repo-sha      = var.openjev_repo_sha
     laya-version          = var.laya_version
     laya-server-py        = file("${path.module}/laya_server.py")
+    strands-version       = var.strands_decider_version
+    strands-server-py     = file("${path.module}/strands_server.py")
     uv-version            = var.uv_version
     uv-installer-sha256   = var.uv_installer_sha256
     # In the metadata map (not metadata_startup_script) so edits update in place instead of replacing the VM.

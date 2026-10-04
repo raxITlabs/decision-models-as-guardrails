@@ -66,12 +66,26 @@ def model_alias(m: dict) -> str:
     return "open-jev" if m.get("kind") == "openjev" else m["name"]
 
 
+# Context windows that a kind's server documents and enforces, in tokens. Added to the identity, so the Noul adapter
+# records them as serving.max_length. Strands Decider: 4,096 tokens, question cut from the front and state from the
+# right, with no truncation flag (strands-decider 0.1.0 README). Other kinds keep the identity they had, so the config
+# hash of runs already made does not move.
+KIND_MAX_LENGTH = {"strands": 4096}
+
+
+def identity_of(m: dict) -> dict:
+    ident = {"ref": m.get("ref"), "revision": m.get("revision"), "kind": m["kind"]}
+    if m["kind"] in KIND_MAX_LENGTH:
+        ident["max_length"] = KIND_MAX_LENGTH[m["kind"]]
+    return ident
+
+
 def resolve_models(mode: str = "tunnel", **kw) -> list[dict]:
     """[{name, url, model, kind, gpu}] for every served model, ready for SystemOneClient(name, base_url=url, model=model)."""
     info = describe(**kw)
     urls = resolve(mode, **kw)
     return [{"name": m["name"], "url": urls[m["name"]], "model": model_alias(m), "kind": m["kind"], "gpu": m.get("gpu"),
-             "identity": {"ref": m.get("ref"), "revision": m.get("revision"), "kind": m["kind"]}} for m in info["models"]]
+             "identity": identity_of(m)} for m in info["models"]]
 
 
 def tunnel_commands(**kw) -> list[str]:
