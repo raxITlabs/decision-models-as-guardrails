@@ -124,3 +124,31 @@ words subtask but only 9/20 on profanity. Jev got 10/11 and 15/20.
 2. Done: Bedrock grounding rows that carry `context` now run (see above).
 3. Done: the 8-topic edition 2 Bedrock guardrail exists and denied topics run (see above).
 4. Done: the VM's Terraform state now lives in the main checkout (`infra/gcp/terraform.tfstate`).
+
+## Round 4, 5 October 2026 (UTC)
+
+The edition 2 data changed (round 6 of the data work): the Aegis validation replies left content, test and
+unpublished rows whose text is in pplx-decider-v1-27b's training or development data left every suite, and content,
+prompt attacks and profanity were topped up. The tune split changed with it, so the seeded draw now picks 10 different
+rows per system in the three suites: 5 in `content/reply`, 1 in `prompt_attacks/direct` and 4 in
+`word_filters/profanity`. Their old records moved to `round4/<system>.jsonl`, and every system ran only the 10 new
+rows. Nothing else was sent.
+
+All eleven systems ran: Jev, Clef, Clef-flash, pplx-decider-v1-27b and Bedrock (the AWS SSO session was valid), then
+Kev-0.8B, Kev-4B, Kev-9B, Open-Jev-2B, Laya and Strands Decider 2B on the VM. `make up` resumed the VM at 10:32 UTC and
+`make pause` stopped it at about 10:39; `make status` then showed it TERMINATED. No row failed. `report` found no row
+text in any ledger. "Correct" below is the sanity reading at the fixed 0.5 rule on 20 rows, not a score.
+
+| System | content/request | content/reply | prompt_attacks/direct | word_filters/profanity |
+|---|---|---|---|---|
+| bedrock-guardrails | 15 | 13 | 16 | 10 |
+| clef | 17 | 17 | 15 | 17 |
+| clef-flash | 16 | 17 | 16 | 19 |
+| jev-1.13.0 | 18 | 13 | 14 | 16 |
+| kev-0-8b | 17 | 12 | 11 | 13 |
+| kev-4b | 17 | 11 | 17 | 15 |
+| kev-9b | 16 | 15 | 17 | 15 |
+| laya | 14 | 12 | 11 | 11 |
+| open-jev-2b | 16 | 16 | 10 | 10 |
+| pplx-decider-v1-27b | 18 | 17 | 18 | 18 |
+| strands-decider-2b | 17 | 16 | 12 | 13 |

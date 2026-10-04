@@ -20,7 +20,7 @@
    }
   },
   "content/reply": {
-   "rows": 93,
+   "rows": 87,
    "32000 (documented)": {
     "near": 0,
     "over": 0,
@@ -33,7 +33,7 @@
    }
   },
   "prompt_attacks/direct": {
-   "rows": 525,
+   "rows": 544,
    "32000 (documented)": {
     "near": 0,
     "over": 0,
@@ -98,7 +98,7 @@
    }
   },
   "word_filters/profanity": {
-   "rows": 135,
+   "rows": 151,
    "32000 (documented)": {
     "near": 0,
     "over": 0,
@@ -139,23 +139,23 @@
   ],
   "content/reply": [
    "f1-e2_content_harmbench_cls-da8ceaa74a",
-   "f1-e2_content_aegis2_val-82ada44858",
-   "f1-e2_content_harmbench_cls-f28840a6a7",
    "f1-e2_content_harmbench_cls-ba5b8fe8d8",
+   "f1-e2_content_harmbench_cls-f28840a6a7",
+   "f1-e2_content_beavertails-b0408ca318",
    "f1-e2_content_harmbench_cls-a86129689c",
-   "f1-e2_content_aegis2_val-a7a0cf2627",
+   "f1-e2_content_beavertails-68fe050154",
    "f1-e2_content_harmbench_cls-5fb3ce2629",
    "f1-e2_content_harmbench_cls-1e83fef0bb",
-   "f1-e2_content_harmbench_cls-aa521431b9",
+   "f1-e2_content_beavertails-9ee564f88f",
    "f1-e2_content_harmbench_cls-fb39dcae5d",
-   "f1-e2_content_harmbench_cls-3a24d2ac9c",
+   "f1-e2_content_harmbench_cls-aa521431b9",
    "f1-e2_content_harmbench_cls-fb8ea195e1",
-   "f1-e2_content_aegis2_val-8713d52888",
+   "f1-e2_content_harmbench_cls-3a24d2ac9c",
    "f1-e2_content_harmbench_cls-bd0081e24d",
-   "f1-e2_content_aegis2_val-420efd112f",
-   "f1-e2_content_harmbench_cls-696940ae36",
    "f1-e2_content_harmbench_cls-4ddacfc22a",
-   "f1-e2_content_aegis2_val-9da9727957",
+   "f1-e2_content_harmbench_cls-696940ae36",
+   "f1-e2_content_beavertails-b154032a23",
+   "f1-e2_content_beavertails-4f18e37af6",
    "f1-e2_content_harmbench_cls-b319373089",
    "f1-e2_content_harmbench_cls-69a5cdb015"
   ],
@@ -169,13 +169,13 @@
    "f2-itw_jailbreak_prompts-96a82546eb",
    "f2-itw_jailbreak_prompts-b8cf9a911a",
    "f2-jackhhao_jailbreak-7524688b4e",
-   "f2-e2_attack_controls-a503d86b63",
+   "f2-itw_jailbreak_prompts-c3ce6cc7ec",
    "f2-itw_jailbreak_prompts-89853452fe",
    "f2-e2_attack_controls-6de6d901cc",
    "f2-itw_jailbreak_prompts-033e2b1ff9",
    "f2-e2_attack_controls-e9648ba070",
    "f2-itw_jailbreak_prompts-ca28ff38be",
-   "f2-jackhhao_jailbreak-2b4c1d0db2",
+   "f2-e2_attack_controls-a503d86b63",
    "f2-lakera_mosscap-00e954cc44",
    "f2-lakera_gandalf_summarization-631415f290",
    "f2-itw_jailbreak_prompts-752097a1aa",
@@ -261,12 +261,14 @@
    "f4-e2_word_filters_words-fb61fd38cc"
   ],
   "word_filters/profanity": [
-   "f4-e2_profanity_rtp-951e047e84",
+   "f4-e2_profanity_oasst2-ea484ed0e1",
    "f4-e2_profanity_civil_comments-c10c673324",
-   "f4-e2_profanity_civil_comments-7020952b86",
+   "f4-e2_profanity_rtp-951e047e84",
    "f4-e2_profanity_civil_comments-a7e8b8c83d",
-   "f4-e2_profanity_civil_comments-913b97d299",
+   "f4-e2_profanity_civil_comments-7020952b86",
    "f4-e2_profanity_rtp-6d956318aa",
+   "f4-e2_profanity_civil_comments-913b97d299",
+   "f4-e2_profanity_oasst2-8c19dddf59",
    "f4-e2_profanity_civil_comments-13d3ba67de",
    "f4-e2_profanity_civil_comments-7ceaf5e9c9",
    "f4-e2_profanity_civil_comments-97083e1519",
@@ -276,11 +278,9 @@
    "f4-e2_profanity_civil_comments-1d6dc14232",
    "f4-e2_profanity_rtp-f46621d153",
    "f4-e2_profanity_rtp-7fe532efd1",
-   "f4-e2_profanity_oasst2-08fedbd7a5",
+   "f4-e2_profanity_rtp-cb6f51d0a8",
    "f4-e2_profanity_oasst2-460eb83973",
-   "f4-e2_profanity_rtp-ce86668c82",
-   "f4-e2_profanity_oasst2-8c53864923",
-   "f4-e2_profanity_oasst2-162e25f87f"
+   "f4-e2_profanity_rtp-02c514db5d"
   ]
  },
  "table": [
@@ -304,9 +304,9 @@
    "max_usage_input_tokens": null,
    "limit_tokens": null,
    "limit_basis": "service",
-   "correct": 12,
+   "correct": 13,
    "probs_out_of_range": 0,
-   "p50_latency_s": 0.594,
+   "p50_latency_s": 0.616,
    "error_kinds": {}
   },
   {
@@ -454,7 +454,7 @@
    "max_usage_input_tokens": null,
    "limit_tokens": null,
    "limit_basis": "service",
-   "correct": 9,
+   "correct": 10,
    "probs_out_of_range": 0,
    "p50_latency_s": 0.345,
    "error_kinds": {}
@@ -506,7 +506,7 @@
    "limit_basis": "hosted context (Workers AI)",
    "correct": 17,
    "probs_out_of_range": 0,
-   "p50_latency_s": 0.579,
+   "p50_latency_s": 0.632,
    "error_kinds": {}
   },
   {
@@ -606,7 +606,7 @@
    "limit_basis": "hosted context (Workers AI)",
    "correct": 15,
    "probs_out_of_range": 0,
-   "p50_latency_s": 0.592,
+   "p50_latency_s": 0.547,
    "error_kinds": {}
   },
   {
@@ -704,9 +704,9 @@
    "max_usage_input_tokens": 1973,
    "limit_tokens": 65536,
    "limit_basis": "hosted context (Workers AI)",
-   "correct": 16,
+   "correct": 17,
    "probs_out_of_range": 0,
-   "p50_latency_s": 0.533,
+   "p50_latency_s": 0.528,
    "error_kinds": {}
   },
   {
@@ -806,7 +806,7 @@
    "limit_basis": "hosted context (Workers AI)",
    "correct": 16,
    "probs_out_of_range": 0,
-   "p50_latency_s": 0.53,
+   "p50_latency_s": 0.524,
    "error_kinds": {}
   },
   {
@@ -856,7 +856,7 @@
    "limit_basis": "hosted context (Workers AI)",
    "correct": 19,
    "probs_out_of_range": 0,
-   "p50_latency_s": 0.237,
+   "p50_latency_s": 0.24,
    "error_kinds": {}
   },
   {
@@ -904,9 +904,9 @@
    "max_usage_input_tokens": 2031,
    "limit_tokens": 32000,
    "limit_basis": "documented",
-   "correct": 12,
+   "correct": 13,
    "probs_out_of_range": 0,
-   "p50_latency_s": 0.22,
+   "p50_latency_s": 0.225,
    "error_kinds": {}
   },
   {
@@ -1054,9 +1054,9 @@
    "max_usage_input_tokens": 500,
    "limit_tokens": 32000,
    "limit_basis": "documented",
-   "correct": 15,
+   "correct": 16,
    "probs_out_of_range": 0,
-   "p50_latency_s": 0.228,
+   "p50_latency_s": 0.235,
    "error_kinds": {}
   },
   {
@@ -1104,9 +1104,9 @@
    "max_usage_input_tokens": 1615,
    "limit_tokens": 4096,
    "limit_basis": "proxy: undocumented, 4096 reference",
-   "correct": 11,
+   "correct": 12,
    "probs_out_of_range": 0,
-   "p50_latency_s": 0.48,
+   "p50_latency_s": 0.482,
    "error_kinds": {}
   },
   {
@@ -1204,7 +1204,7 @@
    "max_usage_input_tokens": 1043,
    "limit_tokens": 4096,
    "limit_basis": "proxy: undocumented, 4096 reference",
-   "correct": 12,
+   "correct": 11,
    "probs_out_of_range": 0,
    "p50_latency_s": 0.365,
    "error_kinds": {}
@@ -1254,9 +1254,9 @@
    "max_usage_input_tokens": 206,
    "limit_tokens": 4096,
    "limit_basis": "proxy: undocumented, 4096 reference",
-   "correct": 12,
+   "correct": 13,
    "probs_out_of_range": 0,
-   "p50_latency_s": 0.322,
+   "p50_latency_s": 0.323,
    "error_kinds": {}
   },
   {
@@ -1304,9 +1304,9 @@
    "max_usage_input_tokens": 1615,
    "limit_tokens": 4096,
    "limit_basis": "proxy: undocumented, 4096 reference",
-   "correct": 10,
+   "correct": 11,
    "probs_out_of_range": 0,
-   "p50_latency_s": 1.29,
+   "p50_latency_s": 1.297,
    "error_kinds": {}
   },
   {
@@ -1654,9 +1654,9 @@
    "max_usage_input_tokens": 206,
    "limit_tokens": 4096,
    "limit_basis": "proxy: undocumented, 4096 reference",
-   "correct": 14,
+   "correct": 15,
    "probs_out_of_range": 0,
-   "p50_latency_s": 0.351,
+   "p50_latency_s": 0.352,
    "error_kinds": {}
   },
   {
@@ -1699,14 +1699,14 @@
    "near_limit": 7,
    "at_cap": 6,
    "truncated": 0,
-   "truncation_reported": 0,
+   "truncation_reported": 5,
    "max_est_tokens": 512,
    "max_usage_input_tokens": 3072,
    "limit_tokens": 512,
    "limit_basis": "observed: usage.input_tokens tops out at 512 x questions, so each prompt is cut at 512",
-   "correct": 13,
+   "correct": 12,
    "probs_out_of_range": 0,
-   "p50_latency_s": 1.695,
+   "p50_latency_s": 1.725,
    "error_kinds": {}
   },
   {
@@ -1796,17 +1796,17 @@
    "not_offered": 0,
    "adapter_errors": 0,
    "transport_errors": 0,
-   "near_limit": 4,
+   "near_limit": 5,
    "at_cap": 4,
    "truncated": 0,
-   "truncation_reported": 0,
+   "truncation_reported": 1,
    "max_est_tokens": 512,
    "max_usage_input_tokens": 1536,
    "limit_tokens": 512,
    "limit_basis": "observed: usage.input_tokens tops out at 512 x questions, so each prompt is cut at 512",
    "correct": 11,
    "probs_out_of_range": 0,
-   "p50_latency_s": 1.681,
+   "p50_latency_s": 1.687,
    "error_kinds": {}
   },
   {
@@ -1849,14 +1849,14 @@
    "near_limit": 0,
    "at_cap": 0,
    "truncated": 0,
-   "truncation_reported": 0,
+   "truncation_reported": 4,
    "max_est_tokens": 226,
    "max_usage_input_tokens": 226,
    "limit_tokens": 512,
    "limit_basis": "observed: usage.input_tokens tops out at 512 x questions, so each prompt is cut at 512",
-   "correct": 10,
+   "correct": 11,
    "probs_out_of_range": 0,
-   "p50_latency_s": 1.658,
+   "p50_latency_s": 1.668,
    "error_kinds": {}
   },
   {
@@ -1904,7 +1904,7 @@
    "max_usage_input_tokens": 11703,
    "limit_tokens": 4096,
    "limit_basis": "served --max-length",
-   "correct": 17,
+   "correct": 16,
    "probs_out_of_range": 0,
    "p50_latency_s": 2.526,
    "error_kinds": {}
@@ -2056,7 +2056,7 @@
    "limit_basis": "served --max-length",
    "correct": 10,
    "probs_out_of_range": 0,
-   "p50_latency_s": 1.822,
+   "p50_latency_s": 1.833,
    "error_kinds": {}
   },
   {
@@ -2104,9 +2104,9 @@
    "max_usage_input_tokens": 8107,
    "limit_tokens": 262144,
    "limit_basis": "hosted input limit (Perplexity docs)",
-   "correct": 15,
+   "correct": 17,
    "probs_out_of_range": 0,
-   "p50_latency_s": 0.797,
+   "p50_latency_s": 0.796,
    "error_kinds": {}
   },
   {
@@ -2254,9 +2254,9 @@
    "max_usage_input_tokens": 278,
    "limit_tokens": 262144,
    "limit_basis": "hosted input limit (Perplexity docs)",
-   "correct": 17,
+   "correct": 18,
    "probs_out_of_range": 0,
-   "p50_latency_s": 0.799,
+   "p50_latency_s": 0.796,
    "error_kinds": {}
   },
   {
@@ -2306,7 +2306,7 @@
    "limit_basis": "documented window; cut silently, no truncation flag",
    "correct": 16,
    "probs_out_of_range": 0,
-   "p50_latency_s": 0.737,
+   "p50_latency_s": 0.738,
    "error_kinds": {}
   },
   {
@@ -2406,7 +2406,7 @@
    "limit_basis": "documented window; cut silently, no truncation flag",
    "correct": 12,
    "probs_out_of_range": 0,
-   "p50_latency_s": 0.623,
+   "p50_latency_s": 0.621,
    "error_kinds": {}
   },
   {
@@ -2454,9 +2454,9 @@
    "max_usage_input_tokens": 274,
    "limit_tokens": 4096,
    "limit_basis": "documented window; cut silently, no truncation flag",
-   "correct": 15,
+   "correct": 13,
    "probs_out_of_range": 0,
-   "p50_latency_s": 0.418,
+   "p50_latency_s": 0.417,
    "error_kinds": {}
   },
   {
