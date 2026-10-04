@@ -215,12 +215,16 @@ class CloudflareSystemOneClient(HostedDecisionClient):
 
     @classmethod
     def from_env(cls, system: str, env=os.environ, **kw):
-        acct, tok = env.get("CLOUDFLARE_ACCOUNT_ID"), env.get("CLOUDFLARE_API_TOKEN")
+        # Cloudflare's own examples call the token CLOUDFLARE_AUTH_TOKEN; either name works.
+        acct = env.get("CLOUDFLARE_ACCOUNT_ID")
+        tok = env.get("CLOUDFLARE_API_TOKEN") or env.get("CLOUDFLARE_AUTH_TOKEN")
         return cls(system, acct, tok, **kw) if acct and tok else None
 
     def body(self, state, questions):
+        # Workers AI requires "model": "clef" or "clef-flash" in the body as well as the model id in the URL
+        # (Clef model page, input schema, read 5 October 2026).
         b = super().body(state, questions)
-        b.pop("model")
+        b["model"] = self.system
         return b
 
     def unwrap(self, payload):
@@ -290,8 +294,8 @@ class PerplexityDecisionsClient(HostedDecisionClient):
         return cls(key, **kw) if key else None
 
     def on_status(self, resp):
-        if resp.status_code == 504:
-            return "GatewayTimeout: HTTP 504 from the Decisions API (final, not retried)"
+        # Perplexity's docs say to retry 5xx (including the ~60 s 504 timeout) with backoff, so 504 takes the
+        # shared InternalServerError path, which the run's retry policy retries (docs read 5 October 2026).
         if resp.status_code == 429:
             wait = retry_after_s(resp.headers)
             if wait is not None and self.throttle:

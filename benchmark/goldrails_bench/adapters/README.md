@@ -26,7 +26,7 @@ Hosted decision models that take System One's request at a different URL use `No
 | Client | System | Notes |
 |---|---|---|
 | `CloudflareSystemOneClient` | Clef, Clef-flash (Workers AI) | unwraps `{result, success, errors}`; marks `truncated` when `usage.input_tokens` reaches the 65,536-token context |
-| `PerplexityDecisionsClient` | pplx-decider-v1-27b | 5 requests/s across threads; Retry-After on 429; 504 is final; fails a response that reports a Jev model name |
+| `PerplexityDecisionsClient` | pplx-decider-v1-27b | 5 requests/s across threads; Retry-After on 429; 5xx including 504 retried per the run policy (Perplexity docs); fails a response that reports a Jev model name |
 | `OpenAIDecisionsClient` | gpt-6-luna | unverified stub; 403 is `AccessPending` and stops further calls |
 
 Strands Decider runs on the GCP VM and uses `SystemOneClient` unchanged. Its 4,096-token window comes from

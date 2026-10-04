@@ -69,7 +69,7 @@ def test_clef_sends_the_system_one_body_to_the_workers_ai_url():
     assert str(req.url) == f"https://api.cloudflare.com/client/v4/accounts/{ACCT}/ai/run/@cf/cloudflare/clef"
     assert req.headers["authorization"] == "Bearer cf-token"
     body = json.loads(req.content)
-    assert "model" not in body and body["state"] == ROW["state"]
+    assert body["model"] == "clef" and body["state"] == ROW["state"]
     assert body["questions"] == {k: build_question(v).model_dump(exclude_none=True) for k, v in QS["questions"].items()}
     assert res.outcome == DECIDED and res.decision is True and res.score == 0.9
     srv = res.serving
@@ -205,10 +205,11 @@ def test_perplexity_cannot_be_built_under_a_jev_name():
             hosted.PerplexityDecisionsClient("k", **kw)
 
 
-def test_perplexity_504_is_failed_and_not_retried():
+def test_perplexity_504_is_retried_then_failed():
     s = Server(ok({"error": "timeout"}, 504))
     res = NoulAdapter(pplx(s), policy=FAST).evaluate("content", "request", ROW)
-    assert res.outcome == FAILED and res.error.startswith("GatewayTimeout") and len(s.requests) == 1
+    assert res.outcome == FAILED and res.error.startswith("InternalServerError: HTTP 504")
+    assert len(s.requests) == 1 + FAST.max_retries
 
 
 def test_perplexity_429_honours_retry_after_through_the_shared_throttle():
