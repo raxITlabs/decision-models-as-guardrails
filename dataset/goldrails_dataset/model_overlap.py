@@ -18,7 +18,7 @@ the model's actual sample, so counts are an upper bound. Digests are cached in t
 
 ``exclude`` covers the splits in ``EXCLUDE_ROLES`` (pplx-decider-v1-27b's training and development splits) and
 writes the reason ``REASON``. As with vendor_overlap, a public id goes to ``dataset/edition2/EXCLUDED.jsonl`` and an
-unpublished-slice id to the git-ignored ``<suite>/private/EXCLUDED.jsonl``. Tune rows stay and are flagged in the
+unpublished-slice id to the git-ignored ``<suite>/private/EXCLUDED.jsonl``. Dev rows stay and are flagged in the
 report. ``report`` writes public ids to ``dataset/edition2/MODEL-TRAINING-OVERLAP.json`` and unpublished-slice ids to
 the git-ignored ``build/private/MODEL-TRAINING-OVERLAP.unpublished.json``. Builders call ``seen_by_model`` to keep a
 new row out when any of its texts is in any split in ``CHECKS``. Nothing here prints row text.
@@ -213,7 +213,7 @@ def report(build: Path = E2 / "build") -> tuple[dict, list]:
                        "matched_by_feature_split_source": [{"feature": a, "split": b, "source": s, "rows": k}
                                                            for (a, b, s), k in sorted(by.items())],
                        "matched_test_rows": sum(rows[i][1] == "test" for i in hits),
-                       "matched_tune_rows": sum(rows[i][1] == "tune" for i in hits),
+                       "matched_dev_rows": sum(rows[i][1] == "dev" for i in hits),
                        "matched_unpublished_rows": len(prv),
                        "matched_public_row_ids": pub})
         private.append({"model": model, "upstream": repo, "split": split, "unpublished_row_ids": prv})
@@ -227,7 +227,7 @@ def report(build: Path = E2 / "build") -> tuple[dict, list]:
                      "actual sample, so counts are an upper bound.",
            "sources": SOURCES,
            "policy": "test and unpublished rows whose text is in pplx-decider-v1-27b's training or development splits "
-                     f"are excluded from edition 2 (EXCLUDED.jsonl, reason '{REASON}'); tune rows stay and are "
+                     f"are excluded from edition 2 (EXCLUDED.jsonl, reason '{REASON}'); dev rows stay and are "
                      "listed here",
            "excluded_rows": {"public": pub_excl, "unpublished": all_excl - pub_excl},
            "checks": checks}
@@ -250,7 +250,7 @@ def write_report(build: Path = E2 / "build") -> dict:
 # --- the candidates: exclusions --------------------------------------------------------------------------------------
 
 def candidate_matches(suites=e2_local.SUITES) -> list:
-    """[{id, suite, split, public, checks}] for every candidate row (tune, test, unpublished; owner exclusions left
+    """[{id, suite, split, public, checks}] for every candidate row (dev, test, unpublished; owner exclusions left
     out) whose text is in an EXCLUDE_ROLES split."""
     from .edition2 import excluded
     drop, idx, out = excluded(), index(), []
@@ -266,10 +266,10 @@ def candidate_matches(suites=e2_local.SUITES) -> list:
 
 
 def apply_exclusions(found: list, root: Path = E2) -> dict:
-    """Append each test or unpublished match to the right EXCLUDED.jsonl; tune rows stay (flagged in the report)."""
+    """Append each test or unpublished match to the right EXCLUDED.jsonl; dev rows stay (flagged in the report)."""
     added = {"public": collections.Counter(), "private": collections.Counter()}
     for r in found:
-        if r["split"] == "tune":
+        if r["split"] == "dev":
             continue
         path = (Path(root) / "EXCLUDED.jsonl") if r["public"] else \
             e2_local.private_dir(r["suite"], Path(root)) / "EXCLUDED.jsonl"
@@ -299,7 +299,7 @@ def main(argv=None) -> int:
         print(json.dumps({"matches": dict(sorted(tally.items())), "added": apply_exclusions(found)}, indent=1))
     else:
         rep = write_report()
-        print(json.dumps([{k: c[k] for k in ("model", "upstream", "split", "matched_test_rows", "matched_tune_rows",
+        print(json.dumps([{k: c[k] for k in ("model", "upstream", "split", "matched_test_rows", "matched_dev_rows",
                                              "matched_unpublished_rows")} for c in rep["checks"]], indent=1))
     return 0
 

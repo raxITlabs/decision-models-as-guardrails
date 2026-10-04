@@ -43,7 +43,7 @@ DEFAULT_SAMPLE = DATASET_DIR / "samples" / "sample-1k"
 DEFAULT_EXAMINED = DATASET_DIR / "frozen" / "examined-ids.txt"
 DEFAULT_REPORT = DATASET_DIR / "frozen" / "audit-report.json"
 DEFAULT_PACKETS = DATASET_DIR / "frozen" / "review-packets"
-SPLIT_FILE = re.compile(r"^(F\d)\.(tune|test)\.jsonl$")
+SPLIT_FILE = re.compile(r"^(F\d)\.(tune|dev|test)\.jsonl$")   # dev: edition 2 (records.SPLITS)
 
 SUITES = {"F1": "content", "F2": "prompt_attacks", "F3": "denied_topics", "F4": "word_filters",
           "F5": "sensitive_information", "F6": "grounding", "F7": "bias", "F8": "agent_actions"}

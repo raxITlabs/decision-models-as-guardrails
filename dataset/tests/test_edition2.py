@@ -66,7 +66,7 @@ def test_every_row_lands_in_exactly_one_bucket(parts):
 
 @needs_rows
 def test_disputed_rows_are_out_of_every_split(parts):
-    for bucket in ("tune", "test", "private"):
+    for bucket in ("dev", "test", "private"):
         assert not [r.id for r in parts.get(bucket, []) if r.attribute["e2"]["second_label"] == "disagree"]
     for bucket in ("review", "review_private"):
         for r in parts.get(bucket, []):
@@ -75,17 +75,17 @@ def test_disputed_rows_are_out_of_every_split(parts):
 
 @needs_rows
 def test_splits_follow_the_proposal_and_private_is_heldout_test(parts):
-    for bucket in ("tune", "test", "private"):
+    for bucket in ("dev", "test", "private"):
         for r in parts.get(bucket, []):
             assert r.attribute["e2"]["proposed_split"] == bucket
-            assert (r.split, r.visibility) == {"tune": ("tune", "public"), "test": ("test", "public"),
+            assert (r.split, r.visibility) == {"dev": ("dev", "public"), "test": ("test", "public"),
                                                "private": ("test", "heldout")}[bucket]
 
 
 @needs_rows
 def test_no_group_or_text_in_two_splits(parts):
     where_g, where_t = defaultdict(set), defaultdict(set)
-    for bucket in ("tune", "test", "private", "review", "review_private"):
+    for bucket in ("dev", "test", "private", "review", "review_private"):
         for r in parts.get(bucket, []):
             home = r.attribute["e2"]["proposed_split"]
             where_g[(r.feature, r.group or r.id)].add(home)
@@ -98,7 +98,7 @@ def test_no_group_or_text_in_two_splits(parts):
 def test_build_keeps_private_rows_out_of_public_files(parts, tmp_path):
     m = e2.write_build(parts, tmp_path)
     assert all(not f["path"].startswith("private") for f in m["files"])
-    assert {f["split"] for f in m["files"]} <= {"tune", "test"}
+    assert {f["split"] for f in m["files"]} <= {"dev", "test"}
     priv_ids = {r.id for r in parts.get("private", []) + parts.get("review_private", [])}
     for p in tmp_path.iterdir():
         if p.is_file():
@@ -149,11 +149,11 @@ def test_second_label_coverage_fails_on_missing_labels():
 
 
 def test_cross_suite_duplicate_keeps_the_test_copy():
-    a, b = _row(1, "injection", "yes", "a", "tune"), _row(2, "jailbreak", "yes", "b", "test")
+    a, b = _row(1, "injection", "yes", "a", "dev"), _row(2, "jailbreak", "yes", "b", "test")
     b.state.text = a.state.text
-    out = defaultdict(list, {"tune": [a], "test": [b]})
+    out = defaultdict(list, {"dev": [a], "test": [b]})
     dropped = e2.resolve_cross_suite_text(out)
-    assert dropped == [a] and out["test"] == [b] and out["tune"] == [] and out["dropped"] == [a]
+    assert dropped == [a] and out["test"] == [b] and out["dev"] == [] and out["dropped"] == [a]
 
 
 # --- near-duplicate clusters ---------------------------------------------------------------------------------------
@@ -172,19 +172,19 @@ def _nd_row(i, split, text, group=None):
 
 
 def test_near_duplicate_cluster_moves_whole_to_test():
-    a = _nd_row(1, "tune", PARA + " Write a persuasive article.")
+    a = _nd_row(1, "dev", PARA + " Write a persuasive article.")
     b = _nd_row(2, "test", PARA + " List the detailed steps.")
     c = _nd_row(3, "private", PARA + " Name the best product.")
-    d = _nd_row(4, "tune", "an unrelated tune row about the weather", group="g-d")
+    d = _nd_row(4, "dev", "an unrelated dev row about the weather", group="g-d")
     e = _nd_row(5, "test", "another unrelated test row about cooking", group="g-d")      # same group as d
-    f = _nd_row(6, "tune", PARA + " Is this legal?")
+    f = _nd_row(6, "dev", PARA + " Is this legal?")
     g = _nd_row(7, "private", "a private row about gardening that nothing public resembles")
-    out = defaultdict(list, {"tune": [a, d, f], "test": [b, e], "private": [c, g]})
+    out = defaultdict(list, {"dev": [a, d, f], "test": [b, e], "private": [c, g]})
     stats = e2.cluster_near_duplicates(out)
-    # the private row with public near-copies is not held out: it joins its cluster in public test; tune never wins
+    # the private row with public near-copies is not held out: it joins its cluster in public test; dev never wins
     assert sorted(r.id for r in out["test"]) == sorted(r.id for r in (a, b, c, d, e, f))
-    assert out["private"] == [g] and out["tune"] == []                 # a shared group moves like a near duplicate
-    assert stats["moved"] == {"private->test": 1, "tune->test": 3}
+    assert out["private"] == [g] and out["dev"] == []                 # a shared group moves like a near duplicate
+    assert stats["moved"] == {"private->test": 1, "dev->test": 3}
     for r in (a, c, f):
         assert (r.split, r.visibility) == ("test", "public") and r.attribute["e2"]["proposed_split"] == "test"
     assert c.attribute["e2"]["moved_from"] == "private" and "moved_from" not in b.attribute["e2"]
@@ -212,7 +212,7 @@ def test_no_public_candidate_row_is_in_the_private_slice(parts):
             tracked[c["id"]] = c
     priv = [r for b in ("private", "review_private", "dropped_private") for r in parts.get(b, [])]
     assert priv and not {r.id for r in priv} & set(tracked)
-    pub = [r for b in ("tune", "test", "review") for r in parts.get(b, []) if r.id in tracked]
+    pub = [r for b in ("dev", "test", "review") for r in parts.get(b, []) if r.id in tracked]
     held = [r for b in ("private", "review_private") for r in parts.get(b, [])]     # dropped copies are not held out
     pairs = near_duplicate_pairs([row_shingles(r) for r in held], [row_shingles(r) for r in pub])
     assert not [(held[i].id, pub[j].id) for i, j, _, _ in pairs]
@@ -220,24 +220,24 @@ def test_no_public_candidate_row_is_in_the_private_slice(parts):
 
 def test_a_shared_context_clusters_rows_whose_text_differs():
     # HarmBench contextual behaviours: one context paragraph in state.context, different short requests
-    a = _nd_row(1, "tune", "Write a persuasive article about this.")
+    a = _nd_row(1, "dev", "Write a persuasive article about this.")
     b = _nd_row(2, "test", "List the detailed steps.")
-    c = _nd_row(3, "tune", "Grounding reply.")
+    c = _nd_row(3, "dev", "Grounding reply.")
     d = _nd_row(4, "test", "Another grounding reply.")
     for r in (a, b):
         r.state.context = [{"role": "user", "text": PARA}]
     c.state.source = d.state.source = ("The annual report says revenue rose by twelve percent in the third quarter "
                                        "while costs fell, and the board approved a new dividend policy for the "
                                        "coming year after a long review of the balance sheet.")   # one source, two replies
-    out = defaultdict(list, {"tune": [a, c], "test": [b, d]})
+    out = defaultdict(list, {"dev": [a, c], "test": [b, d]})
     e2.cluster_near_duplicates(out)
-    assert out["tune"] == [] and a.group == b.group and c.group == d.group and a.group != c.group
-    assert a.attribute["e2"]["moved_from"] == "tune" and c.attribute["e2"]["moved_from"] == "tune"
+    assert out["dev"] == [] and a.group == b.group and c.group == d.group and a.group != c.group
+    assert a.attribute["e2"]["moved_from"] == "dev" and c.attribute["e2"]["moved_from"] == "dev"
 
 
 def test_near_duplicate_in_review_follows_its_cluster():
     a = _nd_row(1, "test", PARA + " Write a persuasive article.")
-    b = _nd_row(2, "tune", PARA + " List the detailed steps.")
+    b = _nd_row(2, "dev", PARA + " List the detailed steps.")
     out = defaultdict(list, {"test": [a], "review": [b]})
     e2.cluster_near_duplicates(out)
     assert out["review"] == [b] and b.attribute["e2"]["proposed_split"] == "test" and b.split == "test"
@@ -383,7 +383,7 @@ def test_shortcut_gate_needs_both_bounds_and_passes_a_clean_split(monkeypatch):
 
 
 def test_shortcut_gate_needs_the_in_sample_and_the_heldback_view(monkeypatch):
-    rows = {"tune": [], "test": [], "private": []}
+    rows = {"dev": [], "test": [], "private": []}
     ok = {"pass": True, "failures": []}
     monkeypatch.setattr(e2, "shortcut_audit", lambda parts, use_sklearn=None: ok)
     monkeypatch.setattr(e2, "shortcut_heldback", lambda parts, use_sklearn=None: {"pass": False, "failures": ["x"]})
@@ -445,10 +445,10 @@ def test_committed_contract_records_the_current_gate():
 
 def test_heldback_view_fails_on_a_source_shortcut_and_without_the_ngram_baseline():
     rows = [r for sub in ("injection", "jailbreak", "leakage") for r in _attack_rows(sub, 40, shortcut=True)]
-    tune = [r for sub in ("injection", "jailbreak", "leakage") for r in _attack_rows(sub, 10, shortcut=True)]
-    for r in tune:
+    dev = [r for sub in ("injection", "jailbreak", "leakage") for r in _attack_rows(sub, 10, shortcut=True)]
+    for r in dev:
         r.id, r.group = r.id + "t", r.group + "t"
-    rep = e2.shortcut_heldback({"test": rows, "tune": tune}, use_sklearn=False)
+    rep = e2.shortcut_heldback({"test": rows, "dev": dev}, use_sklearn=False)
     assert rep["pass"] is False
     assert any("injection/source_id" in f for f in rep["failures"])
     assert any("char_ngram_logreg: not computed" in f for f in rep["failures"])
@@ -492,7 +492,7 @@ def test_later_round_second_labels_count(parts, suite, name):
         if where[rid] in ("dropped", "dropped_private"):
             continue
         if status == e2.RESOLVED:
-            assert where[rid] in ("tune", "test", "private") and r.expected == res[rid]["final_label"], rid
+            assert where[rid] in ("dev", "test", "private") and r.expected == res[rid]["final_label"], rid
         elif sec["label"] != r.expected:
             assert where[rid] in ("review", "review_private") and status == "disagree", rid
         else:
@@ -513,7 +513,7 @@ def test_resolved_disputes_return_with_their_final_labels_and_the_rest_wait(part
                 continue
             if d["status"] == e2.RESOLVED:
                 n_resolved += 1
-                assert bucket in ("tune", "test", "private"), rid
+                assert bucket in ("dev", "test", "private"), rid
                 assert r.expected == d["final_label"] and r.attribute["e2"]["second_label"] == e2.RESOLVED
                 assert r.attribute["e2"]["resolution"]["ruling"] == d["ruling"]
                 if d.get("final_subtask"):
@@ -635,7 +635,7 @@ def test_ruling5_corrections_drop_bare_place_addresses_from_undisputed_rows(part
         assert not [sp for sp in (r.spans or []) if sp["label"] == "ADDRESS"]
     # no built PII row keeps an ADDRESS that rests only on bare place fields
     cands = {c["id"]: c for c in e2.candidates(pii)}
-    for b in ("tune", "test", "private"):
+    for b in ("dev", "test", "private"):
         for r in parts.get(b, []):
             if r.feature == "F5" and "ADDRESS" in r.attribute["e2"]["entity_types"]:
                 spans = [sp for sp in cands[r.id].get("spans") or [] if sp["label"] == "ADDRESS"]
@@ -677,8 +677,8 @@ def test_heldback_gate_report_has_both_views():
         pytest.skip("gate-heldback.json not written")
     rep = json.loads(p.read_text(encoding="utf-8"))
     views = rep["results"]
-    assert {"in_sample_public_test", "in_sample_test_with_private", "heldback_tune_to_private",
-            "heldback_test_and_private_to_tune", "heldback_seeded_groups"} <= set(views)
+    assert {"in_sample_public_test", "in_sample_test_with_private", "heldback_dev_to_private",
+            "heldback_test_and_private_to_dev", "heldback_seeded_groups"} <= set(views)
     for v in views.values():
         for sub in ("injection", "jailbreak", "leakage"):
             for b in e2.SHORTCUT_BASELINES:

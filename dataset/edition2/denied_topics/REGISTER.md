@@ -27,7 +27,7 @@ Alternatively, the edition 2 build can read `dataset/edition2/denied_topics/cand
 
 - Cell: `("F3", "topic"): ["e2_denied_topics", "e2_oasst2"]`.
 - Add both names to `AUTHORED` / `REVIEW_GATED`. Every label is a first-labeller candidate and must not score until the second labeller and the owner confirm it.
-- Keep the proposed splits instead of the 15% re-split: `attribute["proposed_split"]` (test, tune or private), `split` and `visibility` (private = test + heldout) are already set per group. A group never straddles splits.
+- Keep the proposed splits instead of the 15% re-split: `attribute["proposed_split"]` (test, dev or private), `split` and `visibility` (private = test + heldout) are already set per group. A group never straddles splits.
 - Score these rows only against the topic set `dataset/edition2/denied_topics/topics-e2.json` (`attribute["topic_set"] == "e2"`). They are wrong against v1 `topics.json`, which lacks five of the eight topics.
 
 ## 3. `dataset/release/redistribution.json`

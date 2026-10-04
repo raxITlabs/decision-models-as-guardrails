@@ -1,4 +1,4 @@
-"""Edition 2 tune-split sample: a dress rehearsal of the full run on every public tune row, all systems.
+"""Edition 2 dev-split sample: a dress rehearsal of the full run on every public dev row, all systems.
 
     uv run python benchmark/runs/e2_sample.py plan                         # offline: rows per subtask, guard check
     uv run python benchmark/runs/e2_sample.py run --systems jev,clef,clef-flash,perplexity,bedrock
@@ -7,20 +7,20 @@
     uv run python benchmark/runs/e2_sample.py report                       # offline: run summary and leak check
     uv run python benchmark/runs/e2_sample.py score                        # offline: leaderboard.json (diagnostic)
 
-What is sent: every row of ``dataset/edition2/build/F*.tune.jsonl`` (public tune split, 1,422 rows) for every adapter
-subtask of ``e2_smoke.TASKS``, the custom-words sanity rows included. Nothing else. ``PublicTune.guard`` refuses any
-row that is not a row of a public tune file (same id, same state), any row whose split is not ``tune`` or whose
+What is sent: every row of ``dataset/edition2/build/F*.dev.jsonl`` (public dev split, 1,422 rows) for every adapter
+subtask of ``e2_smoke.TASKS``, the custom-words sanity rows included. Nothing else. ``PublicDev.guard`` refuses any
+row that is not a row of a public dev file (same id, same state), any row whose split is not ``dev`` or whose
 visibility is not ``public``, and any id in the git-ignored private slice; it runs over the whole selection before a
 system is built and again before each call. Test and unpublished rows are never read: they stay untouched until the
 owner signs the freeze.
 
 Adapters, the system registry, the retry policy, resume, row-text scrubbing and the ledger record format are
-``e2_smoke``'s (``run_selection``, ``record``, ``scrub``). Ledgers in ``benchmark/results/edition2-tune-sample/`` keep
-row ids, labels and system outputs, never row text (many tune rows come from ids-only sources, owner ruling 10).
+``e2_smoke``'s (``run_selection``, ``record``, ``scrub``). Ledgers in ``benchmark/results/edition2-dev-sample/`` keep
+row ids, labels and system outputs, never row text (many dev rows come from ids-only sources, owner ruling 10).
 
 ``score`` runs ``goldrails_bench.leaderboard_v2`` in diagnostic mode over these ledgers with the contract's fixed 0.5
-rule and the tune split as the report split. Everything it writes is labelled "tune-split sample, not a held-out
-result": the tune rows were used to build and check the dataset, so this is a rehearsal, not a result.
+rule and the dev split as the report split. Everything it writes is labelled "dev-split sample, not a held-out
+result": the dev rows were used to build and check the dataset, so this is a rehearsal, not a result.
 """
 from __future__ import annotations
 
@@ -40,11 +40,11 @@ import e2_smoke as smoke  # noqa: E402
 
 REPO = smoke.REPO
 BUILD = smoke.BUILD
-OUT = REPO / "benchmark" / "results" / "edition2-tune-sample"
+OUT = REPO / "benchmark" / "results" / "edition2-dev-sample"
 RUN_LOG = OUT / "run-log.json"
 FEATURES = ("F1", "F2", "F3", "F4", "F5", "F6")
 OVERLAP = REPO / "dataset" / "edition2" / "MODEL-TRAINING-OVERLAP.json"
-LABEL = "tune-split sample, not a held-out result"
+LABEL = "dev-split sample, not a held-out result"
 # The VM the self-hosted models ran on (infra/gcp/terraform.tfvars: g2-standard-24, us-east4-a, on demand) and the
 # dated rates in goldrails_bench/tariffs.json: the machine (both L4s) plus the 200 GB balanced disk.
 VM_HARDWARE = "g2-standard-24/us-east4/on-demand/third-party"
@@ -69,13 +69,13 @@ def _state_hash(r: dict) -> str:
     return hashlib.sha256(json.dumps(r["state"], sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
 
-class PublicTune:
-    """The public tune rows, read from the build files, and the guard that refuses everything else."""
+class PublicDev:
+    """The public dev rows, read from the build files, and the guard that refuses everything else."""
 
     def __init__(self):
         self.rows, self.feature, self.file_sha = {}, {}, {}
         for f in FEATURES:
-            p = BUILD / f"{f}.tune.jsonl"
+            p = BUILD / f"{f}.dev.jsonl"
             self.file_sha[f] = hashlib.sha256(p.read_bytes()).hexdigest()
             for x in p.open(encoding="utf-8"):
                 r = json.loads(x)
@@ -83,22 +83,22 @@ class PublicTune:
                 self.feature[r["id"]] = f
         self.hashes = {i: _state_hash(r) for i, r in self.rows.items()}
         self.private = smoke.private_ids()
-        assert not set(self.rows) & self.private, "a public tune id is in the private slice"
+        assert not set(self.rows) & self.private, "a public dev id is in the private slice"
 
     def guard(self, r: dict) -> None:
         rid = r.get("id")
         if rid not in self.rows:
-            raise PermissionError(f"refused: {rid!r} is not a row of the public tune files")
-        if r.get("split") != "tune" or r.get("visibility") != "public":
+            raise PermissionError(f"refused: {rid!r} is not a row of the public dev files")
+        if r.get("split") != "dev" or r.get("visibility") != "public":
             raise PermissionError(f"refused: {rid} has split {r.get('split')!r}, visibility {r.get('visibility')!r}")
         if rid in self.private:
             raise PermissionError(f"refused: {rid} is in the private (unpublished) slice")
         if _state_hash(r) != self.hashes[rid]:
-            raise PermissionError(f"refused: {rid} differs from the public tune file's row")
+            raise PermissionError(f"refused: {rid} differs from the public dev file's row")
 
 
-def select_all(pt: PublicTune) -> dict:
-    """{(suite, subtask): [every public tune row with one of the subtask's tags]}, owner exclusions left out."""
+def select_all(pt: PublicDev) -> dict:
+    """{(suite, subtask): [every public dev row with one of the subtask's tags]}, owner exclusions left out."""
     excl = smoke.excluded_ids()
     out = {}
     for (suite, sub), (feat, tags) in smoke.TASKS.items():
@@ -176,7 +176,7 @@ def latest(recs: list) -> list:
     return list(last.values())
 
 
-def scorer_record(d: dict, pt: PublicTune) -> dict | None:
+def scorer_record(d: dict, pt: PublicDev) -> dict | None:
     """A ledger record in the shape ``goldrails_bench.leaderboard`` scores (runner ledger format). No text."""
     if d["outcome"] == "not_offered":
         return None
@@ -201,11 +201,11 @@ def scorer_record(d: dict, pt: PublicTune) -> dict | None:
                                     sort_keys=True).encode()).hexdigest()[:16]
     return {"id": d["row_id"], "system": d["system"], "model": srv.get("model_id"), "question_set": qs,
             "config_hash": cfg, "decision_keys": keys,
-            "dataset": {"sha256": pt.file_sha[feat], "feature": feat, "split": "tune",
+            "dataset": {"sha256": pt.file_sha[feat], "feature": feat, "split": "dev",
                         "source": "dataset/edition2/build"},
             "subtask": r["subtask"], "expected": r["expected"],
             "expected_types": sorted({s["label"] for s in r["spans"]}) if r.get("spans") is not None else None,
-            "group": r.get("group") or r["id"], "split": "tune",
+            "group": r.get("group") or r["id"], "split": "dev",
             "in_bedrock_five": e2.get("in_bedrock_five"), "vendor_owned": e2.get("vendor_owned"),
             "ok": d["outcome"] == "decided", "answers": answers, "error": d.get("error"),
             "latency_s": d.get("latency_s"), "raw": [{"usage": d.get("usage")}] if d.get("usage") is not None else None}
@@ -359,10 +359,10 @@ def implementations(records: list) -> dict:
 def evaluate(records: list, drop: set = frozenset(), serving=None, tariffs=None, arms_meta=None,
              replicates=None) -> dict:
     from goldrails_bench import leaderboard_v2 as lv2
-    frozen_all = lv2.load_frozen_rows([BUILD / f"{f}.tune.jsonl" for f in FEATURES])
+    frozen_all = lv2.load_frozen_rows([BUILD / f"{f}.dev.jsonl" for f in FEATURES])
     frozen = {k: {i: v for i, v in rows.items() if i not in drop} for k, rows in frozen_all.items()}
     recs = [dict(r) for r in records if r["id"] not in drop]
-    return lv2.evaluate(recs, lv2.load_contract(), implementations(recs), None, "tune", None, replicates, None,
+    return lv2.evaluate(recs, lv2.load_contract(), implementations(recs), None, "dev", None, replicates, None,
                         tariffs, serving or [], arms_meta or {}, {}, frozen=frozen, diagnostic=True)
 
 
@@ -382,7 +382,7 @@ def compact(doc: dict) -> dict:
 
 def score(replicates: int | None = None) -> Path:
     from goldrails_bench import leaderboard as lb
-    pt = PublicTune()
+    pt = PublicDev()
     sel = select_all(pt)
     recs = load_ledgers()
     summary = run_summary(recs, sel)
@@ -406,17 +406,17 @@ def score(replicates: int | None = None) -> Path:
     doc["label"] = f"{LABEL.upper()}: " + doc["label"]
     doc["sample"] = {
         "label": LABEL,
-        "what": "every public tune row of edition 2 (dataset/edition2/build/F*.tune.jsonl) sent to every system, "
-                "scored at the contract v2.0 fixed 0.5 rule with the tune split as the report split",
+        "what": "every public dev row of edition 2 (dataset/edition2/build/F*.dev.jsonl) sent to every system, "
+                "scored at the contract v2.0 fixed 0.5 rule with the dev split as the report split",
         "caveats": [
-            "tune split: these rows were used to build, label and check the dataset (shortcut gate, smoke tests), so "
+            "dev split: these rows were used to build, label and check the dataset (shortcut gate, smoke tests), so "
             "this is a rehearsal of the full run, not a held-out result; the test split and unpublished slice were "
             "not sent",
             f"small: {len(pt.rows)} rows over 6 suites (118 to 544 per suite); intervals are wide",
             "prompt attacks are provisional (owner rulings 17 and 18): labels are partly predictable from source and style",
             "custom words (word_filters/word, 11 rows) are a pass/fail sanity check outside the score (owner ruling 13)",
             "DRIVER_ID is an unscored diagnostic (owner ruling 6)",
-            f"{len(drop)} tune rows match pplx-decider-v1-27b's training or development data "
+            f"{len(drop)} dev rows match pplx-decider-v1-27b's training or development data "
             f"({', '.join(f'{k} {v}' for k, v in sorted(by_feat.items()))}); see pplx_overlap_sensitivity",
             "Laya reads at most 512 tokens per question (owner ruling 16); truncated rows are counted in run.systems",
             "Strands Decider 2B has a 4,096-token window and cuts silently; rows estimated over it are counted",
@@ -425,7 +425,7 @@ def score(replicates: int | None = None) -> Path:
         ],
         "rows": {f: sum(1 for i in pt.rows if pt.feature[i] == f) for f in FEATURES},
         "rows_total": len(pt.rows),
-        "tune_file_sha256": pt.file_sha,
+        "dev_file_sha256": pt.file_sha,
     }
     doc["sample"]["question_set_names"] = question_set_note()
     doc["run"] = {"systems": summary, "blocked": blocked, "vm": vm_info,
@@ -434,7 +434,7 @@ def score(replicates: int | None = None) -> Path:
     doc["table"] = compact(doc)
     st = compact(sens)
     doc["pplx_overlap_sensitivity"] = {
-        "label": f"{LABEL}; sensitivity view: every system rescored without the {len(drop)} tune rows that match "
+        "label": f"{LABEL}; sensitivity view: every system rescored without the {len(drop)} dev rows that match "
                  "pplx-decider-v1-27b's training or development data (dataset/edition2/MODEL-TRAINING-OVERLAP.json)",
         "rows_dropped": len(drop), "rows_dropped_by_feature": dict(sorted(by_feat.items())),
         "table": st, "pplx_with": doc["table"].get(pplx), "pplx_without": st.get(pplx),
@@ -467,7 +467,7 @@ def question_set_note() -> dict:
 
 
 def plan() -> None:
-    pt = PublicTune()
+    pt = PublicDev()
     sel = select_all(pt)
     for rows in sel.values():
         for r in rows:
@@ -496,7 +496,7 @@ def main(argv=None) -> int:
             ap.error("vm needs up or paused")
         vm_mark(a.state)
     elif a.stage == "run":
-        pt = PublicTune()
+        pt = PublicDev()
         t = smoke.run_selection(set(a.systems.split(",")), select_all(pt), OUT,
                                 set(a.only.split(",")) if a.only else None, reruns=False, guard=pt.guard,
                                 retry_failed=a.retry_failed)
@@ -504,7 +504,7 @@ def main(argv=None) -> int:
             v["retry_failed_only"] = a.retry_failed
         log_timing(t)
     elif a.stage == "report":
-        pt = PublicTune()
+        pt = PublicDev()
         s = run_summary(load_ledgers(), select_all(pt))
         for sy, x in s.items():
             print(f"{sy:20s} rows {x['rows']:5d} failed {x['failed']:3d} (first pass {x['first_pass_failed']}) not_offered {x['not_offered']:3d} "

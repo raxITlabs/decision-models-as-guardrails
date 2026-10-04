@@ -286,7 +286,7 @@ def test_rescore_v1_reproduces_known_fixed_rule_numbers():
 # The frozen dataset the gate tests run on: 40 F3 test rows in a real file, so the manifest's integrity block can be
 # recomputed from it (freeze.integrity_problems never takes a block on trust).
 REFS = {"examined": ["f3-examined-0000000001"], "smoke": ["f3-smoke-0000000001"], "pilot": ["f3-pilot-0000000001"],
-        "tune": [{"id": "f3-tune-0000000001", "group": "tg", "state": {"text": "a tuning question about taxes"}}]}
+        "dev": [{"id": "f3-dev-0000000001", "group": "tg", "state": {"text": "a dev-split question about taxes"}}]}
 BUILDS = [{"id": "f3-v1-0000000001", "group": "vg", "state": {"text": "a v1 release question"},
            "provenance": {"source": "v1", "source_id": "1"}}]
 INTEGRITY = {"references": REFS, "v1_build_rows": BUILDS}
@@ -353,7 +353,7 @@ def test_diagnostic_mode_is_labelled_not_valid_for_publication():
 
 
 @pytest.mark.parametrize("bad", [{"pass": False}, {"overlapping_test_rows": 3}, {"test_rows": 0},
-                                 {"reference_rows": {}}, {"reference_rows": {"tune": 0, "v1_release_builds": 5}},
+                                 {"reference_rows": {}}, {"reference_rows": {"dev": 0, "v1_release_builds": 5}},
                                  {"v1_release_build_rows": 0}, {"datasets": {}},
                                  {"datasets": {"denied_topics": {"sha256": "other", "rows": 40, "files": [{}]}}}])
 def test_a_manifest_without_a_passing_integrity_block_is_refused(bad):
@@ -367,7 +367,7 @@ def test_a_hand_written_integrity_block_is_refused():
     that is not there, or a junk reference role, is refused: the gate reruns the check from the files."""
     dsha = _dsha()
     hand = {"check": "goldrails_bench.overlap", "pass": True, "test_rows": 40, "overlapping_test_rows": 0,
-            "reference_rows": {"examined": 1, "smoke": 1, "pilot": 1, "tune": 10, "v1_release_builds": 100},
+            "reference_rows": {"examined": 1, "smoke": 1, "pilot": 1, "dev": 10, "v1_release_builds": 100},
             "v1_release_build_rows": 100,
             "datasets": {"denied_topics": {"sha256": dsha, "rows": 40,
                                            "files": [{"path": "F3.test.jsonl", "sha256": "f" * 64}]}}}
@@ -381,8 +381,8 @@ def test_a_hand_written_integrity_block_is_refused():
         ev(_topics("a", dsha=dsha), contract("denied_topics"), replicates=10, seed=1, manifest=junk,
            frozen=_frozen(dsha=dsha))
     inflated = _manifest(["a"])
-    inflated["integrity"]["reference_rows"]["tune"] = 5000
-    with pytest.raises(FreezeError, match="more reference rows than exist for: tune"):
+    inflated["integrity"]["reference_rows"]["dev"] = 5000
+    with pytest.raises(FreezeError, match="more reference rows than exist for: dev"):
         ev(_topics("a", dsha=dsha), contract("denied_topics"), replicates=10, seed=1, manifest=inflated,
            frozen=_frozen(dsha=dsha))
 

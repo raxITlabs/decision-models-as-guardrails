@@ -7,7 +7,7 @@ Edition 1 grounding was RAGTruth only, and grounding drives half of Jev's lead. 
 rows from three other sources, balanced per source, split and class. Test alone is 275 unsupported and 275 supported
 rows before RAGTruth is counted, so the suite meets the 250/250 target without it.
 
-| Source | Rows | Test | Tune | Private | Label basis | Upstream split |
+| Source | Rows | Test | Dev | Private | Label basis | Upstream split |
 |---|---|---|---|---|---|---|
 | FaithDial | 260 | 168 | 40 | 52 | human (crowd BEGIN tags) | test |
 | SummEdits | 392 | 254 | 58 | 80 | human (annotators per edit) | none, the whole release is the benchmark |

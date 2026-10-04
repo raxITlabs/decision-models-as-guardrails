@@ -14,6 +14,10 @@
  },
  "by_source_split_class": {
   "faithdial": {
+   "dev": {
+    "no": 20,
+    "yes": 20
+   },
    "private": {
     "no": 26,
     "yes": 26
@@ -21,13 +25,13 @@
    "test": {
     "no": 84,
     "yes": 84
-   },
-   "tune": {
-    "no": 20,
-    "yes": 20
    }
   },
   "ragbench": {
+   "dev": {
+    "no": 15,
+    "yes": 15
+   },
    "private": {
     "no": 19,
     "yes": 19
@@ -35,13 +39,13 @@
    "test": {
     "no": 64,
     "yes": 64
-   },
-   "tune": {
-    "no": 15,
-    "yes": 15
    }
   },
   "summedits": {
+   "dev": {
+    "no": 29,
+    "yes": 29
+   },
    "private": {
     "no": 40,
     "yes": 40
@@ -49,14 +53,14 @@
    "test": {
     "no": 127,
     "yes": 127
-   },
-   "tune": {
-    "no": 29,
-    "yes": 29
    }
   }
  },
  "by_split_class": {
+  "dev": {
+   "no": 64,
+   "yes": 64
+  },
   "private": {
    "no": 85,
    "yes": 85
@@ -64,10 +68,6 @@
   "test": {
    "no": 275,
    "yes": 275
-  },
-  "tune": {
-   "no": 64,
-   "yes": 64
   }
  },
  "excluded_by_reason": {

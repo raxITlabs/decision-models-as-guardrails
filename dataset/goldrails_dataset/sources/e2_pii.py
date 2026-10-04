@@ -50,38 +50,38 @@ CANDIDATES = OUT / "candidates.jsonl"
 SUITE, SUBTASK = "sensitive_info", "pii"
 SUPPORTED = ("NAME", "EMAIL", "PHONE", "ADDRESS", "USERNAME", "PASSWORD", "IP_ADDRESS", "DRIVER_ID",
              "US_SOCIAL_SECURITY_NUMBER")
-SPLITS = ("tune", "test", "private")
+SPLITS = ("dev", "test", "private")
 SEED = "gold-rails-e2-pii"
 # Per split: positives wanted for every supported type (test aims above the 50 preferred so second review can drop
 # rows), and row targets per class. Test 300/300 clears the plan's 250/250 floor.
-ENTITY_TARGET = {"test": 60, "tune": 12, "private": 12}
-ROW_TARGET = {"test": 300, "tune": 60, "private": 60}
+ENTITY_TARGET = {"test": 60, "dev": 12, "private": 12}
+ROW_TARGET = {"test": 300, "dev": 60, "private": 60}
 MAX_CHARS = 4096          # v1's longest PII row was 4,090 characters
 # Types v1 had under 30 test positives for. Every row holding one gets a full blind second label, not a spot check.
 RARE = {"DRIVER_ID", "PASSWORD", "US_SOCIAL_SECURITY_NUMBER", "IP_ADDRESS", "USERNAME"}
 
 
 def split_of(group: str) -> str:
-    """Salted hash of the group (e2_local.salted_unit): 70% test, 15% tune, 15% private. Without the owner's salt it
+    """Salted hash of the group (e2_local.salted_unit): 70% test, 15% dev, 15% private. Without the owner's salt it
     raises LocalDataMissing."""
     h = e2_local.salted_unit(SEED, "split", group) * 100
-    return "test" if h < 70 else ("tune" if h < 85 else "private")
+    return "test" if h < 70 else ("dev" if h < 85 else "private")
 
 
 def published_split(group: str) -> str:
-    """The unsalted hash the first draw used: 70% test, 15% tune, 15% private. Only authored rows still use it, for
-    tune or test (``authored_split``), so their tune split stays as it was."""
+    """The unsalted hash the first draw used: 70% test, 15% dev, 15% private. Only authored rows still use it, for
+    dev or test (``authored_split``), so their dev split stays as it was."""
     h = int(hashlib.sha256(f"{SEED}:{group}".encode("utf-8")).hexdigest(), 16) % 100
-    return "test" if h < 70 else ("tune" if h < 85 else "private")
+    return "test" if h < 70 else ("dev" if h < 85 else "private")
 
 
 def authored_split(group: str, held_out: bool, order_group: str | None = None) -> str:
     """An authored row's split: private exactly when its case is held out (its text is then not in the tracked case
-    list); otherwise tune or test by the published hash of ``order_group`` (the group its list position gives), a
+    list); otherwise dev or test by the published hash of ``order_group`` (the group its list position gives), a
     private slot going to test."""
     if held_out:
         return "private"
-    return "tune" if published_split(order_group or group) == "tune" else "test"
+    return "dev" if published_split(order_group or group) == "dev" else "test"
 
 
 def normalise(text: str) -> str:

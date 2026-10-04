@@ -1,4 +1,4 @@
-"""The tune-split sample runner (benchmark/runs/e2_sample.py) sends public tune rows only, and its ledger records
+"""The dev-split sample runner (benchmark/runs/e2_sample.py) sends public dev rows only, and its ledger records
 convert to the shape leaderboard_v2 scores. No model calls."""
 import copy
 import importlib.util
@@ -8,8 +8,8 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 BUILD = ROOT / "dataset" / "edition2" / "build"
-pytestmark = pytest.mark.skipif(not all((BUILD / f"F{i}.tune.jsonl").exists() for i in range(1, 7)),
-                                reason="edition 2 tune build not present")
+pytestmark = pytest.mark.skipif(not all((BUILD / f"F{i}.dev.jsonl").exists() for i in range(1, 7)),
+                                reason="edition 2 dev build not present")
 
 
 def _sample():
@@ -19,9 +19,9 @@ def _sample():
     return m
 
 
-def test_selection_is_every_public_tune_row_and_the_guard_passes_it():
+def test_selection_is_every_public_dev_row_and_the_guard_passes_it():
     m = _sample()
-    pt = m.PublicTune()
+    pt = m.PublicDev()
     sel = m.select_all(pt)
     ids = {r["id"] for rows in sel.values() for r in rows}
     assert ids == set(pt.rows) - m.smoke.excluded_ids()
@@ -30,11 +30,11 @@ def test_selection_is_every_public_tune_row_and_the_guard_passes_it():
             pt.guard(r)
 
 
-def test_guard_refuses_anything_not_in_the_public_tune_files():
+def test_guard_refuses_anything_not_in_the_public_dev_files():
     m = _sample()
-    pt = m.PublicTune()
+    pt = m.PublicDev()
     r = next(iter(pt.rows.values()))
-    for bad in ({**r, "id": "f1-not-a-tune-row"}, {**r, "split": "test"}, {**r, "visibility": "private"}):
+    for bad in ({**r, "id": "f1-not-a-dev-row"}, {**r, "split": "test"}, {**r, "visibility": "private"}):
         with pytest.raises(PermissionError):
             pt.guard(bad)
     changed = copy.deepcopy(r)
@@ -45,7 +45,7 @@ def test_guard_refuses_anything_not_in_the_public_tune_files():
 
 def test_ledger_record_converts_for_the_scorer_without_text():
     m = _sample()
-    pt = m.PublicTune()
+    pt = m.PublicDev()
     rid = next(i for i, f in pt.feature.items() if f == "F5")
     d = {"system": "bedrock-guardrails", "suite": "sensitive_info", "subtask": "entity_detection", "row_id": rid,
          "outcome": "decided", "per_question": {"NAME": 0.8, "EMAIL": 0.0, "any_supported_entity": 0.8},
@@ -53,6 +53,6 @@ def test_ledger_record_converts_for_the_scorer_without_text():
          "usage": {"text_units": {"sensitiveInformation": 1}}, "latency_s": 0.3, "error": None}
     x = m.scorer_record(d, pt)
     assert x["answers"]["NAME"] == {"type": "noul", "noul": 0.8, "basis": "bedrock_confidence"}
-    assert "NAME" in x["decision_keys"] and x["dataset"]["split"] == "tune" and x["ok"]
+    assert "NAME" in x["decision_keys"] and x["dataset"]["split"] == "dev" and x["ok"]
     assert "state" not in x and x["expected_types"] is not None
     assert m.scorer_record({**d, "outcome": "not_offered"}, pt) is None

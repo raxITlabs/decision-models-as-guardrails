@@ -101,7 +101,7 @@ def test_groups_never_straddle_splits_and_shared_context_merges_groups():
     for r in rows:
         seen[r.group].add(split_of[r.group])
     assert all(len(v) == 1 for v in seen.values())
-    assert set(split_of.values()) == {"tune", "private", "test"}
+    assert set(split_of.values()) == {"dev", "private", "test"}
 
 
 def test_entities_in_text():
@@ -125,7 +125,7 @@ def test_committed_candidates_meet_the_edition_2_rules():
         assert d["label_rationale"] and d["harm_category"] in E.HARM_CATEGORIES + ("none",)
         assert (d["harm_category"] == "none") == (d["label"] == "no")
         assert d["vendor_owned"] == (d["source"] in E.VENDOR)
-        assert d["proposed_split"] in ("tune", "test", "private") and (d["visibility"] == "heldout") == (d["proposed_split"] == "private")
+        assert d["proposed_split"] in ("dev", "test", "private") and (d["visibility"] == "heldout") == (d["proposed_split"] == "private")
         split_of[d["group"]].add(d["proposed_split"])
         test[(d["subtask"], d["label"])] += d["proposed_split"] == "test"
     assert all(len(v) == 1 for v in split_of.values())

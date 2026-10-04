@@ -31,7 +31,7 @@ feature F5, subtask `pii`. `proposed_split` private becomes split test with visi
 ```
 
 Splits are already fixed per row (`proposed_split`, by group hash). The build must keep them and must not
-re-stratify or re-split these rows. Positives come in at 300 test, 60 tune, 60 private, and negatives at the same.
+re-stratify or re-split these rows. Positives come in at 300 test, 60 dev, 60 private, and negatives at the same.
 No caps are needed.
 
 ## 3. Review gating

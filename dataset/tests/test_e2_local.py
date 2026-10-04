@@ -25,10 +25,10 @@ def _write(path, rows, **st):
 
 @pytest.fixture
 def root(tmp_path):
-    rows = [_row(1, "test", "ok", "a cleared public row"), _row(2, "tune", "unreviewed", "an unreviewed source's text"),
+    rows = [_row(1, "test", "ok", "a cleared public row"), _row(2, "dev", "unreviewed", "an unreviewed source's text"),
             _row(3, "private", "ok", "a private slice row"), _row(4, "test", "idsonly", "ids-only text"),
-            _row(5, "tune", "missing", "a source with no policy entry"),
-            _row(6, "tune", "ok", "A private slice row")]          # same normalised text as row 3
+            _row(5, "dev", "missing", "a source with no policy entry"),
+            _row(6, "dev", "ok", "A private slice row")]          # same normalised text as row 3
     d = tmp_path / "prompt_attacks"
     _write(d / "candidates.jsonl", rows, )
     _write(d / "relabel.jsonl", [{"id": r["id"], "label": "no"} for r in rows])
@@ -257,27 +257,27 @@ def test_split_assignment_needs_the_salt_and_follows_it(tmp_path, monkeypatch):
         assert a[k] != b[k], k
     # an authored row is private exactly when it is held out, whatever the salt
     assert e2_pii.authored_split("e2_pii_controls-neg-h1", True) == "private"
-    assert {e2_pii.authored_split(f"g-{i}", False) for i in range(300)} == {"tune", "test"}
+    assert {e2_pii.authored_split(f"g-{i}", False) for i in range(300)} == {"dev", "test"}
 
 
 def _redraw_root(tmp_path):
-    """Two suites' worth of rows: tune, test and private; one authored source; one row named in a tracked file."""
+    """Two suites' worth of rows: dev, test and private; one authored source; one row named in a tracked file."""
     rows = []
     for i in range(40):
-        split = "tune" if i < 8 else "private" if i < 16 else "test"
+        split = "dev" if i < 8 else "private" if i < 16 else "test"
         rows.append(_row(i, split, "ok", f"row {i} text", subtask="jailbreak", group=f"g{i // 2}"))
     rows += [_row(100 + i, "private" if i < 2 else "test", "e2_attack_controls", f"authored {i}", subtask="jailbreak",
                   group=f"a{i}") for i in range(6)]
     _write(tmp_path / "prompt_attacks" / "candidates.jsonl", rows)
     L.split(["prompt_attacks"], root=tmp_path, pol=POL)
     from types import SimpleNamespace as NS
-    parts = {"tune": [], "test": [], "private": []}
+    parts = {"dev": [], "test": [], "private": []}
     for r in rows:
         parts[r["proposed_split"]].append(NS(id=r["id"], group=r["group"]))
     return rows, parts
 
 
-def test_redraw_draws_a_disjoint_slice_by_salt_and_leaves_tune_authored_and_pinned_rows(tmp_path):
+def test_redraw_draws_a_disjoint_slice_by_salt_and_leaves_dev_authored_and_pinned_rows(tmp_path):
     rows, parts = _redraw_root(tmp_path)
     pinned = {rows[30]["id"]: "named in a ledger"}
     plan = L.redraw_plan(["prompt_attacks"], tmp_path, salt=SALT_A, parts=parts, pinned=pinned)["suites"]["prompt_attacks"]
@@ -292,7 +292,7 @@ def test_redraw_draws_a_disjoint_slice_by_salt_and_leaves_tune_authored_and_pinn
     assert other["suites"]["prompt_attacks"]["drawn"] != plan["drawn"]
     L.apply_redraw({"salt_fingerprint": "f", "suites": {"prompt_attacks": plan}}, tmp_path, pol=POL)
     after = {c["id"]: c["proposed_split"] for c in L.candidates("prompt_attacks", tmp_path)}
-    assert {i for i, s in after.items() if s == "tune"} == {r["id"] for r in rows if r["proposed_split"] == "tune"}
+    assert {i for i, s in after.items() if s == "dev"} == {r["id"] for r in rows if r["proposed_split"] == "dev"}
     assert {i for i, s in after.items() if s == "private"} == set(plan["drawn"]) | {r["id"] for r in rows[40:42]}
     tracked = (tmp_path / "prompt_attacks" / "candidates.jsonl").read_text()
     assert not any(i in tracked for i in plan["drawn"])
@@ -365,7 +365,7 @@ def test_tracked_selection_lists_hold_public_rows_and_the_private_config_private
 
 def test_builders_give_the_committed_split_of_authored_and_listed_rows():
     """The authored rows and the OASST2 prompts come out of their builders with the ids and splits on record: held-out
-    cases private under their salted ids, the rest in the tune or test split they had."""
+    cases private under their salted ids, the rest in the dev or test split they had."""
     _owner_data()
     from goldrails_dataset.sources import e2_denied_topics as E, e2_pii_controls as PC
     from goldrails_dataset.sources import e2_prompt_attacks_controls as PA

@@ -86,7 +86,7 @@ def test_pairs_share_a_group_and_groups_never_straddle_splits(recs, cands):
 def test_private_rows_are_heldout_test_rows(recs):
     for r in recs:
         s = r.attribute["proposed_split"]
-        assert (r.split, r.visibility) == {"test": ("test", "public"), "tune": ("tune", "public"),
+        assert (r.split, r.visibility) == {"test": ("test", "public"), "dev": ("dev", "public"),
                                            "private": ("test", "heldout")}[s]
 
 
@@ -128,7 +128,7 @@ def test_candidate_fields_and_records(cands):
     for c in cands:
         assert need <= set(c)
         assert c["suite"] == "denied_topics" and c["label"] in ("yes", "no")
-        assert c["proposed_split"] in ("test", "tune", "private")
+        assert c["proposed_split"] in ("test", "dev", "private")
         assert c["label_rationale"].strip()
         r = Record.from_dict(c["record"])
         assert r.id == c["id"] and r.expected == c["label"]
@@ -139,7 +139,7 @@ def test_targets_met(cands):
     c = Counter((x["proposed_split"], x["label"]) for x in cands)
     assert c[("test", "yes")] >= 250 and c[("test", "no")] >= 250
     for lab in ("yes", "no"):
-        assert c[("tune", lab)] >= 0.15 * c[("test", lab)]
+        assert c[("dev", lab)] >= 0.15 * c[("test", lab)]
         assert c[("private", lab)] >= 0.15 * c[("test", lab)]
     assert len({x["topic"] for x in cands if x["label"] == "yes"}) >= 8
     assert {x["source"] for x in cands} == {E.NAME, O.NAME}

@@ -337,8 +337,8 @@ def _write_edition2(doc: dict, path, *, retry_policy, test_datasets: dict, arms,
 V1_BUILD_GLOB = "dataset/release/*/build/*.jsonl"
 V1_BUILD_ROLE = "v1_release_builds"
 # The reference roles an edition-2 integrity check must cover (contract v2.0 ``freeze.integrity``): rows already
-# examined, smoke and pilot ledgers, the edition's tuning rows, and the v1 release builds (added by the check itself).
-REQUIRED_REFERENCE_ROLES = ("examined", "smoke", "pilot", "tune")
+# examined, smoke and pilot ledgers, the edition's dev rows, and the v1 release builds (added by the check itself).
+REQUIRED_REFERENCE_ROLES = ("examined", "smoke", "pilot", "dev")
 OPTIONAL_REFERENCE_ROLES = ("diagnostic",)
 INTEGRITY_ROLES = REQUIRED_REFERENCE_ROLES + OPTIONAL_REFERENCE_ROLES + (V1_BUILD_ROLE,)
 
@@ -580,22 +580,22 @@ def load_committed(path) -> tuple[dict, dict]:
     return m, ident
 
 
-def default_references(repo=None, tune_files=None) -> dict:
+def default_references(repo=None, dev_files=None) -> dict:
     """The edition-2 reference rows as this repository records them, by role: ``examined`` (examined-ids.txt less
     documented clearances, plus every id in a ledger, output or notebook: ``overlap.repo_examined_ids``), ``smoke`` and
-    ``pilot`` (the ids in those ledgers), ``diagnostic`` (when any diagnostic ledger exists) and ``tune`` (the edition 2
-    tuning rows, ``dataset/edition2/build/F*.tune.jsonl`` unless ``tune_files`` names them). A required role with no
+    ``pilot`` (the ids in those ledgers), ``diagnostic`` (when any diagnostic ledger exists) and ``dev`` (the edition 2
+    dev rows, ``dataset/edition2/build/F*.dev.jsonl`` unless ``dev_files`` names them). A required role with no
     rows is left in, so the check that uses it fails rather than passing on less."""
     from . import overlap
     from goldrails_dataset.records import read_jsonl
     repo = Path(repo) if repo is not None else Path(__file__).resolve().parents[2]
     results = repo / "benchmark" / "results"
-    tune_files = sorted((repo / "dataset" / "edition2" / "build").glob("F*.tune.jsonl")) if tune_files is None \
-        else [Path(f) for f in tune_files]
+    dev_files = sorted((repo / "dataset" / "edition2" / "build").glob("F*.dev.jsonl")) if dev_files is None \
+        else [Path(f) for f in dev_files]
     refs = {"examined": sorted(overlap.repo_examined_ids(repo)),
             "smoke": sorted(overlap.ledger_ids(results, ("smoke-*.jsonl",))),
             "pilot": sorted(overlap.ledger_ids(results, ("pilot-*.jsonl",))),
-            "tune": [r for f in tune_files for r in read_jsonl(f)]}
+            "dev": [r for f in dev_files for r in read_jsonl(f)]}
     diag = sorted(overlap.ledger_ids(results, ("diagnostics/**/*.jsonl",)))
     if diag:
         refs["diagnostic"] = diag
@@ -614,7 +614,7 @@ def recompute_integrity(m: dict, *, references=None, pool=(), v1_build_rows=None
     """The integrity block a strict overlap check gives today for the datasets the manifest's block names: each
     suite's files are read from their recorded paths (relative to the repository), every file must still have its
     recorded sha256 and the suite's rows must hash to its sha256 (``frozen_test_rows``), and the check runs against
-    ``references`` (default ``default_references``: examined, smoke, pilot and tuning rows) plus the v1 release
+    ``references`` (default ``default_references``: examined, smoke, pilot and dev rows) plus the v1 release
     builds. Raises FreezeError (an OverlapError on an overlap) when any of that fails."""
     import hashlib
     repo = Path(repo) if repo is not None else Path(__file__).resolve().parents[2]
@@ -652,7 +652,7 @@ def integrity_problems(m: dict, *, recompute: bool = True, references=None, pool
                        repo=None) -> list[str]:
     """Why a manifest cannot back an edition-2 test run; empty when it is an edition-2 manifest with no fitted
     thresholds and an integrity block that a fresh check reproduces. The block is never taken on trust: its reference
-    roles must be exactly the check's (examined, smoke, pilot, tune and the v1 release builds, optionally diagnostic,
+    roles must be exactly the check's (examined, smoke, pilot, dev and the v1 release builds, optionally diagnostic,
     each with rows), and ``recompute_integrity`` reruns the strict overlap check from the dataset files the block
     names (their sha256 checked) and the references (default: this repository's, ``default_references``). The
     recomputed block must match the recorded one: the same datasets, files and row count, the same v1 build rows, the

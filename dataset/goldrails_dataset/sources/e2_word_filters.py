@@ -40,7 +40,7 @@ Labels. First labeller: Claude (AI), 4 October 2026, every row read against ``DE
 (``private/first-labels.jsonl``, ``exclude``), never forced. The second label comes from a blind second labeller
 (``relabel.jsonl``), not from this module.
 
-Splits: per group, stratified by (source, label): about 70% test, 15% tune, 15% private (test rows held out).
+Splits: per group, stratified by (source, label): about 70% test, 15% dev, 15% private (test rows held out).
 
     uv run python -m goldrails_dataset.sources.e2_word_filters select      # network or HF cache: frozen pool
     uv run python -m goldrails_dataset.sources.e2_word_filters packet      # private/ labelling sheet for the pool
@@ -73,7 +73,7 @@ LABELLER = "claude (first labeller, AI)"
 DRAFTED = "2026-10-04"
 SEED = 20261004
 SPLIT_SEED = "gold-rails-e2-word-filters"
-SHARES = (("test", 0.70), ("tune", 0.15), ("private", 0.15))
+SHARES = (("test", 0.70), ("dev", 0.15), ("private", 0.15))
 LENGTH = (40, 600)
 
 CC = {"name": "e2_profanity_civil_comments", "licence": "cc0-1.0", "repo": "google/civil_comments",
@@ -442,7 +442,7 @@ def profanity_record(r: dict, label: str, split: str, group: str) -> Record:
     return Record(
         id=r["key"], feature="F4", subtask="profanity", state=State(role=r["role"], text=r["text"]),
         category=Category(ailuminate=None, bedrock="PROFANITY" if label == "yes" else "NONE", source_label=None),
-        labels=["no", "yes"], expected=label, split="tune" if split == "tune" else "test",
+        labels=["no", "yes"], expected=label, split="dev" if split == "dev" else "test",
         visibility="heldout" if split == "private" else "public", group=group,
         attribute={"bucket": r["bucket"], "upstream_split": r["upstream_split"]},
         provenance=Provenance(source=r["source"], source_id=r["source_id"], licence=src["licence"], label_basis="llm",
@@ -481,7 +481,7 @@ def assign_splits(items: list) -> dict:
         n = len(order)
         for k, g in enumerate(order):
             frac = k / n
-            out[g] = "test" if frac < SHARES[0][1] else "tune" if frac < SHARES[0][1] + SHARES[1][1] else "private"
+            out[g] = "test" if frac < SHARES[0][1] else "dev" if frac < SHARES[0][1] + SHARES[1][1] else "private"
     return out
 
 
@@ -498,7 +498,7 @@ def assign_splits_salted(items: list, tag: str = "e2wf-split-round6") -> dict:
         n = len(order)
         for k, g in enumerate(order):
             frac = k / n
-            out[g] = "test" if frac < SHARES[0][1] else "tune" if frac < SHARES[0][1] + SHARES[1][1] else "private"
+            out[g] = "test" if frac < SHARES[0][1] else "dev" if frac < SHARES[0][1] + SHARES[1][1] else "private"
     return out
 
 

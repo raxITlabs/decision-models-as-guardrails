@@ -31,20 +31,20 @@
    "output|yes|PHONE": 1
   },
   "outside_five_positives_by_split": {
+   "dev|other": 21,
+   "dev|pii": 10,
    "private|other": 12,
    "private|pii": 9,
    "test|other": 65,
-   "test|pii": 27,
-   "tune|other": 21,
-   "tune|pii": 10
+   "test|pii": 27
   },
   "split_class": {
+   "dev|no": 197,
+   "dev|yes": 163,
    "private|no": 207,
    "private|yes": 178,
    "test|no": 1166,
-   "test|yes": 940,
-   "tune|no": 197,
-   "tune|yes": 163
+   "test|yes": 940
   },
   "subtask_class_source": {
    "harmful_goal|no|e2_content_orbench80k": 150,
@@ -66,27 +66,27 @@
    "over_refusal|no|orbench": 260
   },
   "subtask_class_split": {
+   "harmful_goal|no|dev": 62,
    "harmful_goal|no|private": 58,
    "harmful_goal|no|test": 276,
-   "harmful_goal|no|tune": 62,
+   "harmful_goal|yes|dev": 73,
    "harmful_goal|yes|private": 81,
    "harmful_goal|yes|test": 271,
-   "harmful_goal|yes|tune": 73,
+   "input|no|dev": 45,
    "input|no|private": 49,
    "input|no|test": 290,
-   "input|no|tune": 45,
+   "input|yes|dev": 45,
    "input|yes|private": 47,
    "input|yes|test": 340,
-   "input|yes|tune": 45,
+   "output|no|dev": 45,
    "output|no|private": 50,
    "output|no|test": 325,
-   "output|no|tune": 45,
+   "output|yes|dev": 45,
    "output|yes|private": 50,
    "output|yes|test": 329,
-   "output|yes|tune": 45,
+   "over_refusal|no|dev": 45,
    "over_refusal|no|private": 50,
-   "over_refusal|no|test": 275,
-   "over_refusal|no|tune": 45
+   "over_refusal|no|test": 275
   },
   "subtask_harm_category": {
    "harmful_goal|hate": 41,
@@ -187,12 +187,12 @@
   "added": {
    "e2_content_aegis2_test|input|no|test": 25,
    "e2_content_aegis2_test|input|yes|test": 80,
+   "e2_content_beavertails|output|no|dev": 11,
    "e2_content_beavertails|output|no|private": 17,
    "e2_content_beavertails|output|no|test": 212,
-   "e2_content_beavertails|output|no|tune": 11,
+   "e2_content_beavertails|output|yes|dev": 13,
    "e2_content_beavertails|output|yes|private": 11,
-   "e2_content_beavertails|output|yes|test": 206,
-   "e2_content_beavertails|output|yes|tune": 13
+   "e2_content_beavertails|output|yes|test": 206
   },
   "available_after_exclusion": {
    "input|no|e2_content_aegis2_test": 25,
@@ -241,12 +241,12 @@
    }
   },
   "removed": {
+   "e2_content_aegis2_val|output|no|dev": 17,
    "e2_content_aegis2_val|output|no|private": 25,
    "e2_content_aegis2_val|output|no|test": 158,
-   "e2_content_aegis2_val|output|no|tune": 17,
+   "e2_content_aegis2_val|output|yes|dev": 13,
    "e2_content_aegis2_val|output|yes|private": 11,
-   "e2_content_aegis2_val|output|yes|test": 176,
-   "e2_content_aegis2_val|output|yes|tune": 13
+   "e2_content_aegis2_val|output|yes|test": 176
   },
   "what": "e2_content_aegis2_val removed (pplx-decider-v1-27b tunes on the Aegis 2.0 validation split); Aegis 2.0 test prompts and BeaverTails replies added"
  },

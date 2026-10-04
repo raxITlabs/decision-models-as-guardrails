@@ -43,7 +43,7 @@ def dataset_file(path, rows):
 
 
 TESTS = [record("t1", "first test row"), record("t2", "second test row")]
-REFS = {"tune": [row("u1", "a tuning row")], "examined": ["x1"], "smoke": ["s1"], "pilot": ["p1"]}
+REFS = {"dev": [row("u1", "a dev row")], "examined": ["x1"], "smoke": ["s1"], "pilot": ["p1"]}
 CHECK = {"references": REFS, "v1_build_rows": BUILDS}       # what integrity_problems recomputes the block against
 
 
@@ -131,8 +131,8 @@ def test_explicit_edition1_cannot_override_a_v2_contract(tmp_path):
 @pytest.mark.parametrize("kw,msg", [({"rows": []}, "has no rows"),
                                     ({"references": {}}, "no reference rows"),
                                     ({"references": []}, "no reference rows"),
-                                    ({"references": {"tune": [], "examined": []}}, "no reference rows"),
-                                    ({"references": {"tune": [row("u1", "x")], "smoke": []}}, "roles with no rows"),
+                                    ({"references": {"dev": [], "examined": []}}, "no reference rows"),
+                                    ({"references": {"dev": [row("u1", "x")], "smoke": []}}, "roles with no rows"),
                                     ({"v1_build_rows": []}, "no v1 release build rows")])
 def test_empty_inputs_fail_the_integrity_check(tmp_path, kw, msg):
     with pytest.raises(FreezeError, match=msg):
@@ -195,7 +195,7 @@ def test_edition2_integrity_records_each_suites_dataset(tmp_path):
 def test_edition2_test_rows_come_from_the_files_so_an_overlap_in_them_is_caught(tmp_path):
     # the overlapping row is only in the dataset file; nobody passes it in
     with pytest.raises(OverlapError):
-        write2(tmp_path, rows=TESTS + [record("u1", "a tuning row")])
+        write2(tmp_path, rows=TESTS + [record("u1", "a dev row")])
 
 
 @pytest.mark.parametrize("edit,msg", [
@@ -213,7 +213,7 @@ def test_a_manifest_whose_integrity_block_does_not_match_its_arms_is_rejected(tm
 
 # --- the integrity block is recomputed, never taken on trust ----------------------------------------------------------
 
-@pytest.mark.parametrize("refs,msg", [({"tune": [row("u1", "x")], "examined": ["x1"]}, "missing: smoke, pilot"),
+@pytest.mark.parametrize("refs,msg", [({"dev": [row("u1", "x")], "examined": ["x1"]}, "missing: smoke, pilot"),
                                       ({**REFS, "junk": ["j1"]}, "unknown reference roles: junk")])
 def test_edition2_freeze_needs_exactly_the_checks_reference_roles(tmp_path, refs, msg):
     with pytest.raises(FreezeError, match=msg):
@@ -225,7 +225,7 @@ def test_edition2_freeze_needs_exactly_the_checks_reference_roles(tmp_path, refs
     (lambda m: m["integrity"]["reference_rows"].update(junk=3), "unknown reference roles: junk"),
     (lambda m: m["integrity"]["reference_rows"].pop("smoke"), "required reference roles: smoke"),
     (lambda m: m["integrity"].update(reference_rows={"junk": 9, "v1_release_builds": 1}), "required reference roles"),
-    (lambda m: m["integrity"]["reference_rows"].update(tune=40), "more reference rows than exist for: tune"),
+    (lambda m: m["integrity"]["reference_rows"].update(dev=40), "more reference rows than exist for: dev"),
     (lambda m: m["integrity"].update(check="by hand"), "not written by the overlap check"),
     (lambda m: m["integrity"].update(v1_release_build_rows=7), "v1 release build rows"),
 ])
@@ -251,7 +251,7 @@ def test_a_hand_written_block_with_consistent_numbers_is_rejected(tmp_path):
     assert any("cannot be reproduced" in p and "do not exist" in p for p in freeze.integrity_problems(m, **CHECK))
     # the frozen file edited after the freeze (a row swapped in that a reference already holds)
     m = write2(tmp_path)
-    f.write_text(f.read_text().replace("second test row", "a tuning row"))
+    f.write_text(f.read_text().replace("second test row", "a dev row"))
     assert any("no longer has the sha256" in p for p in freeze.integrity_problems(m, **CHECK))
 
 
@@ -308,15 +308,15 @@ def rec(i, split, dsha, score=None):
 def test_leaderboard_v2_scores_a_test_run_against_a_committed_edition2_manifest(tmp_path):
     c = v2.load_contract()
     c = {**c, "required_suites": ["denied_topics"]}
-    tune = v2.evaluate([rec(i, "tune", "dtune") for i in range(40)], c, report_split="tune", replicates=10, seed=1)
-    assert tune["arms"][0]["decision_rule"]["threshold"] == 0.5 and tune["arms"][0]["run"]["valid"] is True
-    assert tune["mode"] == "not a test run" and tune["valid_for_publication"] is False
+    dev = v2.evaluate([rec(i, "dev", "ddev") for i in range(40)], c, report_split="dev", replicates=10, seed=1)
+    assert dev["arms"][0]["decision_rule"]["threshold"] == 0.5 and dev["arms"][0]["run"]["valid"] is True
+    assert dev["mode"] == "not a test run" and dev["valid_for_publication"] is False
     repo = tmp_path / "repo"
     repo.mkdir()
     git(repo, "init", "-q")
     path = repo / "manifest.json"
     f, dtest = dataset_file(tmp_path / "data" / "F3.test.jsonl", TESTS)
-    freeze.write_manifest(tune, path, retry_policy=DEFAULT_POLICY, test_datasets={"denied_topics": dtest},
+    freeze.write_manifest(dev, path, retry_policy=DEFAULT_POLICY, test_datasets={"denied_topics": dtest},
                           test_files={"denied_topics": f}, references=REFS, v1_build_rows=BUILDS, contract=c)
     with pytest.raises(FreezeError, match="not committed"):
         v2.load_freeze(path, CHECK)

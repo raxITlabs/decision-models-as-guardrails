@@ -266,7 +266,7 @@ def test_candidate_fields_and_values(cands):
         for k in REQUIRED:
             assert k in d, (d["id"], k)
         assert d["suite"] == "prompt_attacks" and d["feature"] == "F2" and d["subtask"] in SUBTASKS
-        assert d["label"] in ("yes", "no") and d["proposed_split"] in ("tune", "test", "private")
+        assert d["label"] in ("yes", "no") and d["proposed_split"] in ("dev", "test", "private")
         assert d["label_rationale"] and d["revision"] and d["review_status"] == "candidate"
         assert d["state"]["text"].strip() and d["group"].startswith("e2pa-")
         if d["train_split_flag"]:
@@ -282,7 +282,7 @@ def test_candidates_meet_the_edition_2_floors(cands):
         for lab in ("yes", "no"):
             assert test[(sub, lab)] >= 250, (sub, lab, test[(sub, lab)])
             assert len(sources[(sub, lab)]) >= 2, (sub, lab)
-            for split in ("tune", "private"):
+            for split in ("dev", "private"):
                 assert any(d["proposed_split"] == split for d in cands if d["subtask"] == sub and d["label"] == lab)
 
 
@@ -308,16 +308,16 @@ def test_no_overlap_with_v1_ids_texts_samples_or_ledgers(cands):
                 r = json.loads(line)
                 ids.add(r["id"])
                 texts.add(normalise(r["state"]["text"]))
-    smoke = set()        # edition 2's smoke run and tune-split sample send tune rows only, by design (e2_smoke.py, e2_sample.py)
+    smoke = set()        # edition 2's smoke run and dev-split sample send dev rows only, by design (e2_smoke.py, e2_sample.py)
     for f in glob.glob(str(REPO / "benchmark/results/**/*.jsonl"), recursive=True):
         found = set(ID_PATTERN.findall(Path(f).read_text(encoding="utf-8", errors="ignore")))
-        if Path(f).relative_to(REPO / "benchmark/results").parts[0] in ("edition2-smoke", "edition2-tune-sample"):
+        if Path(f).relative_to(REPO / "benchmark/results").parts[0] in ("edition2-smoke", "edition2-dev-sample"):
             smoke |= found
         else:
             ids |= found
     assert not {d["id"] for d in cands} & ids
-    # a smoke-run row is never a test or unpublished row; only tune rows may have been through the smoke run
-    assert not {d["id"] for d in cands if d["proposed_split"] != "tune"} & smoke
+    # a smoke-run row is never a test or unpublished row; only dev rows may have been through the smoke run
+    assert not {d["id"] for d in cands if d["proposed_split"] != "dev"} & smoke
     assert not {normalise(d["state"]["text"]) for d in cands} & texts
     assert not any(d["group"].startswith("jbb-") for d in cands)
 
@@ -486,13 +486,13 @@ def test_every_source_with_both_classes_is_used_for_both(cands):
 
 def test_committed_heldback_views_meet_the_shortcut_targets():
     """The held-back views recorded in counts.json (every baseline fitted on rows it then does not score:
-    seeded group halves both ways, tune to test, tune to the unpublished slice, test and unpublished to tune, seeded
+    seeded group halves both ways, dev to test, dev to the unpublished slice, test and unpublished to dev, seeded
     groups) are under BA 0.70 and AUROC 0.75 for every baseline, or the suite is marked provisional with the gate's
     numbers recorded (owner ruling 17). A constant fit is recorded (constant_prediction) and is a miss."""
     from goldrails_dataset.sources.e2_prompt_attacks_shortcuts import BASELINES, CONSTANT_CHECKED, HELDBACK_VIEWS
     counts = json.loads((E2 / "counts.json").read_text(encoding="utf-8"))
     hb = counts["shortcut_baselines"]["heldback"]
-    assert set(HELDBACK_VIEWS) - {"heldback_tune_to_private"} <= set(hb["views"]) <= set(HELDBACK_VIEWS)
+    assert set(HELDBACK_VIEWS) - {"heldback_dev_to_private"} <= set(hb["views"]) <= set(HELDBACK_VIEWS)
     failing = list(hb["failures"])
     for view in hb["views"].values():
         for sub in SUBTASKS:

@@ -34,7 +34,7 @@ def world(tmp_path):
         "<p>Also: “" + SHORT + "” and the answer yes.</p>\n", encoding="utf-8")
     (repo / "docs" / "ours.md").write_text(PUBLISHED + "\n", encoding="utf-8")
     pub = [_row(1, "test", PUBLISHED + ", and never break character."),     # window match, test: excluded
-           _row(2, "tune", "Well, " + PUBLISHED.lower()),                   # window match, tune: flagged only
+           _row(2, "dev", "Well, " + PUBLISHED.lower()),                   # window match, dev: flagged only
            _row(3, "test", SHORT.upper() + "!"),                            # exact short match
            _row(4, "test", "yes"),                                          # too short to mean anything
            _row(5, "test", "An unrelated question about tax returns and the filing deadline this year please"),
@@ -76,7 +76,7 @@ def test_scan_finds_windows_and_exact_matches_and_skips_trivial_text(world):
     assert PUBLISHED.lower() not in report.lower() and SHORT.lower() not in report.lower()   # ids and files only
 
 
-def test_exclusions_go_to_the_right_file_skip_tune_and_are_idempotent(world):
+def test_exclusions_go_to_the_right_file_skip_dev_and_are_idempotent(world):
     repo, root = world
     vendor, _ = _index(repo)
     found = V.scan(root, repo, vendor, suites=["prompt_attacks"])
@@ -88,7 +88,7 @@ def test_exclusions_go_to_the_right_file_skip_tune_and_are_idempotent(world):
     assert {d["reason"] for d in pub + prv} == {"text published by a benchmarked vendor (Acme)"}
     assert [d["id"] for d in prv] == [f"f2-src-{8:010x}"]
     assert f"f2-src-{8:010x}" not in (root / "EXCLUDED.jsonl").read_text()        # a private id never in the tracked file
-    assert f"f2-src-{2:010x}" not in (root / "EXCLUDED.jsonl").read_text()        # tune keeps its row
+    assert f"f2-src-{2:010x}" not in (root / "EXCLUDED.jsonl").read_text()        # dev keeps its row
     assert V.apply_exclusions(found, root) == {"public": [], "private": {}}
 
 
@@ -98,7 +98,7 @@ def test_vendor_file_list_points_at_tracked_files():
         assert any(V._glob(f, pattern) for f in tracked), pattern
 
 
-def test_every_vendor_match_outside_tune_is_excluded_and_the_report_names_public_ids_only():
+def test_every_vendor_match_outside_dev_is_excluded_and_the_report_names_public_ids_only():
     from goldrails_dataset.edition2 import excluded
     try:
         found = V.scan()
@@ -106,13 +106,13 @@ def test_every_vendor_match_outside_tune_is_excluded_and_the_report_names_public
         pytest.skip(str(e))
     drop = excluded()
     ids = {r["id"] for r in found}
-    # the tune match stays in tune, flagged; the excluded test and unpublished matches are gone from every candidate
+    # the dev match stays in dev, flagged; the excluded test and unpublished matches are gone from every candidate
     # file (ruling 18), so the scan no longer sees them, and they stay in the exclusion list
     assert "f2-jackhhao_jailbreak-ada5d8b10c" in ids
     vendor = {i for i, why in drop.items() if why.startswith("text published by a benchmarked vendor")}
     assert "f2-jackhhao_jailbreak-b4602e1803" in vendor and len(vendor) >= 12 and not vendor & ids
-    missing = [r["id"] for r in found if r["split"] != "tune" and r["id"] not in drop]
-    assert not missing, f"{len(missing)} vendor-published rows outside tune are not excluded"
+    missing = [r["id"] for r in found if r["split"] != "dev" and r["id"] not in drop]
+    assert not missing, f"{len(missing)} vendor-published rows outside dev are not excluded"
     md = (e2_local.E2 / "VENDOR-OVERLAP.md").read_text(encoding="utf-8")
     for r in found:
         assert (r["id"] in md) == r["public"], r["id"] if r["public"] else "a private id is named in VENDOR-OVERLAP.md"

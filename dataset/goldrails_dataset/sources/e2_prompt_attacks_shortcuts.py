@@ -26,7 +26,7 @@ Views (``gate_report``), every baseline in every view, rows as the build holds t
 - in sample: grouped five-fold CV (``separability.folds_of``; a near-duplicate group never straddles folds) on the
   public test split, and on the test split with the unpublished slice (``proposed_split`` private);
 - held back, fitted on rows they then do not score: seeded group halves of test and unpublished, both directions;
-  tune to the public test split; tune to the unpublished slice; test and unpublished to tune; tune and a seeded 70% of
+  dev to the public test split; dev to the unpublished slice; test and unpublished to dev; dev and a seeded 70% of
   the test and unpublished groups to the other 30%.
 
 A cell passes when the baseline was computed, did not predict a constant, and has BA <= ``BA_TARGET`` and AUROC <=
@@ -290,26 +290,26 @@ def seeded_groups(rows: list, share: float = SEEDED_GROUPS_SHARE, seed: int = SE
 
 
 IN_SAMPLE_VIEWS = ("in_sample_public_test", "in_sample_test_with_private")
-HELDBACK_VIEWS = ("heldback_half_a_to_half_b", "heldback_half_b_to_half_a", "heldback_tune_to_public_test",
-                  "heldback_tune_to_private", "heldback_test_and_private_to_tune", "heldback_seeded_groups")
+HELDBACK_VIEWS = ("heldback_half_a_to_half_b", "heldback_half_b_to_half_a", "heldback_dev_to_public_test",
+                  "heldback_dev_to_private", "heldback_test_and_private_to_dev", "heldback_seeded_groups")
 VIEW_NOTES = {
     "in_sample_public_test": "grouped five-fold CV on the public test split",
     "in_sample_test_with_private": "grouped five-fold CV on the public test split with the unpublished slice",
     "heldback_half_a_to_half_b": f"fit on one seeded group half of test and unpublished (seed {HELDBACK_SEED}), "
                                  "score the other",
     "heldback_half_b_to_half_a": "the same halves, the other direction",
-    "heldback_tune_to_public_test": "fit on tune, score the public test split",
-    "heldback_tune_to_private": "fit on tune, score the unpublished slice",
-    "heldback_test_and_private_to_tune": "fit on test and unpublished, score tune",
-    "heldback_seeded_groups": f"fit on tune and {round(100 * (1 - SEEDED_GROUPS_SHARE))}% of the test and unpublished "
+    "heldback_dev_to_public_test": "fit on dev, score the public test split",
+    "heldback_dev_to_private": "fit on dev, score the unpublished slice",
+    "heldback_test_and_private_to_dev": "fit on test and unpublished, score dev",
+    "heldback_seeded_groups": f"fit on dev and {round(100 * (1 - SEEDED_GROUPS_SHARE))}% of the test and unpublished "
                               f"groups, score the other {round(100 * SEEDED_GROUPS_SHARE)}% (seed {SEEDED_GROUPS_SEED})",
 }
 
 
 def views_of(rows: list, which=None) -> dict:
-    """{view: ("cv", None, rows) | ("fit", train, score)} over rows with ``proposed_split`` tune, test or private.
+    """{view: ("cv", None, rows) | ("fit", train, score)} over rows with ``proposed_split`` dev, test or private.
     Views that need the unpublished slice are left out when it is absent (a public checkout)."""
-    by = {k: [r for r in rows if r["proposed_split"] == k] for k in ("tune", "test", "private")}
+    by = {k: [r for r in rows if r["proposed_split"] == k] for k in ("dev", "test", "private")}
     pool = by["test"] + by["private"]
     a, b = seeded_halves(pool)
     held = seeded_groups(pool)
@@ -317,14 +317,14 @@ def views_of(rows: list, which=None) -> dict:
          "in_sample_test_with_private": ("cv", None, pool),
          "heldback_half_a_to_half_b": ("fit", a, b),
          "heldback_half_b_to_half_a": ("fit", b, a),
-         "heldback_tune_to_public_test": ("fit", by["tune"], by["test"]),
-         "heldback_tune_to_private": ("fit", by["tune"], by["private"]),
-         "heldback_test_and_private_to_tune": ("fit", pool, by["tune"]),
-         "heldback_seeded_groups": ("fit", by["tune"] + [r for r in pool if _group(r) not in held],
+         "heldback_dev_to_public_test": ("fit", by["dev"], by["test"]),
+         "heldback_dev_to_private": ("fit", by["dev"], by["private"]),
+         "heldback_test_and_private_to_dev": ("fit", pool, by["dev"]),
+         "heldback_seeded_groups": ("fit", by["dev"] + [r for r in pool if _group(r) not in held],
                                     [r for r in pool if _group(r) in held])}
     if not by["private"]:
         v.pop("in_sample_test_with_private")
-        v.pop("heldback_tune_to_private")
+        v.pop("heldback_dev_to_private")
     return {k: x for k, x in v.items() if which is None or k in which}
 
 

@@ -27,12 +27,12 @@ Written in Spanish, German or French: 34 authored rows, in matched pairs.
 
 ## Splits
 
-Splits are proposed per group and stratified by source and topic: about 70% test, 15% tune, 15% private. Private rows are test rows with `visibility: heldout`. A pair shares one group, so it never straddles splits. Each OASST2 conversation tree is one group.
+Splits are proposed per group and stratified by source and topic: about 70% test, 15% dev, 15% private. Private rows are test rows with `visibility: heldout`. A pair shares one group, so it never straddles splits. Each OASST2 conversation tree is one group.
 
 | split | yes | no |
 |---|---|---|
 | test | 269 | 332 |
-| tune | 57 | 74 |
+| dev | 57 | 74 |
 | private | 52 | 65 |
 
 Per topic (test yes / no): InvestmentAdvice 35/42, MedicalDiagnosis 36/41, LegalAdvice 35/39, ElectionPersuasion 32/33, GamblingTips 32/33, EmploymentDecisions 32/41, AcademicDishonesty 34/39, TaxAdvice 33/36, confusers 0/28. The full breakdown is in `counts.json`.

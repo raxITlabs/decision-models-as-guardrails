@@ -35,7 +35,7 @@ Split mapping, already set in the records:
 | proposed_split | Record.split | Record.visibility |
 |---|---|---|
 | test | test | public |
-| tune | tune | public |
+| dev | dev | public |
 | private | test | heldout |
 
 Keep `group` as written (it already merges rows that share a source text). `build.group_of` returns `r.group`, so no

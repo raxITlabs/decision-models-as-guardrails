@@ -1,7 +1,7 @@
 """Edition 2 rows whose text a benchmarked vendor has published.
 
 A row a vendor printed in its own docs (a cookbook example, a model card, a feature page) may have been tuned on or
-checked by that vendor, so it cannot be a fair test row. This scans every edition 2 row (tune, test and the unpublished
+checked by that vendor, so it cannot be a fair test row. This scans every edition 2 row (dev, test and the unpublished
 slice, licence-withheld text included) against every vendor file tracked in the repository and reports each match by
 row id and vendor file. It never prints row text.
 
@@ -17,7 +17,7 @@ A match is either
 
 ``--exclude`` writes the reason ``text published by a benchmarked vendor (<vendor>)``. A public id goes to
 ``dataset/edition2/EXCLUDED.jsonl``; an id from a suite's private candidates goes to the git-ignored
-``<suite>/private/EXCLUDED.jsonl``. Tune rows are not excluded, only flagged in the report. An id already excluded is
+``<suite>/private/EXCLUDED.jsonl``. Dev rows are not excluded, only flagged in the report. An id already excluded is
 left alone. ``dataset/edition2/VENDOR-OVERLAP.md`` records the result (public ids only).
 """
 from __future__ import annotations
@@ -174,7 +174,7 @@ def row_split(c: dict) -> str:
 
 def scan(root: Path = e2_local.E2, repo: Path = e2_local.REPO, index: dict | None = None,
          suites=e2_local.SUITES) -> list:
-    """Every match across all edition 2 rows: [{"id", "suite", "split", "public", "matches"}]. ``split`` is tune, test
+    """Every match across all edition 2 rows: [{"id", "suite", "split", "public", "matches"}]. ``split`` is dev, test
     or private (the unpublished slice); ``public`` says whether the id is in the tracked candidates file."""
     index = vendor_index(repo) if index is None else index
     out = []
@@ -195,12 +195,12 @@ def _excluded_ids(path: Path) -> set:
 
 
 def apply_exclusions(found: list, root: Path = e2_local.E2) -> dict:
-    """Append each test or unpublished match to the right EXCLUDED.jsonl. Tune rows stay (flagged in the report).
+    """Append each test or unpublished match to the right EXCLUDED.jsonl. Dev rows stay (flagged in the report).
     Returns {"public": [ids added], "private": {suite: n added}}."""
     added = {"public": [], "private": {}}
     pub_path = Path(root) / "EXCLUDED.jsonl"
     for r in found:
-        if r["split"] == "tune":
+        if r["split"] == "dev":
             continue
         vendors = sorted({m["vendor"] for m in r["matches"]})
         entry = {"id": r["id"], "reason": REASON.format(vendor=", ".join(vendors))}

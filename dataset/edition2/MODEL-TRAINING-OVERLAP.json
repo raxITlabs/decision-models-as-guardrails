@@ -1,12 +1,12 @@
 {
- "generated": "2026-10-04",
+ "generated": "2026-10-05",
  "command": "uv run python -m goldrails_dataset.model_overlap report",
  "method": "exact match after casefolding and collapsing whitespace, on every text field of each edition 2 row (min 20 characters), against the whole upstream split each model's published recipe draws from. A match means the row's text is in that split, not that it was in the model's actual sample, so counts are an upper bound.",
  "sources": {
   "strands-decider-2b": "github.com/strands-labs/strands-decider data/sources.md and src/strands_decider/data/recipes.py (civil_comments train, 6,000 sampled with seed 0; PubMedQA pqa_labeled, all 1,000; measuring-hate-speech held out, not trained)",
   "pplx-decider-v1-27b": "huggingface.co/perplexity-ai/pplx-decider-v1-27b source/src/autojev/data.py at 5117a6c (civil_comments train 8,000 and validation for development; Aegis 2.0 train 6,000 and validation for development; PubMedQA quota 0, evaluation only)"
  },
- "policy": "test and unpublished rows whose text is in pplx-decider-v1-27b's training or development splits are excluded from edition 2 (EXCLUDED.jsonl, reason 'text in pplx-decider-v1-27b training or development data'); tune rows stay and are listed here",
+ "policy": "test and unpublished rows whose text is in pplx-decider-v1-27b's training or development splits are excluded from edition 2 (EXCLUDED.jsonl, reason 'text in pplx-decider-v1-27b training or development data'); dev rows stay and are listed here",
  "excluded_rows": {
   "public": 416,
   "unpublished": 148
@@ -24,7 +24,7 @@
    "test_and_unpublished_matches_excluded": false,
    "matched_by_feature_split_source": [],
    "matched_test_rows": 0,
-   "matched_tune_rows": 0,
+   "matched_dev_rows": 0,
    "matched_unpublished_rows": 0,
    "matched_public_row_ids": []
   },
@@ -40,7 +40,7 @@
    "test_and_unpublished_matches_excluded": false,
    "matched_by_feature_split_source": [],
    "matched_test_rows": 0,
-   "matched_tune_rows": 0,
+   "matched_dev_rows": 0,
    "matched_unpublished_rows": 0,
    "matched_public_row_ids": []
   },
@@ -56,7 +56,7 @@
    "test_and_unpublished_matches_excluded": false,
    "matched_by_feature_split_source": [],
    "matched_test_rows": 0,
-   "matched_tune_rows": 0,
+   "matched_dev_rows": 0,
    "matched_unpublished_rows": 0,
    "matched_public_row_ids": []
   },
@@ -73,13 +73,13 @@
    "matched_by_feature_split_source": [
     {
      "feature": "F4",
-     "split": "tune",
+     "split": "dev",
      "source": "e2_profanity_civil_comments",
      "rows": 19
     }
    ],
    "matched_test_rows": 0,
-   "matched_tune_rows": 19,
+   "matched_dev_rows": 19,
    "matched_unpublished_rows": 0,
    "matched_public_row_ids": [
     "f4-e2_profanity_civil_comments-0d40b4063b",
@@ -116,25 +116,25 @@
    "matched_by_feature_split_source": [
     {
      "feature": "F1",
-     "split": "tune",
+     "split": "dev",
      "source": "aegis2",
      "rows": 1
     },
     {
      "feature": "F2",
-     "split": "tune",
+     "split": "dev",
      "source": "itw_jailbreak_prompts",
      "rows": 49
     },
     {
      "feature": "F2",
-     "split": "tune",
+     "split": "dev",
      "source": "jackhhao_jailbreak",
      "rows": 11
     }
    ],
    "matched_test_rows": 0,
-   "matched_tune_rows": 61,
+   "matched_dev_rows": 61,
    "matched_unpublished_rows": 0,
    "matched_public_row_ids": [
     "f1-aegis2-4550acaea9",
@@ -213,13 +213,13 @@
    "matched_by_feature_split_source": [
     {
      "feature": "F2",
-     "split": "tune",
+     "split": "dev",
      "source": "itw_jailbreak_prompts",
      "rows": 2
     }
    ],
    "matched_test_rows": 0,
-   "matched_tune_rows": 2,
+   "matched_dev_rows": 2,
    "matched_unpublished_rows": 0,
    "matched_public_row_ids": [
     "f2-itw_jailbreak_prompts-1ab227bcf4",

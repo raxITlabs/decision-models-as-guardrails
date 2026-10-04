@@ -2,7 +2,7 @@
 
 Why. After the 3 October contrast round the shortcut gate passed on the built test split, but only on rows that
 survived a retirement ranked by the gate's own n-gram model (ADVERSARIAL-FILTERING.md). Fitted on test and private
-and scored on tune, which that ranking never saw, a character n-gram model still reached balanced accuracy 0.81
+and scored on dev, which that ranking never saw, a character n-gram model still reached balanced accuracy 0.81
 (injection) and 0.86 (jailbreak), and the source of a leakage row still gave its label away (0.76). The surface
 features were the attack's own words ("ignore all previous instructions", "anything", "ethical", "moral", "no
 rules", "your", "reveal"), the long community-template format of the in-the-wild rows, and an authored source that
@@ -39,7 +39,7 @@ Authored by Claude on 4 October 2026 as the first labeller. label_basis ``llm``,
 licence CC-BY-4.0, each with its own rationale. Case tuples are (subtask, label, text, rationale, kind, pair): the
 text sits at position 2, where ``e2_local.held_out_texts`` looks for a held-out case's text by default. A
 ``HeldOut(key)`` would stand in for a case whose row is in the private slice; none is held out, so every row is
-public (tune or test).
+public (dev or test).
 """
 from __future__ import annotations
 

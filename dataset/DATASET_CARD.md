@@ -327,6 +327,9 @@ manifest. If it does not, the source changed upstream, and the pinned revision i
 Everything above describes v1.0, and none of it has changed. Edition 2 is still a draft. Its data notes are in
 `dataset/edition2/README.md` and its scoring rules in `docs/benchmark/27-evaluation-contract-v2.md`.
 
+- Splits. Edition 2's public splits are dev and test. Edition 2 scores every system at a fixed 0.5 rule and fits
+  nothing on dev, so dev serves smoke tests, dry runs and dataset work. The dev split was called tune before 5 October
+  2026; edition 1 keeps that name, because its thresholds really were fitted on those rows.
 - Unpublished slice (owner ruling 15). Edition 2 holds back part of its test split from every public file. Every
   row in it comes from public upstream data, and the slice can be rebuilt from that data, so it is not a secret test
   set. It serves contamination checks. A truly private slice, of rows that exist nowhere else, is planned for

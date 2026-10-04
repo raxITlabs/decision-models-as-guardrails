@@ -10,7 +10,7 @@ the suite this way. They are listed by id in `retired.json`, and private-slice i
 `private/retired.json`.
 
 The gate then passed on the built test split. That pass was measured on the rows that survived the filter, so it said
-little. On tune, which the ranking never saw, a model fitted on test and private reached balanced accuracy 0.81 on
+little. On dev, which the ranking never saw, a model fitted on test and private reached balanced accuracy 0.81 on
 injection and 0.86 on jailbreak. The source of a leakage row still gave its label away (BA 0.76, AUROC 0.81).
 
 The retirement stays as it was: undoing it would reshuffle about a thousand second-labelled rows. Nothing since then
@@ -29,7 +29,7 @@ leaned on:
    "no restrictions", "ethics", "mode" and "stay in character" for ordinary role-play. Leakage rows are Gandalf and
    Mosscap style game turns. Attacks probe a guarded secret or the hidden instructions and name what they are after
    (ruling 3). Benign rows make the same move on a word the user supplies. Every row has its own rationale. No attack
-   carries a harmful payload. The rows are public (tune or test), since none is held out.
+   carries a harmful payload. The rows are public (dev or test), since none is held out.
 2. **New quotas in `PLAN`.** The in-the-wild injection attacks are labelled by the override phrase itself, so the
    phrase is their label. Their quota drops from 301 to 190. In-the-wild jailbreak attacks drop from 347 to 233, and
    the benign rows from that source drop from 280 to 216. The older authored benign rows drop where the authored
@@ -45,17 +45,17 @@ second labeller.
 Command: `uv run --with scikit-learn python -m goldrails_dataset.sources.e2_prompt_attacks_shortcuts --heldback`. The
 build writes the same report into `counts.json` (`shortcut_baselines.heldback`). Rows are as the build would hold
 them: owner rulings applied, disputed rows awaiting the owner left out. Each baseline is fitted on one set and scored
-on another. The halves split the test and private groups in two with seed 20261004. The tune view fits on test and
-private and scores tune. Values are BA / AUROC, direction-free. The bound is BA 0.70 and AUROC 0.75.
+on another. The halves split the test and private groups in two with seed 20261004. The dev view fits on test and
+private and scores dev. Values are BA / AUROC, direction-free. The bound is BA 0.70 and AUROC 0.75.
 
 | View | Subtask | Source id | Keyword regex | Length | Char n-gram LR |
 |---|---|---|---|---|---|
-| test+private -> tune, before | injection | 0.605 / 0.736 | 0.523 / 0.523 | 0.547 / 0.528 | **0.810 / 0.885** |
-| test+private -> tune, after | injection | 0.583 / 0.651 | 0.507 / 0.507 | 0.525 / 0.539 | 0.627 / 0.689 |
-| test+private -> tune, before | jailbreak | 0.671 / 0.699 | 0.538 / 0.538 | 0.645 / 0.651 | **0.856 / 0.892** |
-| test+private -> tune, after | jailbreak | 0.530 / 0.583 | 0.518 / 0.518 | 0.545 / 0.572 | 0.683 / 0.731 |
-| test+private -> tune, before | leakage | **0.761 / 0.806** | 0.542 / 0.542 | 0.501 / 0.581 | 0.663 / **0.758** |
-| test+private -> tune, after | leakage | 0.572 / 0.671 | 0.510 / 0.510 | 0.512 / 0.575 | 0.680 / 0.747 |
+| test+private -> dev, before | injection | 0.605 / 0.736 | 0.523 / 0.523 | 0.547 / 0.528 | **0.810 / 0.885** |
+| test+private -> dev, after | injection | 0.583 / 0.651 | 0.507 / 0.507 | 0.525 / 0.539 | 0.627 / 0.689 |
+| test+private -> dev, before | jailbreak | 0.671 / 0.699 | 0.538 / 0.538 | 0.645 / 0.651 | **0.856 / 0.892** |
+| test+private -> dev, after | jailbreak | 0.530 / 0.583 | 0.518 / 0.518 | 0.545 / 0.572 | 0.683 / 0.731 |
+| test+private -> dev, before | leakage | **0.761 / 0.806** | 0.542 / 0.542 | 0.501 / 0.581 | 0.663 / **0.758** |
+| test+private -> dev, after | leakage | 0.572 / 0.671 | 0.510 / 0.510 | 0.512 / 0.575 | 0.680 / 0.747 |
 | half A -> half B, after | injection | 0.605 / 0.672 | 0.501 / 0.501 | 0.530 / 0.507 | 0.500 / 0.500 (constant) |
 | half A -> half B, after | jailbreak | 0.579 / 0.619 | 0.511 / 0.511 | 0.560 / 0.568 | 0.500 / 0.500 (constant) |
 | half A -> half B, after | leakage | 0.575 / 0.594 | 0.517 / 0.517 | 0.583 / 0.568 | 0.639 / 0.689 |
@@ -74,20 +74,20 @@ The gate passes, but it is not robust, and I would not call the shortcut problem
 - **Constant fits.** On the halves, the gate's n-gram model (L1, C = 1) keeps no weight for injection and jailbreak.
   It predicts one class for every row, which gives 0.500 / 0.500. That is a failed fit, not a hard split. The report
   marks these cells `constant_prediction`. The halves come from the filtered test and private rows, so the one view
-  that measures a real fit is tune.
+  that measures a real fit is dev.
 - **A slightly stronger model still separates the classes.** Same features, L2 instead of L1, everything else fixed,
-  fitted on test and private and scored on tune: injection 0.776 / 0.885 (before 0.856 / 0.941), jailbreak
+  fitted on test and private and scored on dev: injection 0.776 / 0.885 (before 0.856 / 0.941), jailbreak
   0.899 / 0.961 (before 0.900 / 0.967), leakage 0.857 / 0.922 (before 0.887 / 0.941). On the halves, across seeds 1 to
   3, it reaches 0.75 to 0.89 BA. The authored pairs moved injection and leakage a little. They did not move jailbreak.
-- **Tune is small.** Each tune view scores about 170 rows per subtask, so an AUROC moves by roughly 0.03 between
+- **Dev is small.** Each dev view scores about 170 rows per subtask, so an AUROC moves by roughly 0.03 between
   reasonable samples. Jailbreak (0.731) and leakage (0.747) pass by less than that.
 - **The text carries the label.** Most in-the-wild jailbreak attacks are community templates whose words are the
   technique ("no restrictions", "never refuses", "Developer Mode"). A guardrail is right to read them. Benign rows
   that share those words without the intent are scarce in the wild, and authored ones are only a partial stand-in.
 - **The build gate's extra view.** `gate-heldback.json` (from `python -m goldrails_dataset.edition2 gate-heldback`)
-  also fits on tune and scores the private slice. There, source id on injection is BA 0.673 and AUROC 0.796, over the
-  bound. Authored rows are public unless held out, so the new pairs are in tune and test but not in private. A source
-  rate learned on tune does not carry over to the private slice, where the authored rows are the older, mostly benign
+  also fits on dev and scores the private slice. There, source id on injection is BA 0.673 and AUROC 0.796, over the
+  bound. Authored rows are public unless held out, so the new pairs are in dev and test but not in private. A source
+  rate learned on dev does not carry over to the private slice, where the authored rows are the older, mostly benign
   ones.
 
 Treat edition 2 prompt-attack scores as scores on a suite with fewer surface shortcuts than before. A model that
@@ -97,7 +97,7 @@ reads words can still separate the classes.
 
 The gate now uses L2 logistic regression on character 2-5-grams and on word 1-2-grams, with C picked by grouped inner
 CV on the training rows only, and a constant fit counts as a failure. Measured that way it fails in sample and held
-back: 49 of 120 cells, all 48 n-gram cells plus source id on tune to the unpublished slice. The highest held-back AUROC
+back: 49 of 120 cells, all 48 n-gram cells plus source id on dev to the unpublished slice. The highest held-back AUROC
 is 0.941 on injection, 0.981 on jailbreak and 0.930 on leakage (`gate-heldback.json`). The owner ruled (17 and 18)
 that the data work stops here. Prompt-attack scores are published as provisional, with the caveat that labels are
 partly predictable from source and style (`benchmark/contracts/v2.0.json`, `suites.prompt_attacks.provisional`).

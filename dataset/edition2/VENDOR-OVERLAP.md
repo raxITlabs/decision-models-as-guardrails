@@ -11,7 +11,7 @@ attack test rows in full.
 
 ## How the scan works
 
-The scanner reads every edition 2 row: tune, test and the unpublished slice, with licence-withheld text restored from
+The scanner reads every edition 2 row: dev, test and the unpublished slice, with licence-withheld text restored from
 `local/`. It compares each text field (text, source passage, query, context turns) with every vendor file tracked in
 the repository. Text is normalised first: NFKC, lower case, apostrophes dropped, HTML tags and entities and JSON escapes
 read as spaces. A row matches a file when
@@ -23,7 +23,7 @@ Texts under 4 words ("yes", "ok", "hi") appear in nearly every file, so the scan
 
 A row that matches in test or the unpublished slice is excluded with the reason
 `text published by a benchmarked vendor (<vendor>)`. Public ids go to `EXCLUDED.jsonl` in this folder. Unpublished ids
-go to the git-ignored `<suite>/private/EXCLUDED.jsonl`. A tune row stays in tune and is listed here as flagged.
+go to the git-ignored `<suite>/private/EXCLUDED.jsonl`. A dev row stays in dev and is listed here as flagged.
 
 ### Vendor files scanned (51)
 
@@ -59,7 +59,7 @@ denied topics, word filters, PII or grounding matched.
 | `f2-itw_jailbreak_prompts-06a8272ed0` | test | 1 | 0.003 | excluded |
 | `f2-jackhhao_jailbreak-b095395987` | test | 1 | 0.003 | excluded |
 | `f2-jackhhao_jailbreak-709080e3d1` | test | 1 | 0.002 | excluded |
-| `f2-jackhhao_jailbreak-ada5d8b10c` | tune | 2 | 0.008 | kept in tune, flagged |
+| `f2-jackhhao_jailbreak-ada5d8b10c` | dev | 2 | 0.008 | kept in dev, flagged |
 | one unpublished row | unpublished | 2 | 0.022 | excluded (id in the git-ignored file) |
 
 ## What the owner should know

@@ -5,7 +5,7 @@
 Writes dataset/edition2/grounding/candidates.jsonl (one Record per line plus the candidate fields below), counts.json,
 exclusions.jsonl and a blind review packet in packet/ (packet/_lead/ maps review ids back to record ids).
 
-Candidate fields beside the Record: suite, label (= expected), source, licence, proposed_split (tune | test | private),
+Candidate fields beside the Record: suite, label (= expected), source, licence, proposed_split (dev | test | private),
 label_rationale (the evidence for the label), first_labeller ("read": the first labeller read the row against its source
 and agreed with the source label; "diff_checked": SummEdits, the edit from the verified seed summary was read and agreed
 with; "adopted": the source label was taken on its stated evidence), upstream_split.
@@ -46,7 +46,7 @@ LOADERS = {"faithdial": faithdial, "summedits": summedits, "ragbench": ragbench}
 # 90 -> 98) so the public test split keeps >= 250 rows per class after the disputed rows the owner reviews are held out:
 # 275 per class before disputes. The added rows were read under owner ruling 4 (first_labels.jsonl, 2026-10-03).
 QUOTA = {"faithdial": 130, "summedits": 196, "ragbench": 98}
-SHARES = (("test", 0.65), ("tune", 0.15), ("private", 0.20))
+SHARES = (("test", 0.65), ("dev", 0.15), ("private", 0.20))
 PER_GROUP = {"faithdial": 1, "summedits": 2, "ragbench": 1}            # rows per group per class
 # Shares of each class quota per stratum, so a subset never stands in for the label (RAGBench's PubMedQA replies are
 # mostly unsupported, HAGRID's mostly supported). Shares follow the positives available after the agreement filter.
@@ -311,7 +311,7 @@ def stratum_of(r) -> str:
 
 def candidate(r, group: str, split: str, first_label=None) -> dict:
     r.group = group
-    r.split = "tune" if split == "tune" else "test"
+    r.split = "dev" if split == "dev" else "test"
     r.visibility = "heldout" if split == "private" else "public"
     r.validate()
     d = r.to_dict()

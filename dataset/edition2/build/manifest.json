@@ -4,60 +4,60 @@
   "status": "candidate: disputes resolved under the owner rulings of 3 October 2026 are applied; the rest await the owner; nothing here is frozen or signed",
   "files": [
     {
-      "path": "F1.tune.jsonl",
+      "path": "F1.dev.jsonl",
       "feature": "F1",
-      "split": "tune",
+      "split": "dev",
       "n": 348,
-      "sha256": "fadaf2fe31b54e12a082df6e01c1964c87c68e7f96c0c7504ce555191a9cf658"
+      "sha256": "164fbf378fbad77c81993c50638bb643fa76cd3d3992dc892818cfad3c6a94c0"
     },
     {
-      "path": "F2.tune.jsonl",
+      "path": "F2.dev.jsonl",
       "feature": "F2",
-      "split": "tune",
+      "split": "dev",
       "n": 544,
-      "sha256": "faf68b2ece5c01acb29010949a51ea1c37a4a3fb5fcae2516c94347063e9b33c"
+      "sha256": "b6f7501e1ecbc96db082e100f03c0469998be72bdd6e6fa6c13423326c9999ab"
     },
     {
-      "path": "F3.tune.jsonl",
+      "path": "F3.dev.jsonl",
       "feature": "F3",
-      "split": "tune",
+      "split": "dev",
       "n": 131,
-      "sha256": "6f7871563b8d0520ad22944af2b4958572531c3bb5fb6fbacce4a2c9303624fe"
+      "sha256": "b43fb258a6b8aeb48e805db16fc71b7a002db9e186c0bb72c0d86a1b3ad1d02b"
     },
     {
-      "path": "F4.tune.jsonl",
+      "path": "F4.dev.jsonl",
       "feature": "F4",
-      "split": "tune",
+      "split": "dev",
       "n": 162,
-      "sha256": "52d7fbb0b8f8a269c3359cb8a5f5e4722d3afd91173bac3d89bed717249af031"
+      "sha256": "03424677149e7510c1139f375d76dce3fd6abd688ca24be40c9d048166f484a5"
     },
     {
-      "path": "F5.tune.jsonl",
+      "path": "F5.dev.jsonl",
       "feature": "F5",
-      "split": "tune",
+      "split": "dev",
       "n": 118,
-      "sha256": "b454be2e4c23d42b587ae87917da40eda0d074a743efb82b72092642472bc0ac"
+      "sha256": "33510b799b88597e7489d1a19feacafa2fea703a06b804053a1e184c9442393d"
     },
     {
-      "path": "F6.tune.jsonl",
+      "path": "F6.dev.jsonl",
       "feature": "F6",
-      "split": "tune",
+      "split": "dev",
       "n": 119,
-      "sha256": "c01f1d871c8869155d2b2ddda76d4b231244a04341c4abd15c79cb4016f8d30d"
+      "sha256": "f02baecd06d64c43230f4e7b3843f4f0093ef338a2a6d80558888422e34b33d7"
     },
     {
       "path": "F1.test.jsonl",
       "feature": "F1",
       "split": "test",
       "n": 2092,
-      "sha256": "765a1d224a4301719b67fecec30d53e337cd7354391c04ab35cf80508ffef744"
+      "sha256": "b79f2d8f15a50d46eeadf67f3b8f9b29c92ab425526e27a212bb3b4ea88ccf8e"
     },
     {
       "path": "F2.test.jsonl",
       "feature": "F2",
       "split": "test",
       "n": 1815,
-      "sha256": "3ded53447d6d399289cdc926f41c90c843511dcca28136d2d3f52111e976f463"
+      "sha256": "1164151015c855b1f3f29bdd2a5ee0970411e71072cd240c192edbcc2af9d86c"
     },
     {
       "path": "F3.test.jsonl",
@@ -85,7 +85,7 @@
       "feature": "F6",
       "split": "test",
       "n": 543,
-      "sha256": "72617a2faee8210044d118f3c353c0ccfaa535f1e7895ef86610a7c197b4388e"
+      "sha256": "b0015eecd2f918a4d40569a792016afd0145721c5c8625f63eac47a6b27fbcff"
     }
   ],
   "private_slice": {

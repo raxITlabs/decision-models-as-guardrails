@@ -1,6 +1,6 @@
 """Edition 2 content suite: the human second-label sample (owner ruling 7, docs/benchmark/29-owner-rulings-2026-10-03.md).
 
-A person second-labels a 400-row stratified random sample of the content suite's public tune and test rows, and we
+A person second-labels a 400-row stratified random sample of the content suite's public dev and test rows, and we
 publish the agreement rate. docs/benchmark/30-content-sample-labelling.md is the labeller's guide.
 
     uv run python -m goldrails_dataset.content_sample draw               # sample, label.html, agreement.json (pending)
@@ -10,7 +10,7 @@ publish the agreement rate. docs/benchmark/30-content-sample-labelling.md is the
 text, much of it harmful, and some of it comes from sources whose licence is not cleared. Only
 ``dataset/edition2/content/agreement.json`` is tracked, and it carries counts and rates, never text.
 
-Population: the content rows in the current build's public F1 tune and test files
+Population: the content rows in the current build's public F1 dev and test files
 (``uv run python -m goldrails_dataset.edition2``) whose id is in the tracked public ``content/candidates.jsonl``.
 That leaves out the private slice, the rows the build dropped and the disputed rows still waiting for the owner.
 The reference label is the label the build holds (``expected`` in the build file): the first label, or for a disputed
@@ -52,10 +52,10 @@ def stratum(c: dict) -> str:
 
 
 def population(root: Path = e2_local.E2) -> tuple[dict, dict]:
-    """(id -> public candidate without text, build file digests). Public tune and test content rows only."""
+    """(id -> public candidate without text, build file digests). Public dev and test content rows only."""
     cand = {c["id"]: c for c in e2_local.candidates("content", root, private=False, text=False)}
     ids, digests, built = set(), {}, {}
-    for split in ("tune", "test"):
+    for split in ("dev", "test"):
         p = root / "build" / f"F1.{split}.jsonl"
         if not p.exists():
             raise e2_local.LocalDataMissing(f"{p} is missing: run uv run python -m goldrails_dataset.edition2 first")
@@ -67,7 +67,7 @@ def population(root: Path = e2_local.E2) -> tuple[dict, dict]:
                     ids.add(r["id"])
                     built[r["id"]] = r["expected"]
     pop = {i: {**cand[i], "label": built[i]} for i in sorted(ids)}
-    assert all(c["split"] in ("tune", "test") and c.get("visibility") == "public" for c in pop.values())
+    assert all(c["split"] in ("dev", "test") and c.get("visibility") == "public" for c in pop.values())
     return pop, digests
 
 
@@ -156,7 +156,7 @@ def draw(seed: int = SEED, n: int = N_SAMPLE) -> dict:
 def design(manifest: dict) -> dict:
     return {k: manifest[k] for k in ("seed", "n", "min_per_stratum", "sample_key", "population_rows", "build_files",
                                      "strata")} | {
-        "population": "content rows in the public F1 tune and test build files, public candidates only",
+        "population": "content rows in the public F1 dev and test build files, public candidates only",
         "strata_key": "subtask|reference label|source",
         "reference": "the label the build holds: the first label, or the owner-ruling final label of a resolved dispute",
         "command": "uv run python -m goldrails_dataset.content_sample draw"}

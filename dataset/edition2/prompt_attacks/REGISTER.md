@@ -37,7 +37,7 @@ from goldrails_dataset.sources.e2_prompt_attacks_build import candidate_to_recor
 rows = [candidate_to_record(json.loads(l)) for l in open("dataset/edition2/prompt_attacks/candidates.jsonl")]
 ```
 
-`candidate_to_record` returns validated `Record`s. `proposed_split` maps as follows: `tune` becomes split `tune`,
+`candidate_to_record` returns validated `Record`s. `proposed_split` maps as follows: `dev` becomes split `dev`,
 `test` becomes `test`, and `private` becomes split `test` with `visibility = "heldout"`, because `records.SPLITS` has
 no private split. If contract v2.0 adds a `private` split, map it directly. `provenance.notes` keeps
 `proposed_split`, `label_rationale`, `labeller`, `revision`, `upstream_split`, `train_split_flag` and `loader_group`.
@@ -77,7 +77,7 @@ checkout or the main checkout. The output is byte-identical across runs (`candid
 
 ## 5. Integrity hand-off
 
-- Add the candidate ids to the overlap check's reference sets the usual way. The tune and private rows must never be
+- Add the candidate ids to the overlap check's reference sets the usual way. The dev and private rows must never be
   examined in a test run.
 - The 18 tests in `dataset/tests/test_e2_prompt_attacks.py` re-check the committed file: ≥ 250 test rows per
   subtask and class, ≥ 2 sources each, unique ids and texts, no group straddling splits, no overlap with examined ids,

@@ -14,7 +14,7 @@ parts.
 
 | Where | In git | What it holds |
 |---|---|---|
-| `<suite>/candidates.jsonl`, `relabel.jsonl`, `first_labels.jsonl` | yes | Public rows only (proposed split tune or test). A row from an uncleared source keeps its id, labels, spans and group. Its text fields are null, and `redacted` gives the reason and the sha256 of what was removed. Fields that quote the text, such as a rationale or upstream notes, are withheld too and listed in `redacted.also_withheld`. |
+| `<suite>/candidates.jsonl`, `relabel.jsonl`, `first_labels.jsonl` | yes | Public rows only (proposed split dev or test). A row from an uncleared source keeps its id, labels, spans and group. Its text fields are null, and `redacted` gives the reason and the sha256 of what was removed. Fields that quote the text, such as a rationale or upstream notes, are withheld too and listed in `redacted.also_withheld`. |
 | `<suite>/private/` | no, owner only | The unpublished-slice rows and their second labels. Also the review packets, the `_lead` answer keys, the full `DISAGREEMENTS.md`, the prompt-attack `label-disputes.jsonl`, held-out authored cases (`authored.json`) and `order.txt`, which rebuilds the original file order. A public row whose text is also an unpublished row's text lives here as well. |
 | `<suite>/local/text.jsonl` | no | The withheld text of the redacted public rows. |
 
@@ -22,8 +22,15 @@ The tracked `DISAGREEMENTS.md` files are public copies. They drop unpublished-sl
 and labels of a redacted row.
 
 Where a suite's `SOURCES.md` or `REGISTER.md` points at `packet/`, `review-packet/`, `_lead/` or
-`label-disputes.jsonl`, the file now sits under that suite's `private/`. The content packet for tune and test rows is
-in `content/private/review-packet-tune-test/`.
+`label-disputes.jsonl`, the file now sits under that suite's `private/`. The content packet for dev and test rows is
+in `content/private/review-packet-dev-test/`.
+
+## Splits
+
+Edition 2 has a public dev split and a test split, and part of the test split is the unpublished slice described
+below. Edition 2 scores every system at a fixed 0.5 rule and fits nothing on dev, so dev serves smoke tests, dry runs
+and dataset work. The dev split was called tune before 5 October 2026; edition 1 keeps that name, because its
+thresholds really were fitted on those rows.
 
 ## What the unpublished slice is
 
@@ -56,7 +63,7 @@ anyone with the builders and the upstream data could recompute it. Three things 
 On 4 October 2026 the slice was drawn again under the salt (`e2_local redraw`). For each suite and each stratum
 (subtask, label, source), the old unpublished rows went to the public test split. The same number of rows came from the
 old test rows, in salted order, so the new slice shares no row with the old one. The unit of the draw is a build
-cluster (shared group or near-duplicate body). Some rows stayed where they were: tune, authored sources, rows named in
+cluster (shared group or near-duplicate body). Some rows stayed where they were: dev, authored sources, rows named in
 a tracked file the build does not regenerate, disputed rows waiting for the owner, rows the build dropped, and clusters
 that cross suites. Content was not drawn again, because a person is labelling its ruling 7 sample and any change to
 F1 makes that sample stale. Each suite's `private/redraw.json` records its draw and the salt fingerprint.
@@ -101,7 +108,7 @@ readers and the prompt-attack pool builder all skip these ids.
 
 The prompt-attack shortcut gate has two halves. In sample, each baseline runs grouped five-fold CV on the built test
 split (and with the unpublished slice). Held back, it is fitted on rows it then does not score: seeded group halves of
-test and unpublished, both ways; tune to test; tune to the unpublished slice; test and unpublished to tune; tune plus 70%
+test and unpublished, both ways; dev to test; dev to the unpublished slice; test and unpublished to dev; dev plus 70%
 of the test and unpublished groups to the other 30%. A constant fit fails. Since 4 October the gate fails. After the
 5 October round it fails 48 of 120 cells: 46 of the 48 n-gram cells, plus source id on two held-back injection views. Under owner ruling 17 the
 build still passes, because `benchmark/contracts/v2.0.json` marks the prompt-attack suite provisional and records the
@@ -109,7 +116,7 @@ gate's numbers. If a rebuild moves those numbers by more than 0.01, the build fa
 
 `MODEL-TRAINING-OVERLAP.json` lists every row whose text is in a split that a benchmarked model's published
 training recipe draws from (Strands Decider 2B, pplx-decider-v1-27b). Since 5 October no test or unpublished row
-matches pplx-decider-v1-27b's training or development splits: those rows are in `EXCLUDED.jsonl`, and tune rows that
+matches pplx-decider-v1-27b's training or development splits: those rows are in `EXCLUDED.jsonl`, and dev rows that
 match stay and are listed. `uv run python -m goldrails_dataset.model_overlap report | exclude | purge` reruns the scan,
 adds new matches to the exclusion lists and takes excluded ids out of every suite file. Builders screen new rows with
 the same check.

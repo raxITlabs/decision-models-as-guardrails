@@ -15,7 +15,7 @@ from goldrails_dataset.sources import e2_grounding_summedits as S
 
 ROOT = Path(__file__).resolve().parents[2]
 DIR = ROOT / "dataset" / "edition2" / "grounding"
-SPLITS = ("tune", "test", "private")
+SPLITS = ("dev", "test", "private")
 
 
 # ---------------------------------------------------------------- loaders on fake upstream rows
@@ -144,7 +144,7 @@ def test_candidates_are_valid_records_with_the_candidate_fields(cands):
         assert d["proposed_split"] in SPLITS and d["label_rationale"].strip()
         assert d["first_labeller"] in ("read", "diff_checked", "adopted")
         assert json.loads(r.provenance.notes)["revision"]                         # pinned upstream revision
-        assert (r.split, r.visibility) == {"tune": ("tune", "public"), "test": ("test", "public"), "private": ("test", "heldout")}[d["proposed_split"]]
+        assert (r.split, r.visibility) == {"dev": ("dev", "public"), "test": ("test", "public"), "private": ("test", "heldout")}[d["proposed_split"]]
         assert r.state.source and r.state.query
 
 

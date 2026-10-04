@@ -1,5 +1,5 @@
 """Assemble edition 2 prompt-attack candidate rows: load the e2 loaders, drop excluded rows, remove anything that
-overlaps v1, pick rows per (subtask, label) to target sizes, group near-duplicates, propose tune/test/private splits
+overlaps v1, pick rows per (subtask, label) to target sizes, group near-duplicates, propose dev/test/private splits
 by group, and write the candidate file, counts and a blind second-labeller packet.
 
     uv run python -m goldrails_dataset.sources.e2_prompt_attacks_build            # writes dataset/edition2/prompt_attacks/
@@ -13,7 +13,7 @@ Overlap with v1 (any match removes the row, with the reason counted in excluded-
 - near-duplicate: word 5-gram Jaccard >= 0.7 with any v1 F2 source-pool row (catches jailbreak templates with a
   swapped goal and concatenated deepset rows).
 
-Split proposal: target shares test 0.60, private 0.25, tune 0.15 per (subtask, label); groups (loader group merged
+Split proposal: target shares test 0.60, private 0.25, dev 0.15 per (subtask, label); groups (loader group merged
 with near-duplicate components) never straddle splits. Final splits are the integration agent's and owner's call.
 The split order and the selection order are salted with the owner's private salt (e2_local.salted), so the published
 code does not give the private slice; an authored row is private exactly when its case is held out.
@@ -50,7 +50,7 @@ SELECTION = "heldback-contrast-2026-10-04"     # recorded in counts.json; see se
 # quota cut in this PLAN takes effect (the rows over quota leave in the salted row order, never by a model score).
 PINNED_SELECTIONS = ("cell-balanced-2026-10-03", "contrastive-2026-10-03", SELECTION)
 TARGET = 540                       # rows per (subtask, label); test share 0.60 gives >= 250 test rows after disputes
-SHARES = {"test": 0.60, "private": 0.25, "tune": 0.15}
+SHARES = {"test": 0.60, "private": 0.25, "dev": 0.15}
 # Per (subtask, label): (pool, quota, max rows per near-duplicate group). Quotas sum to TARGET. A pool that runs short
 # leaves its shortfall to the pools after it, in order. The quotas are set so that every source that can supply both
 # classes of a subtask does (Mosscap, the in-the-wild set, jackhhao, neuralchemy, deepset, the authored rows), and the
@@ -626,9 +626,9 @@ def candidate(r, group: str, split: str) -> dict:
 
 def candidate_to_record(d: dict):
     """A candidate row as a ``Record`` for the shared build. ``proposed_split`` private becomes split "test" with
-    visibility "heldout" (records.py has no private split); tune and test keep their split, visibility public."""
+    visibility "heldout" (records.py has no private split); dev and test keep their split, visibility public."""
     from ..records import Category, Provenance, Record, State
-    split = "tune" if d["proposed_split"] == "tune" else "test"
+    split = "dev" if d["proposed_split"] == "dev" else "test"
     notes = {**d["notes"], "label_rationale": d["label_rationale"], "labeller": d["labeller"], "revision": d["revision"],
              "upstream_split": d["upstream_split"], "train_split_flag": d["train_split_flag"], "suite": d["suite"],
              "proposed_split": d["proposed_split"], "loader_group": d["loader_group"]}
@@ -793,10 +793,10 @@ def main(out: Path = OUT, fetch_pools: bool = True) -> dict:
     dropped = owner_excluded()           # rows the owner took out of edition 2 (EXCLUDED.jsonl): never selected again
     rows = [r for r in load_all() if r.id not in retired and r.id not in dropped]
     prev, seconds = previous_build(out)
-    # A tune row of the previous build that a smoke or pilot ledger has since sent to a model is still a tune row:
-    # tune is for exactly that. Its id is in the ledgers now, so it would fail the id check; it passed that check when
-    # it was first selected, so previous tune rows are exempt from it (test and private rows are not).
-    ref["ids"] = ref["ids"] - {i for i, d in prev.items() if d["proposed_split"] == "tune"}
+    # A dev row of the previous build that a smoke or pilot ledger has since sent to a model is still a dev row:
+    # dev is for exactly that. Its id is in the ledgers now, so it would fail the id check; it passed that check when
+    # it was first selected, so previous dev rows are exempt from it (test and private rows are not).
+    ref["ids"] = ref["ids"] - {i for i, d in prev.items() if d["proposed_split"] == "dev"}
     from .. import model_overlap
     model_screen = model_overlap.seen_by_model
     other_texts = other_suite_texts()     # 5 October: a new row may not repeat another suite's text

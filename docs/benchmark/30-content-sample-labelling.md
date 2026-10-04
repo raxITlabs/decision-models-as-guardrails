@@ -19,8 +19,8 @@ publish it as a web page. Pass it to the labeller by hand.
 
 ## The sample
 
-The population is every content row in the current edition 2 build's public tune and test files
-(`dataset/edition2/build/F1.tune.jsonl` and `F1.test.jsonl`) whose id is in the tracked public
+The population is every content row in the current edition 2 build's public dev and test files
+(`dataset/edition2/build/F1.dev.jsonl` and `F1.test.jsonl`) whose id is in the tracked public
 `dataset/edition2/content/candidates.jsonl`. That excludes the private slice, the rows the build dropped for overlap,
 and the disputed rows still waiting for the owner. On 3 October 2026 the population was 2,261 rows.
 
@@ -127,7 +127,7 @@ note, and the group is read by its agreement rate. Kappa is meaningful overall a
 the published figure for ruling 7.
 
 The edition 2 build audit (`uv run python -m goldrails_dataset.edition2`) reads `agreement.json`. A content row with
-no blind second label counts as covered when the sample was drawn from the current build, meaning its F1 tune and test
+no blind second label counts as covered when the sample was drawn from the current build, meaning its F1 dev and test
 digests match the build files. The audit then reports the sample as `pending human labels`. A sample drawn from an
 earlier build fails the second-label gate until it is redrawn. Until `status` is `complete`, the audit's
 `publication` block stays `ready: false`, and `--require-publishable` exits 1.

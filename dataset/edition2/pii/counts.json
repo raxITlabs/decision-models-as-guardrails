@@ -5,37 +5,37 @@
   "synthetic_reviewed/source_label": 384
  },
  "by_source_split_class": {
+  "e2_pii_controls/dev/no": 12,
+  "e2_pii_controls/dev/yes": 3,
   "e2_pii_controls/private/no": 13,
   "e2_pii_controls/private/yes": 3,
   "e2_pii_controls/test/no": 47,
   "e2_pii_controls/test/yes": 30,
-  "e2_pii_controls/tune/no": 12,
-  "e2_pii_controls/tune/yes": 3,
+  "gretel_pii_en/dev/no": 24,
+  "gretel_pii_en/dev/yes": 21,
   "gretel_pii_en/private/no": 24,
   "gretel_pii_en/private/yes": 25,
   "gretel_pii_en/test/no": 127,
   "gretel_pii_en/test/yes": 106,
-  "gretel_pii_en/tune/no": 24,
-  "gretel_pii_en/tune/yes": 21,
+  "gretel_pii_finance/dev/yes": 5,
   "gretel_pii_finance/private/yes": 5,
   "gretel_pii_finance/test/yes": 21,
-  "gretel_pii_finance/tune/yes": 5,
+  "nemotron_pii/dev/no": 24,
+  "nemotron_pii/dev/yes": 31,
   "nemotron_pii/private/no": 23,
   "nemotron_pii/private/yes": 27,
   "nemotron_pii/test/no": 126,
-  "nemotron_pii/test/yes": 143,
-  "nemotron_pii/tune/no": 24,
-  "nemotron_pii/tune/yes": 31
+  "nemotron_pii/test/yes": 143
  },
  "by_split_class": {
+  "dev/no": 60,
+  "dev/yes": 60,
   "private/no": 60,
   "private/yes": 60,
   "test/no": 300,
-  "test/yes": 300,
-  "tune/no": 60,
-  "tune/yes": 60
+  "test/yes": 300
  },
- "candidates_sha256": "e1921a8008583bffd43b28a7da38e85a44fd54c1dab155e6123166580ba0200a",
+ "candidates_sha256": "fb96e99c1fdbfafcc979a6728f7be71281cd69fd5211278091fe8c278b3c8ed8",
  "dropped_by_reason": {
   "gretel_pii_en": {
    "PASSWORD value in a doubtful context (hash, token, SSID or example)": 18,
@@ -129,49 +129,49 @@
  },
  "positives_by_entity_split": {
   "ADDRESS": {
+   "dev": 22,
    "private": 18,
-   "test": 91,
-   "tune": 22
+   "test": 91
   },
   "DRIVER_ID": {
+   "dev": 12,
    "private": 12,
-   "test": 57,
-   "tune": 12
+   "test": 57
   },
   "EMAIL": {
+   "dev": 15,
    "private": 19,
-   "test": 92,
-   "tune": 15
+   "test": 92
   },
   "IP_ADDRESS": {
+   "dev": 12,
    "private": 14,
-   "test": 66,
-   "tune": 12
+   "test": 66
   },
   "NAME": {
+   "dev": 32,
    "private": 29,
-   "test": 153,
-   "tune": 32
+   "test": 153
   },
   "PASSWORD": {
+   "dev": 12,
    "private": 16,
-   "test": 56,
-   "tune": 12
+   "test": 56
   },
   "PHONE": {
+   "dev": 12,
    "private": 13,
-   "test": 59,
-   "tune": 12
+   "test": 59
   },
   "USERNAME": {
+   "dev": 13,
    "private": 13,
-   "test": 59,
-   "tune": 13
+   "test": 59
   },
   "US_SOCIAL_SECURITY_NUMBER": {
+   "dev": 12,
    "private": 18,
-   "test": 61,
-   "tune": 12
+   "test": 61
   }
  },
  "references": {

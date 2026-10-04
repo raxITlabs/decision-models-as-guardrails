@@ -108,7 +108,7 @@ def test_profanity_floors_sources_and_splits(tracked):
 def test_profanity_rows_are_first_labelled_candidates(tracked):
     for c in tracked:
         assert c["label"] in ("yes", "no") and c["label"] == c["expected"]
-        assert c["proposed_split"] in ("test", "tune")          # the private slice never sits in a tracked file
+        assert c["proposed_split"] in ("test", "dev")          # the private slice never sits in a tracked file
         if c["subtask"] == "profanity":
             assert c["provenance"]["label_basis"] == "llm" and c["review_status"] == "candidate"
             assert c["label_rationale"] and c["label_rationale"].startswith(c["label"] + ":")
@@ -139,7 +139,7 @@ def test_full_rows_rebuild_and_keep_groups_in_one_split(full):
     # each source contributes both classes to every split
     cells = Counter((c["source"], c["proposed_split"], c["label"]) for c in prof)
     for s in PROFANITY_SOURCES:
-        for split in ("test", "tune", "private"):
+        for split in ("test", "dev", "private"):
             for lab in ("yes", "no"):
                 assert cells[(s, split, lab)] > 0, (s, split, lab)
 

@@ -1,12 +1,17 @@
-# Edition 2 tune-split sample (not a held-out result)
+# Edition 2 dev-split sample (not a held-out result)
 
-This is a dress rehearsal of the edition 2 full run. Every public tune row (1,422 rows in
-`dataset/edition2/build/F*.tune.jsonl`) went to every system that could be reached, and `leaderboard_v2` scored the
+This is a dress rehearsal of the edition 2 full run. Every public dev row (1,422 rows in
+`dataset/edition2/build/F*.dev.jsonl`) went to every system that could be reached, and `leaderboard_v2` scored the
 answers in diagnostic mode at the contract's fixed 0.5 rule. No test row and no unpublished row was sent. The test split
 stays untouched until the owner signs the freeze.
 
-Read every number here as a tune-split sample. These rows were used to build, label and check the dataset (the
+Read every number here as a dev-split sample. These rows were used to build, label and check the dataset (the
 shortcut gate, the smoke tests), so they say how the pipeline behaves, not how the systems rank on held-out data.
+
+The dev split was called tune when this ran, and this folder was `edition2-tune-sample`. The rename on 5 October 2026
+moved no row (`dataset/edition2/README.md`, "Splits"). The ledgers record no split field and are unchanged.
+`leaderboard.json` and the plots were regenerated with the renamed code: every score is identical, and only the
+labels and the dataset hash inside each arm id changed, because the dev files now say `dev` in each row.
 
 Run on 4 October 2026 (UTC). Commands:
 
@@ -83,7 +88,7 @@ Every system fails the custom-words sanity check. The best score is 91.7 (Jev, C
 5 positives caught and 1 of 6 negatives blocked. With 11 rows, one row decides pass or fail. Check whether that negative
 row is labelled the way the policy intends before the freeze.
 
-The training-data overlap barely moves pplx-decider. Dropping the 82 tune rows that match its training or development
+The training-data overlap barely moves pplx-decider. Dropping the 82 dev rows that match its training or development
 data (1 content, 62 prompt-attack, 19 profanity) changes its overall from 89.4 to 89.1. Prompt attacks fall 0.8 and
 profanity 0.9. Its rank and tier stay the same. The other systems move by -0.5 to +0.5 points on the same reduced rows
 (`pplx_overlap_sensitivity` in `leaderboard.json`, `plots/pplx-overlap.png`).
@@ -118,7 +123,7 @@ each `make pause`. The whole sample cost about $1.96: $0.54 hosted and $1.42 for
 
 ## Caveats
 
-- Tune split. These rows built and checked the dataset. This is a rehearsal, not a held-out result, and the file says
+- Dev split. These rows built and checked the dataset. This is a rehearsal, not a held-out result, and the file says
   so in its label (it is also in diagnostic mode, and the contract is unsigned).
 - Sample size. 118 to 544 rows per suite, so suite intervals are a few points wide.
 - Prompt attacks are provisional (owner rulings 17 and 18). Their labels are partly predictable from source and style.

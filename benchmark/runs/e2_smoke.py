@@ -1,14 +1,14 @@
-"""Edition 2 smoke test: 20 tune rows per adapter subtask per system, through the edition 2 adapters.
+"""Edition 2 smoke test: 20 dev rows per adapter subtask per system, through the edition 2 adapters.
 
     uv run python benchmark/runs/e2_smoke.py plan                      # offline: the row selection and token estimates
     uv run python benchmark/runs/e2_smoke.py run --systems jev,open,bedrock
     uv run python benchmark/runs/e2_smoke.py run --systems clef,clef-flash,perplexity,strands   # new models (docs/28)
     uv run python benchmark/runs/e2_smoke.py report                    # offline: summary from the ledgers
 
-Rows come only from ``dataset/edition2/build/F*.tune.jsonl`` (public tune split; the private slice is test-only and
+Rows come only from ``dataset/edition2/build/F*.dev.jsonl`` (public dev split; the private slice is test-only and
 is checked to be disjoint). Rows the owner excluded (``dataset/edition2/EXCLUDED.jsonl`` and the git-ignored
 ``*/private/EXCLUDED.jsonl``) are never picked. Nothing from the test split is read. Ledgers in ``benchmark/results/edition2-smoke/`` keep
-row ids, labels and system outputs, never the row text, because many tune rows come from ids-only sources
+row ids, labels and system outputs, never the row text, because many dev rows come from ids-only sources
 (owner ruling 10). Error strings are cut to 300 characters and checked for row text before they are written.
 
 New decision models (docs/benchmark/28): ``clef`` and ``clef-flash`` (Cloudflare Workers AI), ``perplexity``
@@ -53,7 +53,7 @@ TASKS = {("content", "request"): ("F1", ("harmful_goal", "input", "over_refusal"
          ("grounding", "grounding"): ("F6", ("grounding",)),
          ("word_filters", "word"): ("F4", ("word",)),
          ("word_filters", "profanity"): ("F4", ("profanity",))}
-NOT_RUN = {("grounding", "relevance"): "no edition 2 tune row carries a relevance label"}
+NOT_RUN = {("grounding", "relevance"): "no edition 2 dev row carries a relevance label"}
 # Known request limits, in tokens. Open-Jev is served with --max-length 4096 (infra/gcp/startup.sh); Jev documents
 # 32k tokens for state plus the longest question (docs/reference/typesafe/models.md). Kev and Laya do not document
 # theirs here, so the 4096 reference is applied to them as a conservative proxy and labelled as such.
@@ -74,7 +74,7 @@ CHARS_PER_TOKEN = 3.5   # conservative (over-)estimate for English with a BPE to
 
 
 def rows_of(feature: str) -> list:
-    return [json.loads(x) for x in (BUILD / f"{feature}.tune.jsonl").open(encoding="utf-8")]
+    return [json.loads(x) for x in (BUILD / f"{feature}.dev.jsonl").open(encoding="utf-8")]
 
 
 def private_ids() -> set:
@@ -111,8 +111,8 @@ def select() -> dict:
     out = {}
     for (suite, sub), (feat, tags) in TASKS.items():
         rows = [r for r in rows_of(feat) if r["subtask"] in tags and r["id"] not in excl]
-        assert all(r["split"] == "tune" and r["visibility"] == "public" for r in rows), "non-tune or non-public row"
-        assert not {r["id"] for r in rows} & priv, "a tune row is in the private slice"
+        assert all(r["split"] == "dev" and r["visibility"] == "public" for r in rows), "non-dev or non-public row"
+        assert not {r["id"] for r in rows} & priv, "a dev row is in the private slice"
         strata = defaultdict(list)
         for r in sorted(rows, key=lambda r: (bool(((r.get("attribute") or {}).get("e2") or {}).get("needs_owner_review")),
                                              _h(r["id"]))):
@@ -461,7 +461,7 @@ def load_ledgers() -> list:
 
 def summarise(recs: list, picked: dict | None = None) -> dict:
     """``picked`` maps "suite/subtask" to the current selection's ids; ledger records for rows outside it (picked by
-    an earlier build of the tune split) are left out of the table and counted under ``superseded``."""
+    an earlier build of the dev split) are left out of the table and counted under ``superseded``."""
     if picked is not None:
         keep = {(k, i) for k, ids in picked.items() for i in ids}
         stale = Counter(d["system"] for d in recs if (f"{d['suite']}/{d['subtask']}", d["row_id"]) not in keep)
@@ -525,15 +525,15 @@ def plan() -> None:
         print(f"{su}/{st}: {len(rows)} rows {dict(c)} ids-only {io}, est tokens max {max(toks)}")
     for k, why in NOT_RUN.items():
         print(f"{k[0]}/{k[1]}: not run ({why})")
-    # offline: every tune row's estimated size against the 4096 reference
+    # offline: every dev row's estimated size against the 4096 reference
     for (su, st), (feat, tags) in TASKS.items():
         rows = [r for r in rows_of(feat) if r["subtask"] in tags]
         toks = [est_tokens(r, su, st, "kev-4b") for r in rows]
-        print(f"  all tune {su}/{st}: {len(rows)} rows, near 4096 (>= {int(NEAR * 4096)}): "
+        print(f"  all dev {su}/{st}: {len(rows)} rows, near 4096 (>= {int(NEAR * 4096)}): "
               f"{sum(t >= NEAR * 4096 for t in toks)}, over: {sum(t >= 4096 for t in toks)}, max {max(toks)}")
 
 
-def tune_size_scan() -> dict:
+def dev_size_scan() -> dict:
     out = {}
     for (su, st), (feat, tags) in TASKS.items():
         rows = [r for r in rows_of(feat) if r["subtask"] in tags]
@@ -564,9 +564,9 @@ def main(argv=None) -> int:
         rows_by_id = {r["id"]: r for rows in sel.values() for r in rows}
         leaks = leak_check(sorted(OUT.glob("*.jsonl")), rows_by_id)
         s = summarise(recs, {f"{k[0]}/{k[1]}": [r["id"] for r in v] for k, v in sel.items()})
-        p = write_summary(s, {"seed": SEED, "per_subtask": PER_SUBTASK, "split": "tune",
+        p = write_summary(s, {"seed": SEED, "per_subtask": PER_SUBTASK, "split": "dev",
                               "not_run": {f"{k[0]}/{k[1]}": v for k, v in NOT_RUN.items()},
-                              "tune_size_scan": tune_size_scan(), "leak_check": {"rows_with_text_in_ledgers": len(leaks)},
+                              "dev_size_scan": dev_size_scan(), "leak_check": {"rows_with_text_in_ledgers": len(leaks)},
                               "row_ids": {f"{k[0]}/{k[1]}": [r["id"] for r in v] for k, v in sel.items()}})
         for t in s["table"]:
             print(f"{t['system']:20s} {t['suite']}/{t['subtask']:18s} rows {t['rows']:3d} failed {t['failed']:2d} "

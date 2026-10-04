@@ -139,7 +139,7 @@ That makes every comparison paired.
 
 There is no threshold fitting in the headline. The tuned v1.1 leaderboard appears in a v2.0 results file only as
 `appendix_tuned_v1_1`, labelled, with its own ranking, never merged with the headline. A separately ranked
-"Calibrated" division, where submitters fit one threshold per subtask on the public tune split and declare it before
+"Calibrated" division, where submitters fit one threshold per subtask on the public dev split and declare it before
 test, comes later.
 
 Every Noul model uses one frozen question set per suite, chosen by rule and not by results: `v1-f1-bedrock5`,
@@ -203,7 +203,7 @@ reason is the shortcut gate. It fits baselines that never judge an attack (sourc
 L2 logistic regression on character 2-5-grams and on word 1-2-grams) and asks each to stay at or under balanced
 accuracy 0.70 and AUROC 0.75. A fit that gives every row the same score counts as a failure, not a pass. After the
 4 October round the gate still fails, in sample and on rows the baselines were not fitted on. The two n-gram models
-do the damage; source id fails two held-back injection cells (tune to the unpublished slice, AUROC 0.763, and one seeded
+do the damage; source id fails two held-back injection cells (dev to the unpublished slice, AUROC 0.763, and one seeded
 group half to the other, AUROC 0.76).
 
 Highest BA / AUROC of any baseline in any view (bounds 0.70 / 0.75):

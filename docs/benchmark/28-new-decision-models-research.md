@@ -98,7 +98,7 @@ Transport failures from every client carry a class name the contract's retry pol
 
 1. Cloudflare. Create a Workers AI API token scoped to Workers AI read and run, on the account that will be billed. Keep AI Gateway out of the path, or switch its logging off, because Cloudflare's no-storage statement does not cover Gateway logs. Put `CLOUDFLARE_ACCOUNT_ID` (the 32-hex ID) and `CLOUDFLARE_API_TOKEN` in `.env`. Then:
    `uv run python benchmark/runs/e2_smoke.py run --systems clef,clef-flash`
-2. Perplexity. Create an API key. Before sending anything beyond the public tune rows, get written confirmation of what the Decisions API retains, since zero retention is documented only for Chat Completions. Put `PERPLEXITY_API_KEY` in `.env`. Then:
+2. Perplexity. Create an API key. Before sending anything beyond the public dev rows, get written confirmation of what the Decisions API retains, since zero retention is documented only for Chat Completions. Put `PERPLEXITY_API_KEY` in `.env`. Then:
    `uv run python benchmark/runs/e2_smoke.py run --systems perplexity`
 3. Strands. Add the `strands-decider-2b` entry from `infra/gcp/terraform.tfvars.full-roster.example` to your `terraform.tfvars`, on a card with about 6 GB free (gpu 0 on the current two-L4 pass already holds three models, so check `nvidia-smi` first). Run `cd infra/gcp && terraform plan && terraform apply`, wait for `journalctl -u goldrails-strands-decider-2b` to show uvicorn listening, start the tunnels with `make tunnel` (`infra/tunnels.sh up`), then:
    `uv run python benchmark/runs/e2_smoke.py run --systems strands`
@@ -106,7 +106,7 @@ Transport failures from every client carry a class name the contract's retry pol
 4. OpenAI. Send the access note above when ready. Once OpenAI enables the organisation, check the request and response shape against their example, update `hosted.OpenAIDecisionsClient` and drop the `UNVERIFIED` marker, then set `OPENAI_DECISIONS_ENABLED=1` beside `OPENAI_API_KEY` and run:
    `uv run python benchmark/runs/e2_smoke.py run --systems openai`
 
-All four in one go, once configured: `uv run python benchmark/runs/e2_smoke.py run --systems clef,clef-flash,perplexity,strands`, then `uv run python benchmark/runs/e2_smoke.py report`. A system with missing credentials or no VM slot prints `NOT_CONFIGURED` and sends nothing. The smoke reads only the public tune split, 20 rows per subtask, and asserts that before any call.
+All four in one go, once configured: `uv run python benchmark/runs/e2_smoke.py run --systems clef,clef-flash,perplexity,strands`, then `uv run python benchmark/runs/e2_smoke.py report`. A system with missing credentials or no VM slot prints `NOT_CONFIGURED` and sends nothing. The smoke reads only the public dev split, 20 rows per subtask, and asserts that before any call.
 
 Still open after the first smoke:
 

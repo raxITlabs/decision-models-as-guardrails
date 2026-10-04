@@ -273,10 +273,10 @@ def test_edition2_freeze_requires_the_check(tmp_path):
 
 
 # every role the edition-2 check requires, with rows that overlap nothing
-BASE_REFS = {"examined": ["x0"], "smoke": ["s0"], "pilot": ["p0"], "tune": [row("u0", "an unrelated tuning row")]}
+BASE_REFS = {"examined": ["x0"], "smoke": ["s0"], "pilot": ["p0"], "dev": [row("u0", "an unrelated dev row")]}
 
 
-@pytest.mark.parametrize("refs", [{"smoke": ["t1"]}, {"tune": [row("u1", "TEST one")]},
+@pytest.mark.parametrize("refs", [{"smoke": ["t1"]}, {"dev": [row("u1", "TEST one")]},
                                   {"examined": [row("e1", "other", group="g1")]}])
 def test_edition2_freeze_refuses_to_write_on_any_overlap(tmp_path, refs):
     ds, files = _test_file(tmp_path, [row("t1", "test one", group="g1")])
@@ -290,9 +290,9 @@ def test_edition2_freeze_refuses_to_write_on_any_overlap(tmp_path, refs):
 def test_edition2_freeze_records_a_clean_check(tmp_path):
     ds, files = _test_file(tmp_path, [row("t1", "a"), row("t2", "b")])
     m = freeze.write_manifest(_doc("v2.0"), tmp_path / "m.json", retry_policy=DEFAULT_POLICY, test_datasets=ds,
-                              test_files=files, references={**BASE_REFS, "tune": [row("u1", "c")], "examined": ["x1", "x2"]},
+                              test_files=files, references={**BASE_REFS, "dev": [row("u1", "c")], "examined": ["x1", "x2"]},
                               v1_build_rows=[row("v1", "v1 row")])
     assert m["integrity"]["test_rows"] == 2 and m["integrity"]["overlapping_test_rows"] == 0
-    assert {"tune": 1, "examined": 2}.items() <= m["integrity"]["reference_rows"].items()
+    assert {"dev": 1, "examined": 2}.items() <= m["integrity"]["reference_rows"].items()
     assert m["integrity"]["datasets"]["denied_topics"]["sha256"] == ds["denied_topics"]
     assert json.loads((tmp_path / "m.json").read_text())["integrity"] == m["integrity"]

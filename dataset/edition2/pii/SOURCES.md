@@ -86,7 +86,7 @@ These screens came from reading samples. The first pass let through Gretel negat
 - Groups: Nemotron uses v1's groups. Gretel groups join rows that share an email, phone, SSN, username, password,
   IP, street address or licence number. Joining on first names or cities would chain most of a source into one
   group.
-- One row per group. A group's split is a fixed hash: 70% test, 15% tune, 15% private. `private` means record split
+- One row per group. A group's split is a fixed hash: 70% test, 15% dev, 15% private. `private` means record split
   test with visibility heldout.
 - No row repeats an id, normalised text or group from v1. The reference set covers every row id in a text file
   under `benchmark/` and `dataset/` (ledgers, subsets, manifests, examined list, reviews, samples), plus the published
@@ -96,7 +96,7 @@ These screens came from reading samples. The first pass let through Gretel negat
 ## Selection
 
 For each split, the selector handles the rarest type first and alternates between sources until the type reaches
-60 test, 12 tune and 12 private positives. It then fills positives to 300/60/60 and negatives to 300/60/60,
+60 test, 12 dev and 12 private positives. It then fills positives to 300/60/60 and negatives to 300/60/60,
 alternating sources again. All authored rows are kept.
 
 ## Counts
@@ -104,10 +104,10 @@ alternating sources again. All authored rows are kept.
 | Split | yes | no |
 |---|---|---|
 | test | 300 | 300 |
-| tune | 60 | 60 |
+| dev | 60 | 60 |
 | private | 60 | 60 |
 
-| Source | test yes | test no | tune yes | tune no | private yes | private no |
+| Source | test yes | test no | dev yes | dev no | private yes | private no |
 |---|---|---|---|---|---|---|
 | nemotron_pii | 143 | 126 | 31 | 24 | 27 | 23 |
 | gretel_pii_en | 106 | 127 | 21 | 24 | 25 | 24 |
@@ -116,7 +116,7 @@ alternating sources again. All authored rows are kept.
 
 Positives per entity type (v1 test positives in brackets):
 
-| Type | test | tune | private | test by source |
+| Type | test | dev | private | test by source |
 |---|---|---|---|---|
 | NAME | 153 (134) | 32 | 29 | nemotron 69, gretel_en 33, finance 21, authored 30 |
 | EMAIL | 91 (111) | 15 | 20 | nemotron 66, gretel_en 22, finance 2, authored 1 |

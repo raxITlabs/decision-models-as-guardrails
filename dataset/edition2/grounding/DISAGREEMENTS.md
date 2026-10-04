@@ -18,7 +18,7 @@ The suite has one subtask (`grounding`). Rows below are broken out by source, la
 | label basis `human` | 600 | 300 | 296 | 574/600 (95.7%) | 0.913 |
 | label basis `llm` | 180 | 90 | 86 | 172/180 (95.6%) | 0.911 |
 | proposed split `test` | 506 | 253 | 250 | 487/506 (96.2%) | 0.925 |
-| proposed split `tune` | 118 | 59 | 58 | 113/118 (95.8%) | 0.915 |
+| proposed split `dev` | 118 | 59 | 58 | 113/118 (95.8%) | 0.915 |
 | proposed split `private` | 156 | 78 | 74 | 146/156 (93.6%) | 0.872 |
 
 FaithDial agrees almost perfectly. Those labels come from human BEGIN tags and the replies are one sentence long. SummEdits is the weakest at 0.861. On every kept SummEdits row the first label equals the SummEdits annotator label, because the build dropped rows where the first labeller disagreed with the source. So each SummEdits disagreement below is my reading against the SummEdits annotators, and I think most of them are noise in that gold. RAGBench disagreement is almost all one policy question (hedged inference), below.
@@ -84,13 +84,13 @@ SummEdits annotators labelled these edits consistent, but each one changes a nam
 - Mine: **yes**
 - Reply: _withheld_
 
-#### `f6-summedits-2a05627f6e` (summedits, tune)
+#### `f6-summedits-2a05627f6e` (summedits, dev)
 
 - First: **no**
 - Mine: **yes**
 - Reply: _withheld_
 
-#### `f6-summedits-b78a522c91` (summedits, tune)
+#### `f6-summedits-b78a522c91` (summedits, dev)
 
 - First: **no**
 - Mine: **yes**
@@ -136,7 +136,7 @@ SummEdits annotators labelled these inconsistent, mostly with the GPT-4 edit typ
 - Mine: **no**
 - Reply: _withheld_
 
-#### `f6-summedits-ea93692d26` (summedits, tune)
+#### `f6-summedits-ea93692d26` (summedits, dev)
 
 - First: **yes**
 - Mine: **no**
@@ -146,13 +146,13 @@ SummEdits annotators labelled these inconsistent, mostly with the GPT-4 edit typ
 
 SummEdits annotators labelled these edits inconsistent because they delete something from the seed summary (a tax type, a product, "look and", "limited"). What is left is still true of the document. The policy covers unsupported or contradicting claims, not omissions, so I labelled them `no`. If the owner reads an omission that changes the scope of a statement as a violation, these flip to `yes`.
 
-#### `f6-summedits-0356220f0b` (summedits, tune)
+#### `f6-summedits-0356220f0b` (summedits, dev)
 
 - First: **yes**
 - Mine: **no**
 - Reply: _withheld_
 
-#### `f6-summedits-6f15978edc` (summedits, tune)
+#### `f6-summedits-6f15978edc` (summedits, dev)
 
 - First: **yes**
 - Mine: **no**

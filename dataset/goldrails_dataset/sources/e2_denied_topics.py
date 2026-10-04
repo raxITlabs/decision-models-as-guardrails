@@ -14,13 +14,13 @@ until a blind second labeller (AI, then the owner, per docs/benchmark/26-edition
 carries a one-line rationale. Rows a labeller could read either way are flagged in AMBIGUOUS (authored) or
 e2_denied_topics_oasst.AMBIGUOUS; the flag goes in the lead key, never in the blind packet.
 
-Splits: proposed per group, stratified by (source, topic): about 70% test, 15% tune and 15% private, so tune and
+Splits: proposed per group, stratified by (source, topic): about 70% test, 15% dev and 15% private, so dev and
 private are each about a fifth of test. Private rows are test rows with visibility "heldout". In-topic and
 hard-negative rows of a pair share a group, so a pair never straddles splits. Which groups are private is not in
 this file: a held-out authored case is a HeldOut placeholder in the case lists (its text in the git-ignored
 private/authored.json, its source id salted, e2_local.held_out_sid), and the OASST2 prompts in the private slice are
 listed in the git-ignored private config. The published order (SPLIT_SEED) only divides the other groups between
-tune and test.
+dev and test.
 
     uv run python -m goldrails_dataset.sources.e2_denied_topics            # rewrite dataset/edition2/denied_topics/
     uv run python -m goldrails_dataset.sources.e2_denied_topics --offline  # authored rows only, no network
@@ -53,7 +53,7 @@ SUITE_DIR = "denied_topics"           # e2_local suite name: held-out authored c
 TOPICS = OUT / "topics-e2.json"
 SPLIT_SEED = "gold-rails-e2-denied-topics"
 PACKET_SEED = "gold-rails-e2-review"
-SHARES = (("test", 0.70), ("tune", 0.15), ("private", 0.15))
+SHARES = (("test", 0.70), ("dev", 0.15), ("private", 0.15))
 NOTES = f"AI-drafted {DRAFTED} by the first labeller; label proposed, pending blind second labelling"
 LANG = {"In Spanish": "es", "In German": "de", "In French": "fr"}
 
@@ -206,7 +206,7 @@ def assign_splits(records: list, private_groups=frozenset()) -> None:
     split/visibility on the Record: private = test + heldout. ``private_groups`` (git-ignored: held-out authored cases,
     the private config's OASST2 prompts) are the private slice; the published order divides the rest, a group in a
     private slot of that order going to test. The order is the one the first draw used (a held-out group sits where its
-    pair number put it, ORDER_NAME), so the tune split does not move."""
+    pair number put it, ORDER_NAME), so the dev split does not move."""
     groups = defaultdict(list)
     for r in records:
         groups[r.group].append(r)
@@ -218,12 +218,12 @@ def assign_splits(records: list, private_groups=frozenset()) -> None:
         gs.sort(key=lambda g: _h(source, topic, ORDER_NAME.get(g, g)))
         n = len(gs)
         n_test = round(SHARES[0][1] * n + 1e-9)
-        n_tune = round(SHARES[1][1] * n + 1e-9)
+        n_dev = round(SHARES[1][1] * n + 1e-9)
         for i, g in enumerate(gs):
-            split = "private" if g in private_groups else "tune" if n_test <= i < n_test + n_tune else "test"
+            split = "private" if g in private_groups else "dev" if n_test <= i < n_test + n_dev else "test"
             for r in groups[g]:
                 r.attribute["proposed_split"] = split
-                r.split = "tune" if split == "tune" else "test"
+                r.split = "dev" if split == "dev" else "test"
                 r.visibility = "heldout" if split == "private" else "public"
 
 

@@ -8,7 +8,7 @@
     uv run --with scikit-learn python -m goldrails_dataset.edition2 gate-heldback   # prompt_attacks/gate-heldback.json
 
 Each suite agent left ``dataset/edition2/<suite>/candidates.jsonl``: rows already selected, grouped and split
-(``proposed_split`` tune, test or private), with a first label. A blind second labeller left ``relabel.jsonl`` beside
+(``proposed_split`` dev, test or private), with a first label. A blind second labeller left ``relabel.jsonl`` beside
 it. The repository is public, so those files hold the public rows only: the private slice sits in the git-ignored
 ``<suite>/private/`` and the text of rows whose source licence is not cleared in the git-ignored ``<suite>/local/``
 (``goldrails_dataset.e2_local``, which this module reads through). This module does not re-sample anything. It:
@@ -35,12 +35,12 @@ it. The repository is public, so those files hold the public rows only: the priv
    or containment >= 0.8 over every field the judge sees, ``overlap.row_shingles``: the text, each ``state.context``
    turn, the grounding source and query, so a shared HarmBench context or source passage joins rows whose short
    text differs) or they share a split group, across suites. A cluster whose rows sat in more than one split
-   moves whole to the public test split: no test row moves into tune, and a private row with a public near-copy is
+   moves whole to the public test split: no test row moves into dev, and a private row with a public near-copy is
    not held out (that copy's text is in a tracked file), so it becomes a test row rather than pulling public rows
    into the private slice. Then (``drop_reference_overlaps``) every test or private row that overlaps a row outside
    edition 2 (examined, results ledger, v1 release) by id, text, group or near-duplicate text is dropped. Moved rows keep their candidate split in ``attribute["e2"]["moved_from"]``;
    a cluster of more than one loader group gets one group, ``nd:<smallest member group>``;
-4. writes the public tune and test files and a manifest to ``dataset/edition2/build/``, and the private slice to
+4. writes the public dev and test files and a manifest to ``dataset/edition2/build/``, and the private slice to
    ``build/private/`` (git-ignored; never listed in the public manifest);
 5. audits the build: the v1 audit's gates (manifest, schema, group and text leakage, examined ids), the edition 2
    floors (>= 250 harmful / 250 benign public test rows per scored subtask, >= 2 sources per subtask, >= 30 test
@@ -51,10 +51,10 @@ it. The repository is public, so those files hold the public rows only: the priv
    grouped inner CV) of every prompt-attack subtask at balanced accuracy <= 0.70 and AUROC <= 0.75, and not a constant
    prediction, both in sample (``shortcut_audit``: grouped five-fold CV on the built test split, and with the
    unpublished slice) and held back (``shortcut_heldback``: fitted on built rows it then does not score, seeded group
-   halves both ways, tune to test, tune to the unpublished slice, test and unpublished to tune). Both must pass;
+   halves both ways, dev to test, dev to the unpublished slice, test and unpublished to dev). Both must pass;
 6. runs ``goldrails_bench.overlap`` in strict mode: every public and private test row against the examined list,
    smoke, pilot and diagnostic ledgers, every id in a results ledger, every v1 release build and sample row, and the
-   edition 2 tune split, by id, text, group and near-duplicate text; private rows also against the public test split.
+   edition 2 dev split, by id, text, group and near-duplicate text; private rows also against the public test split.
    A skipped overlap check (``--skip-overlap``) is not a pass: the build status is then fail.
 
 The two text baselines need scikit-learn, which is not a project dependency; without it the shortcut gate cannot
@@ -397,7 +397,7 @@ def _annotate(r: Record, suite: Suite, c: dict, status: str, reason, second, res
 
 
 def assemble(root: Path = E2) -> dict:
-    """{"tune", "test", "private", "review", "review_private"} -> [Record]. ``review`` rows have disputed labels and
+    """{"dev", "test", "private", "review", "review_private"} -> [Record]. ``review`` rows have disputed labels and
     sit outside every split until the owner rules; their split is kept in attribute["e2"]["proposed_split"]."""
     out = defaultdict(list)
     seen = set()
@@ -436,7 +436,7 @@ def assemble(root: Path = E2) -> dict:
                 raise ValueError(f"{r.id}: feature {r.feature}, suite {suite.name} expects {suite.feature}")
             if r.expected != c["label"]:
                 raise ValueError(f"{r.id}: record expected {r.expected!r}, candidate label {c['label']!r}")
-            want = {"tune": ("tune", "public"), "test": ("test", "public"), "private": ("test", "heldout")}[c["proposed_split"]]
+            want = {"dev": ("dev", "public"), "test": ("test", "public"), "private": ("test", "heldout")}[c["proposed_split"]]
             if (r.split, r.visibility) != want:
                 raise ValueError(f"{r.id}: split {(r.split, r.visibility)} does not match proposed {c['proposed_split']}")
             _annotate(r, suite, c, status, reason, second, ruling, fix)
@@ -455,10 +455,10 @@ def assemble(root: Path = E2) -> dict:
 # Which copy of a text shared by two suites stays when the copies sit in different splits. Each suite agent split its
 # own rows by group, but a few upstreams reuse each other's prompts (neuralchemy carries XSTest and HarmBench prompts,
 # the in-the-wild and jackhhao jailbreak sets carry prompts that are also Aegis rows). The test copy stays, then the
-# tune one; the other copy is dropped, so no text is in two splits and the test counts do not move. The private copy
+# dev one; the other copy is dropped, so no text is in two splits and the test counts do not move. The private copy
 # never wins over a public one: a text that is also a public row is not held out, and keeping it private would make a
 # text already in the tracked candidate files part of the private slice.
-SPLIT_PRIORITY = ("test", "tune", "private")
+SPLIT_PRIORITY = ("test", "dev", "private")
 
 
 def resolve_cross_suite_text(out: dict) -> list:
@@ -468,7 +468,7 @@ def resolve_cross_suite_text(out: dict) -> list:
     from .audit import normalise
     home = lambda r: r.attribute["e2"]["proposed_split"]
     by_text = defaultdict(list)
-    for bucket in ("tune", "test", "private", "review", "review_private"):
+    for bucket in ("dev", "test", "private", "review", "review_private"):
         for r in out.get(bucket, []):
             by_text[normalise(r.state.text)].append((bucket, r))
     drop = []
@@ -493,13 +493,13 @@ def resolve_cross_suite_text(out: dict) -> list:
     return [r for _, r in drop]
 
 
-# A near-duplicate cluster that straddles splits moves whole to the public test split. Not to tune, so the test split
-# never loses a row to tune. Not to the private slice: a public member's text sits in the tracked candidate files, so a
+# A near-duplicate cluster that straddles splits moves whole to the public test split. Not to dev, so the test split
+# never loses a row to dev. Not to the private slice: a public member's text sits in the tracked candidate files, so a
 # private row with a public near-copy is not held out any more, and pulling the public copies into the private slice
 # would make a published text and id part of it. Such a private row becomes a public test row instead.
 CLUSTER_TARGET = "test"
-CLUSTER_BUCKETS = ("tune", "test", "private", "review", "review_private")
-_SPLIT_OF = {"tune": ("tune", "public"), "test": ("test", "public"), "private": ("test", "heldout")}
+CLUSTER_BUCKETS = ("dev", "test", "private", "review", "review_private")
+_SPLIT_OF = {"dev": ("dev", "public"), "test": ("test", "public"), "private": ("test", "heldout")}
 
 
 def cluster_near_duplicates(out: dict) -> dict:
@@ -615,7 +615,7 @@ def _write_dropped(rows: list, path: Path) -> None:
 
 
 def write_build(parts: dict, out: Path = BUILD) -> dict:
-    """Public tune/test files plus manifest in ``out``; the private slice and its disputed rows in ``out/private``.
+    """Public dev/test files plus manifest in ``out``; the private slice and its disputed rows in ``out/private``.
     The public manifest lists public files only and states the private slice's size, never its files or ids."""
     out = Path(out)
     priv = out / "private"
@@ -623,7 +623,7 @@ def write_build(parts: dict, out: Path = BUILD) -> dict:
     priv.mkdir(parents=True, exist_ok=True)
     for stale in list(out.glob("F*.jsonl")) + list(priv.glob("F*.jsonl")):
         stale.unlink()
-    files = _write_split_files(parts.get("tune", []), out, "tune") + _write_split_files(parts.get("test", []), out, "test")
+    files = _write_split_files(parts.get("dev", []), out, "dev") + _write_split_files(parts.get("test", []), out, "test")
     review = _review_rows(parts.get("review", []))
     (out / "needs-owner-review.jsonl").write_text("".join(json.dumps(d, ensure_ascii=False, sort_keys=True) + "\n" for d in review),
                                                  encoding="utf-8")
@@ -644,7 +644,7 @@ def write_build(parts: dict, out: Path = BUILD) -> dict:
         "private_slice": {"rows": sum(f["n"] for f in pfiles), "where": "build/private/ (git-ignored, never published)"},
         "needs_owner_review": {"public": len(review), "private": len(previews), "file": "needs-owner-review.jsonl"},
         "resolved_by_ruling": {"public": sum(r.attribute["e2"]["second_label"] == RESOLVED
-                                             for b in ("tune", "test") for r in parts.get(b, [])),
+                                             for b in ("dev", "test") for r in parts.get(b, [])),
                                "private": sum(r.attribute["e2"]["second_label"] == RESOLVED for r in parts.get("private", [])),
                                "file": "<suite>/resolutions.jsonl"},
         "dropped": {"public": len(parts.get("dropped", [])), "private": len(parts.get("dropped_private", [])),
@@ -713,7 +713,7 @@ def entity_floors(parts: dict) -> dict:
     unscored = unscored_entities()
     supported = [t for t in asked if t not in unscored]
     per = defaultdict(Counter)
-    for split in ("tune", "test", "private"):
+    for split in ("dev", "test", "private"):
         for r in parts.get(split, []):
             if r.feature == "F5":
                 for t in r.attribute["e2"].get("entity_types", []):
@@ -739,7 +739,7 @@ SAMPLE_N = 400
 
 def content_sample_status(out: Path = BUILD, agreement: Path | None = None) -> dict:
     """The ruling 7 human sample as the audit sees it: drawn (``content/agreement.json`` exists with a 400-row design),
-    drawn from this build (its F1 tune/test digests match the files in ``out``), and labelled (status complete)."""
+    drawn from this build (its F1 dev/test digests match the files in ``out``), and labelled (status complete)."""
     agreement = Path(agreement) if agreement else AGREEMENT
     if not agreement.exists():
         return {"drawn": False, "fresh": False, "labelled": False, "status": "not drawn",
@@ -830,7 +830,7 @@ def _shortcut_rows(rows: list) -> list:
 
 
 def _gate_rows(parts: dict) -> list:
-    return [dict(r, proposed_split=split) for split in ("tune", "test", "private")
+    return [dict(r, proposed_split=split) for split in ("dev", "test", "private")
             for r in _shortcut_rows(parts.get(split, []))]
 
 
@@ -857,8 +857,8 @@ def shortcut_audit(parts: dict, use_sklearn: bool | None = None) -> dict:
 def shortcut_heldback(parts: dict, use_sklearn: bool | None = None) -> dict:
     """The held-back half of the shortcut gate, on the built rows: every baseline fitted on rows it then does not
     score (``e2_prompt_attacks_shortcuts.HELDBACK_VIEWS``): seeded group halves of test and unpublished, both ways;
-    tune to the public test split; tune to the unpublished slice (where source id on injection reached AUROC 0.796 on
-    3 October); test and unpublished to tune; tune and 70% of the test and unpublished groups to the other 30%. Every
+    dev to the public test split; dev to the unpublished slice (where source id on injection reached AUROC 0.796 on
+    3 October); test and unpublished to dev; dev and 70% of the test and unpublished groups to the other 30%. Every
     cell must meet ``_CELL_RULE``. ``constant_prediction`` lists the cells whose fit predicted one score: failures."""
     from .sources import e2_prompt_attacks_shortcuts as sc
     rep = sc.heldback_report(_gate_rows(parts), use_sklearn)
@@ -950,7 +950,7 @@ def gate_heldback(parts: dict, use_sklearn: bool | None = None) -> dict:
     """Every cell of the shortcut gate (subtask x baseline x view, in sample and held back) on the built rows, for
     ``gate-heldback.json``. The contrast round of 3 October retired 950 rows that the gate's old L1 char n-gram model,
     fitted on the projected test and test-with-unpublished views, scored most confidently correct (``retired.json``),
-    so the in-sample views are measured on rows that survived that filter; tune was never ranked. Counts and metrics
+    so the in-sample views are measured on rows that survived that filter; dev was never ranked. Counts and metrics
     only. Does not change the build."""
     from .sources import e2_prompt_attacks_shortcuts as sc
     rep = sc.gate_report(_gate_rows(parts), use_sklearn)
@@ -965,7 +965,7 @@ def gate_heldback(parts: dict, use_sklearn: bool | None = None) -> dict:
         "views": rep["view_notes"],
         "note": "private in a view name is the unpublished slice (owner ruling 15): rows held out of the public files "
                 "that can be reconstructed from public upstream data. Test and unpublished rows were in the pool the "
-                "3 October retirement ranking scored, so only tune was never ranked.",
+                "3 October retirement ranking scored, so only dev was never ranked.",
         "results": rep["views"], "table": rep["table"], "over_bounds": rep["failures"], "pass": rep["pass"]}
 
 def _retired_ids() -> set:
@@ -1066,7 +1066,7 @@ def overlap_check(parts: dict, strict: bool = True, extra_roots=()) -> dict:
     strict mode; the caller records the report either way."""
     from goldrails_bench import overlap
     refs, v1, files = _external_references(extra_roots)
-    refs = {**refs, "e2_tune": parts.get("tune", [])}
+    refs = {**refs, "e2_dev": parts.get("dev", [])}
     public = overlap.check(parts.get("test", []), refs, pool=v1, strict=False)
     private = overlap.check(parts.get("private", []), {**refs, "e2_public_test": parts.get("test", [])}, pool=v1, strict=False)
     shown = sorted({("<main-checkout>/" + str(Path(f).resolve().relative_to(main_checkout()))) if main_checkout() and

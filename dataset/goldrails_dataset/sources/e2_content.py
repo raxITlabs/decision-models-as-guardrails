@@ -10,7 +10,7 @@ benign test rows per scored subtask from at least two sources. This module does 
 - ``vendor_of(source)``: openai_moderation is OpenAI's own evaluation set, aegis2 is NVIDIA's.
 - ``build_candidates`` loads the v1 content sources plus three new ones (HarmBench, its classifier validation set,
   XSTest; OR-Bench 80k for extra benign prompts), drops anything already in v1 (id, normalised text, near-duplicate
-  text, or group), selects per-source quotas and assigns tune / test / private by group.
+  text, or group), selects per-source quotas and assigns dev / test / private by group.
 
     uv run python -m goldrails_dataset.sources.e2_content --out dataset/edition2/content \
         --v1-build ../dataset/release/v1.3/build [--v1-build ...]
@@ -365,7 +365,7 @@ def overlap_reason(r: Record, ref: Reference, index: dict | None = None) -> str 
 
 
 # ---- selection and splits -----------------------------------------------------------------------------------------
-# rows per (subtask, class) and source; a little above the 345 needed for 250 test + 45 tune + 50 private, because
+# rows per (subtask, class) and source; a little above the 345 needed for 250 test + 45 dev + 50 private, because
 # groups that couple rows (an Aegis prompt and its reply, an XSTest pair) move together.
 QUOTA = {
     ("input", "yes"): {"ailuminate_demo": 145, "aegis2": 110, "openai_moderation": 110},
@@ -379,7 +379,7 @@ QUOTA = {
 # On a text duplicate the v1 sources win, then the new sources in this order (OR-Bench 80k contains hard-1k).
 PRIORITY = {"aegis2": 0, "ailuminate_demo": 0, "openai_moderation": 0, "orbench": 0, "e2_content_aegis2_val": 1,
             "e2_content_harmbench": 1, "e2_content_harmbench_cls": 1, "e2_content_xstest": 1, "e2_content_orbench80k": 2}
-SPLIT_TARGET = {"tune": 45, "private": 50}      # rows per (subtask, class); the rest is test
+SPLIT_TARGET = {"dev": 45, "private": 50}      # rows per (subtask, class); the rest is test
 
 
 def rng(*parts) -> random.Random:
@@ -445,7 +445,7 @@ def merge_groups(rows: list) -> int:
 
 
 def assign_splits(rows: list) -> dict:
-    """Group -> tune | private | test. Filled per (subtask, class) cell in a salted order (rng); a group keeps the split
+    """Group -> dev | private | test. Filled per (subtask, class) cell in a salted order (rng); a group keeps the split
     it first got, so related rows never straddle splits."""
     split_of: dict = {}
     cells = defaultdict(list)
@@ -456,7 +456,7 @@ def assign_splits(rows: list) -> dict:
         rng("split", *cell).shuffle(cell_rows)
         size = Counter(r.group for r in cell_rows)
         filled = Counter(split_of[g] for g in size for _ in range(size[g]) if g in split_of)
-        for want in ("tune", "private"):
+        for want in ("dev", "private"):
             for r in cell_rows:
                 if filled[want] >= SPLIT_TARGET[want]:
                     break
@@ -506,7 +506,7 @@ def packet_id(row_id: str) -> str:
 
 def candidate_row(r: Record, split: str, tag: dict) -> dict:
     d = r.to_dict()
-    d["split"] = "tune" if split == "tune" else "test"
+    d["split"] = "dev" if split == "dev" else "test"
     d["visibility"] = "heldout" if split == "private" else "public"
     d["review_status"] = r.review_status or ("source_label" if r.provenance.label_basis != "deterministic" else "deterministic")
     upstream = "train" if r.provenance.source in ("orbench", "openai_moderation", "e2_content_orbench80k") else \
@@ -682,7 +682,7 @@ def counts(rows: list) -> dict:
 
 # ---- round 6 (5 October 2026): Aegis validation rows out, Aegis test and BeaverTails in ------------------------------
 # pplx-decider-v1-27b's published recipe trains on the Aegis 2.0 train split and tunes on its validation split, so the
-# e2_content_aegis2_val rows cannot be fair test rows for it. They leave edition 2 whole (tune too). Their place goes
+# e2_content_aegis2_val rows cannot be fair test rows for it. They leave edition 2 whole (dev too). Their place goes
 # to rows the recipes never draw from:
 # - e2_content_aegis2_test: Aegis 2.0 test rows v1 did not take. Every labelled test reply is a v1 row already, so this
 #   adds prompts (input) only;
@@ -772,7 +772,7 @@ def round6(existing: list, new_rows: list, ref: Reference, aegis_cats: dict, oth
                 chosen.append(r)
                 got += 1
     rep["groups_merged"] = merge_groups(chosen)
-    # splits: the kept rows hold theirs; new groups fill each cell's tune and private targets, the rest is test
+    # splits: the kept rows hold theirs; new groups fill each cell's dev and private targets, the rest is test
     filled = defaultdict(Counter)
     for c in keep:
         if c["id"] not in excluded_ids:
@@ -788,7 +788,7 @@ def round6(existing: list, new_rows: list, ref: Reference, aegis_cats: dict, oth
         for g in size:
             if g in split_of:
                 filled[cell][split_of[g]] += size[g]
-        for want in ("tune", "private"):
+        for want in ("dev", "private"):
             for r in cell_rows:
                 if filled[cell][want] >= SPLIT_TARGET[want]:
                     break

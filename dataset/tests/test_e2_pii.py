@@ -25,26 +25,26 @@ def test_candidate_file_holds_its_invariants():
 def test_no_row_repeats_an_id_text_or_group_v1_used():
     refs = E.reference_index(use_hf_cache=False)          # repo files only: ledgers, subsets, examined list, reviews
     assert len(refs["ids"]) > 1000
-    # the edition 2 smoke test (benchmark/results/edition2-smoke) sent 20 public tune rows per subtask through the
-    # adapters after the rows were selected, and the tune-split sample (edition2-tune-sample) sent every public tune
-    # row; those tune rows may be named in their ledgers, no test or private row may
+    # the edition 2 smoke test (benchmark/results/edition2-smoke) sent 20 public dev rows per subtask through the
+    # adapters after the rows were selected, and the dev-split sample (edition2-dev-sample) sent every public dev
+    # row; those dev rows may be named in their ledgers, no test or private row may
     smoke = _smoke_row_ids()
-    assert all(c["proposed_split"] == "tune" for c in ROWS if c["id"] in smoke)
+    assert all(c["proposed_split"] == "dev" for c in ROWS if c["id"] in smoke)
     hits = [c["id"] for c in ROWS if (c["id"] in refs["ids"] or c["group"] in refs["groups"]
             or E.text_hash(c["state"]["text"]) in refs["texts"]) and c["id"] not in smoke]
     assert hits == []
 
 
 def _smoke_row_ids() -> set:
-    """Rows the edition 2 smoke run and the tune-split sample (benchmark/runs/e2_sample.py, every public tune row)
-    sent through the adapters. Both send tune rows only."""
+    """Rows the edition 2 smoke run and the dev-split sample (benchmark/runs/e2_sample.py, every public dev row)
+    sent through the adapters. Both send dev rows only."""
     res = Path(__file__).resolve().parents[2] / "benchmark" / "results"
     out = set()
     p = res / "edition2-smoke" / "summary.json"
     if p.exists():
         ids = json.loads(p.read_text(encoding="utf-8"))["row_ids"]
         out |= {i for v in ids.values() for i in v} if isinstance(ids, dict) else set(ids)
-    for f in (res / "edition2-tune-sample").glob("*.jsonl"):
+    for f in (res / "edition2-dev-sample").glob("*.jsonl"):
         out |= {json.loads(x)["row_id"] for x in f.open(encoding="utf-8") if x.strip()}
     return out
 
@@ -53,19 +53,19 @@ def _smoke_row_ids() -> set:
 def test_class_targets_per_split():
     n = Counter((c["proposed_split"], c["label"]) for c in ROWS)
     assert n[("test", "yes")] >= 250 and n[("test", "no")] >= 250
-    for split in ("tune", "private"):
+    for split in ("dev", "private"):
         assert n[(split, "yes")] >= 50 and n[(split, "no")] >= 50
 
 
 @needs_file
-def test_every_supported_type_reaches_the_test_floor_and_has_tune_and_private_rows():
+def test_every_supported_type_reaches_the_test_floor_and_has_dev_and_private_rows():
     ent = defaultdict(Counter)
     for c in ROWS:
         for t in c["entity_types"]:
             ent[t][c["proposed_split"]] += 1
     for t in E.SUPPORTED:
         assert ent[t]["test"] >= 50, (t, ent[t])
-        assert ent[t]["tune"] >= 10 and ent[t]["private"] >= 10, (t, ent[t])
+        assert ent[t]["dev"] >= 10 and ent[t]["private"] >= 10, (t, ent[t])
 
 
 @needs_file
@@ -202,7 +202,7 @@ def test_ambiguous_context():
 def test_split_is_a_fixed_function_of_the_group():
     assert E.split_of("g-1") == E.split_of("g-1")
     shares = Counter(E.split_of(f"g-{i}") for i in range(5000))
-    assert 0.66 < shares["test"] / 5000 < 0.74 and 0.12 < shares["tune"] / 5000 < 0.18
+    assert 0.66 < shares["test"] / 5000 < 0.74 and 0.12 < shares["dev"] / 5000 < 0.18
 
 
 def test_join_on_values_groups_shared_identifiers():

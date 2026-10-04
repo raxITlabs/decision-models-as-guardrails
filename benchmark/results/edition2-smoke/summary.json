@@ -1,11 +1,11 @@
 {
  "seed": "e2-smoke-2026-10-04",
  "per_subtask": 20,
- "split": "tune",
+ "split": "dev",
  "not_run": {
-  "grounding/relevance": "no edition 2 tune row carries a relevance label"
+  "grounding/relevance": "no edition 2 dev row carries a relevance label"
  },
- "tune_size_scan": {
+ "dev_size_scan": {
   "content/request": {
    "rows": 261,
    "32000 (documented)": {

@@ -16,7 +16,7 @@ The labels follow `benchmark/policies/word_filters/profanity.md`, which defers t
 | `e2_profanity_oasst2` | `OpenAssistant/oasst2` @ 179dd21f | Apache-2.0 | 186 | English user and assistant messages. One row per conversation tree. Messages the denied-topics suite uses are left out. |
 
 Test split, public part: 297 yes and 343 no. Civil Comments supplies 123 of the yes rows and 150 of the no rows, so
-more than half of each class comes from the two new sources. Each source has both classes in test, tune and the private
+more than half of each class comes from the two new sources. Each source has both classes in test, dev and the private
 slice.
 
 How rows were picked. A term list and the upstream scores (Civil Comments rater fractions, Perspective scores in RTP,
@@ -49,7 +49,7 @@ filled template goes through `e2_word_filters.import_second_labels` into `relabe
 ## Custom words
 
 112 authored rows over the four phrases in `benchmark/suites/word_filters/words.json`, 56 yes and 56 no. Test has 100
-rows (50 and 50) and tune has 12. There is no private slice. Each phrase gets 13 matching variants (case, quotes,
+rows (50 and 50) and dev has 12. There is no private slice. Each phrase gets 13 matching variants (case, quotes,
 brackets, a possessive, trailing and leading punctuation) and 13 traps (plural, prefix or digit glued on, run together,
 hyphen, underscore, an inserted word, reversed order, a comma or full stop inside, a misspelling, a paraphrase, the
 first word alone). Eight more rows hold two phrases or combine traps. Every sentence frame is new for edition 2, and
@@ -82,7 +82,7 @@ edition 2 suite.
 
 pplx-decider-v1-27b's published recipe tunes on the Civil Comments validation split. 126 public test and 28
 unpublished `e2_profanity_civil_comments` rows came from that split, so they left edition 2 (`EXCLUDED.jsonl`, reason
-"text in pplx-decider-v1-27b training or development data"). 19 tune rows from it stay and are listed in
+"text in pplx-decider-v1-27b training or development data"). 19 dev rows from it stay and are listed in
 `dataset/edition2/MODEL-TRAINING-OVERLAP.json`. Public test profanity fell to 241 yes.
 
 `select-round6` drew 103 more rows from RTP and OASST2, the two sources no published recipe uses, with the same

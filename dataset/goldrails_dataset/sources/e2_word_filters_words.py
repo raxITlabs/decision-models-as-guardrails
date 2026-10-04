@@ -17,7 +17,7 @@ Plus four rows holding two phrases (match) and four rows that combine several tr
 Every variant sits in its own sentence frame, written for edition 2 and shared by two rows of different phrases; the
 frame is the row's group, so a frame never straddles splits. Labels are by construction (``label_basis``
 deterministic); ``goldrails_bench.regex_words`` is the independent check, and the build writes its verdict as each
-row's second label. About a sixth of the frames go to tune; the rest are test. No private slice: the check is a
+row's second label. About a sixth of the frames go to dev; the rest are test. No private slice: the check is a
 deterministic sanity check, not a scored subtask.
 """
 from __future__ import annotations
@@ -33,7 +33,7 @@ REPO = Path(__file__).resolve().parents[3]
 WORDS = REPO / "benchmark" / "suites" / "word_filters" / "words.json"
 IMPORTED_AT = "2026-10-04T00:00:00+00:00"
 SPLIT_SEED = "gold-rails-e2-word-filters-words"
-TUNE_SHARE = 1 / 6
+DEV_SHARE = 1 / 6
 
 MATCH = ("lower", "upper", "title", "mixed_case", "double_quoted", "single_quoted", "parenthesised", "bracketed",
          "possessive", "trailing_punctuation", "trailing_colon", "leading_hash", "trailing_slash")
@@ -181,7 +181,7 @@ def cases() -> list:
 
 def split_of(group: str) -> str:
     h = int(hashlib.sha256(f"{SPLIT_SEED}:{group}".encode()).hexdigest(), 16) / 16 ** 64
-    return "tune" if h < TUNE_SHARE else "test"
+    return "dev" if h < DEV_SHARE else "test"
 
 
 def records() -> list:

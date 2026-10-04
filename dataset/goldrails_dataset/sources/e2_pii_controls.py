@@ -15,7 +15,7 @@ Two kinds:
 
 Each row carries its rationale. Groups are one per row. A held-out case (a HeldOut placeholder below, text in the
 git-ignored private/authored.json) is in the private slice and gets a salted source id (e2_local.held_out_sid), so its
-id does not follow from its position here; the other rows go to tune or test by the published group hash
+id does not follow from its position here; the other rows go to dev or test by the published group hash
 (e2_pii.authored_split).
 """
 from __future__ import annotations

@@ -3,7 +3,7 @@
  "ruling": "7 (docs/benchmark/29-owner-rulings-2026-10-03.md)",
  "guide": "docs/benchmark/30-content-sample-labelling.md",
  "status": "awaiting labels",
- "updated": "2026-10-04T10:22:44+00:00",
+ "updated": "2026-10-04T20:53:37+00:00",
  "design": {
   "seed": 20261003,
   "n": 400,
@@ -11,8 +11,8 @@
   "sample_key": "36adc25835740ba0",
   "population_rows": 2436,
   "build_files": {
-   "F1.tune.jsonl": "500bf3fb66beb46f3c4a2513ca014489cf9b35e5e85a5eaebf8304787efd2733",
-   "F1.test.jsonl": "e1d65bb215f16b6bf88d944264fc7e9144e03fe65d50c09a8228ae482bacb77c"
+   "F1.dev.jsonl": "2a213056cf1c2514f9caba99b58ec404eb2ddc43f8c63958c1a375fd197a816f",
+   "F1.test.jsonl": "226f7068612c08a7ac023f20af91e5573e5ab97aa6849897ff96eef91af56a12"
   },
   "strata": {
    "harmful_goal|no|e2_content_orbench80k": {
@@ -84,7 +84,7 @@
     "sample": 33
    }
   },
-  "population": "content rows in the public F1 tune and test build files, public candidates only",
+  "population": "content rows in the public F1 dev and test build files, public candidates only",
   "strata_key": "subtask|reference label|source",
   "reference": "the label the build holds: the first label, or the owner-ruling final label of a resolved dispute",
   "command": "uv run python -m goldrails_dataset.content_sample draw"

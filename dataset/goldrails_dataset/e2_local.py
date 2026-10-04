@@ -2,7 +2,7 @@
 
 The repository is public. Each suite folder ``dataset/edition2/<suite>/`` holds three kinds of file:
 
-- tracked: public rows only (proposed split tune or test) in ``candidates.jsonl``, ``relabel.jsonl`` and the
+- tracked: public rows only (proposed split dev or test) in ``candidates.jsonl``, ``relabel.jsonl`` and the
   other row files. A row whose source's text is not cleared in ``dataset/release/redistribution.json`` (mode
   ``text`` and ``reviewed: true``) keeps its id, labels, spans and group, but its text fields (``STRIP``) are null and
   ``redacted`` records why and the sha256 of the removed fields.
@@ -81,8 +81,8 @@ def round_number(name: str) -> int:
     return int(m.group(1) or 1)
 # Files and folders that carry every row's text, private ids or answer keys: moved whole into private/.
 MOVE = {
-    "content": {"review-packet/01-rows.md": "review-packet-tune-test/01-rows.md",
-                "review-packet/labels.template.jsonl": "review-packet-tune-test/labels.template.jsonl"},
+    "content": {"review-packet/01-rows.md": "review-packet-dev-test/01-rows.md",
+                "review-packet/labels.template.jsonl": "review-packet-dev-test/labels.template.jsonl"},
     "prompt_attacks": {"packet/rows.jsonl": "packet/rows.jsonl",
                        "packet/labels.template.jsonl": "packet/labels.template.jsonl",
                        "label-disputes.jsonl": "label-disputes.jsonl"},
@@ -483,7 +483,7 @@ def full_text(suite: str, root: Path = E2) -> str:
 
 def packet_dir(suite: str, root: Path = E2) -> Path:
     """Where a suite's moved review packet lives (private/)."""
-    return private_dir(suite, root) / {"content": "review-packet-tune-test", "denied_topics": "review-packet"}.get(suite, "packet")
+    return private_dir(suite, root) / {"content": "review-packet-dev-test", "denied_topics": "review-packet"}.get(suite, "packet")
 
 
 # --- splitting -------------------------------------------------------------------------------------------------------
@@ -1017,7 +1017,7 @@ def rehydrate(suites=SUITES, root: Path = E2, fetch=_upstream_fields) -> dict:
 # private unit to the public test split and draws the same number of rows from the units that were public test rows,
 # in salted order. The new slice is disjoint from the old one: rerunning the old seeded code gives rows that are now
 # public. A unit is a build cluster (``edition2.assemble``: shared group or near-duplicate body), so the build never
-# releases a drawn row again. Left where they are: tune (the tune split stays as it was), authored sources (a
+# releases a drawn row again. Left where they are: dev (the dev split stays as it was), authored sources (a
 # held-out case's text is in private/authored.json and its id is salted, ``held_out_sid``), rows named or quoted in a
 # tracked file the build does not regenerate (a ledger, a doc, needs-owner-review.jsonl), disputed rows waiting for the
 # owner, rows the build dropped, clusters across suites, and the content human sample (ruling 7) while it is drawn.
@@ -1037,10 +1037,10 @@ def _stratum(c: dict) -> tuple:
 
 
 def set_split(c: dict, split: str) -> None:
-    """Move a candidate row to ``split`` (tune, test or private) in every field that records it."""
+    """Move a candidate row to ``split`` (dev, test or private) in every field that records it."""
     c["proposed_split"] = split
     vis = "heldout" if split == "private" else "public"
-    rec_split = "tune" if split == "tune" else "test"
+    rec_split = "dev" if split == "dev" else "test"
     for d in (c, c.get("record")):
         if not isinstance(d, dict):
             continue
@@ -1107,8 +1107,8 @@ def redraw_plan(suites=SUITES, root: Path = E2, salt: str | None = None, parts: 
                 why = "cluster across suites"
             elif any(source_of(c) in AUTHORED_SOURCES for c in cs):
                 why = "authored source"
-            elif "tune" in splits:
-                why = "tune"
+            elif "dev" in splits:
+                why = "dev"
             elif len(splits) > 1:
                 why = "cluster across splits (the build releases it to test)"
             elif any(c["id"] not in bucket_of for c in cs):

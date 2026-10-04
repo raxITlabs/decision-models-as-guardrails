@@ -1,13 +1,16 @@
 # Edition 2 smoke test
 
 This is a compatibility check of the edition 2 adapters and the frozen e2 question sets. It is not a scored run. There
-is no manifest and no freeze, and nothing here goes into a leaderboard. Rows come only from the public tune split in
-`dataset/edition2/build/F*.tune.jsonl`. The script never reads test or private-slice rows, checks that no picked id is
+is no manifest and no freeze, and nothing here goes into a leaderboard. Rows come only from the public dev split in
+`dataset/edition2/build/F*.dev.jsonl`. The script never reads test or private-slice rows, checks that no picked id is
 in the private slice, and skips every id in the owner's `EXCLUDED.jsonl` lists.
+
+The dev split was called tune when these rounds ran; it was renamed on 5 October 2026 with no row moved
+(`dataset/edition2/README.md`, "Splits"). The ledgers record no split field, so they are unchanged.
 
 Command: `uv run python benchmark/runs/e2_smoke.py plan | run | report`. Selection is seeded (`e2-smoke-2026-10-04`).
 It takes 20 rows per adapter subtask, round-robin over (row tag, label), and prefers rows that need no owner review.
-`word_filters/word` has only 11 tune rows, so it gets 11. The row ids are in `summary.json` under `row_ids`.
+`word_filters/word` has only 11 dev rows, so it gets 11. The row ids are in `summary.json` under `row_ids`.
 
 The ledgers (`<system>.jsonl`) hold row ids, labels, source names and system outputs. They hold no row text. The script
 caps error strings and checks them for row text before writing them. `report` scans every ledger for 8-word runs of any
@@ -17,11 +20,11 @@ picked row's text and found 0 rows.
 
 What changed since round 1:
 
-- Word filters (F4) now have tune rows, so `word_filters/word` and `word_filters/profanity` ran for every system.
+- Word filters (F4) now have dev rows, so `word_filters/word` and `word_filters/profanity` ran for every system.
 - Laya ran again on all eight subtasks through the adapter that reads the server's truncation report. Round 1's Laya
   ledger moved to `round1/laya.jsonl`.
 - The AWS SSO session was valid this time, so Bedrock ran on every task it offers.
-- The F2 rebuild changed the prompt-attack tune split. The seeded draw now picks 20 different rows, and every system
+- The F2 rebuild changed the prompt-attack dev split. The seeded draw now picks 20 different rows, and every system
   ran them. The round 1 prompt-attack records stay in the ledgers. `report` leaves them out of the table and counts them
   under `superseded_records` (20 for each Noul system that ran in round 1).
 
@@ -129,7 +132,7 @@ words subtask but only 9/20 on profanity. Jev got 10/11 and 15/20.
 
 The edition 2 data changed (round 6 of the data work): the Aegis validation replies left content, test and
 unpublished rows whose text is in pplx-decider-v1-27b's training or development data left every suite, and content,
-prompt attacks and profanity were topped up. The tune split changed with it, so the seeded draw now picks 10 different
+prompt attacks and profanity were topped up. The dev split changed with it, so the seeded draw now picks 10 different
 rows per system in the three suites: 5 in `content/reply`, 1 in `prompt_attacks/direct` and 4 in
 `word_filters/profanity`. Their old records moved to `round4/<system>.jsonl`, and every system ran only the 10 new
 rows. Nothing else was sent.

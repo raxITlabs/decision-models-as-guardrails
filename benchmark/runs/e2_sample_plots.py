@@ -1,11 +1,11 @@
-"""Charts for the edition 2 tune-split sample, from ``benchmark/results/edition2-tune-sample/leaderboard.json``.
+"""Charts for the edition 2 dev-split sample, from ``benchmark/results/edition2-dev-sample/leaderboard.json``.
 
     uv run --with matplotlib python benchmark/runs/e2_sample_plots.py
 
-Writes PNG and SVG to ``benchmark/results/edition2-tune-sample/plots/``: overall score with intervals and tiers,
+Writes PNG and SVG to ``benchmark/results/edition2-dev-sample/plots/``: overall score with intervals and tiers,
 a systems x subtasks heatmap, catch rate against false-block rate per suite, score against cost and against p95
-latency, and pplx-decider-v1-27b with and without the tune rows that match its training data. Every title says
-"tune-split sample". Colors are the dataviz reference palette (light surface); text uses ink tokens, never the
+latency, and pplx-decider-v1-27b with and without the dev rows that match its training data. Every title says
+"dev-split sample". Colors are the dataviz reference palette (light surface); text uses ink tokens, never the
 series color. No row text is read.
 """
 from __future__ import annotations
@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.colors import LinearSegmentedColormap  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[2]
-RES = REPO / "benchmark" / "results" / "edition2-tune-sample"
+RES = REPO / "benchmark" / "results" / "edition2-dev-sample"
 PLOTS = RES / "plots"
 SURFACE, INK, INK2, MUTED, GRID, AXIS = "#fcfcfb", "#0b0b0b", "#52514e", "#898781", "#e1e0d9", "#c3c2b7"
 S1, S2 = "#2a78d6", "#eb6834"   # categorical slots 1 and 2 (validated: adjacent CVD dE 24.7, normal 33.6)
@@ -34,7 +34,7 @@ SUITE_NAME = {"content": "Content", "prompt_attacks": "Prompt attacks (provision
 SHORT = {"jev-1.13.0": "Jev 1.13.0", "clef": "Clef", "clef-flash": "Clef-flash", "pplx-decider-v1-27b": "pplx-decider",
          "kev-0-8b": "Kev-0.8B", "kev-4b": "Kev-4B", "kev-9b": "Kev-9B", "open-jev-2b": "Open-Jev-2B", "laya": "Laya",
          "strands-decider-2b": "Strands 2B", "bedrock-guardrails": "Bedrock"}
-TAG = "tune-split sample, not a held-out result"
+TAG = "dev-split sample, not a held-out result"
 
 plt.rcParams.update({"font.family": ["Helvetica Neue", "Arial", "DejaVu Sans"], "font.size": 10,
                      "axes.edgecolor": AXIS, "axes.labelcolor": INK2, "xtick.color": MUTED, "ytick.color": INK2,
@@ -148,7 +148,7 @@ def overall_chart(doc):
         ax.text(ax.get_xlim()[0], -1.0, "Not ranked: " + "; ".join(f"{name(e['name'])} ({e.get('reason', '')[:60]})"
                                                                 for e in unr), fontsize=8, color=INK2, va="top")
     title(fig, f"Overall score per system ({TAG})",
-          "Edition 2 public tune split, 1,422 rows, fixed 0.5 rule. Tiers: Holm-adjusted paired tests vs the tier "
+          "Edition 2 public dev split, 1,422 rows, fixed 0.5 rule. Tiers: Holm-adjusted paired tests vs the tier "
           "leader. Prompt attacks provisional.")
     save(fig, "overall")
 
@@ -271,7 +271,7 @@ def pplx_overlap(doc):
         ya, yb = y + 0.13, y - 0.13   # offset so equal values stay visible as two marks
         ax.plot([a, b], [ya, yb], color=AXIS, lw=1, zorder=1)
         ax.scatter([a], [ya], s=56, color=S1, edgecolor=SURFACE, linewidth=2, zorder=3,
-                   label="All tune rows" if y == ys[0] else None)
+                   label="All dev rows" if y == ys[0] else None)
         ax.scatter([b], [yb], s=56, color=S2, edgecolor=SURFACE, linewidth=2, zorder=3,
                    label=f"Without the {s['rows_dropped']} overlap rows" if y == ys[0] else None)
         d = b - a
