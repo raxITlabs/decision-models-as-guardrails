@@ -73,3 +73,44 @@ Draft access note for the owner (not sent):
 3. Flag rows near or above the model's context window.
 4. Rerun 5 rows to check determinism and drift.
 5. Run the overlap check against the vendor's published training data where known.
+
+## Onboarding status (4 October 2026)
+
+The code for all four is in place and tested against mocked HTTP. No vendor has been called yet, because no keys exist in this repo. Each system runs through the unchanged `NoulAdapter`, so it gets the same frozen e2 question sets and the same fixed 0.5 rule as Jev.
+
+| System (`--systems`) | Client | Ledger name | Status | Blocked on |
+|---|---|---|---|---|
+| `clef`, `clef-flash` | `hosted.CloudflareSystemOneClient` | `clef`, `clef-flash` | Code ready | Cloudflare account ID and token |
+| `perplexity` | `hosted.PerplexityDecisionsClient` | `pplx-decider-v1-27b` | Code ready | API key, written retention answer |
+| `strands` | existing `SystemOneClient` on the GCP VM | `strands-decider-2b` | Infra written, not applied | `terraform apply` with the slot |
+| `openai` | `hosted.OpenAIDecisionsClient` (unverified stub) | `gpt-6-luna` | Stub only | Preview access from OpenAI |
+
+What the code records and enforces:
+
+- Clef. The body is the System One body without `model`, since the model id is in the URL. Workers AI's `{result, success, errors}` envelope is unwrapped, and a bare System One body also works. `serving` holds the model id, the endpoint with the account ID replaced by `{ACCOUNT_ID}`, the call date, the pinned Hugging Face revision (for provenance only, because the hosted model is not pinned) and `max_length` 65,536. When `usage.input_tokens` reaches 99% of 65,536 the result is marked `truncated: true` with `truncation_basis: usage`. Workers AI cuts long input without saying so, so treat that flag as "possibly cut".
+- Perplexity. The client spaces request starts at 5 per second across all worker threads. A 429 pauses every thread for the Retry-After seconds, then the run's retry policy resends. A 504 fails the row and is not retried. The client keeps the model name the response reports. A response that reports `jev-latest`, `jev-1.13.0` or any other Jev name fails with `ModelIdentityError`, and the client cannot be built under a Jev name in the first place.
+- Strands. Kind `strands` in `infra/gcp`: its own uv venv with `strands-decider==0.1.0`, the checkpoint downloaded at `bb282d78…` before the unit starts, and `strands_server.py` running `create_app` under uvicorn on 0.0.0.0 with the Hub offline. `endpoints.resolve_models` adds `max_length: 4096` to its identity. The smoke flags rows whose estimated input reaches 80% of 4,096 tokens (about 3,280).
+- OpenAI. Endpoint, body and response shape come from community reports and are marked `UNVERIFIED` in the identity and on every raw response. A 403 fails with `AccessPending`, and the client sends nothing more for the rest of the run.
+
+Transport failures from every client carry a class name the contract's retry policy reads (`RateLimitError`, `InternalServerError`, `ServiceUnavailableError`, `ReadTimeout`, `ConnectError`), so they are retried up to three times. An answer is never retried, and neither is an error envelope, any other 4xx, or a body with no answers.
+
+### Owner steps
+
+1. Cloudflare. Create a Workers AI API token scoped to Workers AI read and run, on the account that will be billed. Keep AI Gateway out of the path, or switch its logging off, because Cloudflare's no-storage statement does not cover Gateway logs. Put `CLOUDFLARE_ACCOUNT_ID` (the 32-hex ID) and `CLOUDFLARE_API_TOKEN` in `.env`. Then:
+   `uv run python benchmark/runs/e2_smoke.py run --systems clef,clef-flash`
+2. Perplexity. Create an API key. Before sending anything beyond the public tune rows, get written confirmation of what the Decisions API retains, since zero retention is documented only for Chat Completions. Put `PERPLEXITY_API_KEY` in `.env`. Then:
+   `uv run python benchmark/runs/e2_smoke.py run --systems perplexity`
+3. Strands. Add the `strands-decider-2b` entry from `infra/gcp/terraform.tfvars.full-roster.example` to your `terraform.tfvars`, on a card with about 6 GB free (gpu 0 on the current two-L4 pass already holds three models, so check `nvidia-smi` first). Run `cd infra/gcp && terraform plan && terraform apply`, wait for `journalctl -u goldrails-strands-decider-2b` to show uvicorn listening, start the tunnels with `make tunnel` (`infra/tunnels.sh up`), then:
+   `uv run python benchmark/runs/e2_smoke.py run --systems strands`
+   The `create_app` signature is undocumented. If the unit fails, the launcher prints the signature it found, and `APP_MODULES` / `PATH_ARGS` in `strands_server.py` need one edit.
+4. OpenAI. Send the access note above when ready. Once OpenAI enables the organisation, check the request and response shape against their example, update `hosted.OpenAIDecisionsClient` and drop the `UNVERIFIED` marker, then set `OPENAI_DECISIONS_ENABLED=1` beside `OPENAI_API_KEY` and run:
+   `uv run python benchmark/runs/e2_smoke.py run --systems openai`
+
+All four in one go, once configured: `uv run python benchmark/runs/e2_smoke.py run --systems clef,clef-flash,perplexity,strands`, then `uv run python benchmark/runs/e2_smoke.py report`. A system with missing credentials or no VM slot prints `NOT_CONFIGURED` and sends nothing. The smoke reads only the public tune split, 20 rows per subtask, and asserts that before any call.
+
+Still open after the first smoke:
+
+- Step 1 of the smoke checklist (the vendor's own example request) is manual. Compare one raw response per vendor with what `normalise_answers` accepts.
+- Whether Strands' and Clef's `usage.input_tokens` count the whole request or sum one prompt per question. The cap check assumes one count for the whole request for Clef and Perplexity. Strands relies on the size estimate until that is known.
+- The model name the Strands server expects in `model`. The client sends the VM slot name.
+- The overlap checks (Strands vs Civil Comments and measuring-hate-speech, Perplexity vs RAGTruth) are not run yet.

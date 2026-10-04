@@ -20,6 +20,20 @@ result.serving       # endpoint, model_id, revision, precision, max_length, date
 | `BedrockAdapter` | Amazon Bedrock Guardrails | the service's verdict at `FROZEN_SETTING` | severity/confidence (checks), 1 - grounding (grounding), None (binary topics, words) |
 | `VerdictAPIAdapter` | base for OpenAI moderation and other vendor APIs | the vendor's own flag | the vendor's category scores, where returned |
 
+Hosted decision models that take System One's request at a different URL use `NoulAdapter` too, through a client in
+`goldrails_bench/hosted.py` with the same `ask(state, questions)` shape as `SystemOneClient`:
+
+| Client | System | Notes |
+|---|---|---|
+| `CloudflareSystemOneClient` | Clef, Clef-flash (Workers AI) | unwraps `{result, success, errors}`; marks `truncated` when `usage.input_tokens` reaches the 65,536-token context |
+| `PerplexityDecisionsClient` | pplx-decider-v1-27b | 5 requests/s across threads; Retry-After on 429; 504 is final; fails a response that reports a Jev model name |
+| `OpenAIDecisionsClient` | gpt-6-luna | unverified stub; 403 is `AccessPending` and stops further calls |
+
+Strands Decider runs on the GCP VM and uses `SystemOneClient` unchanged. Its 4,096-token window comes from
+`endpoints.KIND_MAX_LENGTH` into `serving.max_length`. Clients never retry. They name each transport failure
+(`RateLimitError`, `InternalServerError`, `ReadTimeout`...) so the run's retry policy decides. Status and owner steps
+are in `docs/benchmark/28-new-decision-models-research.md`, "Onboarding status".
+
 The Noul question sets are the reference adapter for Noul models, not part of the task. They live in
 `benchmark/question_sets/e2/` and are frozen for the edition. Bedrock and vendor APIs never see them.
 
@@ -73,6 +87,10 @@ and it refuses `trust_remote_code=True` without a review record for that exact c
 into the result's `serving` so the review travels with the score.
 
 ## Adding a vendor
+
+A vendor that answers System One questions at its own URL gets a `HostedDecisionClient` subclass in `hosted.py`
+(override `body`, `unwrap`, `on_status` or `check` as needed) and goes through `NoulAdapter`. A vendor with its own
+categories gets a `VerdictAPIAdapter`, as below.
 
 Subclass `VerdictAPIAdapter`. Set `CATEGORIES` to the vendor categories each suite policy covers, and leave out the
 subtasks it cannot do. Implement `call(state, categories)` to return a `VendorVerdict`. Write tests against a fake
