@@ -9,6 +9,7 @@ import json
 import re
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -40,7 +41,10 @@ RESULTS = SITE / "results.json"
 FIRST_RUN = SITE / "runs" / "first-benchmark.json"
 
 
-@pytest.mark.parametrize("path", [RESULTS, FIRST_RUN], ids=["current", "first-run"])
+EDITION2 = SITE / "runs" / "edition2-dev-sample.json"
+
+
+@pytest.mark.parametrize("path", [RESULTS, FIRST_RUN, EDITION2], ids=["current", "first-run", "edition2-dev-sample"])
 def test_real_results_validate_against_schema(path):
     jsonschema = pytest.importorskip("jsonschema")
     errors = list(jsonschema.Draft202012Validator(load(SCHEMA)).iter_errors(load(path)))
@@ -341,3 +345,68 @@ def test_adapter_accepts_the_real_evaluator_on_existing_ledgers(tmp_path):
     assert all(not v["points"] for v in out["smoke"]["views"].values())
     for v in out["final"]["views"].values():
         assert all(p["status"] == "evaluated" for p in v["points"])
+
+
+# ---------- edition 2 dev-split sample ----------
+E2_LB = REPO / "benchmark" / "results" / "edition2-dev-sample" / "leaderboard.json"
+
+
+def test_edition2_file_is_what_the_generator_writes(tmp_path):
+    """runs/edition2-dev-sample.json is site_results.py --leaderboard-v2 output, not hand-written."""
+    out = tmp_path / "e2.json"
+    res = subprocess.run([sys.executable, str(REPO / "benchmark" / "runs" / "site_results.py"), "--leaderboard-v2", str(E2_LB), "--out", str(out)],
+                         capture_output=True, text=True, timeout=120, cwd=REPO)
+    assert res.returncode == 0, res.stderr
+    assert out.read_text(encoding="utf-8") == EDITION2.read_text(encoding="utf-8")
+
+
+def test_edition2_copies_the_leaderboard_and_carries_its_disclosures():
+    d, lb = load(EDITION2), load(E2_LB)
+    assert d["edition"] == 2 and d["benchmark"]["split"] == "dev"
+    assert d["banner"]["title"] == "Edition 2 dev-split sample: not a held-out result"
+    assert d["overall_suites"] == ["content", "prompt_attacks", "denied_topics", "profanity", "sensitive_information", "grounding"]
+    assert d["provisional"]["suites"] == ["prompt_attacks"]
+    assert d["source"]["valid_for_publication"] is False and d["blockers"] == lb["publication_blockers"]
+    types = {i["id"]: i["type"] for i in d["implementations"]}
+    assert {k for k, v in types.items() if v == "hosted_api"} == {"jev", "clef", "clef-flash", "pplx-decider"}
+    assert {k for k, v in types.items() if v == "managed_service"} == {"bedrock"}
+    assert len([v for v in types.values() if v == "self_hosted"]) == 6
+    by = {(e["implementation"], e["suite"]): e for e in d["entries"]}
+    assert all(e["suite"] != "word_filters" for e in d["entries"]), "custom words is a sanity check, not a suite"
+    pid = {"jev-1.13.0": "jev", "pplx-decider-v1-27b": "pplx-decider", "bedrock-guardrails": "bedrock"}
+    for sysname, row in lb["table"].items():
+        o = by[(pid.get(sysname, sysname), "overall")]
+        assert o["quality"]["score"] == round(row["overall"]["balanced_accuracy"], 4) and o["tier"] == row["overall"]["tier"]
+        assert o["quality"]["interval"]["low"] == round(row["overall"]["ci"]["low"], 4)
+        assert o["cost"]["usd_per_1000"] == round(lb["run"]["cost"][sysname]["usd_per_1000"], 5)
+        assert o["latency"]["p95_s"] == round(lb["run"]["systems"][sysname]["latency_p95_s"], 4)
+        assert by[(pid.get(sysname, sysname), "profanity")]["quality"]["score"] == round(row["word_filters"]["balanced_accuracy"], 4)
+    words = d["sanity_checks"][0]
+    assert words["id"] == "custom_words" and {r["implementation"] for r in words["results"] if r["result"] == "pass"} == {"bedrock"}
+    text = " ".join(d["disclosures"])
+    for needle in ("not a held-out result", "build the dataset", "89.4 to 89.1", "Laya truncation", "318", "Fixed 0.5 rule",
+                   "provisional", "DRIVER_ID"):
+        assert needle in text, needle
+
+
+def test_page_shows_the_edition2_banner_and_a_run_switcher():
+    page = PAGE.read_text(encoding="utf-8")
+    assert 'id="runnav"' in page and "renderRunNav()" in page
+    for f in ("results.json", "runs/edition2-dev-sample.json", "runs/first-benchmark.json"):
+        assert f'file: "{f}"' in page and (SITE / f).exists()
+    assert "renderE2Banner()" in page and "edition === 2" in page
+
+
+def test_edition2_passes_page_validation():
+    node = shutil.which("node")
+    if not node:
+        pytest.skip("node is not installed")
+    script = ("const G=require(process.argv[1]);const d=JSON.parse(require('fs').readFileSync(process.argv[2],'utf8'));"
+              "const p=G.plotPlan(d,G.rowsFor(d,'overall',null),'cost');"
+              "console.log(JSON.stringify({v:G.validate(d),n:p.points.length,ex:p.excluded.length,"
+              "e1:G.validate(JSON.parse(require('fs').readFileSync(process.argv[3],'utf8'))).errors}))")
+    res = subprocess.run([node, "-e", script, str(LOGIC), str(EDITION2), str(RESULTS)], capture_output=True, text=True, timeout=60)
+    assert res.returncode == 0, res.stderr
+    out = json.loads(res.stdout)
+    assert out["v"]["errors"] == [] and out["e1"] == []
+    assert out["n"] == 11 and out["ex"] == 0

@@ -336,6 +336,46 @@ section { scroll-margin-top:24px; }
 details.review-details { border-top:1px solid var(--rule); padding:16px 0; }
 details.review-details summary { cursor:pointer; font-weight:600; }
 
+/* ---------- run switcher and edition 2 view ---------- */
+.runnav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 22px 0 0; font-size: 14px; }
+.runnav .runnav-h { color: var(--ink-3); margin-right: 4px; }
+.runnav a { display: inline-flex; flex-direction: column; padding: 7px 14px; border-radius: 10px; border: 1px solid var(--rule); background: var(--raise); color: var(--ink); text-decoration: none; line-height: 1.25; transition: border-color 160ms ease-out; }
+.runnav a small { font-size: 12px; color: var(--ink-3); }
+.runnav a:hover { border-color: var(--ink-3); }
+.runnav a[aria-current="page"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.runnav a[aria-current="page"] small { color: var(--paper); opacity: 0.8; }
+@media (max-width: 640px) { .runnav .runnav-h { flex-basis: 100%; } .runnav a { flex: 1 1 140px; } }
+.sample-banner { margin: 40px 0 0; padding: 22px 24px 18px; border: 2px solid var(--ink); border-radius: 14px; background: var(--raise); }
+.sample-banner h2 { font-size: clamp(1.3rem, 1.05rem + 1vw, 1.75rem); margin: 0 0 8px; }
+.sample-banner .lede { margin: 0 0 12px; color: var(--ink); max-width: 76ch; }
+.sample-banner ul { margin: 0; padding-left: 18px; color: var(--ink-2); font-size: 14.5px; max-width: 96ch; }
+.sample-banner li { margin: 0 0 6px; }
+.sample-banner li strong { color: var(--ink); font-weight: 600; }
+@media (max-width: 640px) { .sample-banner { padding: 18px 16px 14px; } }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0 0 12px; font-size: 13px; color: var(--ink-2); padding: 0; list-style: none; }
+.legend li { display: inline-flex; align-items: center; gap: 8px; }
+.legend .key { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid; }
+.legend .key-jev { background: var(--jev); border-color: var(--jev-ring); }
+.legend .key-bed { background: var(--bed); border-color: var(--bed-ring); }
+.legend .key-open { background: var(--open); border-color: var(--open-ring); }
+.legend .key-ci { width: 22px; height: 2px; border: 0; border-radius: 1px; background: var(--ink-3); }
+.i-w { stroke-width: 2; stroke-linecap: round; }
+.i-w-jev { stroke: var(--jev); } .i-w-bed { stroke: var(--bed); } .i-w-open { stroke: var(--open-ring); }
+.i-name { fill: var(--ink); font-weight: 550; }
+.i-sub { fill: var(--ink-3); }
+.i-val { fill: var(--ink-2); font-weight: 600; }
+.i-tier { fill: var(--ink-3); font-weight: 600; }
+.irow { cursor: pointer; }
+.irow:focus { outline: none; }
+.irow:hover .lrow-hit { fill: var(--dm-faint); }
+.irow:focus-visible .lrow-hit { stroke: var(--focus); stroke-width: 2; }
+table.all td.cell { cursor: pointer; }
+table.all td.cell:hover, table.all td.cell:focus-visible { background: var(--dm-faint); }
+table.all td.best { font-weight: 700; }
+table.all th .prov { display: block; font-size: 11.5px; font-weight: 500; color: var(--ink-3); }
+table.all .sep { border-left: 1px solid var(--rule); }
+.pf { font-weight: 600; }
+.pf-fail { color: var(--ink-3); }
 table.compare3 { table-layout: fixed; width: 100%; }
 table.compare3 th, table.compare3 td { text-align: left; white-space: normal; vertical-align: top; }
 table.compare3 th[scope=row] { width: 9rem; color: var(--ink-3); font-weight: 500; }
@@ -357,9 +397,10 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
     <h1>Can <span class="dm">decision models</span> stand in for <span class="br">Amazon Bedrock Guardrails</span>?</h1>
     <p class="answer" id="answer"></p>
     <ul class="status" id="status"></ul>
+    <nav class="runnav" id="runnav" aria-label="Benchmark runs"></nav>
   </header>
 
-  <nav class="jumpnav" aria-label="Results sections"><a href="#h-overview">All models</a><a href="#h-verdict">By capability</a><a href="#charts">Cost &amp; speed</a><a href="#h-table">Detailed results</a><a href="#bias">Hate, fairness &amp; bias</a><a href="#h-scope">Data quality</a><a href="#h-method">Method &amp; review</a></nav>
+  <nav class="jumpnav" id="jumpnav" aria-label="Results sections"><a href="#h-overview">All models</a><a href="#h-verdict">By capability</a><a href="#charts">Cost &amp; speed</a><a href="#h-table">Detailed results</a><a href="#bias">Hate, fairness &amp; bias</a><a href="#h-scope">Data quality</a><a href="#h-method">Method &amp; review</a></nav>
   <main id="main">
     <div class="skeleton" aria-hidden="true" style="margin-top:48px"></div>
   </main>
@@ -394,11 +435,13 @@ const WF = "word_filters_category";
 const CHARTS = SUITES.map((s) => (s === "word_filters" ? WF : s));
 const COST_ONLY = new Set(["overall", WF]);
 const LABEL = { word_filters: "Word filters: custom words", profanity: "Profanity or obscenity — Civil Comments", [WF]: "Word filters (component average)", bias: "Guardrail fairness and decision-model bias (F7)" };
-const baseLabel = (s) => LABEL[s] || (VIEW[s] ? VIEW[s].label : s);
+const LABEL_E2 = { profanity: "Profanity", sensitive_information: "Sensitive information" };
+const isE2 = () => !!(state.data && state.data.edition === 2);
+const baseLabel = (s) => (isE2() && LABEL_E2[s]) || LABEL[s] || (VIEW[s] ? VIEW[s].label : s);
 const ownerReviewed = () => !!(state.data && state.data.label_review);   // from results.json, built from the release's review record
 const profProv = () => isProvisional("profanity");
 const isProvisional = (s) => !!(state.data && state.data.provisional && (state.data.provisional.suites || []).includes(s === WF ? "profanity" : s));
-const label = (s) => baseLabel(s) + (isProvisional(s) ? (s === "overall" ? " · includes unreviewed labels" : " · labels awaiting review") : "");
+const label = (s) => baseLabel(s) + (isProvisional(s) ? (isE2() ? " (provisional)" : s === "overall" ? " · includes unreviewed labels" : " · labels awaiting review") : "");
 const VIEW = Object.fromEntries(G.VIEWS.map((v) => [v.id, v]));
 const DECISION = new Set(["hosted_api", "self_hosted"]);
 const state = { data: null, axis: "cost", openKey: null };
@@ -520,7 +563,20 @@ function renderOverview() {
     </tbody></table></div><p class="sub">Self-hosted costs allocate VM serving time; API costs use recorded usage at list prices. Self-hosted costs are normalized estimates: serving time allocated under the tested setup, priced at one us-east4 rate whichever zone each pass ran in. Setup and idle time are excluded. Overall cost averages category checks, not one request running all guardrails. <a href="#h-method">Cost assumptions</a>.</p></section>`;
 }
 
+/* Run switcher: the published edition 1 run stays the default page; the others load through ?results=. */
+const RUNS = [
+  { file: "results.json", label: "Edition 1", sub: "published run" },
+  { file: "runs/edition2-dev-sample.json", label: "Edition 2", sub: "dev-split sample" },
+  { file: "runs/first-benchmark.json", label: "Edition 1", sub: "first run, archived" },
+];
+function renderRunNav() {
+  const cur = resultsPath();
+  $("runnav").innerHTML = `<span class="runnav-h">Show results from</span>` + RUNS.map((r) =>
+    `<a href="${r.file === "results.json" ? "index.html" : "index.html?results=" + esc(r.file)}"${r.file === cur ? ' aria-current="page"' : ""}>${esc(r.label)}<small>${esc(r.sub)}</small></a>`).join("");
+}
 function renderOpening() {
+  renderRunNav();
+  if (isE2()) return renderOpeningE2();
   const d = state.data, b = d.benchmark;
   $("meta").textContent = `${d.run ? d.run.label : "First benchmark"} · ${b.dataset_version ? "Results: " + b.dataset_version.split(" ")[0] + " · " : ""}${b.public_release ? "Public dataset: " + b.public_release + " · " : ""}${b.generated_at || ""}`;
   $("answer").textContent = "Compare decision models and Amazon Bedrock Guardrails on the same held-out examples. Quality, cost and response time are reported by category, with an equal-weight overall score.";
@@ -1271,16 +1327,18 @@ function openDetail(key, suite, track, anchor) {
     add("Recall", G.fmtPct(e.violation_recall));
     add("Benign pass rate", G.fmtPct(e.benign_pass_rate));
     if (e.recall_at_fpr_budget) add("Recall at 5% FPR", `${G.fmtPct(e.recall_at_fpr_budget.recall)} (test FPR ${G.fmtPct(e.recall_at_fpr_budget.heldout_fpr)})`);
-    if (e.sample) add("Test rows", `${e.sample.total} (${e.sample.positive} violations, ${e.sample.negative} benign)`);
+    if (isE2() && isNum(e.tier)) add("Tier", `${e.tier}${e.rank_interval ? `, rank ${e.rank_interval.low} to ${e.rank_interval.high} across bootstrap replicates` : ""}`);
+    if (isE2() && e.suite === "overall" && e.failures && e.failures.recovered_after_failure) add("First-pass failures", `${e.failures.recovered_after_failure}, all decided on the retry`);
+    if (e.sample) add(isE2() ? "Rows" : "Test rows", `${e.sample.total} (${e.sample.positive} violations, ${e.sample.negative} benign)`);
     if (e.errors) add("Missed, false alarms", `${e.errors.missed_violations}, ${e.errors.false_positives}`);
     if (e.failures) add("Failed calls", e.failures.failed);
     if (e.failures && e.failures.recovered_after_failure) add("Recovered on re-attempt", `${e.failures.recovered_after_failure} rows, both runs charged`);
     add("Cost per 1,000", (e.cost && e.cost.zero_tariff && e.cost.usd_per_1000 === 0 ? "$0, free policy" : fmtUSD(e.cost && e.cost.usd_per_1000))
       + (e.cost && /mean|sum/.test(e.cost.basis || "") ? ` (${e.cost.basis})` : ""));
-    if (e.latency) add("Latency p50, p95 (serial)", `${G.fmtSeconds(e.latency.p50_s)}, ${G.fmtSeconds(e.latency.p95_s)}`);
+    if (e.latency) add(isE2() ? "Latency p50, p95 (per row)" : "Latency p50, p95 (serial)", `${G.fmtSeconds(e.latency.p50_s)}, ${G.fmtSeconds(e.latency.p95_s)}`);
     if (e.latency && isNum(e.latency.loaded_p95_s)) add("p95 in the test pass", `${G.fmtSeconds(e.latency.loaded_p95_s)} (its own concurrency)`);
     if (e.threshold) add("Threshold", isNum(e.threshold.value) ? e.threshold.value : e.threshold.rule);
-    if (e.sensitivity) add("Without format-inferred SSN", `${fmtScore(e.sensitivity.score)}${e.sensitivity.interval ? ` (${e.sensitivity.interval.low.toFixed(1)} to ${e.sensitivity.interval.high.toFixed(1)})` : ""}`);
+    if (e.sensitivity) add(isE2() ? "Without the pplx overlap rows" : "Without format-inferred SSN", `${fmtScore(e.sensitivity.score)}${e.sensitivity.interval ? ` (${e.sensitivity.interval.low.toFixed(1)} to ${e.sensitivity.interval.high.toFixed(1)})` : ""}`);
     if (e.ledger) add("Config hash", e.ledger.config_hash);
   } else if (e.bias && e.bias.groups && e.bias.groups.length) {
     add("Harmful recall", G.fmtPct(e.violation_recall));
@@ -1295,6 +1353,7 @@ function openDetail(key, suite, track, anchor) {
     <div class="big">${fmtScore(e.quality && e.quality.score)}<small>${i ? `95% interval ${i.low.toFixed(1)} to ${i.high.toFixed(1)}` : ""}</small></div>
     <dl>${rows.join("")}</dl>${extra}
     ${e.status_note ? `<p class="note">${esc(e.status_note)}</p>` : ""}
+    ${isE2() && e.latency && e.latency.basis ? `<p class="note">Latency: ${esc(e.latency.basis)}.</p>` : ""}
     ${impl.configuration && impl.configuration.notes ? `<p class="note">${esc(impl.configuration.notes)}</p>` : ""}`;
   const d = $("detail");
   d.hidden = false;
@@ -1309,9 +1368,184 @@ function closeDetail() {
   if (state.anchor && document.contains(state.anchor)) state.anchor.focus({ preventScroll: true });
 }
 
+/* ---------- edition 2: dev-split sample (runs/edition2-dev-sample.json) ----------
+   A leaderboard_v2 diagnostic run: eleven systems, six suites with profanity as its own suite, tiers from paired tests,
+   custom words as a pass/fail sanity check outside the overall. Every value comes from the results file. */
+const HOSTING = { hosted_api: "Hosted API", self_hosted: "Self-hosted, GCP GPU VM", managed_service: "Managed service, AWS", code_baseline: "Code baseline", unknown: "Type not recorded" };
+const E2_COLS = ["content", "prompt_attacks", "denied_topics", "profanity", "sensitive_information", "grounding"];
+const e2Ranked = () => rowsOf("overall").filter((r) => scored(r.entry)).sort((a, b) => b.entry.quality.score - a.entry.quality.score);
+const ivRange = (i) => (i && isNum(i.low) ? `${i.low.toFixed(1)} to ${i.high.toFixed(1)}` : "not available");
+function renderOpeningE2() {
+  const d = state.data, b = d.benchmark;
+  $("meta").textContent = `${d.run ? d.run.label : "Edition 2"} · ${b.dataset_version} · ${b.generated_at}`;
+  $("answer").textContent = `Eleven guardrail systems on every public edition 2 dev row, scored at a fixed 0.5 rule. This is a rehearsal of the edition 2 run, so it shows how the pipeline behaves, not a held-out ranking.`;
+  const items = [
+    { t: `Contract ${b.evaluation_contract}`, warn: /draft|not signed/i.test(b.evaluation_contract || "") },
+    { t: "Diagnostic mode, not valid for publication", warn: !(d.source && d.source.valid_for_publication) },
+    { t: "Dev split, not held out", warn: true },
+    { t: "Fixed 0.5 rule, no threshold fitted" },
+  ];
+  $("status").innerHTML = items.map((x) => `<li class="${x.warn ? "warn" : ""}">${esc(x.t)}</li>`).join("");
+  $("jumpnav").innerHTML = `<a href="#e2-banner">Read this first</a><a href="#h-e2-overall">Overall</a><a href="#h-e2-suites">By suite</a><a href="#h-e2-cost">Cost</a><a href="#h-e2-method">Method</a>`;
+}
+/* "Lead. Rest." disclosures: the lead sentence in bold. */
+function leadItem(t) {
+  const i = t.indexOf(". ");
+  return i > 0 && i < 80 ? `<strong>${esc(t.slice(0, i + 1))}</strong> ${esc(t.slice(i + 2))}` : esc(t);
+}
+function renderE2Banner() {
+  const d = state.data, bn = d.banner || { title: "Edition 2 dev-split sample: not a held-out result", text: "" };
+  return `<div class="sample-banner" id="e2-banner" role="note" aria-labelledby="h-e2-banner">
+    <h2 id="h-e2-banner">${esc(bn.title)}</h2>
+    <p class="lede">${esc(bn.text)} <a href="index.html">Edition 1's published results</a> stay the default page.</p>
+    <ul>${(d.disclosures || []).map((x) => `<li>${leadItem(x)}</li>`).join("")}</ul>
+  </div>`;
+}
+function e2Legend() {
+  return `<ul class="legend" aria-label="Legend"><li><span class="key key-jev"></span>Jev</li><li><span class="key key-bed"></span>Amazon Bedrock Guardrails</li><li><span class="key key-open"></span>Other systems</li><li><span class="key key-ci"></span>95% interval</li></ul>`;
+}
+function e2IntervalSVG(W) {
+  const rows = e2Ranked();
+  if (!rows.length) return "";
+  const narrow = W < 560, fs = narrow ? 13 : 15;
+  const ivs = rows.map((r) => iv(r.entry) || { low: r.entry.quality.score, high: r.entry.quality.score });
+  const lo = Math.max(0, Math.floor((Math.min(...ivs.map((i) => i.low)) - 1) / 5) * 5);
+  const hi = Math.min(100, Math.ceil((Math.max(...ivs.map((i) => i.high)) + 1) / 5) * 5);
+  const X0 = narrow ? 6 : Math.min(230, Math.round(W * 0.26)), X1 = W - (narrow ? 46 : 60);
+  const sx = (v) => X0 + ((v - lo) / (hi - lo)) * (X1 - X0);
+  const step = hi - lo > 30 ? 10 : 5, ticks = [];
+  for (let v = lo; v <= hi; v += step) ticks.push(v);
+  const rowH = narrow ? 48 : 34, tierH = narrow ? 30 : 32;
+  let y = 34, g = "", tier = null;
+  const body = [];
+  for (const [k, r] of rows.entries()) {
+    const e = r.entry, t = e.tier;
+    if (t !== tier) {
+      tier = t;
+      body.push(`<line class="g-hair" x1="0" x2="${W}" y1="${y + 6}" y2="${y + 6}"/>` + txt(0, y + 24, "i-tier", `Tier ${t}`, 13));
+      y += tierH;
+    }
+    const rl = role(r.impl), i = ivs[k], R = rl === "open" ? 6 : 7;
+    const yy = narrow ? y + 30 : y + 17;
+    const name = short(r.impl) === "Amazon Bedrock Guardrails" ? "Bedrock Guardrails" : short(r.impl);
+    const spoken = `${r.impl.label}: overall ${fmtScore(e.quality.score)}, 95% interval ${ivRange(iv(e))}, tier ${t}`;
+    let inner = `<rect class="lrow-hit" x="-6" y="${y}" width="${W + 12}" height="${rowH}" rx="6"/>`;
+    inner += narrow ? txt(X0, y + 15, "i-name", name, fs) : txt(0, yy + 5, "i-name", name, fs);
+    inner += `<line class="i-w i-w-${rl}" x1="${sx(i.low).toFixed(1)}" x2="${sx(i.high).toFixed(1)}" y1="${yy}" y2="${yy}"/>`;
+    inner += `<circle class="mark m-${rl}" cx="${sx(e.quality.score).toFixed(1)}" cy="${yy}" r="${R}"/>`;
+    inner += txt(W, yy + 5, "i-val", fmtScore(e.quality.score), fs, "end");
+    body.push(`<g class="irow" data-key="${esc(r.impl.id)}" data-suite="overall" tabindex="0" role="button" aria-label="${esc(spoken)}. Show details."><title>${esc(spoken)}</title>${inner}</g>`);
+    y += rowH;
+  }
+  for (const v of ticks) g += `<line class="c-g" x1="${sx(v).toFixed(1)}" x2="${sx(v).toFixed(1)}" y1="30" y2="${y + 4}"/>`;
+  g += txt(X0, 18, "c-axt", "Balanced accuracy x 100", fs) + body.join("");
+  for (const v of ticks) g += txt(sx(v), y + 24, "c-t", v, 13, "middle");
+  const H = y + 34;
+  return `<svg viewBox="0 0 ${W} ${H}" role="group" aria-label="Overall balanced accuracy with 95% intervals, ${rows.length} systems grouped by tier, on a ${lo} to ${hi} scale. Each row opens its details.">${g}</svg>`;
+}
+function e2CostSVG(W) {
+  const pts = chartPoints("overall", "cost").points;
+  if (!pts.length) return "";
+  const dom = { ...G.linearTicks(Math.max(...pts.map((p) => p.x))), log: false };
+  const { svg, H, off, hidden } = scatterSVG("overall", "cost", dom, W);
+  return `<svg class="plot" viewBox="0 0 ${W} ${H}" role="group" aria-label="Overall balanced accuracy against cost per 1,000 checks">${svg}</svg>
+    ${off.length ? `<p class="off">Off this axis: ${esc(off.join("; "))}.</p>` : ""}${hidden.length ? `<p class="off">Not labelled for space: ${esc(hidden.join(", "))}. Select a dot for its name, or see the table above.</p>` : ""}`;
+}
+function renderE2Overall() {
+  const rows = e2Ranked();
+  const pct = (v) => (isNum(v) ? (v * 100).toFixed(1) + "%" : "n/a");
+  const body = rows.map(({ impl, entry: e }, k) => `<tr class="row" tabindex="0" data-key="${esc(impl.id)}" data-suite="overall">
+      <td class="name"><span class="sw" style="background:${hue(impl) === "dm" ? "var(--dm)" : hue(impl) === "br" ? "var(--br)" : "var(--base)"}"></span>${esc(impl.label)}<span class="hosting">${esc(HOSTING[impl.type] || impl.type)}</span></td>
+      <td><strong>${fmtScore(e.quality.score)}</strong></td><td>${ivRange(iv(e))}</td>
+      <td>${isNum(e.tier) ? e.tier : "n/a"}</td><td>${k + 1}${e.rank_interval ? `<span class="hosting">${e.rank_interval.low} to ${e.rank_interval.high}</span>` : ""}</td>
+      <td>${pct(e.violation_recall)}</td><td>${pct(isNum(e.benign_pass_rate) ? 1 - e.benign_pass_rate : null)}</td>
+      <td>${e.cost && isNum(e.cost.usd_per_1000) ? "$" + e.cost.usd_per_1000.toFixed(3) : "not measured"}</td>
+      <td>${e.latency ? G.fmtSeconds(e.latency.p95_s) : "not measured"}</td></tr>`).join("");
+  const sens = rows.filter((r) => r.entry.sensitivity && r.impl.id === "pplx-decider").map((r) =>
+    `Without the overlapping rows pplx-decider-v1-27b scores ${fmtScore(r.entry.sensitivity.score)} (${fmtScore(r.entry.quality.score)} with them), and its rank and tier do not change.`).join("");
+  return `<section aria-labelledby="h-e2-overall">
+    <h2 id="h-e2-overall">Overall balanced accuracy, with 95% intervals</h2>
+    <p class="sub">The equal-weight mean of six suites: content, prompt attacks (provisional), denied topics, profanity, sensitive information and grounding. Blocking everything scores 50. Systems in one tier are not separable on these rows. Select a row for details.</p>
+    ${e2Legend()}
+    <div class="chart-box" data-chart="e2-overall"></div>
+    <div class="tablewrap" style="margin-top:28px"><table class="all overview"><thead><tr><th>System / hosting</th><th>Overall</th><th>95% interval</th><th>Tier</th><th>Rank / bootstrap range</th><th>Catch rate</th><th>False-block rate</th><th>USD per 1,000 checks</th><th>p95 latency</th></tr></thead><tbody>${body}</tbody></table></div>
+    <div class="chart-notes"><p class="off">Catch and false-block rates are means over the six suites. Cost covers all ${esc(state.data.benchmark.dataset_version.replace(/^.*?, /, ""))}; latency is per row under each system's own worker count, not a load test. ${esc(sens)}</p></div>
+  </section>`;
+}
+function renderE2Suites() {
+  const rows = e2Ranked();
+  const best = Object.fromEntries(["overall", ...E2_COLS].map((s) => [s, Math.max(...rows.map((r) => { const e = entry(r.impl.id, s); return scored(e) ? e.quality.score : -1; }))]));
+  const check = (state.data.sanity_checks || [])[0];
+  const pf = (id) => {
+    const r = check ? check.results.find((x) => x.implementation === id) : null;
+    if (!r) return `<td class="na sep">n/a</td>`;
+    const t = `${r.result === "pass" ? "Pass" : "Fail"} · ${fmtScore(r.score)}`;
+    return `<td class="sep" title="${esc(`${r.positive} positives, ${r.negative} negatives: ${r.missed} missed, ${r.false_blocks} false blocks`)}"><span class="pf${r.result === "pass" ? "" : " pf-fail"}">${esc(t)}</span></td>`;
+  };
+  const cell = (impl, s) => {
+    const e = entry(impl.id, s);
+    if (!scored(e)) return `<td class="na">n/a</td>`;
+    const tip = `${impl.label}, ${label(s)}: ${fmtScore(e.quality.score)}, 95% interval ${ivRange(iv(e))}${isNum(e.tier) ? `, tier ${e.tier}` : ""}`;
+    return `<td class="cell${Math.abs(e.quality.score - best[s]) < 1e-9 ? " best" : ""}" tabindex="0" data-key="${esc(impl.id)}" data-suite="${s}" title="${esc(tip)}" aria-label="${esc(tip)}">${fmtScore(e.quality.score)}</td>`;
+  };
+  const head = E2_COLS.map((s) => `<th>${esc(baseLabel(s))}${isProvisional(s) ? `<span class="prov">provisional</span>` : ""}</th>`).join("");
+  const body = rows.map(({ impl }) => `<tr><td class="name">${esc(short(impl) === "Amazon Bedrock Guardrails" ? "Bedrock Guardrails" : short(impl))}</td>${cell(impl, "overall")}${E2_COLS.map((s) => cell(impl, s)).join("")}${pf(impl.id)}</tr>`).join("");
+  const passes = check ? check.results.filter((r) => r.result === "pass").map((r) => short(implById(r.implementation))) : [];
+  return `<section aria-labelledby="h-e2-suites">
+    <h2 id="h-e2-suites">Balanced accuracy by suite</h2>
+    <p class="sub">Each cell is a suite's balanced accuracy x 100 at the fixed 0.5 rule. The highest in each column is bold. Select a cell for its counts, cost, latency and tier.</p>
+    <div class="tablewrap"><table class="all"><thead><tr><th>System</th><th>Overall</th>${head}<th class="sep">${esc(check ? check.label : "Custom words")}<span class="prov">sanity check, not scored</span></th></tr></thead><tbody>${body}</tbody></table></div>
+    <div class="chart-notes">
+      <p class="off"><strong>Prompt attacks are provisional.</strong> Simple text classifiers that never judge the attack separate these labels well above the shortcut gate's bounds, so this score partly measures how well a system picks up each source's style. The suite still counts in the overall.</p>
+      ${check ? `<p class="off"><strong>${esc(check.label)} is a sanity check, ${esc(check.criterion)}.</strong> ${esc(check.note || "")} ${passes.length ? `Only ${esc(passes.join(", "))} passes.` : "No system passes."}</p>` : ""}
+      <p class="off"><strong>Profanity is its own suite.</strong> Edition 1 averaged it with custom words as word filters. DRIVER_ID is left out of sensitive information (unscored). Sensitive information counts each row once per entity type.</p>
+    </div>
+  </section>`;
+}
+function renderE2Cost() {
+  return `<section aria-labelledby="h-e2-cost">
+    <h2 id="h-e2-cost">Overall score against cost per 1,000 checks</h2>
+    <p class="sub">Up is better, right is cheaper. Hosted systems are measured tokens at list price; the six VM models are allocated VM time, a normalized estimate. Select a point for its details.</p>
+    <div class="chart-box" data-chart="e2-cost"></div>
+  </section>`;
+}
+function renderE2Method() {
+  const d = state.data, src = d.source || {}, r = d.run || {};
+  const li = (xs) => xs.map((x) => `<li>${esc(x.charAt(0).toUpperCase() + x.slice(1))}${/[.!?]$/.test(x.trim()) ? "" : "."}</li>`).join("");
+  return `<section aria-labelledby="h-e2-method">
+    <h2 id="h-e2-method">How this sample was run</h2>
+    <div class="cols">
+      <div>
+        <h3>The score</h3>
+        <p>${esc(d.benchmark.headline_metric)}. ${esc(d.benchmark.aggregation)}. Intervals are 95%, ${esc((iv(d.entries.find((e) => iv(e))) || {}).method || "bootstrap")}. They cover sampling only, not label errors.</p>
+        <h3>Cost</h3>
+        <p>${esc(d.cost_basis.notes)}</p>
+        <h3>Latency</h3>
+        <p>${esc(d.latency_basis.notes)}</p>
+      </div>
+      <div>
+        ${(r.changes || []).length ? `<details class="review-details" open><summary>What changed from edition 1</summary><ul>${r.changes.map((c) => `<li><strong>${esc(c.title)}.</strong> ${esc(c.text)}</li>`).join("")}</ul></details>` : ""}
+        <details class="review-details"><summary>Publication checks</summary><ul>${li(d.blockers || [])}</ul></details>
+        <h3>Files</h3>
+        <p>Scores: <code>${esc(src.file || "")}</code>. Run notes: <code>${esc(src.readme || "")}</code>. Plots: <code>${esc(src.plots || "")}</code>. This page reads <a href="${esc(resultsPath())}">${esc(resultsPath())}</a>, written by <code>benchmark/runs/site_results.py --leaderboard-v2</code>.</p>
+      </div>
+    </div>
+  </section>`;
+}
+function renderE2() {
+  return renderE2Banner() + renderE2Overall() + renderE2Suites() + renderE2Cost() + renderE2Method();
+}
+
 /* ---------- assemble ---------- */
 function render() {
   renderOpening();
+  if (isE2()) {
+    $("main").innerHTML = renderE2();
+    state.width = colWidth();
+    drawCharts();
+    $("foot-right").textContent = `Generated ${state.data.benchmark.generated_at}. Tariffs dated ${state.data.cost_basis.tariff_date || "n/a"}.`;
+    return;
+  }
   $("main").innerHTML = renderOverview() + renderLedger() + renderCharts() + renderTable() + renderBias() + renderScope() + renderMethod();
   state.width = colWidth();
   drawCharts();
@@ -1326,7 +1560,7 @@ document.addEventListener("change", (ev) => {
 document.addEventListener("click", (ev) => {
   const ax = ev.target.closest(".seg button");
   if (ax) return switchAxis(ax.dataset.axis);
-  const pt = ev.target.closest(".pt, tr.row");
+  const pt = ev.target.closest(".pt, td.cell, tr.row, .irow");
   if (pt) return openDetail(pt.dataset.key, pt.dataset.suite, pt.dataset.track || null, pt);
   const lr = ev.target.closest(".lrow[data-suite]");
   if (lr) return litPanel(lr.dataset.suite);
@@ -1337,7 +1571,7 @@ document.addEventListener("click", (ev) => {
 });
 document.addEventListener("keydown", (ev) => {
   if (ev.key === "Escape" && $("detail").classList.contains("on")) return closeDetail();
-  if ((ev.key === "Enter" || ev.key === " ") && ev.target.matches(".pt, tr.row, .lrow[data-suite]")) {
+  if ((ev.key === "Enter" || ev.key === " ") && ev.target.matches(".pt, td.cell, tr.row, .irow, .lrow[data-suite]")) {
     ev.preventDefault(); state.viaKey = true;
     ev.target.dispatchEvent(new MouseEvent("click", { bubbles: true }));   // SVG elements have no .click()
     state.viaKey = false;
@@ -1349,7 +1583,7 @@ function drawCharts() {
   document.querySelectorAll("[data-chart]").forEach((el) => {
     const W = Math.max(280, Math.floor(el.clientWidth));
     const k = el.dataset.chart;
-    el.innerHTML = k === "gaps" ? gapsSVG(W) : k === "fair" ? fairSVG(bp.guardrail_fairness, W) : k === "bbq" ? bbqSVG(bp.decision_model_bias, W) : "";
+    el.innerHTML = k === "e2-overall" ? e2IntervalSVG(W) : k === "e2-cost" ? e2CostSVG(W) : k === "gaps" ? gapsSVG(W) : k === "fair" ? fairSVG(bp.guardrail_fairness, W) : k === "bbq" ? bbqSVG(bp.decision_model_bias, W) : "";
   });
 }
 addEventListener("resize", () => {
@@ -1358,7 +1592,7 @@ addEventListener("resize", () => {
     if (!state.data || colWidth() === state.width) return;
     state.width = colWidth();
     drawCharts();
-    if ($("grid")) $("grid").innerHTML = renderGrid();
+    if ($("grid") && !isE2()) $("grid").innerHTML = renderGrid();
   }, 150);
 });
 function litPanel(suite) {

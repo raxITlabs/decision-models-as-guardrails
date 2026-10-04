@@ -6,7 +6,8 @@
  * The rules this file enforces come from the completion plan (docs/reports/gold-rails-completion-plan.html):
  *   - only frozen implementations are plotted;
  *   - an unevaluated, failed or not-applicable suite is labelled, never plotted as zero;
- *   - an Overall point needs all six suites evaluated for that implementation;
+ *   - an Overall point needs all six suites evaluated for that implementation (a file's overall_suites can name a
+ *     different six, as edition 2 does with profanity in place of word filters);
  *   - a cost of zero is never a default, so a zero or missing cost keeps the point off the cost axis;
  *   - threshold changes never draw a line; only a declared configuration sweep does.
  */
@@ -61,6 +62,11 @@
 
   const isNum = (v) => typeof v === "number" && Number.isFinite(v);
 
+  /** The suites an Overall averages: the file's overall_suites (edition 2 uses profanity in place of word filters), else the six core suites. */
+  function overallSuites(data) {
+    return data && Array.isArray(data.overall_suites) && data.overall_suites.length ? data.overall_suites : CORE_SUITES;
+  }
+
   function viewOf(id) {
     return VIEWS.find((v) => v.id === id) || null;
   }
@@ -108,10 +114,17 @@
       }
       if (e.cost && e.cost.usd_per_1000 === 0 && e.cost.zero_tariff !== true) errors.push(`Entry ${where} reports a cost of exactly 0. Costs are never defaulted to zero; report a measured value, null, or a documented zero list price (zero_tariff).`);
     }
-    // Overall may only be evaluated when all six suites are.
+    if (data.overall_suites !== undefined) {
+      if (!Array.isArray(data.overall_suites) || !data.overall_suites.length) errors.push("overall_suites must be a non-empty list of suites.");
+      else for (const s of data.overall_suites) if (!viewOf(s) || s === "overall" || s === "bias") errors.push(`overall_suites names ${JSON.stringify(s)}, which is not a scored suite.`);
+    }
+    for (const c of data.sanity_checks || []) {
+      for (const r of c.results || []) if (!impls.has(r.implementation)) errors.push(`Sanity check ${c.id} names an unknown implementation ${r.implementation}.`);
+    }
+    // Overall may only be evaluated when all of its suites are (six in edition 1).
     for (const im of impls.values()) {
       const overall = data.entries.find((e) => e.implementation === im.id && e.suite === "overall");
-      const missing = CORE_SUITES.filter((s) => !data.entries.some((e) => e.implementation === im.id && e.suite === s && e.status === "evaluated"));
+      const missing = overallSuites(data).filter((s) => !data.entries.some((e) => e.implementation === im.id && e.suite === s && e.status === "evaluated"));
       if (overall && overall.status === "evaluated" && missing.length) {
         errors.push(`${im.id}: Overall is marked evaluated but these suites are not: ${missing.join(", ")}.`);
       }
@@ -153,8 +166,9 @@
       else if (entry.status !== "evaluated") reason = `${STATUS_TEXT[entry.status] || entry.status}${entry.status_note ? ": " + entry.status_note : "."}`;
       else if (!entry.quality || !isNum(entry.quality.score)) reason = "No score.";
       else if (entry.suite === "overall") {
-        const missing = CORE_SUITES.filter((s) => !data.entries.some((e) => e.implementation === impl.id && e.suite === s && e.status === "evaluated"));
-        if (missing.length) reason = `Overall needs all six suites; missing ${missing.join(", ")}.`;
+        const need = overallSuites(data);
+        const missing = need.filter((s) => !data.entries.some((e) => e.implementation === impl.id && e.suite === s && e.status === "evaluated"));
+        if (missing.length) reason = `Overall needs all ${need.length === 6 ? "six" : need.length} suites; missing ${missing.join(", ")}.`;
       }
       if (!reason) {
         const x = axisValue(entry, axis);
@@ -188,7 +202,7 @@
   /** Rank evaluated, frozen, plottable-in-principle rows by score; ties share a rank. */
   function ranks(data, rows) {
     const eligible = rows.filter((r) => r.impl.frozen && r.entry.status === "evaluated" && r.entry.quality && isNum(r.entry.quality.score) &&
-      (r.entry.suite !== "overall" || CORE_SUITES.every((s) => data.entries.some((e) => e.implementation === r.impl.id && e.suite === s && e.status === "evaluated"))));
+      (r.entry.suite !== "overall" || overallSuites(data).every((s) => data.entries.some((e) => e.implementation === r.impl.id && e.suite === s && e.status === "evaluated"))));
     eligible.sort((a, b) => b.entry.quality.score - a.entry.quality.score);
     const out = new Map();
     let prev = null, rank = 0;
@@ -496,7 +510,7 @@
   }
 
   return {
-    SCHEMA_VERSION, EVALUATOR_SCHEMA, isEvaluatorDoc, fromEvaluator, normalise, CORE_SUITES, VIEWS, BIAS_TRACKS, TYPES, AXES, STATUS_TEXT, TABLE_COLUMNS,
+    SCHEMA_VERSION, EVALUATOR_SCHEMA, isEvaluatorDoc, fromEvaluator, normalise, CORE_SUITES, overallSuites, VIEWS, BIAS_TRACKS, TYPES, AXES, STATUS_TEXT, TABLE_COLUMNS,
     viewOf, validate, rowsFor, axisValue, plotPlan, sweepLines, ranks, tableRows, toCSV, logTicks, linearTicks,
     fmtCost, fmtSeconds, fmtTick, fmtPct, isNum,
   };

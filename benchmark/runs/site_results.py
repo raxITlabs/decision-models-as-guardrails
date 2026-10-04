@@ -2,6 +2,7 @@
 
     uv run python benchmark/runs/site_results.py                                   # the first run (default)
     GOLDRAILS_RUN=second-benchmark uv run python benchmark/runs/site_results.py    # or --run second-benchmark
+    uv run python benchmark/runs/site_results.py --leaderboard-v2 benchmark/results/edition2-dev-sample/leaderboard.json
 
 The run comes from ``--run``, else ``GOLDRAILS_RUN`` (benchmark/runs/run_context.py; default ``first-benchmark``).
 ``CURRENT_RUN`` is the run the page shows by default: it is written to site/leaderboard/results.json, and every other
@@ -14,6 +15,10 @@ computed here except serial-latency percentiles; everything else is copied from 
 three Bedrock arms (InvokeGuardrailChecks, word-filter guardrail, grounding guardrail) are one implementation, Amazon
 Bedrock Guardrails, with each entry's own configuration hash in its ledger block. A later run also carries a ``run``
 block: its publication status, the first run's, and what changed between them, copied from both final leaderboards.
+
+``--leaderboard-v2 <leaderboard.json>`` converts an edition 2 leaderboard_v2 document instead (edition2_doc), for
+example the dev-split sample, to site/leaderboard/runs/<its folder>.json. It sets ``edition: 2``, the six suites the
+overall averages (profanity is its own suite), tiers, the custom-words sanity check and the run's disclosures.
 
 The bias results are shown in three parts (bias_parts): hate and discrimination detection, which stays inside the
 content score; guardrail fairness diagnostics; and decision-model bias diagnostics. Values come from bias-parts.json
@@ -1141,10 +1146,304 @@ def later_run(doc: dict, lb: dict) -> dict:
     return out
 
 
+# ---------- edition 2: leaderboard_v2 diagnostic output ----------
+# ``--leaderboard-v2 <leaderboard.json>`` converts a leaderboard_v2 document (schema goldrails-leaderboard/2.0, for
+# example benchmark/results/edition2-dev-sample/leaderboard.json) into the page format. Every score, interval, tier,
+# rate, cost and latency is copied from that document; nothing is recomputed except sums of row counts.
+V2_SUITE = {"word_filters": "profanity", "sensitive_info": "sensitive_information"}   # word_filters holds profanity only
+V2_OVERALL = ("content", "prompt_attacks", "denied_topics", "profanity", "sensitive_information", "grounding")
+V2_IMPL = {   # leaderboard_v2 system -> (page id, label, type)
+    "jev-1.13.0": ("jev", "Jev 1.13.0", "hosted_api"),
+    "clef": ("clef", "Clef", "hosted_api"),
+    "clef-flash": ("clef-flash", "Clef-flash", "hosted_api"),
+    "pplx-decider-v1-27b": ("pplx-decider", "pplx-decider-v1-27b", "hosted_api"),
+    "kev-9b": ("kev-9b", "Kev-9B", "self_hosted"),
+    "kev-4b": ("kev-4b", "Kev-4B", "self_hosted"),
+    "kev-0-8b": ("kev-0-8b", "Kev-0.8B", "self_hosted"),
+    "open-jev-2b": ("open-jev-2b", "Open-Jev-2B", "self_hosted"),
+    "laya": ("laya", "Laya", "self_hosted"),
+    "strands-decider-2b": ("strands-decider-2b", "Strands Decider 2B", "self_hosted"),
+    "bedrock-guardrails": ("bedrock", "Amazon Bedrock Guardrails", "managed_service"),
+}
+V2_BANNER = "Edition 2 dev-split sample: not a held-out result"
+
+
+def _r(v, n=4):
+    return None if v is None else round(v, n)
+
+
+def _v2_interval(ci: dict | None, method: str) -> dict | None:
+    if not ci or ci.get("low") is None:
+        return None
+    return {"low": _r(ci["low"]), "high": _r(ci["high"]), "level": 0.95, "method": method}
+
+
+def _v2_counts(arms: list) -> dict:
+    n = defaultdict(int)
+    for a in arms:
+        for s in a["subtasks"].values():
+            if s.get("status") != "evaluated":
+                continue
+            for k in ("positive", "negative", "false_blocks", "missed", "failed", "no_decision"):
+                n[k] += s["n"].get(k, 0)
+    return n
+
+
+def _v2_entry(lb: dict, sysname: str, suite: str, row: dict, method: str, res_dir: str) -> dict:
+    """One suite entry from leaderboard_v2's table, with counts, cost and latency from the system's arm."""
+    page_suite = V2_SUITE.get(suite, suite)
+    in_mean = lb["rules"]["owner_rulings"]["suite_subtasks_in_mean"][suite]
+    arms = [a for a in lb["arms"] if a["system"] == sysname and a["suite"] == suite
+            and any(st in a["subtasks"] for st in in_mean)]
+    arm = arms[0] if arms else {}
+    subs = {k: v for k, v in (arm.get("subtasks") or {}).items() if k in in_mean}
+    n = _v2_counts([{"subtasks": subs}])
+    cost, lat = arm.get("cost") or {}, arm.get("latency") or {}
+    ok = row.get("status") == "complete"
+    return {
+        "implementation": V2_IMPL[sysname][0], "suite": page_suite, "track": None,
+        "status": "evaluated" if ok else "failed",
+        "status_note": (f"{sysname} / {arm.get('question_set')}; subtasks in the mean: {', '.join(in_mean)}"
+                        + ("" if ok else f"; {row.get('reason') or 'not complete'}")),
+        "tier": row.get("tier"),
+        "rank_interval": ({"low": row["rank_interval"]["low"], "high": row["rank_interval"]["high"]}
+                          if row.get("rank_interval") else None),
+        "quality": {"score": _r(row["balanced_accuracy"]), "interval": _v2_interval(row.get("ci"), method)} if ok else None,
+        "violation_recall": _r(row.get("catch_rate")),
+        "benign_pass_rate": None if row.get("false_block_rate") is None else _r(1 - row["false_block_rate"]),
+        "recall_at_fpr_budget": None,
+        "threshold": {"value": (arm.get("decision_rule") or {}).get("threshold"), "selected_on": "fixed",
+                      "rule": (arm.get("decision_rule") or {}).get("rule") or "fixed 0.5 rule"},
+        "sample": {"total": (arm.get("sample_sizes") or {}).get("report_rows"), "positive": n["positive"],
+                   "negative": n["negative"], "groups": (arm.get("sample_sizes") or {}).get("report_groups")},
+        "errors": {"missed_violations": n["missed"], "false_positives": n["false_blocks"]},
+        "failures": {"failed": n["failed"], "no_decision": n["no_decision"]},
+        "coverage": {"subtasks_evaluated": [k for k, v in subs.items() if v.get("status") == "evaluated"],
+                     "subtasks_required": list(in_mean),
+                     "note": "counts are per entity type: each row is scored once for every entity type" if suite == "sensitive_info" else None},
+        "cost": {"usd_per_1000": _r(cost.get("usd_per_1000"), 5), "basis": cost.get("basis") or "not recorded",
+                 "note": cost.get("reason") or cost.get("tariff"),
+                 # a documented zero list price (Bedrock's word filters), never a defaulted zero
+                 **({"zero_tariff": True} if cost.get("usd_per_1000") == 0 and (cost.get("subtasks") or {}) and all(
+                     x.get("records_tariff_zero") == x.get("records") for x in cost["subtasks"].values()) else {})},
+        "latency": {"p50_s": _r(lat.get("p50_s")), "p95_s": _r(lat.get("p95_s")) or None, "throughput_per_s": None,
+                    "basis": "per row as recorded in the accuracy pass under the system's own worker count; a diagnostic, not a declared-load latency"},
+        "bias": None,
+        "ledger": {"path": f"{res_dir}/{sysname}.jsonl", "config_hash": arm.get("config_hash", ""),
+                   "dataset_sha256": (arm.get("dataset") or {}).get("sha256", ""), "rows": (arm.get("sample_sizes") or {}).get("report_rows")},
+    }
+
+
+def _v2_overall(lb: dict, sysname: str, method: str) -> dict:
+    row = lb["table"][sysname]["overall"]
+    run = lb["run"]["systems"][sysname]
+    cost = lb["run"]["cost"][sysname]
+    comps = {V2_SUITE.get(s, s): _r(lb["table"][sysname][s]["balanced_accuracy"]) for s in lb["overall"]["required_suites"]}
+    without = (lb.get("pplx_overlap_sensitivity") or {}).get("table", {}).get(sysname, {}).get("overall")
+    ok = row.get("status") == "complete"
+    e = {
+        "implementation": V2_IMPL[sysname][0], "suite": "overall", "track": None,
+        "status": "evaluated" if ok else "not_evaluated",
+        "status_note": "equal-weight mean of six suites: content, prompt attacks (provisional), denied topics, profanity, sensitive information, grounding",
+        "missing_suites": [] if ok else [s for s in V2_OVERALL if comps.get(s) is None],
+        "tier": row.get("tier"),
+        "rank_interval": {"low": row["rank_interval"]["low"], "high": row["rank_interval"]["high"]} if row.get("rank_interval") else None,
+        "quality": {"score": _r(row["balanced_accuracy"]), "interval": _v2_interval(row.get("ci"), method)} if ok else None,
+        "components": comps, "suites": comps,
+        "violation_recall": _r(row.get("catch_rate")),
+        "benign_pass_rate": None if row.get("false_block_rate") is None else _r(1 - row["false_block_rate"]),
+        "recall_at_fpr_budget": None,
+        "threshold": {"value": 0.5, "selected_on": "fixed", "rule": lb["rules"]["headline"]["probability"]},
+        "sample": {"total": run["rows"], "positive": None, "negative": None},
+        "errors": None,
+        "failures": {"failed": run["failed"], "no_decision": 0, "retries": run.get("retried"),
+                     "recovered_after_failure": run.get("recovered_on_retry")},
+        "coverage": {"subtasks_evaluated": [s for s in V2_OVERALL if comps.get(s) is not None],
+                     "subtasks_required": list(V2_OVERALL), "note": "custom words is a sanity check outside this mean"},
+        "cost": {"usd_per_1000": _r(cost["usd_per_1000"], 5), "basis": cost["basis"],
+                 "note": f"USD {cost['usd_per_1000']:.3f} per 1,000 checks over all {cost['checks']:,} dev rows, USD {cost['usd_total']:.2f} in total"},
+        "latency": {"p50_s": _r(run.get("latency_p50_s")), "p95_s": _r(run.get("latency_p95_s")) or None,
+                    "throughput_per_s": None,
+                    "basis": "per row over every dev row, as recorded under the system's own worker count; not a declared-load latency"},
+        "bias": None, "ledger": None,
+    }
+    if without and without.get("balanced_accuracy") is not None:
+        e["sensitivity"] = {"label": f"without the {lb['pplx_overlap_sensitivity']['rows_dropped']} dev rows that overlap pplx-decider-v1-27b's training or development data",
+                            "score": _r(without["balanced_accuracy"]), "interval": _v2_interval(without.get("ci"), method)}
+    return e
+
+
+def _clean(x):
+    """Plain hyphens and commas for page text: the site files carry no em dashes."""
+    if isinstance(x, str):
+        return x.replace(chr(0x2014), ",").replace(chr(0x2013), "-")
+    if isinstance(x, list):
+        return [_clean(v) for v in x]
+    if isinstance(x, dict):
+        return {k: _clean(v) for k, v in x.items()}
+    return x
+
+
+def edition2_doc(lb_path: Path) -> dict:
+    lb = json.loads(lb_path.read_text(encoding="utf-8"))
+    if lb.get("schema") != "goldrails-leaderboard/2.0":
+        raise SystemExit(f"{lb_path}: schema {lb.get('schema')!r}, expected goldrails-leaderboard/2.0")
+    res_dir = str(lb_path.parent.relative_to(REPO)) if lb_path.is_relative_to(REPO) else str(lb_path.parent)
+    boot = lb["rules"]["statistics"]["bootstrap"]
+    method = f"group bootstrap, {boot['replicates']:,} replicates, seed {boot['seed']}; tiers from Holm-adjusted paired tests"
+    order = [r["name"] for r in lb["overall"]["ranking"]] + [s for s in lb["table"] if s not in {r["name"] for r in lb["overall"]["ranking"]}]
+    sample, run, cost = lb["sample"], lb["run"], lb["run"]["cost"]
+    pplx = lb["pplx_overlap_sensitivity"]
+    pw, pwo = pplx["pplx_with"]["overall"]["balanced_accuracy"], pplx["pplx_without"]["overall"]["balanced_accuracy"]
+    laya = run["systems"]["laya"]
+    impls, entries = [], []
+    for s in order:
+        iid, label, typ = V2_IMPL[s]
+        arms = [a for a in lb["arms"] if a["system"] == s]
+        vm = typ == "self_hosted"
+        impls.append({"id": iid, "label": label, "type": typ, "frozen": True,
+                      "model": arms[0].get("model") if arms else None,
+                      "hardware": ("g2-standard-24, 2x L4 (shared by the six VM models)" if vm else None),
+                      "sweep": None, "scope": ["overall", *V2_OVERALL],
+                      "configuration": {"config_hash": "per suite, see each entry's ledger block",
+                                        "question_set": ", ".join(sorted({a["question_set"] for a in arms})),
+                                        "decision_rule": "fixed 0.5 rule, nothing fitted on dev or test rows",
+                                        "guardrail": "InvokeGuardrailChecks and ApplyGuardrail at frozen documented settings" if iid == "bedrock" else None,
+                                        "notes": None}})
+        entries.append(_v2_overall(lb, s, method))
+        for suite in lb["overall"]["required_suites"]:
+            entries.append(_v2_entry(lb, s, suite, lb["table"][s][suite], method, res_dir))
+    checks = []
+    for cid, c in lb["sanity_checks"]["checks"].items():
+        crit = c["criterion"].get("min_balanced_accuracy")
+        checks.append({
+            "id": "custom_words" if cid == "word_filters/word" else cid.replace("/", "_"),
+            "label": "Custom words" if cid == "word_filters/word" else cid,
+            "criterion": f"pass at balanced accuracy {crit:g} or higher",
+            "note": ("A pass/fail sanity check outside every score and rank (owner ruling 13). "
+                     f"{next(iter(c['systems'].values()))['n']['positive'] + next(iter(c['systems'].values()))['n']['negative']} rows, "
+                     "so one row decides pass or fail."),
+            "results": [{"implementation": V2_IMPL[s][0], "result": r["result"],
+                         "score": _r(r.get("balanced_accuracy")), "catch_rate": _r(r.get("catch_rate")),
+                         "false_block_rate": _r(r.get("false_block_rate")),
+                         "positive": r["n"]["positive"], "negative": r["n"]["negative"],
+                         "missed": r["n"]["missed"], "false_blocks": r["n"]["false_blocks"]}
+                        for s, r in sorted(c["systems"].items(), key=lambda kv: order.index(kv[0]))]})
+    qs_names = [k for k, v in sample["question_set_names"]["identical_to_v1"].items() if v]
+    rows_by_suite = {V2_SUITE.get(FEATURE_SUITE[f], FEATURE_SUITE[f]): n for f, n in sample["rows"].items()}
+    disclosures = [
+        "Dev-split sample, not a held-out result. Every public dev row of edition 2 "
+        f"({sample['rows_total']:,} rows) went to each system once. No test row and no unpublished row was sent.",
+        "The dev rows helped build the dataset. They were used to label and check it (the shortcut gate and the smoke "
+        "tests), so these numbers show how the pipeline behaves, not how the systems rank on unseen data.",
+        "Fixed 0.5 rule. A probability output flags at 0.5 or above on any decision question; Bedrock runs at a frozen, "
+        "documented setting. No threshold was fitted on dev or test rows.",
+        f"Perplexity training-data overlap. {pplx['rows_dropped']} dev rows match pplx-decider-v1-27b's training or "
+        f"development data ({', '.join(f'{k} {v}' for k, v in pplx['rows_dropped_by_feature'].items())}). Without them its "
+        f"overall moves from {pw:.1f} to {pwo:.1f}; its rank and tier stay the same.",
+        f"Laya truncation. Laya reads at most 512 tokens per question (owner ruling 16), and {laya['truncated']} of "
+        f"{laya['rows']:,} rows were cut, including every denied-topics row. Its scores include those rows.",
+        "Prompt attacks are provisional (owner rulings 17 and 18). Their labels are partly predictable from source and "
+        "writing style, so the score partly measures style pickup. The suite still counts in the overall.",
+        "Custom words is a pass/fail sanity check (pass at 95 or higher), outside the overall and every rank. DRIVER_ID "
+        "is unscored inside sensitive information (owner ruling 6).",
+        "Profanity is its own suite here. In edition 1 it was half of word filters; in edition 2 the word-filters score "
+        "is profanity alone.",
+        "Strands Decider 2B cuts silently at 4,096 tokens. No row was estimated near that window.",
+        "Latency is per row as recorded under each system's own worker count, not a load test. The six VM models shared "
+        "two L4 GPUs at the same time, so their latencies include queueing behind each other.",
+        f"Small sample. {min(rows_by_suite.values())} to {max(rows_by_suite.values())} rows per suite, so suite "
+        "intervals are several points wide.",
+        "Sixteen VM rows failed on the first pass with HTTP 500 under load (Kev-4B 9, Open-Jev-2B 7). A second pass "
+        "resent only those rows and all came back decided; the score uses the retry.",
+        f"Question-set names. The scorer lists {', '.join(qs_names)} as differing from the contract's v1 sets. They are "
+        "copies with the same questions and decision lists, so this is about the name only.",
+    ]
+    vm = run["vm"]
+    doc = {
+        "schema_version": "goldrails-leaderboard-site/0.1",
+        "placeholder": False,
+        "edition": 2,
+        "overall_suites": list(V2_OVERALL),
+        "banner": {"title": V2_BANNER,
+                   "text": ("A rehearsal of the edition 2 run on the public dev rows, scored in diagnostic mode under a "
+                            "draft contract. The dev rows were used to build and check the dataset, so read every number "
+                            "as a pipeline check. The held-out test split has not been run.")},
+        "notice": lb["label"],
+        "benchmark": {"name": f"{BRAND}, edition 2 dev-split sample",
+                      "dataset_version": f"edition 2 dev split, {sample['rows_total']:,} public rows",
+                      "dataset_sha256": hashlib.sha256(json.dumps(sample["dev_file_sha256"], sort_keys=True).encode()).hexdigest(),
+                      "dataset_url": None, "split": "dev",
+                      "evaluation_contract": f"{lb['contract']['version']} ({lb['contract']['status']})",
+                      "release_manifest": None,
+                      "generated_at": "2026-10-05",
+                      "headline_metric": "Balanced accuracy x 100 = 100 x 1/2 x (catch rate + 1 - false-block rate), at a fixed 0.5 rule",
+                      "aggregation": "Subtasks equal within a suite; six suites equal in the overall; custom words outside it as a sanity check",
+                      "fpr_budget": None,
+                      "public_note": ("dataset_sha256 is the sha256 of the six dev files' hashes (F1 to F6) as sorted JSON; "
+                                      f"each file's own hash is in {res_dir}/leaderboard.json under sample.dev_file_sha256.")},
+        "cost_basis": {"unit": "usd_per_1000_evaluations", "tariff_date": "2026-09-23",
+                       "region": "hosted: list prices in goldrails_bench/tariffs.json; VM: " + vm["hardware"],
+                       "pricing_region": "us-east4", "self_hosted_cost": "normalized estimate",
+                       "notes": ("Hosted cost is the measured input tokens times the dated list price in "
+                                 "goldrails_bench/tariffs.json. Bedrock is its text units at list price. VM cost is the "
+                                 f"VM's up-to-paused time ({vm['vm_seconds']:,} s over {len(vm['sessions'])} sessions) at the "
+                                 "dated g2-standard-24 on-demand rate ($1.9943 an hour) plus the disk, split across the six "
+                                 "VM models by their share of run time. Overall cost is per 1,000 checks over every dev row; "
+                                 "suite costs are per arm. List prices, not reconciled against a bill.")},
+        "latency_basis": {"unit": "seconds", "concurrency": None, "client_location": None,
+                          "notes": ("Latency is per row as recorded in the accuracy pass, under each system's own worker "
+                                    "count (1 to 8 threads). It is a diagnostic, not a load test, and the six VM models "
+                                    "shared two L4 GPUs.")},
+        "blockers": list(lb["publication_blockers"]),
+        "source": {"schema": lb["schema"], "mode": lb["mode"], "valid_for_publication": lb["valid_for_publication"],
+                   "file": f"{res_dir}/leaderboard.json", "readme": f"{res_dir}/README.md", "plots": f"{res_dir}/plots/"},
+        "disclosures": disclosures,
+        "provisional": {"suites": list(lb["provisional_suites"]),
+                        "note": lb["overall"]["provisional_note"] + ". " + lb["overall"]["rule"] + "."},
+        "sanity_checks": checks,
+        "run": {"id": lb_path.parent.name, "label": "Edition 2 dev-split sample",
+                "summary": ("Eleven systems on every public edition 2 dev row, scored by leaderboard_v2 in diagnostic "
+                            "mode at the fixed 0.5 rule."),
+                "valid_for_publication": lb["valid_for_publication"],
+                "publication_blockers": list(lb["publication_blockers"]),
+                "previous": {"id": CURRENT_RUN, "label": "Edition 1 published run", "results": "results.json",
+                             "valid_for_publication": True,
+                             "status": "Edition 1 is scored on held-out test rows with frozen thresholds."},
+                "changes": [
+                    {"id": "split", "title": "Dev split, not test",
+                     "text": "Edition 1 scores held-out test rows. This sample scores the edition 2 dev rows that built the dataset."},
+                    {"id": "rule", "title": "Fixed 0.5 rule",
+                     "text": "Edition 1 tuned one threshold per system on tuning rows. Edition 2 fixes the rule at 0.5 for every system."},
+                    {"id": "metric", "title": "Balanced accuracy",
+                     "text": "The headline is balanced accuracy x 100, the same arithmetic as edition 1's task score, with tiers from Holm-adjusted paired tests."},
+                    {"id": "suites", "title": "Profanity is a suite; custom words is a sanity check",
+                     "text": "The overall averages content, prompt attacks, denied topics, profanity, sensitive information and grounding. Custom words is pass/fail outside it."},
+                    {"id": "systems", "title": "Eleven systems",
+                     "text": "Clef, Clef-flash, pplx-decider-v1-27b and Strands Decider 2B join Jev, the three Kev models, Open-Jev-2B, Laya and Bedrock."}]},
+        "implementations": impls,
+        "entries": entries,
+    }
+    return _clean(doc)
+
+
+def write_edition2(lb_path: Path, out: Path) -> int:
+    doc = edition2_doc(lb_path.resolve())
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
+    print(f"{len(doc['implementations'])} implementations, {len(doc['entries'])} entries; wrote {out.resolve().relative_to(REPO) if out.resolve().is_relative_to(REPO) else out}")
+    return 0
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--run", help="benchmark run id (default: GOLDRAILS_RUN, else first-benchmark)")
+    ap.add_argument("--leaderboard-v2", type=Path, metavar="LEADERBOARD_JSON",
+                    help="convert a leaderboard_v2 document (edition 2) instead of an edition 1 run")
+    ap.add_argument("--out", type=Path, help="with --leaderboard-v2: where to write (default site/leaderboard/runs/<folder>.json)")
     a = ap.parse_args(argv)
+    if a.leaderboard_v2:
+        return write_edition2(a.leaderboard_v2, a.out or SITE_DIR / "runs" / f"{a.leaderboard_v2.resolve().parent.name}.json")
     if a.run:
         use_run(a.run)
     # six categories once the extension has run: the final view (built after the owner's sign-off) if it exists, else
