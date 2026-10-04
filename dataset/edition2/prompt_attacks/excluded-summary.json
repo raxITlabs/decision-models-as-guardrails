@@ -1,0 +1,64 @@
+{
+  "all": {
+    "new row would join previous rows of different splits into one group": 0,
+    "retired: easy for the shortcut model, see retired.json": 950
+  },
+  "deepset_injections_test": {
+    "first labeller disagrees with source label": 11,
+    "non_english": 49
+  },
+  "e2_attack_controls": {
+    "overlap with v1: id": 4
+  },
+  "itw_jailbreak_prompts": {
+    "benign pool filter": 2118,
+    "duplicate of another edition 2 row (normalised text)": 45,
+    "first labeller disagrees with source label": 279,
+    "longer than 4000 characters": 241,
+    "near-duplicate of a v1 row (5-gram Jaccard >= 0.7)": 3,
+    "new-row screen: override phrase not in the first 300 characters": 29,
+    "non_english": 548,
+    "outside 80-4000 characters": 1918,
+    "overlap with v1: id": 4,
+    "overlap with v1: normalised text": 7
+  },
+  "jackhhao_jailbreak": {
+    "first labeller disagrees with source label": 12,
+    "longer than 4000 characters": 26,
+    "near-duplicate of a v1 row (5-gram Jaccard >= 0.7)": 1,
+    "non_english": 1,
+    "overlap with v1: normalised text": 2
+  },
+  "lakera_mosscap": {
+    "duplicate of another edition 2 row (normalised text)": 7,
+    "new-row screen: reads as a general request, not clearly a probe of the secret (ruling 3)": 85,
+    "non_english": 509,
+    "not screened as an extraction attempt (chit-chat or setup turn); not usable as a": 10694,
+    "outside 20-4000 characters": 2251,
+    "overlap with v1: id": 1,
+    "overlap with v1: normalised text": 1
+  },
+  "neuralchemy_injection": {
+    "category adversarial": 164,
+    "category code_execution": 1,
+    "category encoding": 70,
+    "category model_fingerprinting": 2,
+    "category token_injection": 1,
+    "category training_extraction": 23,
+    "first labeller disagrees with source label": 42,
+    "longer than 4000 characters": 1,
+    "non_english": 88,
+    "overlap with v1: normalised text": 40,
+    "plain harmful goal with no attack technique (belongs to F1 harmful_goal)": 30,
+    "synthetic neuralchemy_v1 'jailbreak' row": 40,
+    "template fill-in text, not natural language": 664
+  },
+  "notinject": {
+    "non_english": 85
+  },
+  "yanis_prompt_injections": {
+    "no attack technique found by the first labeller": 172,
+    "non_english": 572,
+    "overlap with v1: id": 2
+  }
+}

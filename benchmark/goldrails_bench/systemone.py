@@ -89,8 +89,22 @@ class SystemOneClient:
                                  latency_s=time.perf_counter() - t0)
         dt = time.perf_counter() - t0
         raw = resp.model_dump() if hasattr(resp, "model_dump") else dict(resp)
+        meta = server_metadata(resp)
+        if meta is not None:
+            raw["metadata"] = meta
         return SystemOneCall(system=self.system, ok=True, model=raw.get("model"),
                              answers=raw.get("answers"), usage=raw.get("usage"), latency_s=dt, raw=raw)
+
+
+def server_metadata(resp) -> dict | None:
+    """The ``metadata`` object a self-hosted server adds to its response body (Laya reports its input truncation
+    there), or None. The SDK's response model ignores fields outside the API schema, so it is read from the body."""
+    try:
+        body = resp.raw_http_response.json()
+    except Exception:  # noqa: BLE001 - no raw response, or a body that is not JSON: nothing extra to keep
+        return None
+    meta = body.get("metadata") if isinstance(body, dict) else None
+    return meta if isinstance(meta, dict) else None
 
 
 def build_question(q: dict):

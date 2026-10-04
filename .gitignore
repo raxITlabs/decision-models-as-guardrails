@@ -22,3 +22,17 @@ dataset/release/*/hf/
 
 # publication staging data (generated; README, SOURCES, NOTICE and reports are committed)
 dataset/publish/*/data/
+
+# edition 2: never committed, the repository is public (dataset/goldrails_dataset/e2_local.py explains the layout).
+# private/: the private slice and owner-only files (review packets, _lead answer keys, full disagreement notes).
+# local/: text of rows whose source licence is not cleared in dataset/release/redistribution.json.
+dataset/edition2/*/private/
+# the private-slice salt (dataset/goldrails_dataset/e2_local.py): owner only, back it up with the private/ folders
+dataset/edition2/.private-salt
+dataset/edition2/*/local/
+dataset/edition2/**/_lead/
+# content human second-label sample (ruling 7): label.html embeds row text, much of it harmful
+dataset/edition2/content/sample/
+# edition 2 build split files are rebuilt offline and byte-identically from the committed candidates
+# (uv run python -m goldrails_dataset.edition2); manifest.json and audit-report.json are committed to check them
+dataset/edition2/build/F*.jsonl

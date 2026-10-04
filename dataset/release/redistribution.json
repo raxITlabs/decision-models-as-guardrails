@@ -151,6 +151,180 @@
    "mode": "ids_only",
    "basis": "base texts from the unverified Civil Comments mirror (ids-only) and HolisticBias descriptors under CC-BY-SA-4.0; the owner chooses the Bias config licence before any text ships",
    "reviewed": false
+  },
+  "e2_content_aegis2_val": {
+   "mode": "text",
+   "basis": "CC-BY-4.0",
+   "reviewed": false,
+   "evidence": "same HF repo and revision as aegis2 (d86bb8b), not gated"
+  },
+  "e2_content_orbench80k": {
+   "mode": "text",
+   "basis": "CC-BY-4.0",
+   "reviewed": false,
+   "evidence": "same HF repo and revision as orbench (e36d8b8), not gated"
+  },
+  "e2_content_harmbench": {
+   "mode": "text",
+   "basis": "MIT",
+   "reviewed": false,
+   "evidence": "GitHub licence MIT, centerforaisafety/HarmBench at 8e1604d"
+  },
+  "e2_content_harmbench_cls": {
+   "mode": "text",
+   "basis": "MIT",
+   "reviewed": false,
+   "evidence": "GitHub licence MIT, centerforaisafety/HarmBench at 8e1604d"
+  },
+  "e2_content_xstest": {
+   "mode": "text",
+   "basis": "CC-BY-4.0",
+   "reviewed": false,
+   "evidence": "GitHub licence CC-BY-4.0, paul-rottger/xstest at d7bb5bd"
+  },
+  "deepset_injections_test": {
+   "mode": "text",
+   "basis": "Apache-2.0",
+   "reviewed": false,
+   "evidence": "same repo and revision as deepset_injections (4f61ecb); test split",
+   "attribution": "named in the dataset card",
+   "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision",
+   "note": "pending owner review: the licence check was done by Claude on 2026-10-02, not by the owner; ids, labels and hashes ship, the text stays in a git-ignored local cache until the owner records the review"
+  },
+  "jackhhao_jailbreak": {
+   "mode": "text",
+   "basis": "Apache-2.0",
+   "reviewed": false,
+   "evidence": "HF cardData.license apache-2.0 at 2f2ceeb, not gated",
+   "attribution": "named in the dataset card",
+   "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision",
+   "note": "pending owner review: the licence check was done by Claude on 2026-10-02, not by the owner; ids, labels and hashes ship, the text stays in a git-ignored local cache until the owner records the review"
+  },
+  "itw_jailbreak_prompts": {
+   "mode": "text",
+   "basis": "MIT",
+   "reviewed": false,
+   "evidence": "HF cardData.license mit at a10aab8, not gated",
+   "attribution": "named in the dataset card (Shen et al., CCS 2024)",
+   "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision",
+   "note": "pending owner review: the licence check was done by Claude on 2026-10-02, not by the owner; ids, labels and hashes ship, the text stays in a git-ignored local cache until the owner records the review"
+  },
+  "lakera_mosscap": {
+   "mode": "text",
+   "basis": "MIT",
+   "reviewed": false,
+   "evidence": "HF cardData.license mit at b7e495f, not gated",
+   "attribution": "named in the dataset card",
+   "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision",
+   "note": "pending owner review: the licence check was done by Claude on 2026-10-02, not by the owner; ids, labels and hashes ship, the text stays in a git-ignored local cache until the owner records the review"
+  },
+  "lakera_gandalf_summarization": {
+   "mode": "text",
+   "basis": "MIT",
+   "reviewed": false,
+   "evidence": "HF cardData.license mit at 8e213cc, not gated",
+   "attribution": "named in the dataset card",
+   "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision",
+   "note": "pending owner review: the licence check was done by Claude on 2026-10-02, not by the owner; ids, labels and hashes ship, the text stays in a git-ignored local cache until the owner records the review"
+  },
+  "neuralchemy_injection": {
+   "mode": "text",
+   "basis": "Apache-2.0 as declared; rows derive from HackAPrompt (MIT), WildGuardMix (ODC-BY), HarmBench (MIT)",
+   "reviewed": false,
+   "evidence": "HF cardData.license apache-2.0 at 7d70432, not gated; per-row upstream origin kept in notes",
+   "attribution": "named in the dataset card, with HackAPrompt, WildGuardMix and HarmBench",
+   "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision; upstream licences noted, owner to confirm the ODC-BY rows (36)",
+   "note": "pending owner review: the licence check was done by Claude on 2026-10-02, not by the owner; ids, labels and hashes ship, the text stays in a git-ignored local cache until the owner records the review. 36 rows derive from WildGuardMix (ODC-BY); the owner rules on those rows separately"
+  },
+  "notinject": {
+   "mode": "text",
+   "basis": "MIT",
+   "reviewed": false,
+   "evidence": "HF cardData.license mit at 847ae76, not gated",
+   "attribution": "named in the dataset card (InjecGuard)",
+   "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision",
+   "note": "pending owner review: the licence check was done by Claude on 2026-10-02, not by the owner; ids, labels and hashes ship, the text stays in a git-ignored local cache until the owner records the review"
+  },
+  "yanis_prompt_injections": {
+   "mode": "text",
+   "basis": "Apache-2.0",
+   "reviewed": false,
+   "evidence": "LICENSE (Apache-2.0) and NOTICE files at bd55359, not gated",
+   "attribution": "named in the dataset card; NOTICE to be carried",
+   "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision",
+   "note": "pending owner review: the licence check was done by Claude on 2026-10-02, not by the owner; ids, labels and hashes ship, the text stays in a git-ignored local cache until the owner records the review"
+  },
+  "e2_attack_controls": {
+   "mode": "text",
+   "basis": "authored by raxIT (Claude), CC-BY-4.0",
+   "reviewed": true
+  },
+  "e2_denied_topics": {
+   "mode": "text",
+   "basis": "authored by raxIT (AI-assisted drafting), CC-BY-4.0",
+   "reviewed": true
+  },
+  "e2_oasst2": {
+   "mode": "text",
+   "basis": "Apache-2.0",
+   "reviewed": false,
+   "evidence": "HF tags license:apache-2.0 at 179dd21, not gated",
+   "attribution": "named in the dataset card",
+   "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision",
+   "note": "pending owner review: the licence check was done by Claude on 2026-10-02, not by the owner; ids, labels and hashes ship, the text stays in a git-ignored local cache until the owner records the review"
+  },
+  "gretel_pii_en": {
+   "mode": "text",
+   "basis": "Apache-2.0, attribution in the card",
+   "reviewed": false,
+   "evidence": "HF cardData.license apache-2.0 at e06eb1499ca8d54470f085021cd8e54f9efac7fd, not gated",
+   "attribution": "named in the dataset card",
+   "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision",
+   "note": "pending owner review: the licence check was done by Claude on 2026-10-02, not by the owner; ids, labels and hashes ship, the text stays in a git-ignored local cache until the owner records the review"
+  },
+  "gretel_pii_finance": {
+   "mode": "text",
+   "basis": "Apache-2.0, attribution in the card",
+   "reviewed": false,
+   "evidence": "HF cardData.license apache-2.0 at 7b844d16738527a04264f50214cb426a4cea0897, not gated",
+   "attribution": "named in the dataset card",
+   "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision",
+   "note": "pending owner review: the licence check was done by Claude on 2026-10-02, not by the owner; ids, labels and hashes ship, the text stays in a git-ignored local cache until the owner records the review"
+  },
+  "e2_pii_controls": {
+   "mode": "text",
+   "basis": "authored by raxIT, CC-BY-4.0",
+   "reviewed": true
+  },
+  "e2_word_filters_words": {
+   "mode": "text",
+   "basis": "authored by raxIT (Claude), CC-BY-4.0; generated by the tracked dataset/goldrails_dataset/sources/e2_word_filters_words.py",
+   "reviewed": true
+  },
+  "faithdial": {
+   "mode": "text",
+   "basis": "MIT; knowledge sentences are Wikipedia (CC-BY-SA)",
+   "reviewed": false,
+   "evidence": "HF cardData.license mit at 7a414e8, not gated"
+  },
+  "summedits": {
+   "mode": "text",
+   "basis": "CC-BY-4.0; only BillSum, QMSum, SciTLDR, Shakespeare and SummEdits' synthetic sales domains are loaded",
+   "reviewed": false,
+   "evidence": "HF cardData.license cc-by-4.0 at ce0c479, not gated"
+  },
+  "ragbench": {
+   "mode": "ids_only",
+   "basis": "CC-BY-4.0 annotations; PubMedQA passages are publisher abstracts with unchecked terms",
+   "reviewed": false,
+   "evidence": "HF cardData.license cc-by-4.0 at 97808f3, not gated"
+  },
+  "nemotron_pii": {
+   "mode": "text",
+   "basis": "CC-BY-4.0",
+   "reviewed": false,
+   "evidence": "HF nvidia/Nemotron-PII at b70ffaf, test split (dataset/edition2/pii/SOURCES.md says the v1.3 rights.json cleared it; this file had no entry)",
+   "note": "pending owner review: no entry existed, so the default (ids_only) applied; ids, labels and hashes ship, the text stays in a git-ignored local cache"
   }
  },
  "gate": "A source whose mode is text but reviewed is false ships ids_only until its licence review is recorded here as reviewed: true.",

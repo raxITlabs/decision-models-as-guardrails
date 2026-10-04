@@ -94,9 +94,35 @@ def group_of(r) -> str:
     return r.group or r.id      # keep the loader's group (RAGTruth document, JBB behaviour, LLMail team, bias pair)
 
 
-AUTHORED = ("f2_controls", "f3_controls", "f5_controls", "f2_indirect_controls", "f3_controls_v2", "f3_test_candidates")
+AUTHORED = ("f2_controls", "f3_controls", "f5_controls", "f2_indirect_controls", "f3_controls_v2", "f3_test_candidates",
+            # edition 2: written by an AI first labeller; scored only after the blind second label and the owner
+            "e2_attack_controls", "e2_denied_topics", "e2_pii_controls")
 # Sources whose rows are scored only on a final human label, which replaces the draft label when they differ.
-REVIEW_GATED = AUTHORED + ("civil_comments_profanity",)
+# Edition 2 adds the sources whose labels came from a model or from a noisy tag the first labeller disputed:
+# OASST2 topic labels (first labeller), RAGBench (GPT-4 labels), FaithDial (46% of Hallucination tags not clearly
+# unsupported, dataset/edition2/grounding/SOURCES.md).
+REVIEW_GATED = AUTHORED + ("civil_comments_profanity", "e2_oasst2", "ragbench", "faithdial")
+
+# Edition 2 cells and the sources that feed them (docs/benchmark/26-edition-2-plan.md). Edition 2 does not go through
+# build(): each suite's dataset/edition2/<suite>/candidates.jsonl is already selected, grouped and split, and
+# goldrails_dataset.edition2 assembles them. Re-sampling with build() would undo the first labeller's drops and the
+# length matching. Provenance source names, not registry keys (e2_pii_nemotron rows keep source nemotron_pii).
+E2_PLAN = {
+    ("F1", "input"): ["aegis2", "openai_moderation", "ailuminate_demo"],
+    ("F1", "output"): ["e2_content_aegis2_val", "e2_content_harmbench_cls"],
+    ("F1", "harmful_goal"): ["e2_content_harmbench", "e2_content_xstest", "e2_content_orbench80k"],
+    ("F1", "over_refusal"): ["orbench", "e2_content_orbench80k"],
+    ("F2", "injection"): ["deepset_injections_test", "yanis_prompt_injections", "neuralchemy_injection", "notinject",
+                          "e2_attack_controls", "itw_jailbreak_prompts"],
+    ("F2", "jailbreak"): ["jackhhao_jailbreak", "itw_jailbreak_prompts", "neuralchemy_injection",
+                          "yanis_prompt_injections", "e2_attack_controls"],
+    ("F2", "leakage"): ["lakera_mosscap", "lakera_gandalf_summarization", "yanis_prompt_injections",
+                        "neuralchemy_injection", "e2_attack_controls", "itw_jailbreak_prompts"],
+    ("F3", "topic"): ["e2_denied_topics", "e2_oasst2"],
+    ("F4", "profanity"): ["e2_profanity_civil_comments", "e2_profanity_rtp", "e2_profanity_oasst2"],
+    ("F5", "pii"): ["nemotron_pii", "gretel_pii_en", "gretel_pii_finance", "e2_pii_controls"],
+    ("F6", "grounding"): ["faithdial", "summedits", "ragbench"],
+}
 # Tuning share per (feature, subtask) where the plan fixes one; 15% elsewhere. Profanity: 40 tuning, 160 test.
 TUNE_SHARE = {("F4", "profanity"): 0.20}
 REVIEWS = Path(__file__).resolve().parents[1] / "frozen" / "reviews.jsonl"

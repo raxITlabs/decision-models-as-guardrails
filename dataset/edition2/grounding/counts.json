@@ -1,0 +1,132 @@
+{
+ "by_first_labeller": {
+  "diff_checked": 392,
+  "read": 456
+ },
+ "by_label_basis": {
+  "human": 652,
+  "llm": 196
+ },
+ "by_source": {
+  "faithdial": 260,
+  "ragbench": 196,
+  "summedits": 392
+ },
+ "by_source_split_class": {
+  "faithdial": {
+   "private": {
+    "no": 26,
+    "yes": 26
+   },
+   "test": {
+    "no": 84,
+    "yes": 84
+   },
+   "tune": {
+    "no": 20,
+    "yes": 20
+   }
+  },
+  "ragbench": {
+   "private": {
+    "no": 19,
+    "yes": 19
+   },
+   "test": {
+    "no": 64,
+    "yes": 64
+   },
+   "tune": {
+    "no": 15,
+    "yes": 15
+   }
+  },
+  "summedits": {
+   "private": {
+    "no": 40,
+    "yes": 40
+   },
+   "test": {
+    "no": 127,
+    "yes": 127
+   },
+   "tune": {
+    "no": 29,
+    "yes": 29
+   }
+  }
+ },
+ "by_split_class": {
+  "private": {
+   "no": 85,
+   "yes": 85
+  },
+  "test": {
+   "no": 275,
+   "yes": 275
+  },
+  "tune": {
+   "no": 64,
+   "yes": 64
+  }
+ },
+ "excluded_by_reason": {
+  "faithdial: filter": 420,
+  "faithdial: first labeller": 76,
+  "faithdial: first labeller disagrees with source (no vs yes)": 37,
+  "faithdial: first labeller disagrees with source (yes vs no)": 4,
+  "ragbench: duplicate reply text among candidates": 6,
+  "ragbench: filter": 2691,
+  "ragbench: first labeller": 42,
+  "ragbench: first labeller disagrees with source (no vs yes)": 10,
+  "ragbench: first labeller disagrees with source (yes vs no)": 14,
+  "summedits: duplicate reply text among candidates": 42,
+  "summedits: filter": 270,
+  "summedits: first labeller": 17,
+  "summedits: first labeller disagrees with source (no vs yes)": 20,
+  "summedits: first labeller disagrees with source (yes vs no)": 3
+ },
+ "groups_by_source": {
+  "faithdial": 235,
+  "ragbench": 196,
+  "summedits": 112
+ },
+ "loaded": {
+  "faithdial": 1433,
+  "ragbench": 4158,
+  "summedits": 3697
+ },
+ "subgroups": {
+  "faithdial:all:no": 130,
+  "faithdial:all:yes": 130,
+  "ragbench:hagrid:no": 40,
+  "ragbench:hagrid:yes": 33,
+  "ragbench:hotpotqa:no": 14,
+  "ragbench:hotpotqa:yes": 10,
+  "ragbench:pubmedqa:no": 44,
+  "ragbench:pubmedqa:yes": 55,
+  "summedits:billsum:no": 32,
+  "summedits:billsum:yes": 30,
+  "summedits:qmsumm:no": 28,
+  "summedits:qmsumm:yes": 26,
+  "summedits:sales_call:no": 30,
+  "summedits:sales_call:yes": 28,
+  "summedits:sales_email:no": 36,
+  "summedits:sales_email:yes": 40,
+  "summedits:scitldr:no": 29,
+  "summedits:scitldr:yes": 33,
+  "summedits:shakespeare:no": 41,
+  "summedits:shakespeare:yes": 39
+ },
+ "total": 848,
+ "v1_index": {
+  "build_dirs": [
+   "/Users/adeshgairola/Documents/raxIT/code/raxitlabs-github/jev-as-a-guardrails/dataset/release/v1.0/build",
+   "/Users/adeshgairola/Documents/raxIT/code/raxitlabs-github/jev-as-a-guardrails/dataset/release/v1.1-ai/build",
+   "/Users/adeshgairola/Documents/raxIT/code/raxitlabs-github/jev-as-a-guardrails/dataset/release/v1.2/build",
+   "/Users/adeshgairola/Documents/raxIT/code/raxitlabs-github/jev-as-a-guardrails/dataset/release/v1.3/build"
+  ],
+  "ids": 10209,
+  "texts": 10019
+ }
+}

@@ -1,0 +1,237 @@
+{
+ "by_label_basis_review": {
+  "llm/candidate": 108,
+  "synthetic_reviewed/candidate": 348,
+  "synthetic_reviewed/source_label": 384
+ },
+ "by_source_split_class": {
+  "e2_pii_controls/private/no": 13,
+  "e2_pii_controls/private/yes": 3,
+  "e2_pii_controls/test/no": 47,
+  "e2_pii_controls/test/yes": 30,
+  "e2_pii_controls/tune/no": 12,
+  "e2_pii_controls/tune/yes": 3,
+  "gretel_pii_en/private/no": 24,
+  "gretel_pii_en/private/yes": 25,
+  "gretel_pii_en/test/no": 127,
+  "gretel_pii_en/test/yes": 106,
+  "gretel_pii_en/tune/no": 24,
+  "gretel_pii_en/tune/yes": 21,
+  "gretel_pii_finance/private/yes": 5,
+  "gretel_pii_finance/test/yes": 21,
+  "gretel_pii_finance/tune/yes": 5,
+  "nemotron_pii/private/no": 23,
+  "nemotron_pii/private/yes": 27,
+  "nemotron_pii/test/no": 126,
+  "nemotron_pii/test/yes": 143,
+  "nemotron_pii/tune/no": 24,
+  "nemotron_pii/tune/yes": 31
+ },
+ "by_split_class": {
+  "private/no": 60,
+  "private/yes": 60,
+  "test/no": 300,
+  "test/yes": 300,
+  "tune/no": 60,
+  "tune/yes": 60
+ },
+ "candidates_sha256": "e1921a8008583bffd43b28a7da38e85a44fd54c1dab155e6123166580ba0200a",
+ "dropped_by_reason": {
+  "gretel_pii_en": {
+   "PASSWORD value in a doubtful context (hash, token, SSID or example)": 18,
+   "USERNAME value in a doubtful context (hash, token, SSID or example)": 11,
+   "certificate_license_number of unknown kind: may be a driver's licence": 102,
+   "driver's licence mention without a verified number": 8,
+   "name field or title followed by capitalised words": 23,
+   "negative shorter than 60 characters": 96,
+   "negative with a company name: generated company names are often surnames": 32,
+   "pin value: may be a supported type": 2,
+   "ssn value not in the US shape": 612,
+   "street or state-and-ZIP pattern": 14,
+   "unlisted IP address": 2,
+   "unlisted SSN-shaped number": 17,
+   "unlisted a city or state the sources label elsewhere": 201,
+   "unlisted a first name the sources label elsewhere": 485,
+   "unlisted email-shaped value": 6,
+   "unlisted phone-shaped number": 8,
+   "username key or @handle": 31
+  },
+  "gretel_pii_finance": {
+   "DRIVER_ID is the only supported type": 1,
+   "DRIVER_ID value in a doubtful context (hash, token, SSID or example)": 2,
+   "account_pin span: may be a passcode": 2,
+   "driver_license_number span without a driver's-licence label": 22,
+   "no driver_license_number span (only DRIVER_ID rows are read)": 2895,
+   "password key with a value": 1
+  },
+  "nemotron_pii": {
+   "DRIVER_ID is the only supported type": 1,
+   "PASSWORD value in a doubtful context (hash, token, SSID or example)": 492,
+   "USERNAME value in a doubtful context (hash, token, SSID or example)": 299,
+   "certificate_license_number of unknown kind: may be a driver's licence": 2504,
+   "county span without another address component": 2254,
+   "driver's licence mention without a verified number": 167,
+   "group touches v1 or the audit": 1616,
+   "longer than 4096 characters": 216,
+   "malformed EMAIL span": 227,
+   "malformed IP_ADDRESS span": 19,
+   "malformed PHONE span": 1,
+   "malformed US_SOCIAL_SECURITY_NUMBER span": 9,
+   "name field or title followed by capitalised words": 326,
+   "password key with a value": 45,
+   "pin span: may be a passcode": 5073,
+   "shares a driver's licence number with an earlier row": 1,
+   "ssn label on an international row": 1959,
+   "street or state-and-ZIP pattern": 37,
+   "unlisted IP address": 1875,
+   "unlisted SSN-shaped number": 1153,
+   "unlisted a city or state the sources label elsewhere": 5771,
+   "unlisted a first name the sources label elsewhere": 4928,
+   "unlisted email-shaped value": 53,
+   "unlisted phone-shaped number": 326,
+   "username key or @handle": 155
+  }
+ },
+ "eligible_pool": {
+  "gretel_pii_en": {
+   "no": 610,
+   "yes": 2722
+  },
+  "gretel_pii_finance": {
+   "yes": 39
+  },
+  "nemotron_pii": {
+   "no": 10503,
+   "yes": 59990
+  }
+ },
+ "entity_test_floor_30_met": {
+  "ADDRESS": true,
+  "DRIVER_ID": true,
+  "EMAIL": true,
+  "IP_ADDRESS": true,
+  "NAME": true,
+  "PASSWORD": true,
+  "PHONE": true,
+  "USERNAME": true,
+  "US_SOCIAL_SECURITY_NUMBER": true
+ },
+ "entity_test_preferred_50_met": {
+  "ADDRESS": true,
+  "DRIVER_ID": true,
+  "EMAIL": true,
+  "IP_ADDRESS": true,
+  "NAME": true,
+  "PASSWORD": true,
+  "PHONE": true,
+  "USERNAME": true,
+  "US_SOCIAL_SECURITY_NUMBER": true
+ },
+ "positives_by_entity_split": {
+  "ADDRESS": {
+   "private": 18,
+   "test": 91,
+   "tune": 22
+  },
+  "DRIVER_ID": {
+   "private": 12,
+   "test": 57,
+   "tune": 12
+  },
+  "EMAIL": {
+   "private": 19,
+   "test": 92,
+   "tune": 15
+  },
+  "IP_ADDRESS": {
+   "private": 14,
+   "test": 66,
+   "tune": 12
+  },
+  "NAME": {
+   "private": 29,
+   "test": 153,
+   "tune": 32
+  },
+  "PASSWORD": {
+   "private": 16,
+   "test": 56,
+   "tune": 12
+  },
+  "PHONE": {
+   "private": 13,
+   "test": 59,
+   "tune": 12
+  },
+  "USERNAME": {
+   "private": 13,
+   "test": 59,
+   "tune": 13
+  },
+  "US_SOCIAL_SECURITY_NUMBER": {
+   "private": 18,
+   "test": 61,
+   "tune": 12
+  }
+ },
+ "references": {
+  "groups": 5891,
+  "hf_release_files": 90,
+  "id_files": 89,
+  "ids": 9346,
+  "texts": 9164
+ },
+ "rows": 840,
+ "second_label": {
+  "required": 753,
+  "spot_check": 87
+ },
+ "test_positives_by_entity_source": {
+  "ADDRESS": {
+   "e2_pii_controls": 1,
+   "gretel_pii_en": 22,
+   "gretel_pii_finance": 19,
+   "nemotron_pii": 49
+  },
+  "DRIVER_ID": {
+   "e2_pii_controls": 30,
+   "gretel_pii_finance": 21,
+   "nemotron_pii": 6
+  },
+  "EMAIL": {
+   "e2_pii_controls": 1,
+   "gretel_pii_en": 24,
+   "gretel_pii_finance": 2,
+   "nemotron_pii": 65
+  },
+  "IP_ADDRESS": {
+   "gretel_pii_en": 39,
+   "gretel_pii_finance": 2,
+   "nemotron_pii": 25
+  },
+  "NAME": {
+   "e2_pii_controls": 30,
+   "gretel_pii_en": 33,
+   "gretel_pii_finance": 21,
+   "nemotron_pii": 69
+  },
+  "PASSWORD": {
+   "gretel_pii_en": 12,
+   "gretel_pii_finance": 1,
+   "nemotron_pii": 43
+  },
+  "PHONE": {
+   "gretel_pii_en": 19,
+   "gretel_pii_finance": 1,
+   "nemotron_pii": 39
+  },
+  "USERNAME": {
+   "gretel_pii_en": 26,
+   "nemotron_pii": 33
+  },
+  "US_SOCIAL_SECURITY_NUMBER": {
+   "gretel_pii_en": 29,
+   "nemotron_pii": 32
+  }
+ }
+}

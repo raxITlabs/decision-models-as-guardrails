@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Content second label</title>
+<!-- Template for goldrails_dataset.content_sample. The built copy embeds row text and lives only in the
+     git-ignored dataset/edition2/content/sample/label.html. It makes no network requests. -->
+<style>
+:root {
+  --bg: #f6f5f1; --panel: #ffffff; --ink: #1d1d1b; --muted: #6b6a64; --line: #dedbd2;
+  --accent: #2f5d8a; --yes: #a8322a; --yes-bg: #fbe9e7; --no: #2e6b3a; --no-bg: #e6f2e8;
+  --unsure: #8a6d1f; --unsure-bg: #f8f0d8; --quote: #f0eee7; --focus: #2f5d8a;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615; --panel: #1f1f1d; --ink: #ecebe6; --muted: #a09e96; --line: #353430;
+    --accent: #8db4dc; --yes: #f0938a; --yes-bg: #3a1f1c; --no: #8fd09c; --no-bg: #1b3020;
+    --unsure: #e2c46f; --unsure-bg: #352d16; --quote: #2a2a27; --focus: #8db4dc;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161615; --panel: #1f1f1d; --ink: #ecebe6; --muted: #a09e96; --line: #353430;
+  --accent: #8db4dc; --yes: #f0938a; --yes-bg: #3a1f1c; --no: #8fd09c; --no-bg: #1b3020;
+  --unsure: #e2c46f; --unsure-bg: #352d16; --quote: #2a2a27; --focus: #8db4dc;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+header { position: sticky; top: 0; z-index: 2; background: var(--panel); border-bottom: 1px solid var(--line);
+  padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+header h1 { font-size: 15px; margin: 0; font-weight: 600; }
+header .grow { flex: 1; }
+input[type=text], textarea, select { font: inherit; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; }
+button { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px;
+  padding: 5px 12px; cursor: pointer; }
+button:hover { border-color: var(--muted); }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.bar { height: 6px; background: var(--line); border-radius: 3px; width: 160px; overflow: hidden; }
+.bar > div { height: 100%; background: var(--accent); width: 0; }
+main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 420px); gap: 16px; padding: 16px;
+  max-width: 1400px; margin: 0 auto; }
+main.nopolicy { grid-template-columns: minmax(0, 1fr); }
+main.nopolicy #policy { display: none; }
+@media (max-width: 900px) { main { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+.pill { border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; font-size: 12px; }
+.pill.kind { color: var(--accent); border-color: var(--accent); }
+.turn { margin: 0 0 12px; }
+.turn .who { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-bottom: 3px; }
+.turn .body { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--quote); border-radius: 6px; padding: 10px 12px;
+  max-height: 55vh; overflow: auto; }
+.turn.judged .body { border-left: 3px solid var(--accent); }
+.turn.ctx .body { max-height: 30vh; color: var(--muted); }
+.choices { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 10px; }
+.choices button { min-width: 120px; padding: 8px 14px; }
+.choices button kbd { margin-left: 6px; }
+.choices button[data-v=yes].on { background: var(--yes-bg); border-color: var(--yes); color: var(--yes); font-weight: 600; }
+.choices button[data-v=no].on { background: var(--no-bg); border-color: var(--no); color: var(--no); font-weight: 600; }
+.choices button[data-v=unsure].on { background: var(--unsure-bg); border-color: var(--unsure); color: var(--unsure); font-weight: 600; }
+textarea { width: 100%; min-height: 60px; resize: vertical; }
+.nav { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+.nav .grow { flex: 1; }
+kbd { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; border: 1px solid var(--line); border-bottom-width: 2px;
+  border-radius: 4px; padding: 0 4px; background: var(--bg); }
+#policy { max-height: calc(100vh - 90px); overflow: auto; position: sticky; top: 70px; font-size: 14px; }
+#policy h1 { font-size: 17px; margin: 0 0 8px; }
+#policy h2 { font-size: 15px; margin: 16px 0 6px; }
+#policy blockquote { margin: 8px 0; padding: 4px 10px; border-left: 3px solid var(--line); color: var(--muted); }
+#policy code { font: 13px ui-monospace, Menlo, monospace; background: var(--quote); padding: 0 3px; border-radius: 3px; }
+#policy ul { padding-left: 20px; }
+.notice { border: 1px solid var(--accent); border-radius: 8px; padding: 8px 10px; margin: 0 0 12px; font-size: 13px; }
+.tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+.tabs button.on { border-color: var(--accent); color: var(--accent); }
+.muted { color: var(--muted); }
+.warn { color: var(--yes); }
+#help { display: none; }
+#help.on { display: block; }
+#help table { border-collapse: collapse; font-size: 13px; }
+#help td { padding: 2px 10px 2px 0; }
+#gate { max-width: 640px; margin: 40px auto; padding: 0 16px; }
+.hidden { display: none !important; }
+@media (max-width: 600px) { header .bar { display: none; } .choices button { min-width: 0; flex: 1; } }
+</style>
+</head>
+<body>
+<div id="gate" class="card">
+  <h1 style="font-size:18px;margin-top:0">Content second label</h1>
+  <p>This page shows rows from the guardrail benchmark's content suite. Many of them are hateful, violent, sexual or
+    describe crimes. Take breaks when you need them. Your labels save in this browser as you go.</p>
+  <p>For each row, decide whether the judged text breaks the content policy shown on the right: <b>yes</b>,
+    <b>no</b> or <b>unsure</b>. The first label is hidden on purpose. Judge from the policy alone.</p>
+  <p><label>Your name or handle <input type="text" id="gateName" autocomplete="off"></label></p>
+  <p><button id="start">Start labelling</button> <span id="gateMsg" class="warn"></span></p>
+</div>
+
+<div id="app" class="hidden">
+<header>
+  <h1>Content second label</h1>
+  <label class="muted">Labeller <input type="text" id="labeller" size="14" autocomplete="off"></label>
+  <span id="progress" class="muted"></span>
+  <div class="bar" aria-hidden="true"><div id="barFill"></div></div>
+  <span class="grow"></span>
+  <select id="filter" aria-label="Show">
+    <option value="all">All rows</option>
+    <option value="todo">Unlabelled</option>
+    <option value="unsure">Unsure</option>
+  </select>
+  <button id="togglePolicy" title="Show or hide the policy (P)">Policy</button>
+  <button id="helpBtn" title="Keyboard shortcuts (?)">Keys</button>
+  <button id="importBtn" title="Load a JSONL export back into this page">Import</button>
+  <button id="exportBtn" title="Download labels as JSONL">Export JSONL</button>
+  <input type="file" id="importFile" accept=".jsonl,.json,.txt" class="hidden">
+</header>
+<main id="main">
+  <section>
+    <div id="storageWarn" class="notice warn hidden">This browser is not saving to local storage. Export often or
+      your labels will be lost when you close the tab.</div>
+    <div id="help" class="card" style="margin-bottom:12px">
+      <table>
+        <tr><td><kbd>Y</kbd></td><td>violates the policy (yes)</td></tr>
+        <tr><td><kbd>N</kbd></td><td>does not violate (no)</td></tr>
+        <tr><td><kbd>U</kbd></td><td>unsure</td></tr>
+        <tr><td><kbd>J</kbd> or <kbd>&rarr;</kbd></td><td>next row</td></tr>
+        <tr><td><kbd>K</kbd> or <kbd>&larr;</kbd></td><td>previous row</td></tr>
+        <tr><td><kbd>G</kbd></td><td>next unlabelled row</td></tr>
+        <tr><td><kbd>/</kbd></td><td>write a note (<kbd>Esc</kbd> leaves the note)</td></tr>
+        <tr><td><kbd>Backspace</kbd></td><td>clear this row's label</td></tr>
+        <tr><td><kbd>P</kbd></td><td>show or hide the policy</td></tr>
+        <tr><td><kbd>E</kbd></td><td>export JSONL</td></tr>
+        <tr><td><kbd>?</kbd></td><td>this list</td></tr>
+      </table>
+      <p class="muted" style="margin-bottom:0">Labelling a row moves to the next one unless "stay" is ticked.</p>
+    </div>
+    <div class="card" id="rowCard">
+      <div class="meta">
+        <span id="pos"></span>
+        <span class="pill kind" id="kind"></span>
+        <span class="pill" id="rowId" title="row id"></span>
+        <span id="saved" class="muted"></span>
+      </div>
+      <div id="turns"></div>
+      <div class="choices" role="group" aria-label="Label">
+        <button data-v="yes">Yes, violates<kbd>Y</kbd></button>
+        <button data-v="no">No<kbd>N</kbd></button>
+        <button data-v="unsure">Unsure<kbd>U</kbd></button>
+      </div>
+      <label class="muted" for="note">Note (optional) <kbd>/</kbd></label>
+      <textarea id="note" placeholder="Why, or which policy line decided it. Do not paste row text."></textarea>
+      <div class="nav">
+        <button id="prev">&larr; Previous</button>
+        <button id="next">Next &rarr;</button>
+        <button id="nextTodo">Next unlabelled <kbd>G</kbd></button>
+        <span class="grow"></span>
+        <label class="muted"><input type="checkbox" id="stay"> stay on row after labelling</label>
+      </div>
+    </div>
+  </section>
+  <aside id="policy" class="card">
+    <div class="tabs">
+      <button data-p="request">Request policy</button>
+      <button data-p="reply">Reply policy</button>
+    </div>
+    <div id="policyNotice" class="notice hidden">Owner ruling 8 (3 October 2026) approved clarifications C1, C2 and
+      C3 below. Ignore the "DRAFT, pending owner approval" note: they apply to every row here.</div>
+    <div id="policyBody"></div>
+  </aside>
+</main>
+</div>
+
+<script id="data" type="application/json">/*__DATA__*/null</script>
+<script>
+(function () {
+  "use strict";
+  var DATA = JSON.parse(document.getElementById("data").textContent);
+  if (!DATA) { document.body.textContent = "No rows embedded. Build this page with: uv run python -m goldrails_dataset.content_sample draw"; return; }
+  var ROWS = DATA.rows, KEY = "goldrails-content-sample:" + DATA.sample_key;
+  var $ = function (id) { return document.getElementById(id); };
+
+  // --- storage ------------------------------------------------------------------------------------------------
+  var storageOk = true;
+  function load() {
+    try { var s = localStorage.getItem(KEY); return s ? JSON.parse(s) : null; } catch (e) { storageOk = false; return null; }
+  }
+  var state = load() || { labeller: "", labels: {}, pos: 0, stay: false, policy: true };
+  if (!state.labels) state.labels = {};
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); storageOk = true; } catch (e) { storageOk = false; }
+    $("storageWarn").classList.toggle("hidden", storageOk);
+    $("saved").textContent = storageOk ? "saved" : "not saved";
+  }
+
+  // --- policy -------------------------------------------------------------------------------------------------
+  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function inline(s) {
+    return esc(s).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  }
+  function md(text) {
+    var out = [], para = [], list = null, quote = [];
+    function flush() {
+      if (para.length) { out.push("<p>" + inline(para.join(" ")) + "</p>"); para = []; }
+      if (list) { out.push("<ul>" + list.map(function (li) { return "<li>" + inline(li) + "</li>"; }).join("") + "</ul>"); list = null; }
+      if (quote.length) { out.push("<blockquote>" + inline(quote.join(" ")) + "</blockquote>"); quote = []; }
+    }
+    text.split("\n").forEach(function (line) {
+      var m;
+      if (!line.trim()) { flush(); return; }
+      if ((m = /^(#{1,3})\s+(.*)$/.exec(line))) { flush(); var h = m[1].length === 1 ? "h1" : "h2"; out.push("<" + h + ">" + inline(m[2]) + "</" + h + ">"); return; }
+      if ((m = /^>\s?(.*)$/.exec(line))) { if (para.length || list) flush(); quote.push(m[1]); return; }
+      if ((m = /^\s*-\s+(.*)$/.exec(line))) { if (para.length || quote.length) flush(); list = list || []; list.push(m[1]); return; }
+      if (list && /^\s+\S/.test(line)) { list[list.length - 1] += " " + line.trim(); return; }
+      if (list || quote.length) flush();
+      para.push(line.trim());
+    });
+    flush();
+    return out.join("\n");
+  }
+  var shownPolicy = null;
+  function showPolicy(name) {
+    if (shownPolicy === name) return;
+    shownPolicy = name;
+    var p = DATA.policy[name];
+    $("policyBody").innerHTML = md(p.text);   // policy files are our own, and md() escapes them first
+    $("policyNotice").classList.toggle("hidden", !p.draft_mark);
+    document.querySelectorAll(".tabs button").forEach(function (b) { b.classList.toggle("on", b.dataset.p === name); });
+  }
+  document.querySelectorAll(".tabs button").forEach(function (b) {
+    b.addEventListener("click", function () { showPolicy(b.dataset.p); });
+  });
+  function setPolicyVisible(on) { state.policy = on; $("main").classList.toggle("nopolicy", !on); save(); }
+
+  // --- rows ---------------------------------------------------------------------------------------------------
+  function visible() {
+    var f = $("filter").value;
+    return ROWS.map(function (_, i) { return i; }).filter(function (i) {
+      var l = state.labels[ROWS[i].id];
+      return f === "all" || (f === "todo" && !(l && l.label)) || (f === "unsure" && l && l.label === "unsure");
+    });
+  }
+  function turn(cls, who, text) {
+    var d = document.createElement("div"); d.className = "turn " + cls;
+    var w = document.createElement("div"); w.className = "who"; w.textContent = who;
+    var b = document.createElement("div"); b.className = "body"; b.textContent = text == null ? "" : String(text);
+    d.appendChild(w); d.appendChild(b); return d;
+  }
+  function render() {
+    var n = ROWS.length;
+    state.pos = Math.max(0, Math.min(n - 1, state.pos | 0));
+    var r = ROWS[state.pos], l = state.labels[r.id] || {};
+    $("pos").textContent = "Row " + (state.pos + 1) + " of " + n;
+    $("kind").textContent = r.kind === "reply" ? "judge the assistant reply" : "judge the user request";
+    $("rowId").textContent = r.id;
+    var t = $("turns"); t.textContent = "";
+    (r.context || []).forEach(function (c) { t.appendChild(turn("ctx", (c.role || "context") + " (context, not judged)", c.text)); });
+    t.appendChild(turn("judged", (r.role || (r.kind === "reply" ? "assistant" : "user")) + " (judged)", r.text));
+    document.querySelectorAll(".choices button").forEach(function (b) { b.classList.toggle("on", b.dataset.v === l.label); });
+    $("note").value = l.note || "";
+    var done = ROWS.filter(function (x) { var y = state.labels[x.id]; return y && y.label; }).length;
+    $("progress").textContent = done + " / " + n + " labelled";
+    $("barFill").style.width = (100 * done / n) + "%";
+    showPolicy(r.kind);
+    $("saved").textContent = l.label ? "saved" : "";
+  }
+  function labeller() { return ($("labeller").value || "").trim(); }
+  function setLabel(v) {
+    var r = ROWS[state.pos], cur = state.labels[r.id] || {};
+    state.labels[r.id] = { label: v, note: $("note").value, timestamp: new Date().toISOString() };
+    if (!v && !cur.note && !$("note").value) delete state.labels[r.id];
+    save();
+    if (v && !state.stay) step(1, true); else render();
+  }
+  function setNote() {
+    var r = ROWS[state.pos], cur = state.labels[r.id] || {};
+    if (!cur.label && !$("note").value) { delete state.labels[r.id]; save(); return; }
+    state.labels[r.id] = { label: cur.label || null, note: $("note").value, timestamp: new Date().toISOString() };
+    save();
+  }
+  function step(d, fromLabel) {
+    var v = visible();
+    if (!v.length) { render(); return; }
+    var i = v.indexOf(state.pos);
+    if (i === -1) { // current row left the filter (it was just labelled): go to the next visible after it
+      var after = v.filter(function (x) { return d > 0 ? x > state.pos : x < state.pos; });
+      state.pos = after.length ? (d > 0 ? after[0] : after[after.length - 1]) : v[0];
+    } else {
+      state.pos = v[Math.max(0, Math.min(v.length - 1, i + d))];
+    }
+    save(); render();
+    if (fromLabel) window.scrollTo({ top: 0 });
+  }
+  function nextTodo() {
+    var n = ROWS.length;
+    for (var k = 1; k <= n; k++) {
+      var i = (state.pos + k) % n, l = state.labels[ROWS[i].id];
+      if (!(l && l.label)) { state.pos = i; save(); render(); return; }
+    }
+    $("saved").textContent = "every row has a label";
+  }
+
+  // --- export / import ----------------------------------------------------------------------------------------
+  function exportJsonl() {
+    var who = labeller();
+    if (!who) { alert("Enter your name in the Labeller box first."); $("labeller").focus(); return; }
+    var lines = ROWS.filter(function (r) { var l = state.labels[r.id]; return l && l.label; }).map(function (r) {
+      var l = state.labels[r.id];
+      return JSON.stringify({ id: r.id, label: l.label, note: l.note || "", labeller: who, timestamp: l.timestamp });
+    });
+    if (!lines.length) { alert("No labels yet."); return; }
+    var blob = new Blob([lines.join("\n") + "\n"], { type: "application/x-ndjson" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "content-sample-labels-" + who.replace(/[^A-Za-z0-9_-]+/g, "_") + "-" +
+      new Date().toISOString().slice(0, 19).replace(/[:T]/g, "") + ".jsonl";
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+  function importJsonl(file) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var ids = {}, n = 0, bad = 0;
+      ROWS.forEach(function (r) { ids[r.id] = true; });
+      String(reader.result).split("\n").forEach(function (line) {
+        if (!line.trim()) return;
+        try {
+          var e = JSON.parse(line);
+          if (!ids[e.id] || ["yes", "no", "unsure"].indexOf(e.label) < 0) { bad++; return; }
+          var cur = state.labels[e.id];
+          if (!cur || !cur.timestamp || (e.timestamp || "") >= cur.timestamp) {
+            state.labels[e.id] = { label: e.label, note: e.note || "", timestamp: e.timestamp || new Date().toISOString() };
+            n++;
+          }
+          if (e.labeller && !labeller()) { $("labeller").value = e.labeller; state.labeller = e.labeller; }
+        } catch (err) { bad++; }
+      });
+      save(); render();
+      alert("Imported " + n + " labels" + (bad ? "; skipped " + bad + " lines that did not match this sample" : "") + ".");
+    };
+    reader.readAsText(file);
+  }
+
+  // --- wiring -------------------------------------------------------------------------------------------------
+  function start() {
+    $("gate").classList.add("hidden"); $("app").classList.remove("hidden");
+    $("labeller").value = state.labeller || "";
+    $("stay").checked = !!state.stay;
+    setPolicyVisible(state.policy !== false);
+    render();
+  }
+  $("gateName").value = state.labeller || "";
+  $("start").addEventListener("click", function () {
+    var who = $("gateName").value.trim();
+    if (!who) { $("gateMsg").textContent = "Enter a name so the export says who labelled."; return; }
+    state.labeller = who; save(); start();
+  });
+  $("gateName").addEventListener("keydown", function (e) { if (e.key === "Enter") $("start").click(); });
+  $("labeller").addEventListener("input", function () { state.labeller = labeller(); save(); });
+  document.querySelectorAll(".choices button").forEach(function (b) {
+    b.addEventListener("click", function () { setLabel(b.dataset.v); });
+  });
+  $("note").addEventListener("input", setNote);
+  $("prev").addEventListener("click", function () { step(-1); });
+  $("next").addEventListener("click", function () { step(1); });
+  $("nextTodo").addEventListener("click", nextTodo);
+  $("stay").addEventListener("change", function () { state.stay = $("stay").checked; save(); });
+  $("filter").addEventListener("change", function () { var v = visible(); if (v.length && v.indexOf(state.pos) < 0) state.pos = v[0]; render(); });
+  $("togglePolicy").addEventListener("click", function () { setPolicyVisible(!state.policy); });
+  $("helpBtn").addEventListener("click", function () { $("help").classList.toggle("on"); });
+  $("exportBtn").addEventListener("click", exportJsonl);
+  $("importBtn").addEventListener("click", function () { $("importFile").click(); });
+  $("importFile").addEventListener("change", function () { if (this.files[0]) importJsonl(this.files[0]); this.value = ""; });
+
+  document.addEventListener("keydown", function (e) {
+    if ($("app").classList.contains("hidden") || e.metaKey || e.ctrlKey || e.altKey) return;
+    var tag = (e.target.tagName || "").toLowerCase();
+    if (tag === "textarea" || tag === "input" || tag === "select") {
+      if (e.key === "Escape") { e.target.blur(); e.preventDefault(); }
+      return;
+    }
+    var k = e.key;
+    var act = {
+      y: function () { setLabel("yes"); }, n: function () { setLabel("no"); }, u: function () { setLabel("unsure"); },
+      j: function () { step(1); }, ArrowRight: function () { step(1); },
+      k: function () { step(-1); }, ArrowLeft: function () { step(-1); },
+      g: nextTodo, "/": function () { $("note").focus(); },
+      Backspace: function () { setLabel(null); },
+      p: function () { setPolicyVisible(!state.policy); },
+      e: exportJsonl, "?": function () { $("help").classList.toggle("on"); }
+    }[k.length === 1 ? k.toLowerCase() : k];
+    if (k === "?") act = function () { $("help").classList.toggle("on"); };
+    if (act) { e.preventDefault(); act(); }
+  });
+
+  if (!storageOk) $("storageWarn").classList.remove("hidden");
+  if (state.labeller && Object.keys(state.labels).length) start();
+})();
+</script>
+</body>
+</html>

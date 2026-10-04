@@ -1,0 +1,85 @@
+{
+ "suite": "content",
+ "ruling": "7 (docs/benchmark/29-owner-rulings-2026-10-03.md)",
+ "guide": "docs/benchmark/30-content-sample-labelling.md",
+ "status": "awaiting labels",
+ "updated": "2026-10-03T22:27:43+00:00",
+ "design": {
+  "seed": 20261003,
+  "n": 400,
+  "min_per_stratum": 10,
+  "sample_key": "91a5607751fe2ef7",
+  "population_rows": 2268,
+  "build_files": {
+   "F1.tune.jsonl": "7344c048801a95d3145c769e196368c06ceb682931d2b783668d2745c0bab623",
+   "F1.test.jsonl": "32c165d1256a7fffb37c0c522106b236ee9ac896c36eb47584a93a4a118bff69"
+  },
+  "strata": {
+   "harmful_goal|no|e2_content_orbench80k": {
+    "population": 141,
+    "sample": 25
+   },
+   "harmful_goal|no|e2_content_xstest": {
+    "population": 197,
+    "sample": 33
+   },
+   "harmful_goal|yes|e2_content_harmbench": {
+    "population": 188,
+    "sample": 32
+   },
+   "harmful_goal|yes|e2_content_xstest": {
+    "population": 157,
+    "sample": 28
+   },
+   "input|no|aegis2": {
+    "population": 152,
+    "sample": 26
+   },
+   "input|no|openai_moderation": {
+    "population": 152,
+    "sample": 26
+   },
+   "input|yes|aegis2": {
+    "population": 95,
+    "sample": 20
+   },
+   "input|yes|ailuminate_demo": {
+    "population": 111,
+    "sample": 21
+   },
+   "input|yes|openai_moderation": {
+    "population": 89,
+    "sample": 19
+   },
+   "output|no|e2_content_aegis2_val": {
+    "population": 175,
+    "sample": 30
+   },
+   "output|no|e2_content_harmbench_cls": {
+    "population": 147,
+    "sample": 26
+   },
+   "output|yes|e2_content_aegis2_val": {
+    "population": 189,
+    "sample": 32
+   },
+   "output|yes|e2_content_harmbench_cls": {
+    "population": 155,
+    "sample": 27
+   },
+   "over_refusal|no|e2_content_orbench80k": {
+    "population": 92,
+    "sample": 19
+   },
+   "over_refusal|no|orbench": {
+    "population": 228,
+    "sample": 36
+   }
+  },
+  "population": "content rows in the public F1 tune and test build files, public candidates only",
+  "strata_key": "subtask|reference label|source",
+  "reference": "the label the build holds: the first label, or the owner-ruling final label of a resolved dispute",
+  "command": "uv run python -m goldrails_dataset.content_sample draw"
+ },
+ "result": null
+}

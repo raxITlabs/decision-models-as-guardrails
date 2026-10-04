@@ -1,0 +1,271 @@
+{"id": "f6-faithdial-a244e21314", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): rugby popular in England is in the knowledge"}
+{"id": "f6-faithdial-59419bff8f", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): Android and Windows releases are in the knowledge"}
+{"id": "f6-faithdial-38802fbdfd", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): restates the knowledge plus a question"}
+{"id": "f6-faithdial-a463a46b8f", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: garbled"}
+{"id": "f6-faithdial-c9139aa6c1", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: loose inference"}
+{"id": "f6-faithdial-2d8c209676", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: loose inference"}
+{"id": "f6-faithdial-1cee34086a", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): copies the knowledge"}
+{"id": "f6-faithdial-dcf3567f89", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: near-paraphrase"}
+{"id": "f6-faithdial-7011244320", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): paraphrases the knowledge"}
+{"id": "f6-faithdial-8e021a4077", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: personal statement"}
+{"id": "f6-faithdial-fa516d23ff", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): copies the knowledge"}
+{"id": "f6-faithdial-551198dac0", "source": "faithdial", "expected": "no", "reason": "first labeller: exclude: 'once you get past 3' is not stated; borderline"}
+{"id": "f6-faithdial-50ababdb55", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: minor wording change of the nickname"}
+{"id": "f6-faithdial-7307eaef36", "source": "faithdial", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 'plays the sheriff' is not in the knowledge"}
+{"id": "f6-faithdial-ec7f129366", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: opinion"}
+{"id": "f6-faithdial-529a09779c", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: mild inference"}
+{"id": "f6-faithdial-3a237fbcb2", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: personal observation; the date is supported"}
+{"id": "f6-faithdial-6216d72c94", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: hedged suggestion"}
+{"id": "f6-faithdial-2bc90b3226", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: 'Yeah' to 'is it a warm color' is an implicit unsupported claim; borderline"}
+{"id": "f6-faithdial-bdf022d53f", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): paraphrases the knowledge"}
+{"id": "f6-faithdial-9fb1b6d847", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: mild inference"}
+{"id": "f6-faithdial-c2c1753d49", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: mild evaluative"}
+{"id": "f6-faithdial-4ee21d6077", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): restates the knowledge"}
+{"id": "f6-faithdial-0353e676f0", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: popularity claim borderline"}
+{"id": "f6-faithdial-9e691176bf", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): copies the knowledge"}
+{"id": "f6-faithdial-147ed83111", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: referent unclear"}
+{"id": "f6-faithdial-081db5211c", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: mild additions"}
+{"id": "f6-faithdial-14033aa0b9", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: hypothetical about fiction"}
+{"id": "f6-faithdial-49210e8929", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): one pole is in the knowledge"}
+{"id": "f6-faithdial-00474698e2", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: garbled paraphrase; reverses cause and effect of the knowledge, borderline"}
+{"id": "f6-faithdial-55dcd99cfd", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: loose paraphrase"}
+{"id": "f6-faithdial-5ed9ec72f2", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): restates the knowledge"}
+{"id": "f6-faithdial-df9d8f39a2", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): paraphrases the like-button tracking issue"}
+{"id": "f6-faithdial-563f1fbd08", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): hedged; corn domesticated in Mexico is in the knowledge"}
+{"id": "f6-faithdial-6e6c6af279", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: loose paraphrase"}
+{"id": "f6-faithdial-741184805f", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: feeling, not a checkable claim"}
+{"id": "f6-faithdial-2379b7967d", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: loose paraphrase"}
+{"id": "f6-faithdial-35ac4dfa1b", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: near-paraphrase"}
+{"id": "f6-faithdial-8288bb3432", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: garbled advice"}
+{"id": "f6-faithdial-0cc89a427f", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: borderline: 'not in place back then' is implied by 'changed'"}
+{"id": "f6-faithdial-59d3990556", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: advice, vague"}
+{"id": "f6-faithdial-3ba4f7ca5f", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: personal statement and a question"}
+{"id": "f6-faithdial-cae6f248e7", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: personal location claim"}
+{"id": "f6-faithdial-346639906d", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: personal statement"}
+{"id": "f6-faithdial-f9051047df", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): lists the cities named in the knowledge"}
+{"id": "f6-faithdial-64659cdb6d", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: garbled"}
+{"id": "f6-faithdial-e28c8210df", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: opinion"}
+{"id": "f6-faithdial-3a610a7662", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: a question only"}
+{"id": "f6-faithdial-bde6242b7d", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: tautology and a question"}
+{"id": "f6-faithdial-4c1e97f7fc", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: garbled paraphrase"}
+{"id": "f6-faithdial-aba90ab46b", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: evaluative"}
+{"id": "f6-faithdial-821b603869", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: evaluative"}
+{"id": "f6-faithdial-f0411cf969", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: near-paraphrase with hedge"}
+{"id": "f6-faithdial-1611ce1631", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: mild inference about geography"}
+{"id": "f6-faithdial-5a6e6ccd1b", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: direction of the river ambiguous"}
+{"id": "f6-faithdial-6953062365", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): restates the knowledge"}
+{"id": "f6-faithdial-8e03069c92", "source": "faithdial", "expected": "no", "reason": "first labeller: exclude: 'must be met' overstates; borderline"}
+{"id": "f6-faithdial-89bf2106be", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: ambiguous referent"}
+{"id": "f6-faithdial-d2fefc3a70", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): restates the definition in the knowledge"}
+{"id": "f6-faithdial-a9bdf0a830", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: questions and a mild popularity remark"}
+{"id": "f6-faithdial-489edb575c", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: 'I.T.' is a stated preference; rest copies the knowledge"}
+{"id": "f6-faithdial-3262a4e509", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: loose paraphrase; supported or not depends on reading"}
+{"id": "f6-faithdial-f8347f5eeb", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): copies the knowledge"}
+{"id": "f6-faithdial-9cdbc4501d", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: anecdote presented as etymology; borderline"}
+{"id": "f6-faithdial-541937e8b3", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): restates the knowledge"}
+{"id": "f6-faithdial-5aa463e985", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): Bon Iver is an indie folk band per the knowledge"}
+{"id": "f6-faithdial-6df72d4027", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: questions only"}
+{"id": "f6-faithdial-ee2fed2e55", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: applies the knowledge to the user"}
+{"id": "f6-faithdial-622d38a9cc", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: garbled"}
+{"id": "f6-faithdial-3f0ede7f83", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): restates the knowledge"}
+{"id": "f6-faithdial-0d518ca06f", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): garbled paraphrase of the knowledge, no new claim"}
+{"id": "f6-faithdial-558bca5dec", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): paraphrases the knowledge"}
+{"id": "f6-faithdial-df6c65eb45", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: mostly supported, mild addition"}
+{"id": "f6-faithdial-8bba5f3486", "source": "faithdial", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 'so they cant hunt animals' contradicts 'in order to hunt animals'"}
+{"id": "f6-faithdial-1e8858c55b", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): only claim (schnitzel from chicken) is in the knowledge; the rest is a question"}
+{"id": "f6-faithdial-9d66be0e5d", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: mild inference"}
+{"id": "f6-faithdial-c7f3d29c4d", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: persona claim"}
+{"id": "f6-faithdial-69fc5676b1", "source": "faithdial", "expected": "no", "reason": "first labeller: exclude: 'his laws' vs 'court opinions'; borderline"}
+{"id": "f6-faithdial-6d71618acd", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): restates the knowledge"}
+{"id": "f6-faithdial-982b23cd1a", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): 'most of the vocabulary is French' paraphrases 'vocabulary based on French terminology'"}
+{"id": "f6-faithdial-02f560dfe8", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): restates the knowledge"}
+{"id": "f6-faithdial-979f8021b3", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): every claim paraphrases the knowledge (surface ships, submarines, other means)"}
+{"id": "f6-faithdial-6404a6d600", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: supported apart from a safety inference"}
+{"id": "f6-faithdial-e95cac05e2", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: personal location"}
+{"id": "f6-faithdial-21e4e817ed", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: truism, no factual claim to check"}
+{"id": "f6-faithdial-3b897284f8", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): hedged; school and collegiate swimming are in the knowledge"}
+{"id": "f6-faithdial-bccce577e0", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: generalises iguanas to lizards; borderline"}
+{"id": "f6-faithdial-da0701d206", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: 'over the years' only"}
+{"id": "f6-faithdial-eed3bf0f65", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: 'individualized' added; borderline"}
+{"id": "f6-faithdial-0945a4344d", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: mention plus question"}
+{"id": "f6-faithdial-60ebd0dfff", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): the finger injury while working as a carpenter is in the knowledge"}
+{"id": "f6-faithdial-f1d04fe542", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): restates the knowledge's finding"}
+{"id": "f6-faithdial-8be294ec7f", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): restates the knowledge"}
+{"id": "f6-faithdial-7bc226896f", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): paraphrases the knowledge"}
+{"id": "f6-faithdial-c5afe59bca", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: advice plus supported claim"}
+{"id": "f6-faithdial-8a5eceb761", "source": "faithdial", "expected": "no", "reason": "first labeller: exclude: misreads a date range as ancestry; borderline"}
+{"id": "f6-faithdial-af077018d0", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: 'famous fashion' mild addition"}
+{"id": "f6-faithdial-e6e9cbbd03", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: loose inference"}
+{"id": "f6-faithdial-c4300291f6", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: personal advice"}
+{"id": "f6-faithdial-aecd4c9057", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: 'lately' only"}
+{"id": "f6-faithdial-67b60cd936", "source": "faithdial", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): says curry comes from curry leaves; the knowledge says some curries are spiced with them"}
+{"id": "f6-faithdial-5a1ab1147a", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): applies the knowledge's definition, no new fact"}
+{"id": "f6-faithdial-160e08639a", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: advice, not a claim"}
+{"id": "f6-faithdial-5bd2181ede", "source": "faithdial", "expected": "no", "reason": "first labeller: exclude: 'due to the size of the area' is an unsupported cause; borderline"}
+{"id": "f6-faithdial-145000cada", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): restates the knowledge"}
+{"id": "f6-faithdial-b974e6bbe2", "source": "faithdial", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 'most European countries prevent the killing' contradicts 'all but four permitted' it"}
+{"id": "f6-faithdial-deb1680c15", "source": "faithdial", "expected": "no", "reason": "first labeller: exclude: 'that's why the show is titled The Simpsons' is unsupported; borderline"}
+{"id": "f6-faithdial-5c6daa4f3e", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: personal taste; the date is supported"}
+{"id": "f6-faithdial-d9036cf298", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: garbled"}
+{"id": "f6-faithdial-37870fecba", "source": "faithdial", "expected": "no", "reason": "first labeller: exclude: 'most popular' overstates 'among the most popular'; borderline"}
+{"id": "f6-faithdial-8000f4ce04", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): claims restate the knowledge; the rest is enthusiasm, not a factual claim"}
+{"id": "f6-faithdial-6d8cadbb47", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): character development is in the knowledge"}
+{"id": "f6-faithdial-0334d4857f", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: near-paraphrase with a hedge"}
+{"id": "f6-faithdial-c655bb3293", "source": "faithdial", "expected": "no", "reason": "first labeller: exclude: 'roses' vs 'flowers'; borderline"}
+{"id": "f6-faithdial-8f09e7b07b", "source": "faithdial", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): paraphrases the knowledge"}
+{"id": "f6-faithdial-5c4c0bf7b0", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: garbled"}
+{"id": "f6-faithdial-a538aba711", "source": "faithdial", "expected": "yes", "reason": "first labeller: exclude: mild addition about Saint Bernards"}
+{"id": "f6-summedits-d1d6f19d41", "source": "summedits", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 'in addition to' contradicts 'in lieu of'"}
+{"id": "f6-summedits-1f3f50c3ce", "source": "summedits", "expected": "no", "reason": "first labeller: exclude: inserted 'all' may widen the claim; borderline"}
+{"id": "f6-summedits-0e6a1256e4", "source": "summedits", "expected": "no", "reason": "first labeller: exclude: 'by region' -> 'by country' changes the schedule rule; labelled consistent"}
+{"id": "f6-summedits-199ed72989", "source": "summedits", "expected": "no", "reason": "first labeller: exclude: 'unmarried' -> 'solitary' shifts the legal category; borderline"}
+{"id": "f6-summedits-1c4c9cb32e", "source": "summedits", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 'excludes area and economic development activities' contradicts the seed's 'including'"}
+{"id": "f6-summedits-078f79515d", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): edits are paraphrases"}
+{"id": "f6-summedits-8b5073c13f", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-c8c1ef118d", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-57be5cf531", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): edits are paraphrases (health/healthcare insurance)"}
+{"id": "f6-summedits-8cf753a0d0", "source": "summedits", "expected": "yes", "reason": "first labeller: exclude: 'plausible customer' is odd wording, not clearly a claim change"}
+{"id": "f6-summedits-0d9cdfc4b2", "source": "summedits", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 'only provides the consultation' contradicts 'also offers benefits and incentives'"}
+{"id": "f6-summedits-4d499409c1", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): edits are paraphrases"}
+{"id": "f6-summedits-3e04bb0b0e", "source": "summedits", "expected": "yes", "reason": "first labeller: exclude: only a product-bundle name changes; borderline"}
+{"id": "f6-summedits-2a1471733f", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): edits are paraphrases"}
+{"id": "f6-summedits-4c4b854b72", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): edits are paraphrases"}
+{"id": "f6-summedits-c146fa8e4b", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): edits are paraphrases"}
+{"id": "f6-summedits-de3c1b672f", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): edits are paraphrases"}
+{"id": "f6-summedits-c4c8c323a4", "source": "summedits", "expected": "yes", "reason": "first labeller: exclude: 'introducing' -> 'discussing' only; borderline"}
+{"id": "f6-summedits-bf73948aec", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): edits are paraphrases"}
+{"id": "f6-summedits-b6d5176f05", "source": "summedits", "expected": "yes", "reason": "first labeller: exclude: paraphrases plus a dropped 'with'; borderline"}
+{"id": "f6-summedits-78bfc6f6ea", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): edits are paraphrases"}
+{"id": "f6-summedits-c58555e0d2", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): edits are paraphrases"}
+{"id": "f6-summedits-7cc702ea4c", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): edits are paraphrases (offer/present, includes/offers, tailored/tailor-made)"}
+{"id": "f6-summedits-4a25eb7342", "source": "summedits", "expected": "yes", "reason": "first labeller: exclude: stray '6)' list marker in the summary"}
+{"id": "f6-summedits-5eb09f522f", "source": "summedits", "expected": "yes", "reason": "first labeller: exclude: stray '2)' list marker in the summary"}
+{"id": "f6-summedits-7e1946de2c", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): edits are paraphrases"}
+{"id": "f6-summedits-c14a986c7b", "source": "summedits", "expected": "yes", "reason": "first labeller: exclude: 'will become' -> 'could qualify as'; borderline"}
+{"id": "f6-summedits-79b9f2d807", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-7fc3f2bf9e", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-bedeeccf27", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-50c5eb3ffd", "source": "summedits", "expected": "no", "reason": "first labeller: exclude: 'carry' -> 'govern' and 'and' -> 'or' change meaning slightly; borderline"}
+{"id": "f6-summedits-d1e056ab66", "source": "summedits", "expected": "no", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-0fa5a5272f", "source": "summedits", "expected": "no", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-0d21ec4cd6", "source": "summedits", "expected": "no", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-b4ccb1434a", "source": "summedits", "expected": "no", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-db22975fce", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-a18122ebe1", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-c2b12ba585", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-453bf67516", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-6a97ef16c1", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-46c062d473", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-cc19eccdfd", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-1f594aa6f8", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-99e5819a39", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-9772f77aff", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-08d87c74bb", "source": "summedits", "expected": "no", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-62738ba516", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-7b3f88b25f", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-03eac05071", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): drops 'correct': an omission, not an unsupported claim (ruling 4)"}
+{"id": "f6-summedits-106f8982ea", "source": "summedits", "expected": "no", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-05fe067e2c", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): 'the first verification' -> 'evidence' drops a qualifier; nothing new is asserted (ruling 4: omissions are not failures)"}
+{"id": "f6-summedits-744c4767f6", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-fe878650f9", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-48e24a82b0", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-d1768587fe", "source": "summedits", "expected": "no", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-2a5abcb705", "source": "summedits", "expected": "no", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-215918a99d", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): 'novel' -> 'unique' is a synonym swap"}
+{"id": "f6-summedits-e63b8c571c", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-51fadf0c2e", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-1d1be5847e", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): only edit is 'novel' -> 'unique', a paraphrase"}
+{"id": "f6-summedits-688d1c80c4", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): edits are paraphrases"}
+{"id": "f6-summedits-1bcbe955a8", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-7afd7e2d5c", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-39cc2f13b9", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-4f0e3f0a2b", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-554fe8e8dc", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-f922ac6f21", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-1d4b3ca663", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-1f068deecc", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-7d0f4f485c", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-caf92f0633", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-01ab13df7c", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-476844ea40", "source": "summedits", "expected": "yes", "reason": "duplicate reply text among candidates"}
+{"id": "f6-summedits-952d7d263c", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): edits are paraphrases"}
+{"id": "f6-summedits-f351807c6c", "source": "summedits", "expected": "no", "reason": "first labeller: exclude: drops 'not' from 'not very expensive'; labelled consistent"}
+{"id": "f6-summedits-a30a5583c6", "source": "summedits", "expected": "no", "reason": "first labeller: exclude: 'effectiveness' -> 'efficiency' is a meaning shift; borderline"}
+{"id": "f6-summedits-8a725e8174", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): edits are paraphrases"}
+{"id": "f6-summedits-a02117f5f1", "source": "summedits", "expected": "no", "reason": "first labeller: exclude: 'product' -> 'production' price; borderline"}
+{"id": "f6-summedits-aa829d2891", "source": "summedits", "expected": "yes", "reason": "first labeller: exclude: tense change only; borderline"}
+{"id": "f6-summedits-24c219df82", "source": "summedits", "expected": "yes", "reason": "first labeller: exclude: tense change only; borderline"}
+{"id": "f6-summedits-d8c07b4c1f", "source": "summedits", "expected": "yes", "reason": "first labeller: exclude: tense change only ('assigns' -> 'will apportion'); borderline"}
+{"id": "f6-summedits-2e448a00f0", "source": "summedits", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): edits are paraphrases"}
+{"id": "f6-ragbench-9610749ee4", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: 'biggest tour' vs 'largest organization'; borderline"}
+{"id": "f6-ragbench-0e5a5c3557", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: 1968 follows arithmetically from the season counts; borderline"}
+{"id": "f6-ragbench-497b5b9348", "source": "ragbench", "expected": "no", "reason": "duplicate reply text among candidates"}
+{"id": "f6-ragbench-8f305178c1", "source": "ragbench", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): Document 1 gives Eindhoven, 2001"}
+{"id": "f6-ragbench-9a8dd70478", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: meta-statement about the context"}
+{"id": "f6-ragbench-3ccf401928", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: degenerate repeated text; the flagged claims are largely supported by Document 1"}
+{"id": "f6-ragbench-26d3e81930", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: the source's own depth figure is truncated"}
+{"id": "f6-ragbench-5160de7ce7", "source": "ragbench", "expected": "no", "reason": "duplicate reply text among candidates"}
+{"id": "f6-ragbench-cf5e6f546c", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: tautology, no checkable claim"}
+{"id": "f6-ragbench-da3ad2466b", "source": "ragbench", "expected": "no", "reason": "duplicate reply text among candidates"}
+{"id": "f6-ragbench-653b331dd3", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: 'first installment' is ambiguous (publication vs chronology)"}
+{"id": "f6-ragbench-c409a0087a", "source": "ragbench", "expected": "no", "reason": "duplicate reply text among candidates"}
+{"id": "f6-ragbench-543c484fa2", "source": "ragbench", "expected": "no", "reason": "duplicate reply text among candidates"}
+{"id": "f6-ragbench-b41e348af7", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: loose synthesis; borderline"}
+{"id": "f6-ragbench-8edfb2b333", "source": "ragbench", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 97,500 is not in the documents (32,550; more than 100,000)"}
+{"id": "f6-ragbench-fec3c4566b", "source": "ragbench", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): Document 2: 'The first novel, Patternmaster (1976)'"}
+{"id": "f6-ragbench-b388916c77", "source": "ragbench", "expected": "no", "reason": "first labeller: exclude: 'plantation' is not in the document; borderline"}
+{"id": "f6-ragbench-4bcc0e48d0", "source": "ragbench", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): all three documents do give atomic number 80"}
+{"id": "f6-ragbench-2dc7e33dc3", "source": "ragbench", "expected": "no", "reason": "duplicate reply text among candidates"}
+{"id": "f6-ragbench-afa85c1464", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: hedged synthesis of several documents; borderline"}
+{"id": "f6-ragbench-0c42123dda", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: garbled; State Chairman vs president"}
+{"id": "f6-ragbench-4c878abadc", "source": "ragbench", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): the flagged sentence paraphrases Document 1"}
+{"id": "f6-ragbench-dc99f406fe", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: degenerate reply fragment"}
+{"id": "f6-ragbench-abf9c595e2", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: Document 4 is truncated at the draft team; borderline"}
+{"id": "f6-ragbench-8be4e64b56", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: plausible inference from 'unarmed' vs 'night fighter'; borderline"}
+{"id": "f6-ragbench-45930cd74f", "source": "ragbench", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): Documents 3 and 4 support the Manor in Hertfordshire"}
+{"id": "f6-ragbench-235fb76b5d", "source": "ragbench", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): Documents 2 and 3 support Warren, the Review and the 1947 prize"}
+{"id": "f6-ragbench-a86d3b1c5d", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: two-step inference from Taipei's distance to Keelung; borderline"}
+{"id": "f6-ragbench-947a865dbe", "source": "ragbench", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): Documents 2 and 4 support the League of the Three Emperors"}
+{"id": "f6-ragbench-bae866054d", "source": "ragbench", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): Documents 1 and 2 support Sotomayor, Alleyne and Apprendi"}
+{"id": "f6-ragbench-ca76fa5c04", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: source has 'Olympischer', not the queried form; borderline"}
+{"id": "f6-ragbench-f4d38d65dc", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: 'designer board game' is stated for San Marco only; borderline"}
+{"id": "f6-ragbench-42e8c1be02", "source": "ragbench", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 'Yes, it is related' is not in the documents, which give only the aim"}
+{"id": "f6-ragbench-a143671e2a", "source": "ragbench", "expected": "no", "reason": "first labeller: exclude: 'Yes' with only study aims as support; borderline"}
+{"id": "f6-ragbench-130b4c192a", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: inference Document 1 arguably supports; borderline"}
+{"id": "f6-ragbench-2c1f9b19e8", "source": "ragbench", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 'likely can predict' is not in the documents, which give only the aim"}
+{"id": "f6-ragbench-d66a82d414", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: Document 1 offers suggestions to avert it; borderline"}
+{"id": "f6-ragbench-f41abb4b2b", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: meta-statement; only 'normotensive' is unsupported"}
+{"id": "f6-ragbench-984579a4c2", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: generic synthesis; borderline"}
+{"id": "f6-ragbench-08fbb1a1cb", "source": "ragbench", "expected": "no", "reason": "first labeller: exclude: 'Yes' answers a different question than the content supports; borderline"}
+{"id": "f6-ragbench-41b15a35c2", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: restates the question as a study aim; borderline"}
+{"id": "f6-ragbench-3ab8c81fa2", "source": "ragbench", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 'Yes ... as shown' is not in the documents, which give only the aim"}
+{"id": "f6-ragbench-2ffaba8fea", "source": "ragbench", "expected": "no", "reason": "first labeller: exclude: attributes a postulate to 'the study'; borderline"}
+{"id": "f6-ragbench-ce67c29a21", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: mild conflation of two studies; borderline"}
+{"id": "f6-ragbench-4c1afe2534", "source": "ragbench", "expected": "no", "reason": "first labeller: exclude: conclusion drawn from an 'implicit assumption'; borderline"}
+{"id": "f6-ragbench-2a48d1612b", "source": "ragbench", "expected": "no", "reason": "first labeller: exclude: folds Document 3's patient groups into Document 1's study; borderline"}
+{"id": "f6-ragbench-1401d5ab02", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: generic hedge"}
+{"id": "f6-ragbench-4a4acd2446", "source": "ragbench", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 'Yes, it can help' is not in the documents, which give only the aim"}
+{"id": "f6-ragbench-8de436d1e4", "source": "ragbench", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 'Yes ... may be more useful' is not in the documents, which give only the aim"}
+{"id": "f6-ragbench-04c28ab0e4", "source": "ragbench", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): the clopidogrel finding is in Document 5"}
+{"id": "f6-ragbench-802ac5cb1b", "source": "ragbench", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): the documents report no results showing the association"}
+{"id": "f6-ragbench-6fe5444e11", "source": "ragbench", "expected": "no", "reason": "first labeller: exclude: 'Yes' implies the test predicts outcomes; the documents give only the aim"}
+{"id": "f6-ragbench-355464f38a", "source": "ragbench", "expected": "no", "reason": "first labeller: exclude: turns Document 1's 'suggesting' into a firm yes; borderline"}
+{"id": "f6-ragbench-0753ad4b30", "source": "ragbench", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 'was found to contribute to balance deficits' is not in the documents"}
+{"id": "f6-ragbench-86b115c8ff", "source": "ragbench", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 'did show efficacy' is not in the documents, which give no results"}
+{"id": "f6-ragbench-afe7b02d75", "source": "ragbench", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 'cardiologists may not always follow guidelines': no document mentions guidelines for this; a hedged unsupported claim counts (ruling 4)"}
+{"id": "f6-ragbench-7e69618201", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: 'viable' is a mild inference; borderline"}
+{"id": "f6-ragbench-197a27867b", "source": "ragbench", "expected": "no", "reason": "first labeller: exclude: 'skill level does matter' is an interpretation of mixed figures; document 2 also says the IP dipstick was best irrespective of skill"}
+{"id": "f6-ragbench-ba2b721a5d", "source": "ragbench", "expected": "no", "reason": "first labeller: exclude: generalises one study's procedure to how notification 'is typically made'; borderline"}
+{"id": "f6-ragbench-026b6ca06c", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: hedged inference from the case report; borderline"}
+{"id": "f6-ragbench-2b7a143436", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: hedged inference Document 5 largely supports; borderline"}
+{"id": "f6-ragbench-47ca944c9a", "source": "ragbench", "expected": "no", "reason": "first labeller: exclude: 'lower success rate' on the first attempt: the direction is not stated"}
+{"id": "f6-ragbench-4ba680aca5", "source": "ragbench", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 'the DVD does aid' is not in the documents, which give only methods"}
+{"id": "f6-ragbench-89515dd4e5", "source": "ragbench", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 'Yes, it can affect' is not in the documents, which give only methods"}
+{"id": "f6-ragbench-2bdc9eb6d7", "source": "ragbench", "expected": "yes", "reason": "first labeller disagrees with source (no vs yes): the hedged apoE claim is in Document 1"}
+{"id": "f6-ragbench-9913dba9f9", "source": "ragbench", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): the online experiment's results are not in the documents, only its method"}
+{"id": "f6-ragbench-d8a7c41bad", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: meta-statement about the context"}
+{"id": "f6-ragbench-25f2b8411c", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: meta-commentary; borderline"}
+{"id": "f6-ragbench-f62fa74630", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: meta-commentary; borderline"}
+{"id": "f6-ragbench-cb9c8f27f0", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: mostly meta-commentary on the documents; borderline"}
+{"id": "f6-ragbench-62e14a3ab8", "source": "ragbench", "expected": "no", "reason": "first labeller disagrees with source (yes vs no): 'increased fall risk' conclusion is not in the documents"}
+{"id": "f6-ragbench-af11af9648", "source": "ragbench", "expected": "yes", "reason": "first labeller: exclude: largely supported by Document 1; the rest is a generic hedge"}

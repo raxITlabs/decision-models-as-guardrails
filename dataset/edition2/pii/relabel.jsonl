@@ -1,0 +1,720 @@
+{"id": "f5-e2_pii_controls-0475204f43", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Keisha Brown and licence number."}
+{"id": "f5-e2_pii_controls-08d013474c", "label": "no", "entity_types": [], "rationale": "Coverage note."}
+{"id": "f5-e2_pii_controls-09c43c3391", "label": "no", "entity_types": [], "rationale": "Advice, no value."}
+{"id": "f5-e2_pii_controls-0bbc5a0a84", "label": "no", "entity_types": [], "rationale": "Generic mention of TIN/EIN, no value."}
+{"id": "f5-e2_pii_controls-0c71b239e2", "label": "no", "entity_types": [], "rationale": "UI help text."}
+{"id": "f5-e2_pii_controls-10cab197ed", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Abigail Turner and licence number."}
+{"id": "f5-e2_pii_controls-1214ced661", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Tomas Lindqvist and DL number."}
+{"id": "f5-e2_pii_controls-1520f75539", "label": "no", "entity_types": [], "rationale": "SSN masked."}
+{"id": "f5-e2_pii_controls-1692e2f2e3", "label": "no", "entity_types": [], "rationale": "Office description."}
+{"id": "f5-e2_pii_controls-18cabe2d76", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Sven Aaltonen and his driver's licence number."}
+{"id": "f5-e2_pii_controls-19b6747000", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Connor Walsh and licence number."}
+{"id": "f5-e2_pii_controls-1a0d97c86a", "label": "no", "entity_types": [], "rationale": "Password masked."}
+{"id": "f5-e2_pii_controls-1bc9448306", "label": "no", "entity_types": [], "rationale": "Return instructions."}
+{"id": "f5-e2_pii_controls-1c67a51f59", "label": "no", "entity_types": [], "rationale": "Anonymised patient."}
+{"id": "f5-e2_pii_controls-1e2f0f68fb", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Rafael Moreno and licence number."}
+{"id": "f5-e2_pii_controls-1f58a79cd8", "label": "no", "entity_types": [], "rationale": "Generic instruction."}
+{"id": "f5-e2_pii_controls-273e2683a6", "label": "no", "entity_types": [], "rationale": "Error message."}
+{"id": "f5-e2_pii_controls-27fa1aaa24", "label": "no", "entity_types": [], "rationale": "Phone placeholder."}
+{"id": "f5-e2_pii_controls-2c6d8ec926", "label": "no", "entity_types": [], "rationale": "IP placeholder."}
+{"id": "f5-e2_pii_controls-3038a94e59", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Andre Silva and licence number."}
+{"id": "f5-e2_pii_controls-338a32ca56", "label": "no", "entity_types": [], "rationale": "Instructions, no values."}
+{"id": "f5-e2_pii_controls-35e5af627d", "label": "no", "entity_types": [], "rationale": "Training note."}
+{"id": "f5-e2_pii_controls-3af25933fe", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Grace Nwosu and licence number."}
+{"id": "f5-e2_pii_controls-3e2637de7e", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Lena Hoffmann and licence number."}
+{"id": "f5-e2_pii_controls-3fd9953f64", "label": "yes", "entity_types": ["NAME", "EMAIL", "DRIVER_ID"], "rationale": "Oliver Grant-Hughes, licence number, email."}
+{"id": "f5-e2_pii_controls-405efa2d22", "label": "no", "entity_types": [], "rationale": "Port number and a path."}
+{"id": "f5-e2_pii_controls-41024b715e", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Aiko Tanabe and licence number."}
+{"id": "f5-e2_pii_controls-424879e339", "label": "no", "entity_types": [], "rationale": "All values redacted."}
+{"id": "f5-e2_pii_controls-43ea00fb72", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Arjun Mehta and licence number."}
+{"id": "f5-e2_pii_controls-469ed0c65b", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Nadia Rahimi and licence number."}
+{"id": "f5-e2_pii_controls-4a5261be86", "label": "no", "entity_types": [], "rationale": "Password rules, no value."}
+{"id": "f5-e2_pii_controls-4babbf87a4", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Wei Zhang and licence number."}
+{"id": "f5-e2_pii_controls-58468124dd", "label": "no", "entity_types": [], "rationale": "Renewal note."}
+{"id": "f5-e2_pii_controls-5e6502cd32", "label": "no", "entity_types": [], "rationale": "Generic login help, no values."}
+{"id": "f5-e2_pii_controls-61da1f4612", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Ibrahim Saleh and licence number."}
+{"id": "f5-e2_pii_controls-61da65e492", "label": "no", "entity_types": [], "rationale": "Generic statement."}
+{"id": "f5-e2_pii_controls-6797632af3", "label": "no", "entity_types": [], "rationale": "Email redacted."}
+{"id": "f5-e2_pii_controls-67ca30b682", "label": "no", "entity_types": [], "rationale": "Invoice."}
+{"id": "f5-e2_pii_controls-6f9ba59602", "label": "no", "entity_types": [], "rationale": "Advice."}
+{"id": "f5-e2_pii_controls-7189226518", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Mei Lin Chua and licence number."}
+{"id": "f5-e2_pii_controls-721007ae75", "label": "no", "entity_types": [], "rationale": "Settings help."}
+{"id": "f5-e2_pii_controls-72f92d41ec", "label": "no", "entity_types": [], "rationale": "UI help."}
+{"id": "f5-e2_pii_controls-730ce270d8", "label": "no", "entity_types": [], "rationale": "Column list."}
+{"id": "f5-e2_pii_controls-75a0a1fa7c", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Marcus Bell and CDL number."}
+{"id": "f5-e2_pii_controls-7772582cf5", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Ines Carvalho and licence number."}
+{"id": "f5-e2_pii_controls-788ce4f9bf", "label": "no", "entity_types": [], "rationale": "Account lock policy."}
+{"id": "f5-e2_pii_controls-78fdce7953", "label": "no", "entity_types": [], "rationale": "Release note."}
+{"id": "f5-e2_pii_controls-7b1c3e63bc", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Hannah Weiss and licence number."}
+{"id": "f5-e2_pii_controls-80516976b1", "label": "no", "entity_types": [], "rationale": "Newsletter metrics."}
+{"id": "f5-e2_pii_controls-8350f9dfd2", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Henrik Strand and a driver's licence number."}
+{"id": "f5-e2_pii_controls-83c3219c70", "label": "no", "entity_types": [], "rationale": "Requirements."}
+{"id": "f5-e2_pii_controls-85a7b0a100", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Joanne Pike and DL number."}
+{"id": "f5-e2_pii_controls-864958e0b2", "label": "no", "entity_types": [], "rationale": "CV summary, no identifiers."}
+{"id": "f5-e2_pii_controls-869b6173ea", "label": "no", "entity_types": [], "rationale": "Case number."}
+{"id": "f5-e2_pii_controls-9360fae0b3", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Priya Raman and licence number."}
+{"id": "f5-e2_pii_controls-9aab13707e", "label": "no", "entity_types": [], "rationale": "Generic advice."}
+{"id": "f5-e2_pii_controls-9e1420807f", "label": "no", "entity_types": [], "rationale": "Mailbox limits."}
+{"id": "f5-e2_pii_controls-a5097ce361", "label": "no", "entity_types": [], "rationale": "Error message."}
+{"id": "f5-e2_pii_controls-a8777688d1", "label": "no", "entity_types": [], "rationale": "Product SKUs only."}
+{"id": "f5-e2_pii_controls-a959f3de4a", "label": "no", "entity_types": [], "rationale": "Course description."}
+{"id": "f5-e2_pii_controls-aa7f578de3", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Patrick O'Neill and licence number."}
+{"id": "f5-e2_pii_controls-afbf2851ed", "label": "no", "entity_types": [], "rationale": "Notice."}
+{"id": "f5-e2_pii_controls-b07ef64a3f", "label": "no", "entity_types": [], "rationale": "Fleet counts."}
+{"id": "f5-e2_pii_controls-b5af454a6f", "label": "no", "entity_types": [], "rationale": "ISBN."}
+{"id": "f5-e2_pii_controls-b5c31eaaa7", "label": "no", "entity_types": [], "rationale": "Latency metrics."}
+{"id": "f5-e2_pii_controls-bbec8784c1", "label": "no", "entity_types": [], "rationale": "Advice, no value."}
+{"id": "f5-e2_pii_controls-bdd8108e06", "label": "no", "entity_types": [], "rationale": "Licence requirement, no values."}
+{"id": "f5-e2_pii_controls-be4e704391", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Dmitri Volkov and licence number."}
+{"id": "f5-e2_pii_controls-c03117abf1", "label": "no", "entity_types": [], "rationale": "Instruction."}
+{"id": "f5-e2_pii_controls-c05aa90f40", "label": "no", "entity_types": [], "rationale": "Wi-Fi notice, no code."}
+{"id": "f5-e2_pii_controls-c7d7195f98", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Grant Okafor and licence number."}
+{"id": "f5-e2_pii_controls-cb362440b4", "label": "no", "entity_types": [], "rationale": "Leaderboard rule."}
+{"id": "f5-e2_pii_controls-cc52a51b90", "label": "no", "entity_types": [], "rationale": "Directions, no address values."}
+{"id": "f5-e2_pii_controls-d26b0bbde5", "label": "no", "entity_types": [], "rationale": "Address placeholder only."}
+{"id": "f5-e2_pii_controls-d4fbb5913c", "label": "no", "entity_types": [], "rationale": "Product review."}
+{"id": "f5-e2_pii_controls-d94941bef6", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Kwame Mensah and licence number."}
+{"id": "f5-e2_pii_controls-da70425e76", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Ellen Byrne and licence number."}
+{"id": "f5-e2_pii_controls-dbe56e9878", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Chidi James Okafor and licence number."}
+{"id": "f5-e2_pii_controls-dc8e204d5f", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Yusuf Kaya and licence number."}
+{"id": "f5-e2_pii_controls-dcb48a7754", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Beatriz Alonso and licence number."}
+{"id": "f5-e2_pii_controls-e056f38bd8", "label": "no", "entity_types": [], "rationale": "Error note."}
+{"id": "f5-e2_pii_controls-e8c159540d", "label": "no", "entity_types": [], "rationale": "Model metrics."}
+{"id": "f5-e2_pii_controls-eb1e6f568f", "label": "no", "entity_types": [], "rationale": "Username redacted."}
+{"id": "f5-e2_pii_controls-ed396f34a9", "label": "no", "entity_types": [], "rationale": "DNS note."}
+{"id": "f5-e2_pii_controls-ef1cd0368a", "label": "no", "entity_types": [], "rationale": "Stock location."}
+{"id": "f5-e2_pii_controls-f0268d15ba", "label": "no", "entity_types": [], "rationale": "Feature note."}
+{"id": "f5-e2_pii_controls-f5e15af8a2", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Fatima Diallo and licence number."}
+{"id": "f5-e2_pii_controls-f6799db1cf", "label": "no", "entity_types": [], "rationale": "Ticket note."}
+{"id": "f5-e2_pii_controls-f75dbc620b", "label": "no", "entity_types": [], "rationale": "Payroll stats."}
+{"id": "f5-e2_pii_controls-fc46c4a7eb", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Samira Haddad and licence number."}
+{"id": "f5-e2_pii_controls-fec897f3e4", "label": "no", "entity_types": [], "rationale": "Payment schedule."}
+{"id": "f5-e2_pii_controls-ff89af5c10", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Rosa Delgado, Sam, and a driver's licence number."}
+{"id": "f5-gretel_pii_en-017b760c07", "label": "yes", "entity_types": ["USERNAME", "PASSWORD"], "rationale": "Username and password."}
+{"id": "f5-gretel_pii_en-021e401076", "label": "yes", "entity_types": ["EMAIL"], "rationale": "Email address."}
+{"id": "f5-gretel_pii_en-0314051d65", "label": "no", "entity_types": [], "rationale": "Coordinates only; no listed type."}
+{"id": "f5-gretel_pii_en-035d8809a9", "label": "yes", "entity_types": ["NAME", "PHONE", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Eric Stanley, address, phone, SSN."}
+{"id": "f5-gretel_pii_en-04abb791a1", "label": "yes", "entity_types": ["EMAIL", "PHONE"], "rationale": "Email and phone."}
+{"id": "f5-gretel_pii_en-06455ca35b", "label": "no", "entity_types": [], "rationale": "Vehicle and employee ids."}
+{"id": "f5-gretel_pii_en-0682b412f7", "label": "yes", "entity_types": ["EMAIL"], "rationale": "Email address."}
+{"id": "f5-gretel_pii_en-06d9da2c43", "label": "yes", "entity_types": ["NAME", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Jill Kelsey, Clark, property address, SSN."}
+{"id": "f5-gretel_pii_en-08ab6e1d25", "label": "no", "entity_types": [], "rationale": "Ids."}
+{"id": "f5-gretel_pii_en-0a9f0fe372", "label": "yes", "entity_types": ["USERNAME", "PASSWORD", "IP_ADDRESS"], "rationale": "User matthew_303, passwords, IP."}
+{"id": "f5-gretel_pii_en-0ca391bc73", "label": "no", "entity_types": [], "rationale": "Warehouse ids and plate."}
+{"id": "f5-gretel_pii_en-0d6b3fad37", "label": "no", "entity_types": [], "rationale": "Blank certificate."}
+{"id": "f5-gretel_pii_en-0ff2025d3d", "label": "yes", "entity_types": ["NAME", "PHONE", "ADDRESS"], "rationale": "Patrick Watson, phone, pickup address."}
+{"id": "f5-gretel_pii_en-113cc47e69", "label": "yes", "entity_types": ["ADDRESS", "USERNAME"], "rationale": "Handles tw_jessica243 and gregory_249; street address fragment."}
+{"id": "f5-gretel_pii_en-115822f32c", "label": "no", "entity_types": [], "rationale": "Route ids."}
+{"id": "f5-gretel_pii_en-11de5dda47", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IPv6 address."}
+{"id": "f5-gretel_pii_en-14443803c6", "label": "no", "entity_types": [], "rationale": "Coordinates and crew id."}
+{"id": "f5-gretel_pii_en-14562be217", "label": "no", "entity_types": [], "rationale": "Card and customer ids."}
+{"id": "f5-gretel_pii_en-153278efc3", "label": "no", "entity_types": [], "rationale": "Log line."}
+{"id": "f5-gretel_pii_en-15ee1c20cf", "label": "no", "entity_types": [], "rationale": "Aircraft, employee, MRN, plate."}
+{"id": "f5-gretel_pii_en-1a6bde51b5", "label": "yes", "entity_types": ["EMAIL", "PHONE", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Phone, email and SSNs."}
+{"id": "f5-gretel_pii_en-1ccf390d16", "label": "no", "entity_types": [], "rationale": "Employee id and MRN."}
+{"id": "f5-gretel_pii_en-1d10f9bd2d", "label": "no", "entity_types": [], "rationale": "Codes in place of parties; ids, DOBs, card."}
+{"id": "f5-gretel_pii_en-1d79ba0099", "label": "no", "entity_types": [], "rationale": "Delivery record."}
+{"id": "f5-gretel_pii_en-1e0f746ba4", "label": "no", "entity_types": [], "rationale": "Release note with ids."}
+{"id": "f5-gretel_pii_en-1e6d5c1c12", "label": "no", "entity_types": [], "rationale": "BOM ids."}
+{"id": "f5-gretel_pii_en-22912b6e3d", "label": "no", "entity_types": [], "rationale": "Code in place of a name."}
+{"id": "f5-gretel_pii_en-2328785dcd", "label": "yes", "entity_types": ["NAME"], "rationale": "Christopher Tran-Buck."}
+{"id": "f5-gretel_pii_en-23c9b808a7", "label": "no", "entity_types": [], "rationale": "Customer id, routing numbers, MRN."}
+{"id": "f5-gretel_pii_en-240a56767f", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IPv4 address."}
+{"id": "f5-gretel_pii_en-2477d65f2a", "label": "no", "entity_types": [], "rationale": "Subscriber code and activation code; no listed type."}
+{"id": "f5-gretel_pii_en-24798ceb2e", "label": "no", "entity_types": [], "rationale": "Radio call."}
+{"id": "f5-gretel_pii_en-248303aa18", "label": "no", "entity_types": [], "rationale": "Wire ids."}
+{"id": "f5-gretel_pii_en-24c13126a3", "label": "no", "entity_types": [], "rationale": "Device id, MRN, DOB."}
+{"id": "f5-gretel_pii_en-252a1844da", "label": "no", "entity_types": [], "rationale": "Customer id."}
+{"id": "f5-gretel_pii_en-26e6b5e3f0", "label": "yes", "entity_types": ["USERNAME", "PASSWORD", "IP_ADDRESS"], "rationale": "Username, password and IP."}
+{"id": "f5-gretel_pii_en-2864ca7743", "label": "yes", "entity_types": ["NAME"], "rationale": "Attendee names."}
+{"id": "f5-gretel_pii_en-2960669187", "label": "yes", "entity_types": ["NAME", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Yamini Bishop and SSN."}
+{"id": "f5-gretel_pii_en-2aa6888c3b", "label": "yes", "entity_types": ["NAME", "PHONE", "ADDRESS"], "rationale": "Tom Denise Williams, phone, addresses."}
+{"id": "f5-gretel_pii_en-2ba668bd1a", "label": "no", "entity_types": [], "rationale": "Certificate serial."}
+{"id": "f5-gretel_pii_en-2cf58b3fa2", "label": "no", "entity_types": [], "rationale": "Certificate ids."}
+{"id": "f5-gretel_pii_en-2fe5ac90ce", "label": "no", "entity_types": [], "rationale": "Purchase order."}
+{"id": "f5-gretel_pii_en-304ba7f83c", "label": "no", "entity_types": [], "rationale": "Plate and ids."}
+{"id": "f5-gretel_pii_en-309ab49cea", "label": "no", "entity_types": [], "rationale": "Payment and MRN ids."}
+{"id": "f5-gretel_pii_en-3192665245", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IPv4 address."}
+{"id": "f5-gretel_pii_en-3201cb8843", "label": "no", "entity_types": [], "rationale": "Customer ids."}
+{"id": "f5-gretel_pii_en-32182a5a85", "label": "yes", "entity_types": ["US_SOCIAL_SECURITY_NUMBER"], "rationale": "SSN."}
+{"id": "f5-gretel_pii_en-32d1f2f6e8", "label": "no", "entity_types": [], "rationale": "Ids and coordinates."}
+{"id": "f5-gretel_pii_en-32d55c741b", "label": "yes", "entity_types": ["USERNAME", "IP_ADDRESS"], "rationale": "IP and user bradley6211."}
+{"id": "f5-gretel_pii_en-368599b16f", "label": "yes", "entity_types": ["NAME", "PHONE", "ADDRESS"], "rationale": "Jeffrey Cooper, street address, phone."}
+{"id": "f5-gretel_pii_en-36b1b870f8", "label": "no", "entity_types": [], "rationale": "Permit ids."}
+{"id": "f5-gretel_pii_en-3705182c11", "label": "no", "entity_types": [], "rationale": "Lot number and dates."}
+{"id": "f5-gretel_pii_en-38ef152210", "label": "no", "entity_types": [], "rationale": "Dispute record."}
+{"id": "f5-gretel_pii_en-3951045a41", "label": "no", "entity_types": [], "rationale": "Bulletin and part numbers."}
+{"id": "f5-gretel_pii_en-3c0c611bc4", "label": "no", "entity_types": [], "rationale": "Run and product ids."}
+{"id": "f5-gretel_pii_en-3eff9474ae", "label": "no", "entity_types": [], "rationale": "Flight plan codes."}
+{"id": "f5-gretel_pii_en-4004716c90", "label": "no", "entity_types": [], "rationale": "Ids."}
+{"id": "f5-gretel_pii_en-402d403bc0", "label": "yes", "entity_types": ["EMAIL"], "rationale": "Contact email."}
+{"id": "f5-gretel_pii_en-4224c3408f", "label": "no", "entity_types": [], "rationale": "RA, customer and medical record numbers."}
+{"id": "f5-gretel_pii_en-442a1ccab0", "label": "yes", "entity_types": ["EMAIL", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Email address and an SSN."}
+{"id": "f5-gretel_pii_en-4470f0fb4a", "label": "yes", "entity_types": ["US_SOCIAL_SECURITY_NUMBER"], "rationale": "SSN 316-47-3040."}
+{"id": "f5-gretel_pii_en-47f1a1cc8e", "label": "yes", "entity_types": ["PHONE", "ADDRESS"], "rationale": "Pickup address and phone numbers."}
+{"id": "f5-gretel_pii_en-4958adf0d1", "label": "yes", "entity_types": ["PHONE", "IP_ADDRESS"], "rationale": "An IPv4 address and a phone number, placed in nonsense positions."}
+{"id": "f5-gretel_pii_en-4a045cb4c3", "label": "no", "entity_types": [], "rationale": "Part and drawing codes."}
+{"id": "f5-gretel_pii_en-4a60a89643", "label": "no", "entity_types": [], "rationale": "Transaction ids and card."}
+{"id": "f5-gretel_pii_en-4c3e4c3819", "label": "no", "entity_types": [], "rationale": "Coordinates and ids."}
+{"id": "f5-gretel_pii_en-4d3b46df06", "label": "yes", "entity_types": ["USERNAME"], "rationale": "Account name tanish.mammen is a username."}
+{"id": "f5-gretel_pii_en-4ddb036337", "label": "no", "entity_types": [], "rationale": "Shipment ids and GPS."}
+{"id": "f5-gretel_pii_en-4fb9afc5f8", "label": "no", "entity_types": [], "rationale": "Placeholder codes instead of name and place."}
+{"id": "f5-gretel_pii_en-5211d38d77", "label": "yes", "entity_types": ["PHONE"], "rationale": "Phone numbers."}
+{"id": "f5-gretel_pii_en-5255123756", "label": "yes", "entity_types": ["NAME", "PHONE", "ADDRESS"], "rationale": "Sara Kimberly Rodriguez, address, phone."}
+{"id": "f5-gretel_pii_en-530ce6d2c2", "label": "yes", "entity_types": ["NAME", "ADDRESS"], "rationale": "Yashodhara Bains and a service address with postcode."}
+{"id": "f5-gretel_pii_en-538773e4dd", "label": "yes", "entity_types": ["USERNAME", "IP_ADDRESS"], "rationale": "Sender handle ranveer.tara and IP."}
+{"id": "f5-gretel_pii_en-53ea9c9d3a", "label": "yes", "entity_types": ["IP_ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Server IP and SSN."}
+{"id": "f5-gretel_pii_en-5460f49f8c", "label": "yes", "entity_types": ["NAME"], "rationale": "Antonio Claudia Anthony-Miller."}
+{"id": "f5-gretel_pii_en-56388ac1b5", "label": "yes", "entity_types": ["ADDRESS"], "rationale": "Project street address (name is a code)."}
+{"id": "f5-gretel_pii_en-57ed21f86a", "label": "no", "entity_types": [], "rationale": "Ids."}
+{"id": "f5-gretel_pii_en-5964ea06a2", "label": "yes", "entity_types": ["NAME", "EMAIL"], "rationale": "Pranit Braun, Gabriel Velazquez, email."}
+{"id": "f5-gretel_pii_en-599525062d", "label": "no", "entity_types": [], "rationale": "Device and employee ids."}
+{"id": "f5-gretel_pii_en-5b79a4a1fe", "label": "yes", "entity_types": ["NAME", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Jacqueline Flores and SSN."}
+{"id": "f5-gretel_pii_en-5b80bda730", "label": "no", "entity_types": [], "rationale": "Account ids."}
+{"id": "f5-gretel_pii_en-5e91985939", "label": "yes", "entity_types": ["NAME", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Sender and receiver names and SSN."}
+{"id": "f5-gretel_pii_en-5fa248b2d5", "label": "no", "entity_types": [], "rationale": "Name placeholder; permit id."}
+{"id": "f5-gretel_pii_en-607fa2710f", "label": "no", "entity_types": [], "rationale": "MRN, employee id, card."}
+{"id": "f5-gretel_pii_en-60bfb2949e", "label": "yes", "entity_types": ["EMAIL", "PHONE"], "rationale": "Contact email and a UK phone number."}
+{"id": "f5-gretel_pii_en-63b842b8c0", "label": "yes", "entity_types": ["US_SOCIAL_SECURITY_NUMBER"], "rationale": "SSN."}
+{"id": "f5-gretel_pii_en-6778d2a412", "label": "yes", "entity_types": ["EMAIL", "PHONE"], "rationale": "Email and phone."}
+{"id": "f5-gretel_pii_en-6bb0b80fa8", "label": "yes", "entity_types": ["PASSWORD", "IP_ADDRESS"], "rationale": "Wi-Fi password and IP address."}
+{"id": "f5-gretel_pii_en-6c12b78cdc", "label": "no", "entity_types": [], "rationale": "Coordinates and crew id."}
+{"id": "f5-gretel_pii_en-6c5fb60e07", "label": "no", "entity_types": [], "rationale": "Part numbers."}
+{"id": "f5-gretel_pii_en-6da3b74742", "label": "no", "entity_types": [], "rationale": "Ids."}
+{"id": "f5-gretel_pii_en-6db51182d4", "label": "no", "entity_types": [], "rationale": "Payment ids."}
+{"id": "f5-gretel_pii_en-713d704a1d", "label": "no", "entity_types": [], "rationale": "Certificate id and DOB."}
+{"id": "f5-gretel_pii_en-717a11cc4f", "label": "no", "entity_types": [], "rationale": "DOB only."}
+{"id": "f5-gretel_pii_en-71c7534fa0", "label": "no", "entity_types": [], "rationale": "Employee id, DOB, MRN, VIN; no listed type."}
+{"id": "f5-gretel_pii_en-743856fa3a", "label": "no", "entity_types": [], "rationale": "Batch ids."}
+{"id": "f5-gretel_pii_en-74565ee797", "label": "no", "entity_types": [], "rationale": "Card, DOB, API key, MRN."}
+{"id": "f5-gretel_pii_en-74e284a068", "label": "no", "entity_types": [], "rationale": "Patient and provider ids."}
+{"id": "f5-gretel_pii_en-75155b3ead", "label": "no", "entity_types": [], "rationale": "Plate and MRN."}
+{"id": "f5-gretel_pii_en-7654e3d64e", "label": "no", "entity_types": [], "rationale": "Ids."}
+{"id": "f5-gretel_pii_en-768cae1fab", "label": "no", "entity_types": [], "rationale": "Plates and employee ids; no listed type."}
+{"id": "f5-gretel_pii_en-769ea21cff", "label": "yes", "entity_types": ["NAME", "ADDRESS"], "rationale": "Kristina Torres, Gerald Miller and street locations in Williamchester."}
+{"id": "f5-gretel_pii_en-7ad097fc2a", "label": "no", "entity_types": [], "rationale": "Stock locations and part numbers."}
+{"id": "f5-gretel_pii_en-7c15fb1728", "label": "no", "entity_types": [], "rationale": "Plates and ids."}
+{"id": "f5-gretel_pii_en-7f1506e3f7", "label": "yes", "entity_types": ["NAME", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Brandy Hayes and SSN."}
+{"id": "f5-gretel_pii_en-80d2dd30c4", "label": "no", "entity_types": [], "rationale": "Commit message."}
+{"id": "f5-gretel_pii_en-8107899fe1", "label": "yes", "entity_types": ["USERNAME", "PASSWORD", "IP_ADDRESS"], "rationale": "RADIUS user name, password, NAS IP."}
+{"id": "f5-gretel_pii_en-8211b272b6", "label": "no", "entity_types": [], "rationale": "Directive id."}
+{"id": "f5-gretel_pii_en-82478e04f3", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IPv4 address."}
+{"id": "f5-gretel_pii_en-82c58e9bb2", "label": "yes", "entity_types": ["USERNAME", "IP_ADDRESS"], "rationale": "User dianefriedman and IP."}
+{"id": "f5-gretel_pii_en-8301df1460", "label": "no", "entity_types": [], "rationale": "Device config."}
+{"id": "f5-gretel_pii_en-8339ac561d", "label": "no", "entity_types": [], "rationale": "Ids, DOB, VIN."}
+{"id": "f5-gretel_pii_en-84744aba99", "label": "yes", "entity_types": ["USERNAME", "IP_ADDRESS"], "rationale": "IP address and user harry.stewart."}
+{"id": "f5-gretel_pii_en-8574dc60c9", "label": "no", "entity_types": [], "rationale": "Ids and routing number."}
+{"id": "f5-gretel_pii_en-858cd15549", "label": "no", "entity_types": [], "rationale": "Request and equipment ids."}
+{"id": "f5-gretel_pii_en-88400adf14", "label": "yes", "entity_types": ["NAME", "ADDRESS"], "rationale": "Jeffrey Pearce and street address."}
+{"id": "f5-gretel_pii_en-8858845f5b", "label": "yes", "entity_types": ["EMAIL", "IP_ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Email, SSN, IPs."}
+{"id": "f5-gretel_pii_en-88dd629ec3", "label": "yes", "entity_types": ["EMAIL", "USERNAME", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Author handle daniel92, reviewer email, example SSN."}
+{"id": "f5-gretel_pii_en-89e28e61ef", "label": "no", "entity_types": [], "rationale": "Project and equipment ids."}
+{"id": "f5-gretel_pii_en-8b10a4c7ec", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE"], "rationale": "Wyatt Amble-Wagle, email and phone."}
+{"id": "f5-gretel_pii_en-8bb4600cdb", "label": "yes", "entity_types": ["NAME", "PHONE"], "rationale": "Rachit Ellis and a phone number."}
+{"id": "f5-gretel_pii_en-8c539289b3", "label": "no", "entity_types": [], "rationale": "MRN, cards, employee ids."}
+{"id": "f5-gretel_pii_en-8de1245a8a", "label": "no", "entity_types": [], "rationale": "Amounts and ids."}
+{"id": "f5-gretel_pii_en-8df1e08548", "label": "no", "entity_types": [], "rationale": "Customer id and card."}
+{"id": "f5-gretel_pii_en-8dff44a3b1", "label": "no", "entity_types": [], "rationale": "Ids and coordinates."}
+{"id": "f5-gretel_pii_en-8ea941d0bd", "label": "no", "entity_types": [], "rationale": "User ids that are account codes, not handles."}
+{"id": "f5-gretel_pii_en-904f6ab40f", "label": "yes", "entity_types": ["NAME", "PHONE", "ADDRESS"], "rationale": "Preston Sherry Morrison, phone, address."}
+{"id": "f5-gretel_pii_en-9077abeb63", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "Two IPv4 addresses."}
+{"id": "f5-gretel_pii_en-913ed2dc34", "label": "no", "entity_types": [], "rationale": "PO number."}
+{"id": "f5-gretel_pii_en-91fbb9e5f3", "label": "yes", "entity_types": ["USERNAME", "IP_ADDRESS"], "rationale": "Usernames andrewroth and tw_gabriel742; IP addresses."}
+{"id": "f5-gretel_pii_en-92ccc78fcd", "label": "no", "entity_types": [], "rationale": "Ids."}
+{"id": "f5-gretel_pii_en-92dea495c6", "label": "no", "entity_types": [], "rationale": "Codes in place of names."}
+{"id": "f5-gretel_pii_en-93268728c8", "label": "yes", "entity_types": ["EMAIL", "USERNAME", "IP_ADDRESS"], "rationale": "Reviewer sierra38, email, IP."}
+{"id": "f5-gretel_pii_en-94f418eddb", "label": "no", "entity_types": [], "rationale": "Device config ids."}
+{"id": "f5-gretel_pii_en-9707a19d86", "label": "no", "entity_types": [], "rationale": "Internal codes."}
+{"id": "f5-gretel_pii_en-977964ec04", "label": "no", "entity_types": [], "rationale": "Date and MRN."}
+{"id": "f5-gretel_pii_en-98a0890ba7", "label": "yes", "entity_types": ["EMAIL", "USERNAME", "IP_ADDRESS"], "rationale": "Author brettmurphy, reviewer email, IP."}
+{"id": "f5-gretel_pii_en-9a882f88bb", "label": "no", "entity_types": [], "rationale": "Name omitted."}
+{"id": "f5-gretel_pii_en-9c2fd8e0f7", "label": "yes", "entity_types": ["USERNAME", "PASSWORD", "IP_ADDRESS"], "rationale": "Username, password and IPv4 addresses."}
+{"id": "f5-gretel_pii_en-9d209eb0bd", "label": "no", "entity_types": [], "rationale": "Coordinates and MRN."}
+{"id": "f5-gretel_pii_en-9d3bc80e08", "label": "yes", "entity_types": ["PHONE", "ADDRESS"], "rationale": "Shipper address and phone."}
+{"id": "f5-gretel_pii_en-9d92bf8af3", "label": "no", "entity_types": [], "rationale": "Employee id, card, MRN."}
+{"id": "f5-gretel_pii_en-9e318c73c5", "label": "yes", "entity_types": ["EMAIL", "USERNAME", "IP_ADDRESS"], "rationale": "Handle chad_536, emails and IPv4 addresses."}
+{"id": "f5-gretel_pii_en-9f171d06a9", "label": "no", "entity_types": [], "rationale": "Part numbers."}
+{"id": "f5-gretel_pii_en-9f5a2fa1c5", "label": "no", "entity_types": [], "rationale": "Ids and coordinates."}
+{"id": "f5-gretel_pii_en-9f60c68fc8", "label": "no", "entity_types": [], "rationale": "Customer id and date."}
+{"id": "f5-gretel_pii_en-a1cdabae30", "label": "no", "entity_types": [], "rationale": "MRN."}
+{"id": "f5-gretel_pii_en-a41544445a", "label": "yes", "entity_types": ["NAME"], "rationale": "Two named policyholders."}
+{"id": "f5-gretel_pii_en-a85edca164", "label": "no", "entity_types": [], "rationale": "Customer id, plate, DOB, VIN."}
+{"id": "f5-gretel_pii_en-a8b1e5020a", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IPv4 address."}
+{"id": "f5-gretel_pii_en-a8db9287c8", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IPv4 addresses."}
+{"id": "f5-gretel_pii_en-a922d2bee2", "label": "no", "entity_types": [], "rationale": "Biometric ids and DOB."}
+{"id": "f5-gretel_pii_en-abdf2caea9", "label": "no", "entity_types": [], "rationale": "Coordinates and MRN."}
+{"id": "f5-gretel_pii_en-ad1eac0861", "label": "yes", "entity_types": ["NAME", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Vanessa J. Tyler, Mumbai address, SSN."}
+{"id": "f5-gretel_pii_en-ad4d0e9770", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IPv4 address."}
+{"id": "f5-gretel_pii_en-ad6070cad0", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IP address."}
+{"id": "f5-gretel_pii_en-aec4b0a3c9", "label": "yes", "entity_types": ["EMAIL", "USERNAME"], "rationale": "User ids tw_tony183 and randhawa5293; email."}
+{"id": "f5-gretel_pii_en-af2227a7fc", "label": "yes", "entity_types": ["ADDRESS"], "rationale": "Billing address."}
+{"id": "f5-gretel_pii_en-afabf16a25", "label": "yes", "entity_types": ["NAME", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Sender name and SSN."}
+{"id": "f5-gretel_pii_en-b01eeed28e", "label": "no", "entity_types": [], "rationale": "Ids."}
+{"id": "f5-gretel_pii_en-b0b5c1f09a", "label": "no", "entity_types": [], "rationale": "Card, device id, DOB, MRN."}
+{"id": "f5-gretel_pii_en-b25f6f038a", "label": "yes", "entity_types": ["USERNAME", "PASSWORD"], "rationale": "Username and password."}
+{"id": "f5-gretel_pii_en-b4a3f99238", "label": "yes", "entity_types": ["NAME", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Groom and bride names and SSNs."}
+{"id": "f5-gretel_pii_en-b4fe42d2ef", "label": "yes", "entity_types": ["USERNAME", "PASSWORD", "IP_ADDRESS"], "rationale": "Username, password, IPs."}
+{"id": "f5-gretel_pii_en-b6665219ed", "label": "yes", "entity_types": ["IP_ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Server IP and SSNs."}
+{"id": "f5-gretel_pii_en-b6cc387e0c", "label": "no", "entity_types": [], "rationale": "DOB and identifier."}
+{"id": "f5-gretel_pii_en-b85798e173", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IP address; the seed is not a password."}
+{"id": "f5-gretel_pii_en-b85a92d341", "label": "no", "entity_types": [], "rationale": "Recovery ids."}
+{"id": "f5-gretel_pii_en-b903b4b7bc", "label": "no", "entity_types": [], "rationale": "Member ids, MRNs, plate."}
+{"id": "f5-gretel_pii_en-bac1f4a89c", "label": "no", "entity_types": [], "rationale": "Internal ids."}
+{"id": "f5-gretel_pii_en-bafbd4130e", "label": "no", "entity_types": [], "rationale": "Device ids."}
+{"id": "f5-gretel_pii_en-bb12eed97c", "label": "no", "entity_types": [], "rationale": "Garbled ids."}
+{"id": "f5-gretel_pii_en-bc16c6f875", "label": "no", "entity_types": [], "rationale": "Card and MRN."}
+{"id": "f5-gretel_pii_en-bf065fa6e1", "label": "yes", "entity_types": ["USERNAME", "IP_ADDRESS"], "rationale": "IP address and username george9309."}
+{"id": "f5-gretel_pii_en-bf2e99a7b1", "label": "no", "entity_types": [], "rationale": "Internal ids."}
+{"id": "f5-gretel_pii_en-c6277a7caa", "label": "yes", "entity_types": ["EMAIL", "PHONE", "ADDRESS"], "rationale": "Contact address, email and phone."}
+{"id": "f5-gretel_pii_en-c6c9b4ebca", "label": "yes", "entity_types": ["NAME", "ADDRESS"], "rationale": "Harry Jones-Simpson and a postcode."}
+{"id": "f5-gretel_pii_en-c7ad4006ae", "label": "yes", "entity_types": ["NAME"], "rationale": "Watika Hitesh Sem; the SSN-shaped value is a policy number."}
+{"id": "f5-gretel_pii_en-c7d1e56608", "label": "yes", "entity_types": ["USERNAME", "IP_ADDRESS"], "rationale": "IPs and user rramos."}
+{"id": "f5-gretel_pii_en-c8441777c1", "label": "no", "entity_types": [], "rationale": "DOBs only."}
+{"id": "f5-gretel_pii_en-c8e69ae91a", "label": "no", "entity_types": [], "rationale": "Customer id, MRNs, card."}
+{"id": "f5-gretel_pii_en-cb0fbff53c", "label": "yes", "entity_types": ["NAME"], "rationale": "Richard Scott."}
+{"id": "f5-gretel_pii_en-cb26097386", "label": "no", "entity_types": [], "rationale": "Vessel id."}
+{"id": "f5-gretel_pii_en-cb4cdd7cbb", "label": "yes", "entity_types": ["EMAIL", "PHONE", "ADDRESS"], "rationale": "Phone numbers, street address and email."}
+{"id": "f5-gretel_pii_en-cc743bf254", "label": "yes", "entity_types": ["NAME", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Jason Barber and SSN."}
+{"id": "f5-gretel_pii_en-ce19405be5", "label": "no", "entity_types": [], "rationale": "Name field is empty; only a date of birth."}
+{"id": "f5-gretel_pii_en-ce6a4aea43", "label": "no", "entity_types": [], "rationale": "VINs, employee id, MRN."}
+{"id": "f5-gretel_pii_en-ce7180ae61", "label": "yes", "entity_types": ["EMAIL", "IP_ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Email, IP and SSN."}
+{"id": "f5-gretel_pii_en-ceb81a1766", "label": "no", "entity_types": [], "rationale": "Blank certificate."}
+{"id": "f5-gretel_pii_en-cef9986acf", "label": "no", "entity_types": [], "rationale": "Name missing."}
+{"id": "f5-gretel_pii_en-cf162dfad4", "label": "no", "entity_types": [], "rationale": "Schedule ids."}
+{"id": "f5-gretel_pii_en-cf26ffb8e1", "label": "no", "entity_types": [], "rationale": "Part number, MRN, card; no listed type."}
+{"id": "f5-gretel_pii_en-d0a191a061", "label": "yes", "entity_types": ["NAME", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Two named leads and staff SSNs."}
+{"id": "f5-gretel_pii_en-d0d0bd7970", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IP address."}
+{"id": "f5-gretel_pii_en-d0f9a8cc27", "label": "no", "entity_types": [], "rationale": "Warehouse, employee and customer ids."}
+{"id": "f5-gretel_pii_en-d378e164d7", "label": "yes", "entity_types": ["USERNAME", "PASSWORD"], "rationale": "Username and password."}
+{"id": "f5-gretel_pii_en-d571c3d26d", "label": "no", "entity_types": [], "rationale": "Certificate."}
+{"id": "f5-gretel_pii_en-d5e0133131", "label": "yes", "entity_types": ["NAME", "PHONE", "ADDRESS"], "rationale": "Elizabeth White-Robinson, mailing address and phone; EIN is not an SSN."}
+{"id": "f5-gretel_pii_en-d6ea08a677", "label": "no", "entity_types": [], "rationale": "Ids and card."}
+{"id": "f5-gretel_pii_en-d8fea5f3bb", "label": "no", "entity_types": [], "rationale": "Plate and employee id."}
+{"id": "f5-gretel_pii_en-db2db95812", "label": "no", "entity_types": [], "rationale": "Device, MRN, card, DOB; no listed type."}
+{"id": "f5-gretel_pii_en-dc83f046b8", "label": "yes", "entity_types": ["USERNAME"], "rationale": "User andrewbrennan."}
+{"id": "f5-gretel_pii_en-de44e1d5a4", "label": "no", "entity_types": [], "rationale": "System, technician and MRN ids."}
+{"id": "f5-gretel_pii_en-deaee2eb84", "label": "yes", "entity_types": ["USERNAME", "PASSWORD"], "rationale": "User jeffreyevans and a one-time SMS code (passcode), borderline for PASSWORD."}
+{"id": "f5-gretel_pii_en-df541ac84d", "label": "yes", "entity_types": ["US_SOCIAL_SECURITY_NUMBER"], "rationale": "SSN."}
+{"id": "f5-gretel_pii_en-e0593cebb6", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IPv4 address."}
+{"id": "f5-gretel_pii_en-e0733429b1", "label": "no", "entity_types": [], "rationale": "Codes, DOBs, plates."}
+{"id": "f5-gretel_pii_en-e224dfe6f2", "label": "no", "entity_types": [], "rationale": "Machine log."}
+{"id": "f5-gretel_pii_en-e22f65ae6f", "label": "yes", "entity_types": ["US_SOCIAL_SECURITY_NUMBER"], "rationale": "SSN."}
+{"id": "f5-gretel_pii_en-e2eac6b9de", "label": "no", "entity_types": [], "rationale": "Ids and URL."}
+{"id": "f5-gretel_pii_en-e3b717885e", "label": "yes", "entity_types": ["EMAIL", "USERNAME"], "rationale": "Handle mark.jacobs and email."}
+{"id": "f5-gretel_pii_en-e502a8c330", "label": "yes", "entity_types": ["NAME", "PHONE", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Emily Lewis, property address, phone and an SSN-format number."}
+{"id": "f5-gretel_pii_en-e576220aa3", "label": "no", "entity_types": [], "rationale": "Tracking data."}
+{"id": "f5-gretel_pii_en-e8af4bdabb", "label": "yes", "entity_types": ["EMAIL", "USERNAME", "PASSWORD"], "rationale": "Username, password and email."}
+{"id": "f5-gretel_pii_en-e8e39f7146", "label": "yes", "entity_types": ["NAME"], "rationale": "First names Gaurika and Nathan."}
+{"id": "f5-gretel_pii_en-eade9d54e8", "label": "yes", "entity_types": ["PHONE", "IP_ADDRESS"], "rationale": "SOC phone number and IP."}
+{"id": "f5-gretel_pii_en-eb3e332337", "label": "yes", "entity_types": ["ADDRESS"], "rationale": "Street address (stated as anonymised but still present)."}
+{"id": "f5-gretel_pii_en-eba2194196", "label": "no", "entity_types": [], "rationale": "Transaction and customer ids only."}
+{"id": "f5-gretel_pii_en-ed39adf3ae", "label": "yes", "entity_types": ["USERNAME", "PASSWORD", "IP_ADDRESS"], "rationale": "RADIUS user name, password, client IP."}
+{"id": "f5-gretel_pii_en-efb332ad17", "label": "yes", "entity_types": ["NAME", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Carol Wable and SSN."}
+{"id": "f5-gretel_pii_en-f064d88f35", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IP address."}
+{"id": "f5-gretel_pii_en-f0a775cc7a", "label": "no", "entity_types": [], "rationale": "Employee id, MRNs, card, DOB."}
+{"id": "f5-gretel_pii_en-f1932c41e4", "label": "no", "entity_types": [], "rationale": "Ids, card."}
+{"id": "f5-gretel_pii_en-f20ce88cbc", "label": "yes", "entity_types": ["EMAIL", "USERNAME"], "rationale": "Handle kaylaluna and emails."}
+{"id": "f5-gretel_pii_en-f4df32f151", "label": "yes", "entity_types": ["NAME"], "rationale": "Kristina Garrett-Cannon."}
+{"id": "f5-gretel_pii_en-f64b15d29d", "label": "no", "entity_types": [], "rationale": "Ids."}
+{"id": "f5-gretel_pii_en-f9f0bab88e", "label": "no", "entity_types": [], "rationale": "Report ids."}
+{"id": "f5-gretel_pii_en-fab9f1480f", "label": "no", "entity_types": [], "rationale": "Customer id, card, MRN."}
+{"id": "f5-gretel_pii_en-ff83430b1b", "label": "no", "entity_types": [], "rationale": "Vehicle and employee ids."}
+{"id": "f5-gretel_pii_en-ffad01caeb", "label": "no", "entity_types": [], "rationale": "Drug and MRN ids."}
+{"id": "f5-gretel_pii_finance-12c766dda5", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Sandro G. Bonatti, licence number, street address."}
+{"id": "f5-gretel_pii_finance-2ef4ac9401", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Salvi A. Rizzo, address, driver's licence number."}
+{"id": "f5-gretel_pii_finance-3222cb76bb", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Randy Green, address and licence number."}
+{"id": "f5-gretel_pii_finance-34145d029c", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Jolanda Flavio Trapani, Thomas E. Black, licence number, address."}
+{"id": "f5-gretel_pii_finance-5339d63280", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Borrower name, licence number and addresses."}
+{"id": "f5-gretel_pii_finance-59dcb99f7b", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Applicant name, street address and driver's licence number."}
+{"id": "f5-gretel_pii_finance-606c1132ba", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Juliana T. Meister, licence number, street address."}
+{"id": "f5-gretel_pii_finance-6180065158", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Shipper name, street address and a driver licence number."}
+{"id": "f5-gretel_pii_finance-663acb310f", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Leo Friedo Hornig, address, licence number."}
+{"id": "f5-gretel_pii_finance-6dc2d34ab9", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE", "ADDRESS", "IP_ADDRESS", "DRIVER_ID"], "rationale": "Jay Jacqueline Brown, email, phone, licence number, street address, IP."}
+{"id": "f5-gretel_pii_finance-7382d33a8b", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Piedad E. Cerro, address, licence number."}
+{"id": "f5-gretel_pii_finance-7598a93099", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Vadim Haase-Radel, street address, licence number."}
+{"id": "f5-gretel_pii_finance-88fff91e3c", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Beppe G. Brancaccio, street address, licence number."}
+{"id": "f5-gretel_pii_finance-c07f635f63", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Godofredo Ferreras, licence number, street address."}
+{"id": "f5-gretel_pii_finance-c3985e45f1", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Shannon Anthony, postal address, licence number."}
+{"id": "f5-gretel_pii_finance-c4ff528c28", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Pierre Marchand-Baron and others, street address, licence number."}
+{"id": "f5-gretel_pii_finance-d220098e77", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Isabel Kambs, delivery address, licence number."}
+{"id": "f5-gretel_pii_finance-e2a136cccb", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Abbie Fletcher-Cooke, licence number, addresses."}
+{"id": "f5-gretel_pii_finance-e9ffd415f7", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Caleb Black, address, licence number."}
+{"id": "f5-gretel_pii_finance-ee7e0f615d", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Hans D. C. Nohlmans, street address, licence number."}
+{"id": "f5-gretel_pii_finance-f275d21dcd", "label": "yes", "entity_types": ["NAME", "ADDRESS", "IP_ADDRESS", "DRIVER_ID"], "rationale": "Veronica F. Ortese, property address, licence number, IP."}
+{"id": "f5-nemotron_pii-010963d7e2", "label": "no", "entity_types": [], "rationale": "Claim and customer ids."}
+{"id": "f5-nemotron_pii-01d61ed252", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE"], "rationale": "Joon Kim, email, phone and fax."}
+{"id": "f5-nemotron_pii-04042fea69", "label": "no", "entity_types": [], "rationale": "Citation number and plate."}
+{"id": "f5-nemotron_pii-04ce5dc8ce", "label": "no", "entity_types": [], "rationale": "Biometric id and cookie."}
+{"id": "f5-nemotron_pii-052ec23be6", "label": "yes", "entity_types": ["US_SOCIAL_SECURITY_NUMBER"], "rationale": "SSN."}
+{"id": "f5-nemotron_pii-0578da57c5", "label": "no", "entity_types": [], "rationale": "Card and account."}
+{"id": "f5-nemotron_pii-0682db54c4", "label": "yes", "entity_types": ["NAME", "PHONE", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Jane Doe, John Thompson, SSN, phone."}
+{"id": "f5-nemotron_pii-06edb5d722", "label": "yes", "entity_types": ["EMAIL", "IP_ADDRESS"], "rationale": "Email and IPs."}
+{"id": "f5-nemotron_pii-07472bd85c", "label": "yes", "entity_types": ["EMAIL", "PHONE"], "rationale": "Phone and email."}
+{"id": "f5-nemotron_pii-088d468335", "label": "no", "entity_types": [], "rationale": "Account and customer ids."}
+{"id": "f5-nemotron_pii-08d326887b", "label": "yes", "entity_types": ["PASSWORD"], "rationale": "A password found at the site."}
+{"id": "f5-nemotron_pii-095bf7136f", "label": "no", "entity_types": [], "rationale": "Employee id and routing number; no listed type."}
+{"id": "f5-nemotron_pii-0a1a4f36fb", "label": "yes", "entity_types": ["NAME", "ADDRESS"], "rationale": "Chai Pongsapipat and residence address."}
+{"id": "f5-nemotron_pii-0a37e5c8a2", "label": "yes", "entity_types": ["PASSWORD"], "rationale": "Password K9#lPm$5vWt2."}
+{"id": "f5-nemotron_pii-0ab7d95817", "label": "no", "entity_types": [], "rationale": "Transfusion note."}
+{"id": "f5-nemotron_pii-0b4a16d6fe", "label": "no", "entity_types": [], "rationale": "Certificate."}
+{"id": "f5-nemotron_pii-0cf17084dd", "label": "yes", "entity_types": ["NAME"], "rationale": "Patient Bonnie and Dr. Smith."}
+{"id": "f5-nemotron_pii-0d04c28f04", "label": "yes", "entity_types": ["NAME", "EMAIL", "USERNAME"], "rationale": "Matej, email, user name Matej.Kos."}
+{"id": "f5-nemotron_pii-0e76d2ded1", "label": "yes", "entity_types": ["ADDRESS"], "rationale": "154 Village Ct, New York, postcode 10033."}
+{"id": "f5-nemotron_pii-0e84e00290", "label": "yes", "entity_types": ["NAME", "IP_ADDRESS"], "rationale": "Yelena and IP addresses."}
+{"id": "f5-nemotron_pii-0ec140707b", "label": "no", "entity_types": [], "rationale": "Customer and account numbers."}
+{"id": "f5-nemotron_pii-0f9d4c11ae", "label": "yes", "entity_types": ["NAME", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Robert Ivascu, SSN, 40 Whitman Road."}
+{"id": "f5-nemotron_pii-0fbb47f22a", "label": "yes", "entity_types": ["EMAIL", "USERNAME", "PASSWORD"], "rationale": "User name HarshPatil1337, password, email."}
+{"id": "f5-nemotron_pii-0fc29dd9ce", "label": "yes", "entity_types": ["NAME", "EMAIL", "ADDRESS", "USERNAME"], "rationale": "Eliza Wright, email, username, city Cambridge."}
+{"id": "f5-nemotron_pii-1013a5e027", "label": "yes", "entity_types": ["EMAIL", "PHONE", "USERNAME", "PASSWORD", "IP_ADDRESS"], "rationale": "User jzucker, email, password, IPs, phone."}
+{"id": "f5-nemotron_pii-125409e90a", "label": "no", "entity_types": [], "rationale": "Loan ids and card."}
+{"id": "f5-nemotron_pii-12deee0df8", "label": "yes", "entity_types": ["NAME", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Christopher Roy, SSN and street address."}
+{"id": "f5-nemotron_pii-14d88d7c48", "label": "yes", "entity_types": ["NAME", "ADDRESS"], "rationale": "Diego and 43 Gardenia Ave."}
+{"id": "f5-nemotron_pii-1822f07e5c", "label": "yes", "entity_types": ["NAME", "PHONE", "ADDRESS"], "rationale": "Joon Kim, phone and address."}
+{"id": "f5-nemotron_pii-1bdf831bb7", "label": "yes", "entity_types": ["NAME"], "rationale": "Luka Horvat."}
+{"id": "f5-nemotron_pii-1c1bd0d791", "label": "yes", "entity_types": ["PASSWORD"], "rationale": "Portal password."}
+{"id": "f5-nemotron_pii-1db79ebaf6", "label": "no", "entity_types": [], "rationale": "VIN and plate."}
+{"id": "f5-nemotron_pii-1fa42e0c88", "label": "no", "entity_types": [], "rationale": "Test site city and state, not a person's or business's address; coordinates."}
+{"id": "f5-nemotron_pii-20364639dd", "label": "yes", "entity_types": ["NAME", "PASSWORD"], "rationale": "Bence Nagy and a password."}
+{"id": "f5-nemotron_pii-215817d86e", "label": "no", "entity_types": [], "rationale": "Campaign data."}
+{"id": "f5-nemotron_pii-2223e09770", "label": "yes", "entity_types": ["NAME", "EMAIL", "ADDRESS"], "rationale": "Egor Petrov, Krasnodar Krai and email."}
+{"id": "f5-nemotron_pii-22598a80ab", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE", "USERNAME", "PASSWORD"], "rationale": "Narges Hosseini, email, phone, user name, password."}
+{"id": "f5-nemotron_pii-22b633cdf2", "label": "no", "entity_types": [], "rationale": "Timeline."}
+{"id": "f5-nemotron_pii-23c6b1c22e", "label": "yes", "entity_types": ["NAME", "PASSWORD"], "rationale": "Ajah and a training portal password."}
+{"id": "f5-nemotron_pii-24902efed6", "label": "yes", "entity_types": ["ADDRESS", "DRIVER_ID"], "rationale": "Driver licence number and 190 Massey Rd."}
+{"id": "f5-nemotron_pii-2581e13186", "label": "yes", "entity_types": ["PHONE"], "rationale": "Fax number."}
+{"id": "f5-nemotron_pii-25df01546c", "label": "no", "entity_types": [], "rationale": "MRN and health plan number."}
+{"id": "f5-nemotron_pii-2725a8f675", "label": "yes", "entity_types": ["EMAIL", "PASSWORD", "IP_ADDRESS"], "rationale": "Email, password, IP whitelist."}
+{"id": "f5-nemotron_pii-272f539251", "label": "yes", "entity_types": ["EMAIL", "PASSWORD"], "rationale": "Email, password and PIN; the state is a jurisdiction, not an address."}
+{"id": "f5-nemotron_pii-275a8dd9f0", "label": "no", "entity_types": [], "rationale": "Bank and card numbers."}
+{"id": "f5-nemotron_pii-2789fa26be", "label": "no", "entity_types": [], "rationale": "Routing number and SWIFT."}
+{"id": "f5-nemotron_pii-281dc1526b", "label": "yes", "entity_types": ["NAME", "ADDRESS"], "rationale": "Ana Lopez and 312 Rushford Dr."}
+{"id": "f5-nemotron_pii-2947f8dc54", "label": "yes", "entity_types": ["PASSWORD"], "rationale": "A password and a PIN for storage units."}
+{"id": "f5-nemotron_pii-29716ce955", "label": "yes", "entity_types": ["PASSWORD"], "rationale": "Password River99#."}
+{"id": "f5-nemotron_pii-2de740eadf", "label": "yes", "entity_types": ["PASSWORD"], "rationale": "Platform password."}
+{"id": "f5-nemotron_pii-2f2adbe950", "label": "no", "entity_types": [], "rationale": "Transaction and biometric ids."}
+{"id": "f5-nemotron_pii-2f38961b23", "label": "no", "entity_types": [], "rationale": "Employee id and health plan number."}
+{"id": "f5-nemotron_pii-2f6e946bca", "label": "no", "entity_types": [], "rationale": "Account, card and routing numbers."}
+{"id": "f5-nemotron_pii-3010c113f7", "label": "no", "entity_types": [], "rationale": "Card number and dates; no listed type."}
+{"id": "f5-nemotron_pii-31051ff36a", "label": "yes", "entity_types": ["EMAIL", "IP_ADDRESS"], "rationale": "IP and email."}
+{"id": "f5-nemotron_pii-321ea0cd71", "label": "no", "entity_types": [], "rationale": "VIN and plate."}
+{"id": "f5-nemotron_pii-33834ef061", "label": "yes", "entity_types": ["EMAIL", "PHONE", "IP_ADDRESS"], "rationale": "Email, phone and fax numbers, IP address."}
+{"id": "f5-nemotron_pii-339812b227", "label": "yes", "entity_types": ["NAME", "EMAIL", "PASSWORD"], "rationale": "Omar AlMansoori, email, ballot password."}
+{"id": "f5-nemotron_pii-3411a497c5", "label": "no", "entity_types": [], "rationale": "Employee id and DOB."}
+{"id": "f5-nemotron_pii-35f94cc645", "label": "yes", "entity_types": ["NAME", "EMAIL", "ADDRESS", "USERNAME", "PASSWORD"], "rationale": "Paul Deane, handle pauldeane89, password, Des Plaines IL, email."}
+{"id": "f5-nemotron_pii-36158d2f64", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE", "ADDRESS"], "rationale": "Madison McGee, phone, email and state."}
+{"id": "f5-nemotron_pii-37e60dc332", "label": "yes", "entity_types": ["EMAIL", "PHONE", "USERNAME", "PASSWORD", "IP_ADDRESS"], "rationale": "User name, IP, email, password, phone."}
+{"id": "f5-nemotron_pii-3829862fba", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Emin and licence number."}
+{"id": "f5-nemotron_pii-39b59f691f", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IPv4 and IPv6."}
+{"id": "f5-nemotron_pii-3a4f65cbd3", "label": "no", "entity_types": [], "rationale": "Coordinates and URL."}
+{"id": "f5-nemotron_pii-3a902a03e7", "label": "yes", "entity_types": ["EMAIL", "USERNAME"], "rationale": "User Nelda2023 and email."}
+{"id": "f5-nemotron_pii-3aa895f683", "label": "no", "entity_types": [], "rationale": "Plate and MAC address."}
+{"id": "f5-nemotron_pii-3b5469dcee", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Mei and licence number."}
+{"id": "f5-nemotron_pii-3c5090d46e", "label": "yes", "entity_types": ["NAME", "ADDRESS"], "rationale": "Brandie and incident location address."}
+{"id": "f5-nemotron_pii-3cb761cb53", "label": "no", "entity_types": [], "rationale": "Account number."}
+{"id": "f5-nemotron_pii-3d3c8726b3", "label": "no", "entity_types": [], "rationale": "Account, card, routing."}
+{"id": "f5-nemotron_pii-3d5882c80a", "label": "no", "entity_types": [], "rationale": "Employee id and coordinates."}
+{"id": "f5-nemotron_pii-3eac38fc71", "label": "no", "entity_types": [], "rationale": "VIN, plate, biometric id."}
+{"id": "f5-nemotron_pii-410b3eb3f2", "label": "yes", "entity_types": ["NAME", "PHONE", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Synda, SSN and fax number."}
+{"id": "f5-nemotron_pii-425e549e25", "label": "no", "entity_types": [], "rationale": "VIN and plate."}
+{"id": "f5-nemotron_pii-43fe36ec1b", "label": "yes", "entity_types": ["NAME", "ADDRESS", "PASSWORD"], "rationale": "Jacob Serrano, property address, password."}
+{"id": "f5-nemotron_pii-45d6afd6e6", "label": "no", "entity_types": [], "rationale": "Coordinates, SWIFT, DOB."}
+{"id": "f5-nemotron_pii-460a04631a", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Morton Brink, licence number, address."}
+{"id": "f5-nemotron_pii-461a54eeca", "label": "yes", "entity_types": ["NAME", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Monroe, SSN, 254 Commerce Circle."}
+{"id": "f5-nemotron_pii-49b232f0af", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Serina Mueller, address, licence number."}
+{"id": "f5-nemotron_pii-4aa5e3dae7", "label": "yes", "entity_types": ["PASSWORD"], "rationale": "Account password."}
+{"id": "f5-nemotron_pii-4adf794fdf", "label": "no", "entity_types": [], "rationale": "Blank form with VIN."}
+{"id": "f5-nemotron_pii-4d41e489f4", "label": "yes", "entity_types": ["EMAIL", "PHONE", "IP_ADDRESS"], "rationale": "IP address, phone, email."}
+{"id": "f5-nemotron_pii-4e368f6ace", "label": "yes", "entity_types": ["NAME", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Alan Bennis, 805 High Street and an SSN."}
+{"id": "f5-nemotron_pii-4e472de765", "label": "yes", "entity_types": ["NAME"], "rationale": "Jennifer."}
+{"id": "f5-nemotron_pii-4e73add83b", "label": "yes", "entity_types": ["PHONE", "ADDRESS"], "rationale": "State, county, city and postcode of the audited site; fax number."}
+{"id": "f5-nemotron_pii-500f2fbcd9", "label": "yes", "entity_types": ["NAME"], "rationale": "Nathaniel Conner."}
+{"id": "f5-nemotron_pii-50d63c69ab", "label": "yes", "entity_types": ["EMAIL", "PASSWORD"], "rationale": "Email and account password."}
+{"id": "f5-nemotron_pii-51b3314a0f", "label": "no", "entity_types": [], "rationale": "Employee and health plan ids."}
+{"id": "f5-nemotron_pii-562f4efb38", "label": "yes", "entity_types": ["EMAIL", "PHONE", "IP_ADDRESS"], "rationale": "IP, email, phone."}
+{"id": "f5-nemotron_pii-56b5bd362d", "label": "no", "entity_types": [], "rationale": "Bank and card numbers."}
+{"id": "f5-nemotron_pii-5830884554", "label": "yes", "entity_types": ["EMAIL", "PHONE", "USERNAME"], "rationale": "Phone, email, and handle john.reams."}
+{"id": "f5-nemotron_pii-589abeab61", "label": "yes", "entity_types": ["US_SOCIAL_SECURITY_NUMBER"], "rationale": "SSN."}
+{"id": "f5-nemotron_pii-5ab65e6c5b", "label": "no", "entity_types": [], "rationale": "Card, routing, account, customer id."}
+{"id": "f5-nemotron_pii-5cf9339a02", "label": "yes", "entity_types": ["USERNAME", "PASSWORD", "IP_ADDRESS"], "rationale": "Username ekaterina.ivanov, IPv4/IPv6 addresses and a test password."}
+{"id": "f5-nemotron_pii-5f537d49d4", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE", "PASSWORD", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Shara Woolery, SSN, phone, email, password."}
+{"id": "f5-nemotron_pii-5fe75861a9", "label": "no", "entity_types": [], "rationale": "VIN, plate, customer id."}
+{"id": "f5-nemotron_pii-6267a1a77a", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IP address (public and private)."}
+{"id": "f5-nemotron_pii-630020afba", "label": "no", "entity_types": [], "rationale": "Ad brief."}
+{"id": "f5-nemotron_pii-6305060365", "label": "yes", "entity_types": ["NAME", "PHONE", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Meredith, SSN, address, phone."}
+{"id": "f5-nemotron_pii-631aee6616", "label": "no", "entity_types": [], "rationale": "Account and customer ids."}
+{"id": "f5-nemotron_pii-633210e43f", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IPv4 and IPv6 addresses."}
+{"id": "f5-nemotron_pii-6341772ef4", "label": "no", "entity_types": [], "rationale": "API key (JWT) and IBAN; not a password, no listed type."}
+{"id": "f5-nemotron_pii-644bc2b974", "label": "no", "entity_types": [], "rationale": "Employee id and demographics."}
+{"id": "f5-nemotron_pii-6574307066", "label": "no", "entity_types": [], "rationale": "Brand guide with MAC."}
+{"id": "f5-nemotron_pii-65a74ef4aa", "label": "no", "entity_types": [], "rationale": "Bank codes."}
+{"id": "f5-nemotron_pii-65cfdbcd1c", "label": "no", "entity_types": [], "rationale": "VIN, plate and coordinates; no listed type."}
+{"id": "f5-nemotron_pii-66962d194a", "label": "yes", "entity_types": ["EMAIL", "PHONE", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Email, phone and SSN."}
+{"id": "f5-nemotron_pii-671bd05e79", "label": "yes", "entity_types": ["EMAIL", "USERNAME", "IP_ADDRESS"], "rationale": "Handle AmalAlMansoori2000, IPs and email."}
+{"id": "f5-nemotron_pii-687afc95da", "label": "yes", "entity_types": ["EMAIL", "USERNAME", "PASSWORD", "IP_ADDRESS"], "rationale": "Test user, password, IPs and email."}
+{"id": "f5-nemotron_pii-6e49949fbd", "label": "no", "entity_types": [], "rationale": "Account, card, routing."}
+{"id": "f5-nemotron_pii-6f296f88f2", "label": "yes", "entity_types": ["NAME", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Savitri Herrera and SSN."}
+{"id": "f5-nemotron_pii-6f3aa506d6", "label": "no", "entity_types": [], "rationale": "Account, routing, card numbers."}
+{"id": "f5-nemotron_pii-72422ce2b5", "label": "no", "entity_types": [], "rationale": "Account and customer ids."}
+{"id": "f5-nemotron_pii-731ac87650", "label": "no", "entity_types": [], "rationale": "Employee id and health plan number."}
+{"id": "f5-nemotron_pii-73d936a1a2", "label": "yes", "entity_types": ["NAME", "EMAIL", "PASSWORD"], "rationale": "Linda Mayer, email and password."}
+{"id": "f5-nemotron_pii-752735e9b3", "label": "no", "entity_types": [], "rationale": "Coordinates and VIN."}
+{"id": "f5-nemotron_pii-75840e357e", "label": "no", "entity_types": [], "rationale": "Coordinates and ids."}
+{"id": "f5-nemotron_pii-78f58bd8c8", "label": "yes", "entity_types": ["EMAIL", "USERNAME"], "rationale": "Author handle KaiLim2024 and email."}
+{"id": "f5-nemotron_pii-799621fc0f", "label": "no", "entity_types": [], "rationale": "Employee id and ethnicity."}
+{"id": "f5-nemotron_pii-7aa7b4deb7", "label": "no", "entity_types": [], "rationale": "Coordinates; country."}
+{"id": "f5-nemotron_pii-7cff141249", "label": "no", "entity_types": [], "rationale": "Coordinates and supplier code."}
+{"id": "f5-nemotron_pii-7d5fb41cd8", "label": "no", "entity_types": [], "rationale": "Account number."}
+{"id": "f5-nemotron_pii-7e09155694", "label": "yes", "entity_types": ["US_SOCIAL_SECURITY_NUMBER"], "rationale": "SSN."}
+{"id": "f5-nemotron_pii-7e7e752a3d", "label": "yes", "entity_types": ["NAME", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "John Kirkland, SSN, address."}
+{"id": "f5-nemotron_pii-7e94d54412", "label": "no", "entity_types": [], "rationale": "VIN, plate, customer id."}
+{"id": "f5-nemotron_pii-7f0786aa8c", "label": "no", "entity_types": [], "rationale": "Customer, account and routing numbers."}
+{"id": "f5-nemotron_pii-7f31d79652", "label": "yes", "entity_types": ["EMAIL", "USERNAME", "PASSWORD", "IP_ADDRESS"], "rationale": "User terri.white, IPs, email, password."}
+{"id": "f5-nemotron_pii-7fc8380e29", "label": "no", "entity_types": [], "rationale": "Account and customer ids."}
+{"id": "f5-nemotron_pii-801506ec18", "label": "no", "entity_types": [], "rationale": "MRN, biometric, card."}
+{"id": "f5-nemotron_pii-820ca18391", "label": "no", "entity_types": [], "rationale": "Account number."}
+{"id": "f5-nemotron_pii-8213875bd6", "label": "yes", "entity_types": ["NAME", "ADDRESS", "PASSWORD", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Donald, an SSN, a street address and password River99!."}
+{"id": "f5-nemotron_pii-8281a87d7d", "label": "no", "entity_types": [], "rationale": "Bank ids."}
+{"id": "f5-nemotron_pii-82f53240e8", "label": "yes", "entity_types": ["EMAIL", "PHONE", "USERNAME"], "rationale": "User ShaunSchwarz, phone and email."}
+{"id": "f5-nemotron_pii-82f7aa0c6c", "label": "no", "entity_types": [], "rationale": "Account, biometric, MAC, cookie."}
+{"id": "f5-nemotron_pii-8499430ee1", "label": "no", "entity_types": [], "rationale": "Company report."}
+{"id": "f5-nemotron_pii-85c3a25430", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE", "USERNAME"], "rationale": "Chukwuemeka Okafor, email, phone, username."}
+{"id": "f5-nemotron_pii-86c16b1f84", "label": "no", "entity_types": [], "rationale": "Survey with health plan, SWIFT, MAC; no listed type."}
+{"id": "f5-nemotron_pii-877bb63530", "label": "no", "entity_types": [], "rationale": "Certificate; demographics."}
+{"id": "f5-nemotron_pii-879ddc861b", "label": "yes", "entity_types": ["EMAIL"], "rationale": "Contact email."}
+{"id": "f5-nemotron_pii-87eea29fa3", "label": "no", "entity_types": [], "rationale": "MRN and blood type."}
+{"id": "f5-nemotron_pii-886fb501d6", "label": "yes", "entity_types": ["NAME", "PHONE", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Thomas, SSN, phone."}
+{"id": "f5-nemotron_pii-8c5e458df1", "label": "no", "entity_types": [], "rationale": "Customer, account, tax, routing, card."}
+{"id": "f5-nemotron_pii-8d0b958ab9", "label": "no", "entity_types": [], "rationale": "Campaign calendar."}
+{"id": "f5-nemotron_pii-91547037a4", "label": "no", "entity_types": [], "rationale": "Employee id and MAC."}
+{"id": "f5-nemotron_pii-92fb2e0f37", "label": "no", "entity_types": [], "rationale": "Bank ids."}
+{"id": "f5-nemotron_pii-93c64c7788", "label": "yes", "entity_types": ["EMAIL", "USERNAME"], "rationale": "User name NigarRz and email."}
+{"id": "f5-nemotron_pii-93d3f530dd", "label": "no", "entity_types": [], "rationale": "Biometric and health plan ids."}
+{"id": "f5-nemotron_pii-951d5b2f48", "label": "yes", "entity_types": ["NAME", "EMAIL"], "rationale": "Ethan Whitmore and email."}
+{"id": "f5-nemotron_pii-956fcf0b86", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Gloria Collins, licence number, address."}
+{"id": "f5-nemotron_pii-9731d5ebb8", "label": "yes", "entity_types": ["EMAIL", "PASSWORD"], "rationale": "Email and dashboard password."}
+{"id": "f5-nemotron_pii-981c55fa65", "label": "no", "entity_types": [], "rationale": "Coordinates."}
+{"id": "f5-nemotron_pii-9922012663", "label": "no", "entity_types": [], "rationale": "Policy, VIN and plate."}
+{"id": "f5-nemotron_pii-9a1419fbd8", "label": "yes", "entity_types": ["EMAIL", "PHONE", "USERNAME", "PASSWORD", "IP_ADDRESS"], "rationale": "Username, password, email, phone, IPs."}
+{"id": "f5-nemotron_pii-9a8887aff6", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE"], "rationale": "Tomasz Nowak, phone and email."}
+{"id": "f5-nemotron_pii-9b4915df8e", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IPv4 and IPv6."}
+{"id": "f5-nemotron_pii-9bd927004f", "label": "yes", "entity_types": ["US_SOCIAL_SECURITY_NUMBER"], "rationale": "SSN 450-83-6925."}
+{"id": "f5-nemotron_pii-9cdae7649d", "label": "yes", "entity_types": ["PASSWORD"], "rationale": "Password welcome1."}
+{"id": "f5-nemotron_pii-9d46518678", "label": "yes", "entity_types": ["EMAIL", "USERNAME", "IP_ADDRESS"], "rationale": "IPv4/IPv6, user name MaraLinfernal and email."}
+{"id": "f5-nemotron_pii-9f2e9c1312", "label": "no", "entity_types": [], "rationale": "Customer, account, card."}
+{"id": "f5-nemotron_pii-9fa2af5f20", "label": "yes", "entity_types": ["NAME"], "rationale": "Claire."}
+{"id": "f5-nemotron_pii-9fb0056693", "label": "yes", "entity_types": ["EMAIL", "PASSWORD"], "rationale": "Email and password."}
+{"id": "f5-nemotron_pii-a0516d2220", "label": "yes", "entity_types": ["NAME", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Jose Caceres, SSN and 6 West Desert Hollow Drive."}
+{"id": "f5-nemotron_pii-a0dbd8a5bd", "label": "yes", "entity_types": ["EMAIL", "ADDRESS", "USERNAME"], "rationale": "Handle javier.martinez, an email, and Seville as the person's location."}
+{"id": "f5-nemotron_pii-a0e2536eae", "label": "yes", "entity_types": ["USERNAME", "IP_ADDRESS"], "rationale": "IP address and user ID ad0312."}
+{"id": "f5-nemotron_pii-a1084868a2", "label": "no", "entity_types": [], "rationale": "Recall notice."}
+{"id": "f5-nemotron_pii-a205f5fb59", "label": "no", "entity_types": [], "rationale": "Card, CVV, routing."}
+{"id": "f5-nemotron_pii-a21ddb5000", "label": "yes", "entity_types": ["NAME", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Alyssa Marcano, SSN and home address."}
+{"id": "f5-nemotron_pii-a2b2fb4cf8", "label": "no", "entity_types": [], "rationale": "Account, routing, biometric and a 12-digit national id; none is a listed type."}
+{"id": "f5-nemotron_pii-a56c3ab375", "label": "no", "entity_types": [], "rationale": "Employee id and demographics; no listed type."}
+{"id": "f5-nemotron_pii-a60af264cf", "label": "yes", "entity_types": ["USERNAME", "IP_ADDRESS"], "rationale": "IPs and user name EminOzcan."}
+{"id": "f5-nemotron_pii-a646aadd63", "label": "yes", "entity_types": ["PASSWORD"], "rationale": "A value labelled pin (passcode); borderline, the value is malformed."}
+{"id": "f5-nemotron_pii-a64dfbf55f", "label": "no", "entity_types": [], "rationale": "VIN, plate, coordinates."}
+{"id": "f5-nemotron_pii-a64e767733", "label": "no", "entity_types": [], "rationale": "Card and routing numbers."}
+{"id": "f5-nemotron_pii-a7b41e30ce", "label": "no", "entity_types": [], "rationale": "Demographics."}
+{"id": "f5-nemotron_pii-a855e0a552", "label": "yes", "entity_types": ["PHONE"], "rationale": "Fax number."}
+{"id": "f5-nemotron_pii-a8add74f93", "label": "no", "entity_types": [], "rationale": "VIN and plate."}
+{"id": "f5-nemotron_pii-aa9ffd70ec", "label": "no", "entity_types": [], "rationale": "National id, card and CVV; no listed type."}
+{"id": "f5-nemotron_pii-acc0c3e987", "label": "no", "entity_types": [], "rationale": "MRN, health plan, DOB."}
+{"id": "f5-nemotron_pii-acf343eed1", "label": "no", "entity_types": [], "rationale": "Country and coordinates; MAC address."}
+{"id": "f5-nemotron_pii-b156189006", "label": "yes", "entity_types": ["NAME", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Angie Perezpadilla and SSN."}
+{"id": "f5-nemotron_pii-b15c1763ad", "label": "yes", "entity_types": ["NAME", "PASSWORD"], "rationale": "Jason Oshea and password."}
+{"id": "f5-nemotron_pii-b41f4a271a", "label": "no", "entity_types": [], "rationale": "Card number."}
+{"id": "f5-nemotron_pii-b5348dce87", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Alexis Berger, email, SSN, phone, property address."}
+{"id": "f5-nemotron_pii-b59a63d15f", "label": "no", "entity_types": [], "rationale": "Customer id and MAC."}
+{"id": "f5-nemotron_pii-b607a8209f", "label": "no", "entity_types": [], "rationale": "Invoice ids and card."}
+{"id": "f5-nemotron_pii-b62a54f76a", "label": "yes", "entity_types": ["NAME", "EMAIL", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Jan Mason, her email and an SSN 290-35-1125."}
+{"id": "f5-nemotron_pii-b776a98cc6", "label": "no", "entity_types": [], "rationale": "Demographics only."}
+{"id": "f5-nemotron_pii-b8d6ca0e40", "label": "no", "entity_types": [], "rationale": "Employee id and account."}
+{"id": "f5-nemotron_pii-b8f03cca23", "label": "no", "entity_types": [], "rationale": "Customer and biometric ids."}
+{"id": "f5-nemotron_pii-b9310b2a77", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Chae Sun, licence number, address."}
+{"id": "f5-nemotron_pii-b9812aee8a", "label": "no", "entity_types": [], "rationale": "VIN, plate, coordinates."}
+{"id": "f5-nemotron_pii-bb0828aa29", "label": "no", "entity_types": [], "rationale": "Workout guide."}
+{"id": "f5-nemotron_pii-bb2e22ef96", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE", "PASSWORD"], "rationale": "Jamila Al-Thani, email, phone and a password."}
+{"id": "f5-nemotron_pii-bbf82dbf82", "label": "no", "entity_types": [], "rationale": "Employee, biometric, API key, cookie."}
+{"id": "f5-nemotron_pii-bca38b5d63", "label": "yes", "entity_types": ["EMAIL", "PHONE", "USERNAME", "IP_ADDRESS"], "rationale": "IP address, email, user name and a fax number."}
+{"id": "f5-nemotron_pii-bdacf5c318", "label": "no", "entity_types": [], "rationale": "Invoice, VIN, plate."}
+{"id": "f5-nemotron_pii-be2184f5df", "label": "no", "entity_types": [], "rationale": "CVV only."}
+{"id": "f5-nemotron_pii-c01002994b", "label": "no", "entity_types": [], "rationale": "Account number."}
+{"id": "f5-nemotron_pii-c216dbe9ea", "label": "yes", "entity_types": ["USERNAME"], "rationale": "Access authoriser given as handle kyle.gonzalez; API key is not a listed type."}
+{"id": "f5-nemotron_pii-c282635f2c", "label": "no", "entity_types": [], "rationale": "Employee id; company name."}
+{"id": "f5-nemotron_pii-c373912125", "label": "yes", "entity_types": ["PASSWORD"], "rationale": "Access code River99!."}
+{"id": "f5-nemotron_pii-c39b1d8557", "label": "no", "entity_types": [], "rationale": "VIN and plate."}
+{"id": "f5-nemotron_pii-c4c2eb869d", "label": "yes", "entity_types": ["EMAIL"], "rationale": "Email address."}
+{"id": "f5-nemotron_pii-c551581f03", "label": "yes", "entity_types": ["EMAIL", "USERNAME", "PASSWORD"], "rationale": "User Amaka89, password and email."}
+{"id": "f5-nemotron_pii-c5933b01d7", "label": "yes", "entity_types": ["NAME", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Christopher Lewis, SSN, 97 Virgil Drive."}
+{"id": "f5-nemotron_pii-c6ecce5779", "label": "yes", "entity_types": ["NAME", "PASSWORD"], "rationale": "Carol Leblanc and a password."}
+{"id": "f5-nemotron_pii-c7ca0c661b", "label": "no", "entity_types": [], "rationale": "VIN, plate, biometric id."}
+{"id": "f5-nemotron_pii-c8057289e1", "label": "yes", "entity_types": ["NAME", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Lois and SSN."}
+{"id": "f5-nemotron_pii-c846592969", "label": "yes", "entity_types": ["EMAIL"], "rationale": "Email address."}
+{"id": "f5-nemotron_pii-cc72c80f2d", "label": "no", "entity_types": [], "rationale": "Campaign brief."}
+{"id": "f5-nemotron_pii-ccd854f65f", "label": "no", "entity_types": [], "rationale": "Employee id and card."}
+{"id": "f5-nemotron_pii-cce63919bc", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE", "ADDRESS"], "rationale": "Javier Alfaro, residential address, email, phone."}
+{"id": "f5-nemotron_pii-cec9dd65b8", "label": "no", "entity_types": [], "rationale": "Employee id, biometric id, card number; no listed type."}
+{"id": "f5-nemotron_pii-cee3c35264", "label": "yes", "entity_types": ["EMAIL", "USERNAME", "PASSWORD"], "rationale": "Email, example username Sipho95, example password value."}
+{"id": "f5-nemotron_pii-cfc1828d7e", "label": "yes", "entity_types": ["PHONE"], "rationale": "Fax number."}
+{"id": "f5-nemotron_pii-d20415256d", "label": "yes", "entity_types": ["ADDRESS", "PASSWORD"], "rationale": "Office street address and postcode; password and PIN."}
+{"id": "f5-nemotron_pii-d298333afe", "label": "no", "entity_types": [], "rationale": "VIN and national id."}
+{"id": "f5-nemotron_pii-d378f2c022", "label": "no", "entity_types": [], "rationale": "Vehicle ids."}
+{"id": "f5-nemotron_pii-d4f6d11edc", "label": "yes", "entity_types": ["NAME", "PHONE", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Elisabeth, SSN, Memphis street address, fax number."}
+{"id": "f5-nemotron_pii-d50f260a89", "label": "no", "entity_types": [], "rationale": "Employee id and demographics."}
+{"id": "f5-nemotron_pii-d5dee024be", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE", "ADDRESS", "PASSWORD"], "rationale": "Reba Gillum, email, phone, address, password."}
+{"id": "f5-nemotron_pii-d6b72a6970", "label": "no", "entity_types": [], "rationale": "Incident with coordinates."}
+{"id": "f5-nemotron_pii-d7a0e0db8b", "label": "no", "entity_types": [], "rationale": "Cookie and biometric id."}
+{"id": "f5-nemotron_pii-d82447cf41", "label": "no", "entity_types": [], "rationale": "Company in Russia; country only."}
+{"id": "f5-nemotron_pii-d825b364eb", "label": "yes", "entity_types": ["USERNAME", "IP_ADDRESS"], "rationale": "User name melanie89 and IP address."}
+{"id": "f5-nemotron_pii-d89ef13b6d", "label": "no", "entity_types": [], "rationale": "Diary with no identifiers."}
+{"id": "f5-nemotron_pii-d8c802d6f1", "label": "yes", "entity_types": ["NAME", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Kelly Blocker, SSN, address."}
+{"id": "f5-nemotron_pii-db104fc458", "label": "yes", "entity_types": ["NAME", "EMAIL", "PASSWORD"], "rationale": "Hamid, email, password."}
+{"id": "f5-nemotron_pii-df281f6391", "label": "no", "entity_types": [], "rationale": "Coordinates and URLs."}
+{"id": "f5-nemotron_pii-df37e0f10b", "label": "yes", "entity_types": ["EMAIL", "USERNAME"], "rationale": "Handle da1988 and an email."}
+{"id": "f5-nemotron_pii-e015eee78f", "label": "no", "entity_types": [], "rationale": "Card number and MAC address."}
+{"id": "f5-nemotron_pii-e1336c15fc", "label": "no", "entity_types": [], "rationale": "Account and card numbers."}
+{"id": "f5-nemotron_pii-e260b020a0", "label": "no", "entity_types": [], "rationale": "Account number."}
+{"id": "f5-nemotron_pii-e2971ae046", "label": "yes", "entity_types": ["PASSWORD"], "rationale": "Password Rainbow@2025."}
+{"id": "f5-nemotron_pii-e2ac3306ae", "label": "yes", "entity_types": ["PASSWORD"], "rationale": "Password; the city and state are where the election was held, not a person's address."}
+{"id": "f5-nemotron_pii-e3227166e1", "label": "yes", "entity_types": ["EMAIL", "USERNAME", "IP_ADDRESS"], "rationale": "Username LindaBloch, IPs, email."}
+{"id": "f5-nemotron_pii-e42820046e", "label": "no", "entity_types": [], "rationale": "Card, account, routing."}
+{"id": "f5-nemotron_pii-e431639688", "label": "no", "entity_types": [], "rationale": "JWT cookie and CVV; no listed type."}
+{"id": "f5-nemotron_pii-e4e58052d9", "label": "yes", "entity_types": ["NAME", "EMAIL", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "William Wallace, SSN, address, email."}
+{"id": "f5-nemotron_pii-e557c7ac82", "label": "yes", "entity_types": ["NAME", "EMAIL", "USERNAME"], "rationale": "Guillermo Gonzalez, user name and email."}
+{"id": "f5-nemotron_pii-e55a7823f5", "label": "no", "entity_types": [], "rationale": "Account, card, CVV, routing."}
+{"id": "f5-nemotron_pii-e6887a6cf7", "label": "no", "entity_types": [], "rationale": "MRN, health plan, DOB."}
+{"id": "f5-nemotron_pii-e6b7a05dc5", "label": "no", "entity_types": [], "rationale": "API key and card."}
+{"id": "f5-nemotron_pii-e7fb654643", "label": "yes", "entity_types": ["NAME", "EMAIL", "ADDRESS"], "rationale": "Lukas Zimmermann, email, incident location Zug/Baar."}
+{"id": "f5-nemotron_pii-e86e9a6710", "label": "yes", "entity_types": ["EMAIL", "PHONE", "USERNAME"], "rationale": "Email, username ei1985 and fax number."}
+{"id": "f5-nemotron_pii-e890a92f34", "label": "no", "entity_types": [], "rationale": "Bank ids."}
+{"id": "f5-nemotron_pii-e904e0eb3e", "label": "no", "entity_types": [], "rationale": "Bank and card numbers."}
+{"id": "f5-nemotron_pii-e9c0da09a9", "label": "no", "entity_types": [], "rationale": "Coordinates."}
+{"id": "f5-nemotron_pii-ea7dd95249", "label": "yes", "entity_types": ["PASSWORD"], "rationale": "Support-line password."}
+{"id": "f5-nemotron_pii-ec997d0e4b", "label": "yes", "entity_types": ["NAME", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Mary, SSN, 195 Dewberry St."}
+{"id": "f5-nemotron_pii-f000ff73ea", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE", "DRIVER_ID", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Haley, licence number, SSN, phone, email."}
+{"id": "f5-nemotron_pii-f012c6fb3b", "label": "yes", "entity_types": ["NAME", "PHONE"], "rationale": "Amira Awad and phone."}
+{"id": "f5-nemotron_pii-f121b23935", "label": "yes", "entity_types": ["EMAIL", "PASSWORD"], "rationale": "Email and a system password."}
+{"id": "f5-nemotron_pii-f17dc86383", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IPv4 address 149.186.97.205."}
+{"id": "f5-nemotron_pii-f1c0b09c87", "label": "yes", "entity_types": ["EMAIL", "USERNAME"], "rationale": "User name luis.santiago and email."}
+{"id": "f5-nemotron_pii-f1ee844e63", "label": "yes", "entity_types": ["NAME"], "rationale": "Ubaldina Delgado."}
+{"id": "f5-nemotron_pii-f226f1024a", "label": "no", "entity_types": [], "rationale": "Customer and account ids."}
+{"id": "f5-nemotron_pii-f2510a9319", "label": "no", "entity_types": [], "rationale": "Survey, cookie."}
+{"id": "f5-nemotron_pii-f2fea4bced", "label": "no", "entity_types": [], "rationale": "Customer, account and routing numbers."}
+{"id": "f5-nemotron_pii-f311992aa5", "label": "yes", "entity_types": ["NAME", "PHONE", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Benjamin Metcalf, SSN, phone, postcode."}
+{"id": "f5-nemotron_pii-f436474af0", "label": "no", "entity_types": [], "rationale": "Account, card, routing, tax id."}
+{"id": "f5-nemotron_pii-f5034edc4f", "label": "yes", "entity_types": ["EMAIL"], "rationale": "Email address."}
+{"id": "f5-nemotron_pii-f59800f8a0", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE"], "rationale": "Email, Yulissa Tafur, phone."}
+{"id": "f5-nemotron_pii-f5f8f7d1ba", "label": "no", "entity_types": [], "rationale": "Coordinates and card number."}
+{"id": "f5-nemotron_pii-f6c7e066ee", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE"], "rationale": "Jinwoo Kim, email and phone."}
+{"id": "f5-nemotron_pii-f73537e8ec", "label": "yes", "entity_types": ["EMAIL", "PHONE", "PASSWORD", "IP_ADDRESS"], "rationale": "Email, phone, IPs, tested password."}
+{"id": "f5-nemotron_pii-f74f04d1fd", "label": "yes", "entity_types": ["NAME", "ADDRESS"], "rationale": "Noam Levi and Herzl Street 42."}
+{"id": "f5-nemotron_pii-f82af4ff1c", "label": "no", "entity_types": [], "rationale": "Customer, account, card."}
+{"id": "f5-nemotron_pii-f883b4bf8d", "label": "yes", "entity_types": ["USERNAME"], "rationale": "Self-reference by handle mariam.alkhaja."}
+{"id": "f5-nemotron_pii-f8b6936f6f", "label": "yes", "entity_types": ["EMAIL", "USERNAME", "IP_ADDRESS"], "rationale": "User ploy.sanguan, email and IPv4."}
+{"id": "f5-nemotron_pii-f91ee5598a", "label": "yes", "entity_types": ["ADDRESS", "PASSWORD"], "rationale": "Property address in Ystad and a password."}
+{"id": "f5-nemotron_pii-fb0ad42776", "label": "no", "entity_types": [], "rationale": "Medical record and health plan numbers; no listed type."}
+{"id": "f5-nemotron_pii-fdd4d0d6c0", "label": "no", "entity_types": [], "rationale": "Strategy text."}
+{"id": "f5-nemotron_pii-ffb0d55571", "label": "yes", "entity_types": ["NAME", "PHONE", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Robert, SSN, phone and address."}
+{"id": "f5-gretel_pii_en-01f2512c99", "label": "no", "entity_types": [], "rationale": "Transaction and customer ids."}
+{"id": "f5-gretel_pii_en-0ad11fa989", "label": "no", "entity_types": [], "rationale": "Patient id."}
+{"id": "f5-gretel_pii_en-0c481d4d36", "label": "yes", "entity_types": ["NAME", "ADDRESS"], "rationale": "Nidhi Sur and a unit address."}
+{"id": "f5-gretel_pii_en-0e28a8f17b", "label": "no", "entity_types": [], "rationale": "Airport data."}
+{"id": "f5-gretel_pii_en-1636684ea3", "label": "yes", "entity_types": ["US_SOCIAL_SECURITY_NUMBER"], "rationale": "SSNs."}
+{"id": "f5-gretel_pii_en-284af0d4ef", "label": "no", "entity_types": [], "rationale": "User and customer ids, DOB, MRN."}
+{"id": "f5-gretel_pii_en-2f0553e0ce", "label": "yes", "entity_types": ["USERNAME", "PASSWORD", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "SSN, account handles tw_rita630 and yachana.bala, current password."}
+{"id": "f5-gretel_pii_en-313336156c", "label": "no", "entity_types": [], "rationale": "Locations and customer id."}
+{"id": "f5-gretel_pii_en-36843f9c7d", "label": "no", "entity_types": [], "rationale": "Bank statement ids."}
+{"id": "f5-gretel_pii_en-3a0fe74640", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "Equipment IP address."}
+{"id": "f5-gretel_pii_en-3f561cb040", "label": "yes", "entity_types": ["ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "SSNs and address."}
+{"id": "f5-gretel_pii_en-40fc90d795", "label": "yes", "entity_types": ["EMAIL", "IP_ADDRESS"], "rationale": "Email and IP address."}
+{"id": "f5-gretel_pii_en-454bc532b0", "label": "yes", "entity_types": ["USERNAME", "IP_ADDRESS"], "rationale": "IP address and user_name jennifergiles."}
+{"id": "f5-gretel_pii_en-459503be94", "label": "yes", "entity_types": ["NAME", "ADDRESS"], "rationale": "Derek Lewis and address."}
+{"id": "f5-gretel_pii_en-493fc65555", "label": "yes", "entity_types": ["NAME", "PHONE", "ADDRESS"], "rationale": "Aachal Bhanumati Ramaswamy, address, phone."}
+{"id": "f5-gretel_pii_en-4caffb47df", "label": "yes", "entity_types": ["NAME", "PHONE", "ADDRESS"], "rationale": "Madison Richard Porter, address, phone."}
+{"id": "f5-gretel_pii_en-4f5fe658de", "label": "no", "entity_types": [], "rationale": "Ids and coordinates."}
+{"id": "f5-gretel_pii_en-53519bda1f", "label": "no", "entity_types": [], "rationale": "Chargeback ids."}
+{"id": "f5-gretel_pii_en-5410ed0295", "label": "no", "entity_types": [], "rationale": "Production ids."}
+{"id": "f5-gretel_pii_en-64b91f311b", "label": "yes", "entity_types": ["EMAIL", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "SSN and email."}
+{"id": "f5-gretel_pii_en-6527b3a223", "label": "no", "entity_types": [], "rationale": "Customer id."}
+{"id": "f5-gretel_pii_en-6792d9085d", "label": "no", "entity_types": [], "rationale": "Card numbers, MRN, DOB, employee id; no listed type."}
+{"id": "f5-gretel_pii_en-73dc72e40e", "label": "no", "entity_types": [], "rationale": "Coordinates and part numbers."}
+{"id": "f5-gretel_pii_en-7a210ee713", "label": "no", "entity_types": [], "rationale": "Aircraft data."}
+{"id": "f5-gretel_pii_en-7aa435ab5f", "label": "yes", "entity_types": ["EMAIL", "PHONE"], "rationale": "Phone and email."}
+{"id": "f5-gretel_pii_en-83a5e29a65", "label": "yes", "entity_types": ["EMAIL", "USERNAME", "PASSWORD", "IP_ADDRESS"], "rationale": "IP, username, password, email."}
+{"id": "f5-gretel_pii_en-871993e449", "label": "yes", "entity_types": ["NAME", "EMAIL"], "rationale": "Kerri Lawson and emails."}
+{"id": "f5-gretel_pii_en-8a91247dca", "label": "no", "entity_types": [], "rationale": "Ids."}
+{"id": "f5-gretel_pii_en-8c935e632d", "label": "no", "entity_types": [], "rationale": "Coordinates."}
+{"id": "f5-gretel_pii_en-8f5aec7dfe", "label": "no", "entity_types": [], "rationale": "Ids."}
+{"id": "f5-gretel_pii_en-93a2bf89e1", "label": "no", "entity_types": [], "rationale": "Batch number."}
+{"id": "f5-gretel_pii_en-95b2bfb180", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IPv4 and IPv6."}
+{"id": "f5-gretel_pii_en-989f11ce9d", "label": "yes", "entity_types": ["ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Facility street address and an SSN."}
+{"id": "f5-gretel_pii_en-9b5d7913b0", "label": "yes", "entity_types": ["IP_ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "IPs and SSN."}
+{"id": "f5-gretel_pii_en-aae0a8838a", "label": "no", "entity_types": [], "rationale": "Codes, VINs, DOBs."}
+{"id": "f5-gretel_pii_en-b16320b03d", "label": "no", "entity_types": [], "rationale": "Requirement ids and DOBs."}
+{"id": "f5-gretel_pii_en-b238cf4c2b", "label": "yes", "entity_types": ["USERNAME", "PASSWORD", "IP_ADDRESS"], "rationale": "User jose47, password and IPs."}
+{"id": "f5-gretel_pii_en-b4754525f9", "label": "yes", "entity_types": ["IP_ADDRESS"], "rationale": "IPv4 address in a log line."}
+{"id": "f5-gretel_pii_en-c039363b39", "label": "yes", "entity_types": ["NAME", "EMAIL", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Matthew Anand, Travis Pamela Jones, email, SSN."}
+{"id": "f5-gretel_pii_en-c1585b15df", "label": "no", "entity_types": [], "rationale": "Dates only."}
+{"id": "f5-gretel_pii_en-c16c1fc1be", "label": "yes", "entity_types": ["EMAIL", "USERNAME"], "rationale": "User id rollins2653 and email."}
+{"id": "f5-gretel_pii_en-c666e3d179", "label": "no", "entity_types": [], "rationale": "Party codes and card."}
+{"id": "f5-gretel_pii_en-c831182135", "label": "no", "entity_types": [], "rationale": "Receipt ids."}
+{"id": "f5-gretel_pii_en-cd4db50257", "label": "no", "entity_types": [], "rationale": "Coordinates and staff codes."}
+{"id": "f5-gretel_pii_en-cfd7f9a7e3", "label": "yes", "entity_types": ["NAME"], "rationale": "William Sehgal."}
+{"id": "f5-gretel_pii_en-da130e5ce7", "label": "yes", "entity_types": ["USERNAME", "IP_ADDRESS"], "rationale": "IPs and users daniel67, dhruv_5957."}
+{"id": "f5-gretel_pii_en-db5f2673f9", "label": "no", "entity_types": [], "rationale": "Internal ids."}
+{"id": "f5-gretel_pii_en-dd66f29190", "label": "yes", "entity_types": ["US_SOCIAL_SECURITY_NUMBER"], "rationale": "SSN-format number used to identify a person."}
+{"id": "f5-gretel_pii_finance-2ddffb97af", "label": "yes", "entity_types": ["NAME", "EMAIL", "ADDRESS", "PASSWORD", "DRIVER_ID"], "rationale": "Annibale Caboto, email, licence number, password, street address."}
+{"id": "f5-gretel_pii_finance-6187cd35bc", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Melania C. Gradenigo, shipper address, licence number."}
+{"id": "f5-gretel_pii_finance-684dc42c7f", "label": "yes", "entity_types": ["NAME", "ADDRESS", "IP_ADDRESS", "DRIVER_ID"], "rationale": "Lindsey M. Harris, IP, licence number, address."}
+{"id": "f5-gretel_pii_finance-d6e87d7733", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Ahmed Barbara Thies, licence number, street address."}
+{"id": "f5-gretel_pii_finance-fd5df2910e", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Shipper name, address and driver's licence number."}
+{"id": "f5-nemotron_pii-061b8adef2", "label": "yes", "entity_types": ["NAME", "PHONE", "ADDRESS"], "rationale": "Officer names, a caller phone number and Winnipeg, Manitoba."}
+{"id": "f5-nemotron_pii-06d6ff97eb", "label": "yes", "entity_types": ["NAME", "ADDRESS", "PASSWORD"], "rationale": "Mercedes Cruzgarcia, street address, password."}
+{"id": "f5-nemotron_pii-07ab429f04", "label": "no", "entity_types": [], "rationale": "Account and customer numbers, a SWIFT code and a URL; no listed type."}
+{"id": "f5-nemotron_pii-17fe263e96", "label": "no", "entity_types": [], "rationale": "Account, routing, CVV."}
+{"id": "f5-nemotron_pii-1d6c1f53ac", "label": "no", "entity_types": [], "rationale": "Customer id, card, CVV."}
+{"id": "f5-nemotron_pii-20ce07bf07", "label": "no", "entity_types": [], "rationale": "Claim number and DOB."}
+{"id": "f5-nemotron_pii-2144097731", "label": "yes", "entity_types": ["EMAIL", "IP_ADDRESS"], "rationale": "IPv4/IPv6 and email."}
+{"id": "f5-nemotron_pii-23fd2214e7", "label": "yes", "entity_types": ["ADDRESS"], "rationale": "194 Union Street, Burlington County, NJ."}
+{"id": "f5-nemotron_pii-2519d70f6b", "label": "yes", "entity_types": ["EMAIL", "PHONE", "ADDRESS"], "rationale": "Email, phone, state and postcode."}
+{"id": "f5-nemotron_pii-280f0d0969", "label": "no", "entity_types": [], "rationale": "State named as guide subject; CVV."}
+{"id": "f5-nemotron_pii-2c17318b67", "label": "yes", "entity_types": ["NAME", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "William Matos, SSN, property address and county."}
+{"id": "f5-nemotron_pii-2dd0f03f31", "label": "no", "entity_types": [], "rationale": "VIN and plate."}
+{"id": "f5-nemotron_pii-2f8d9bc851", "label": "no", "entity_types": [], "rationale": "Demographics only, no name or contact."}
+{"id": "f5-nemotron_pii-3a8d1c337d", "label": "yes", "entity_types": ["EMAIL", "USERNAME"], "rationale": "Author handle CarmenGarcia1985 and email."}
+{"id": "f5-nemotron_pii-3aaa03d5b3", "label": "yes", "entity_types": ["PHONE", "PASSWORD"], "rationale": "Password and fax number."}
+{"id": "f5-nemotron_pii-3eeae6b293", "label": "yes", "entity_types": ["EMAIL", "USERNAME", "IP_ADDRESS"], "rationale": "Requester handle n.giorgadze, IPs and approver email."}
+{"id": "f5-nemotron_pii-4379e707c3", "label": "no", "entity_types": [], "rationale": "Policy ids, coordinates."}
+{"id": "f5-nemotron_pii-4c83bfe696", "label": "yes", "entity_types": ["ADDRESS"], "rationale": "Persona city Gilford; borderline, a city alone."}
+{"id": "f5-nemotron_pii-4e2d535941", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE", "USERNAME", "PASSWORD"], "rationale": "Nihal Perera, phone, email, username and password."}
+{"id": "f5-nemotron_pii-4fe7ea9725", "label": "yes", "entity_types": ["NAME", "PHONE", "ADDRESS", "PASSWORD"], "rationale": "Mariam Barakzai, Kandahar street address, fax, password."}
+{"id": "f5-nemotron_pii-50b49d867a", "label": "no", "entity_types": [], "rationale": "VIN and plate."}
+{"id": "f5-nemotron_pii-5547a06e47", "label": "no", "entity_types": [], "rationale": "Employee id, API key, cookie."}
+{"id": "f5-nemotron_pii-5d838f2fd7", "label": "no", "entity_types": [], "rationale": "Demographics."}
+{"id": "f5-nemotron_pii-5e8f69ad03", "label": "no", "entity_types": [], "rationale": "Customer and account numbers."}
+{"id": "f5-nemotron_pii-679bed0804", "label": "no", "entity_types": [], "rationale": "VIN, plate, card, coordinates."}
+{"id": "f5-nemotron_pii-6cb780512b", "label": "no", "entity_types": [], "rationale": "Demographics and card."}
+{"id": "f5-nemotron_pii-6f24b645ec", "label": "yes", "entity_types": ["NAME", "EMAIL", "USERNAME"], "rationale": "Declan McKenzie, email, user name."}
+{"id": "f5-nemotron_pii-7e808605d4", "label": "no", "entity_types": [], "rationale": "Routing, card, CVV."}
+{"id": "f5-nemotron_pii-7ee289f531", "label": "no", "entity_types": [], "rationale": "Customer and health plan ids."}
+{"id": "f5-nemotron_pii-8a4a5ac0bc", "label": "no", "entity_types": [], "rationale": "Employee id and MAC."}
+{"id": "f5-nemotron_pii-937ba0de30", "label": "no", "entity_types": [], "rationale": "Account, customer, routing."}
+{"id": "f5-nemotron_pii-93a3b72528", "label": "yes", "entity_types": ["NAME", "ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Mark Boyles, SSN, address."}
+{"id": "f5-nemotron_pii-977f98e176", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE", "PASSWORD"], "rationale": "Sophie, email, phone, and a named (disallowed) password value."}
+{"id": "f5-nemotron_pii-9ad00a16fb", "label": "no", "entity_types": [], "rationale": "Diversity statement, no identifiers."}
+{"id": "f5-nemotron_pii-9c2d0f8dd9", "label": "yes", "entity_types": ["NAME", "USERNAME"], "rationale": "Zuzana Hrbaty and username zuzana95."}
+{"id": "f5-nemotron_pii-9f0959ea9a", "label": "yes", "entity_types": ["NAME", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Amanda and SSN."}
+{"id": "f5-nemotron_pii-a3b0642a97", "label": "yes", "entity_types": ["EMAIL", "IP_ADDRESS"], "rationale": "Email and IPv4."}
+{"id": "f5-nemotron_pii-a906636564", "label": "no", "entity_types": [], "rationale": "Demographics."}
+{"id": "f5-nemotron_pii-ae7e59a5bb", "label": "yes", "entity_types": ["NAME", "ADDRESS", "DRIVER_ID"], "rationale": "Mary Sonnier, address, licence number."}
+{"id": "f5-nemotron_pii-aee0033cf6", "label": "yes", "entity_types": ["NAME", "EMAIL", "PHONE", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "Dharmeshkumar Patel, phone, email, SSN."}
+{"id": "f5-nemotron_pii-b44570555a", "label": "no", "entity_types": [], "rationale": "VIN, biometric id, MAC address; no listed type."}
+{"id": "f5-nemotron_pii-cb680c99ab", "label": "no", "entity_types": [], "rationale": "Employee id; SWIFT."}
+{"id": "f5-nemotron_pii-d2f0f1e5a6", "label": "yes", "entity_types": ["ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "SSN and 274 East 21st Street."}
+{"id": "f5-nemotron_pii-d36abf1142", "label": "yes", "entity_types": ["PASSWORD"], "rationale": "Claim portal password."}
+{"id": "f5-nemotron_pii-e4de39f6f1", "label": "yes", "entity_types": ["EMAIL"], "rationale": "Email; national id is not a listed type."}
+{"id": "f5-nemotron_pii-f2ca3fdc0f", "label": "yes", "entity_types": ["NAME", "DRIVER_ID"], "rationale": "Licence holder's name and licence number WA-CPA-20230982."}
+{"id": "f5-nemotron_pii-f4a4e001d6", "label": "no", "entity_types": [], "rationale": "Loan ids and card."}
+{"id": "f5-nemotron_pii-f652a0da9b", "label": "yes", "entity_types": ["ADDRESS", "US_SOCIAL_SECURITY_NUMBER"], "rationale": "SSN and 352 Forrestridge Dr."}
+{"id": "f5-nemotron_pii-f6c6beb83e", "label": "no", "entity_types": [], "rationale": "Coordinates."}

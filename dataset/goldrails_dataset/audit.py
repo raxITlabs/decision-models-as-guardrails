@@ -47,7 +47,8 @@ SPLIT_FILE = re.compile(r"^(F\d)\.(tune|test)\.jsonl$")
 
 SUITES = {"F1": "content", "F2": "prompt_attacks", "F3": "denied_topics", "F4": "word_filters",
           "F5": "sensitive_information", "F6": "grounding", "F7": "bias", "F8": "agent_actions"}
-AUTHORED_SOURCES = ("f2_controls", "f3_controls", "f5_controls", "f2_indirect_controls", "f3_controls_v2", "f3_test_candidates")
+AUTHORED_SOURCES = ("f2_controls", "f3_controls", "f5_controls", "f2_indirect_controls", "f3_controls_v2", "f3_test_candidates",
+                    "e2_attack_controls", "e2_denied_topics", "e2_pii_controls")
 REVIEW_BASES = ("llm", "automated", "unknown")     # label bases that need a person before a test claim rests on them
 
 # Planning floors from the completion plan (23 September 2026). They produce warnings, not failures, until approved.
@@ -94,7 +95,9 @@ def read_examined(path: Path) -> set:
 def _read_rows(path: Path):
     """Raw dicts plus Record objects; a row that fails validation is kept as a dict and reported."""
     raw, recs, invalid = [], [], []
-    for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+    # split on "\n" only: str.splitlines() also breaks on U+2028, U+0085 and similar characters inside row text, which
+    # write_jsonl keeps unescaped (ensure_ascii=False)
+    for n, line in enumerate(path.read_text(encoding="utf-8").split("\n"), 1):
         if not line.strip():
             continue
         d = json.loads(line)

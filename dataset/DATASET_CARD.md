@@ -322,6 +322,24 @@ manifest. If it does not, the source changed upstream, and the pinned revision i
 - US_SOCIAL_SECURITY_NUMBER spans are matched by format, not by jurisdiction.
 - The bias tracks measure the tasks they define. They do not show that any system is free of bias.
 
+## Edition 2 (draft, not released)
+
+Everything above describes v1.0, and none of it has changed. Edition 2 is still a draft. Its data notes are in
+`dataset/edition2/README.md` and its scoring rules in `docs/benchmark/27-evaluation-contract-v2.md`.
+
+- Unpublished slice (owner ruling 15). Edition 2 holds back part of its test split from every public file. Every
+  row in it comes from public upstream data, and the slice can be rebuilt from that data, so it is not a secret test
+  set. It serves contamination checks. A truly private slice, of rows that exist nowhere else, is planned for
+  edition 3. File paths and code still say `private`.
+- Laya truncation (owner ruling 16). Laya reads at most 512 tokens per question, its checkpoint's limit, and edition 2
+  keeps that limit. Truncated rows are flagged in Laya's results and the count is published with its scores.
+- Bedrock and ADDRESS. Bedrock counts a bare city or state as an ADDRESS. Edition 2 labels do not (owner ruling 5),
+  so Bedrock is marked wrong when it flags one.
+- Examined ids. On 2 October 2026, 276 ids from smoke, pilot and diagnostic ledgers were appended to
+  `dataset/frozen/examined-ids.txt`. 147 of them are v1 test rows. They are now flagged as examined, so a rerun of
+  the v1 audit no longer matches the v1.0 audit report. The v1.0 release files are not changed. Read the Splits
+  section's claim that examined rows never reach `test` as true of the list at release time only.
+
 ## Citation
 
 Pending a DOI or a paper. Cite each source dataset you use as its authors ask.

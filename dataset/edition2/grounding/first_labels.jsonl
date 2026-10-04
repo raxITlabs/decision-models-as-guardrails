@@ -1,0 +1,931 @@
+{"id": "f6-faithdial-00085d21e3", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-00f657c0b8", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-01c898025f", "label": "yes", "note": "who found him is not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-02f560dfe8", "label": "no", "note": "restates the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-0334d4857f", "label": "exclude", "note": "near-paraphrase with a hedge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-0353e676f0", "label": "exclude", "note": "popularity claim borderline", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-0482446b7a", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-0575cd461d", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-06cf657529", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-06d5b1cffb", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-081db5211c", "label": "exclude", "note": "mild additions", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-089fbb1177", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-0945a4344d", "label": "exclude", "note": "mention plus question", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-095b2e90f1", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-09cde6cf83", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-0b8211de7b", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-0c0609b55a", "label": "yes", "note": "Swedish flag not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-0c1d90d02d", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-0c688438fb", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-0ca9c73aaa", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-0cc89a427f", "label": "exclude", "note": "borderline: 'not in place back then' is implied by 'changed'", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-0d2cbf50d7", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-0d518ca06f", "label": "no", "note": "garbled paraphrase of the knowledge, no new claim", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-0dfc58a5e2", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-0fbdc6aa04", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-102347d09a", "label": "yes", "note": "'beating out the Simpsons' is not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-115f6bd506", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-13a8abfe64", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-14033aa0b9", "label": "exclude", "note": "hypothetical about fiction", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-145000cada", "label": "no", "note": "restates the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-147ed83111", "label": "exclude", "note": "referent unclear", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-14a678c546", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-160e08639a", "label": "exclude", "note": "advice, not a claim", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-1611ce1631", "label": "exclude", "note": "mild inference about geography", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-18a45f5e0f", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-18bfda2429", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-1c061f2d5d", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-1cee34086a", "label": "no", "note": "copies the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-1e8858c55b", "label": "no", "note": "only claim (schnitzel from chicken) is in the knowledge; the rest is a question", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-1fa00afd59", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-1fd467aab9", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-20636cee50", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-21e4e817ed", "label": "exclude", "note": "truism, no factual claim to check", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-22a29889ac", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-2379b7967d", "label": "exclude", "note": "loose paraphrase", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-272666886d", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-2bc90b3226", "label": "exclude", "note": "'Yeah' to 'is it a warm color' is an implicit unsupported claim; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-2bdb939fed", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-2d8c209676", "label": "exclude", "note": "loose inference", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-3120d46053", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-3262a4e509", "label": "exclude", "note": "loose paraphrase; supported or not depends on reading", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-346639906d", "label": "exclude", "note": "personal statement", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-34c238e3a6", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-34f3d3f3e5", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-35ac4dfa1b", "label": "exclude", "note": "near-paraphrase", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-35bb8683e8", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-35fc1ad83b", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-36455089b7", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-37870fecba", "label": "exclude", "note": "'most popular' overstates 'among the most popular'; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-37c4e75c3d", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-38802fbdfd", "label": "no", "note": "restates the knowledge plus a question", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-3a237fbcb2", "label": "exclude", "note": "personal observation; the date is supported", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-3a610a7662", "label": "exclude", "note": "a question only", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-3ae145eeed", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-3b897284f8", "label": "no", "note": "hedged; school and collegiate swimming are in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-3ba4f7ca5f", "label": "exclude", "note": "personal statement and a question", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-3c910a5c21", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-3dc13a9f0a", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-3f0ede7f83", "label": "no", "note": "restates the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-408f3f38ed", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-411c4ba13c", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-4154ea22be", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-41d9ce6b93", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-444685f53a", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-45f40ab050", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-4782a4a839", "label": "yes", "note": "'used for working' contradicts 'rather than as a working animal'", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-48304f6182", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-489edb575c", "label": "exclude", "note": "'I.T.' is a stated preference; rest copies the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-49210e8929", "label": "no", "note": "one pole is in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-4c1e97f7fc", "label": "exclude", "note": "garbled paraphrase", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-4d0ed297e2", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-4ee21d6077", "label": "no", "note": "restates the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-50ababdb55", "label": "exclude", "note": "minor wording change of the nickname", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-50d48b6ac1", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-50efedd65e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-529a09779c", "label": "exclude", "note": "mild inference", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-53976f6756", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-541937e8b3", "label": "no", "note": "restates the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-5424f3a470", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-551198dac0", "label": "exclude", "note": "'once you get past 3' is not stated; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-558bca5dec", "label": "no", "note": "paraphrases the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-55dcd99cfd", "label": "exclude", "note": "loose paraphrase", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-563f1fbd08", "label": "no", "note": "hedged; corn domesticated in Mexico is in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-57955c0e2b", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-59419bff8f", "label": "no", "note": "Android and Windows releases are in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-59d3990556", "label": "exclude", "note": "advice, vague", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-5a1ab1147a", "label": "no", "note": "applies the knowledge's definition, no new fact", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-5a6e6ccd1b", "label": "exclude", "note": "direction of the river ambiguous", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-5aa463e985", "label": "no", "note": "Bon Iver is an indie folk band per the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-5bd2181ede", "label": "exclude", "note": "'due to the size of the area' is an unsupported cause; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-5bff3f00ba", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-5c4c0bf7b0", "label": "exclude", "note": "garbled", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-5c6daa4f3e", "label": "exclude", "note": "personal taste; the date is supported", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-5d03ac8f77", "label": "yes", "note": "'earliest popularized date 1930s' contradicts the Roaring Twenties", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-5ed9ec72f2", "label": "no", "note": "restates the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-5fc4b73602", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-60ebd0dfff", "label": "no", "note": "the finger injury while working as a carpenter is in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-6216c54bfb", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-6216d72c94", "label": "exclude", "note": "hedged suggestion", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-622d38a9cc", "label": "exclude", "note": "garbled", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-62b128e7cb", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-6303a6ea4b", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-6404a6d600", "label": "exclude", "note": "supported apart from a safety inference", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-64659cdb6d", "label": "exclude", "note": "garbled", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-657744f619", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-658b0ba01f", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-664a691917", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-67b60cd936", "label": "yes", "note": "says curry comes from curry leaves; the knowledge says some curries are spiced with them", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-684d16190c", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-685ab4a33a", "label": "yes", "note": "'some think they might be hazardous' misreads the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-692f345c7c", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-6953062365", "label": "no", "note": "restates the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-69c6f74687", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-69fc5676b1", "label": "exclude", "note": "'his laws' vs 'court opinions'; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-6d5e002628", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-6d71618acd", "label": "no", "note": "restates the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-6d8cadbb47", "label": "no", "note": "character development is in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-6da77d4941", "label": "yes", "note": "training claim not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-6df72d4027", "label": "exclude", "note": "questions only", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-6e141599ec", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-6e6c6af279", "label": "exclude", "note": "loose paraphrase", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-6f457ac6cd", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-7011244320", "label": "no", "note": "paraphrases the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-7094172e63", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-70b55f1e04", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-71c605c8f1", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-7307eaef36", "label": "yes", "note": "'plays the sheriff' is not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-741184805f", "label": "exclude", "note": "feeling, not a checkable claim", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-745ec98895", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-7628aeb7ed", "label": "yes", "note": "'don't have' contradicts 'may also have' venues nearby", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-76890383bd", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-79d87c7003", "label": "yes", "note": "mascot timing not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-7bc226896f", "label": "no", "note": "paraphrases the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-7fe5cd2e68", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-821b603869", "label": "exclude", "note": "evaluative", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-8288bb3432", "label": "exclude", "note": "garbled advice", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-829d7fdc49", "label": "yes", "note": "2011 contradicts the 2001 album", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-849321558c", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-871390103b", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-887c25971d", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-89bf2106be", "label": "exclude", "note": "ambiguous referent", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-8a0b3c950b", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-8a5eceb761", "label": "exclude", "note": "misreads a date range as ancestry; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-8b0deb732c", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-8b518a1a4a", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-8bba5f3486", "label": "yes", "note": "'so they cant hunt animals' contradicts 'in order to hunt animals'", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-8be294ec7f", "label": "no", "note": "restates the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-8bff7fcf5c", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-8cd4ab56b5", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-8e021a4077", "label": "exclude", "note": "personal statement", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-8e03069c92", "label": "exclude", "note": "'must be met' overstates; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-8f09e7b07b", "label": "no", "note": "paraphrases the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-8f6c62e7b5", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-9217f5b9b4", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-92dea87471", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-979f8021b3", "label": "no", "note": "every claim paraphrases the knowledge (surface ships, submarines, other means)", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-982b23cd1a", "label": "no", "note": "'most of the vocabulary is French' paraphrases 'vocabulary based on French terminology'", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-99908e6a5d", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-9bec68935d", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-9cdbc4501d", "label": "exclude", "note": "anecdote presented as etymology; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-9d66be0e5d", "label": "exclude", "note": "mild inference", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-9e691176bf", "label": "no", "note": "copies the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-9f6cbb4ab7", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-9fb1b6d847", "label": "exclude", "note": "mild inference", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a0b271a9d4", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a199eaec48", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a244e21314", "label": "no", "note": "rugby popular in England is in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a463a46b8f", "label": "exclude", "note": "garbled", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a47c7a0caa", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a4c1f25086", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a506d9f9d3", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a538aba711", "label": "exclude", "note": "mild addition about Saint Bernards", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a632797323", "label": "yes", "note": "endangerment and protection laws not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a7a6cbd101", "label": "yes", "note": "debit/credit calculation not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a81a122a94", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a861310453", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a9bdf0a830", "label": "exclude", "note": "questions and a mild popularity remark", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-aba90ab46b", "label": "exclude", "note": "evaluative", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-abb0a5463e", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-ac0ae0ae95", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-acc50afe30", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-aecd4c9057", "label": "exclude", "note": "'lately' only", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-aeeb9029c1", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-af077018d0", "label": "exclude", "note": "'famous fashion' mild addition", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-b8ad6374e4", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-b974e6bbe2", "label": "yes", "note": "'most European countries prevent the killing' contradicts 'all but four permitted' it", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-ba0f941815", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-ba6c677fd6", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-bb50ecd885", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-bccce577e0", "label": "exclude", "note": "generalises iguanas to lizards; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-bd16485db4", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-bde6242b7d", "label": "exclude", "note": "tautology and a question", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-bdf022d53f", "label": "no", "note": "paraphrases the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-beafdecdcf", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-c0aab9c1bc", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-c1972bef18", "label": "yes", "note": "death in 1977 not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-c1c417b6fb", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-c1ceceebca", "label": "yes", "note": "author name and writing advice not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-c2c1753d49", "label": "exclude", "note": "mild evaluative", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-c4300291f6", "label": "exclude", "note": "personal advice", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-c5afe59bca", "label": "exclude", "note": "advice plus supported claim", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-c655bb3293", "label": "exclude", "note": "'roses' vs 'flowers'; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-c799e5bc64", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-c7f3d29c4d", "label": "exclude", "note": "persona claim", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-c9139aa6c1", "label": "exclude", "note": "loose inference", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-ca6e89d42f", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-cae6f248e7", "label": "exclude", "note": "personal location claim", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-cb6e022909", "label": "yes", "note": "brain damage and concussions are not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-cbe1517c3c", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-cd69fcbd23", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-ceeb77b2f6", "label": "yes", "note": "'[quote withheld]' contradicts 'became a teen idol'", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-d1834a61e8", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-d210badf19", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-d2516c0bd6", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-d2fefc3a70", "label": "no", "note": "restates the definition in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-d3513a73bb", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-d39833d13a", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-d5452073ab", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-d6699cb47d", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-d9036cf298", "label": "exclude", "note": "garbled", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-da0701d206", "label": "exclude", "note": "'over the years' only", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-dcf3567f89", "label": "exclude", "note": "near-paraphrase", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-de2243d41b", "label": "yes", "note": "nothing in the knowledge about what Chacon loved", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-deb1680c15", "label": "exclude", "note": "'that's why the show is titled The Simpsons' is unsupported; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-df15e36a3e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-df6c65eb45", "label": "exclude", "note": "mostly supported, mild addition", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-df9d8f39a2", "label": "no", "note": "paraphrases the like-button tracking issue", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-e13c72a346", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-e28c8210df", "label": "exclude", "note": "opinion", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-e3ae2d541f", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-e44e9b57a0", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-e6e9cbbd03", "label": "exclude", "note": "loose inference", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-e7301f2938", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-e734165685", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-e79359ff07", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-e95cac05e2", "label": "exclude", "note": "personal location", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-eadd07116e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-ec7f129366", "label": "exclude", "note": "opinion", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-ee1c1daa9f", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-ee2fed2e55", "label": "exclude", "note": "applies the knowledge to the user", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-eed3bf0f65", "label": "exclude", "note": "'individualized' added; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-ef3446d120", "label": "yes", "note": "Street Outlaws and 'third largest' are not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f0411cf969", "label": "exclude", "note": "near-paraphrase with hedge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f0a6b8720d", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f0bcde7326", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f163e64bd0", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f1d04fe542", "label": "no", "note": "restates the knowledge's finding", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f3bf75f7be", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f44fe8e874", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f4ab51f535", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f4b1d8ce63", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f50860e554", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f609a3decf", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f7139ccebb", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f8347f5eeb", "label": "no", "note": "copies the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f8446ee192", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f9051047df", "label": "no", "note": "lists the cities named in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-fa516d23ff", "label": "no", "note": "copies the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-fe9f5c16b7", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-ff796d04c2", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-ff7c79a84e", "label": "yes", "note": "the naming story is not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-ragbench-002c51621c", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-00f24e9fb4", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-026b6ca06c", "label": "exclude", "note": "hedged inference from the case report; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-04c28ab0e4", "label": "no", "note": "the clopidogrel finding is in Document 5", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-06e65807c5", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-073a9e5b65", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-0753ad4b30", "label": "yes", "note": "'was found to contribute to balance deficits' is not in the documents", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-081077ae91", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-08fbb1a1cb", "label": "exclude", "note": "'Yes' answers a different question than the content supports; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-0c42123dda", "label": "exclude", "note": "garbled; State Chairman vs president", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-0e5a5c3557", "label": "exclude", "note": "1968 follows arithmetically from the season counts; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-1035d9774d", "label": "yes", "note": "Document 1 says the last queen who was also queen of Denmark, not the last queen of Sweden", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-1122c0926f", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-130b4c192a", "label": "exclude", "note": "inference Document 1 arguably supports; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-139acaf264", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-13eeb94076", "label": "yes", "note": "Document 3 dates Moseley's work to 1913, not 1912", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-1401d5ab02", "label": "exclude", "note": "generic hedge", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-1a60394f3a", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-215145d1ca", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-224ff1687d", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-232207f16e", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-235fb76b5d", "label": "no", "note": "Documents 2 and 3 support Warren, the Review and the 1947 prize", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-24e929cdcf", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-25f2b8411c", "label": "exclude", "note": "meta-commentary; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-26a7a678e1", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-26d3e81930", "label": "exclude", "note": "the source's own depth figure is truncated", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-2890cc8167", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-2a04bf6cde", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-2a48d1612b", "label": "exclude", "note": "folds Document 3's patient groups into Document 1's study; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-2b7a143436", "label": "exclude", "note": "hedged inference Document 5 largely supports; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-2b9037e47b", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-2bdc9eb6d7", "label": "no", "note": "the hedged apoE claim is in Document 1", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-2c1f9b19e8", "label": "yes", "note": "'likely can predict' is not in the documents, which give only the aim", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-2dbd31f8ca", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-2e9b38dd68", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-2f6084fde8", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-2ffaba8fea", "label": "exclude", "note": "attributes a postulate to 'the study'; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-32a64079d1", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-33f792df9e", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-355464f38a", "label": "exclude", "note": "turns Document 1's 'suggesting' into a firm yes; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-38055ccd39", "label": "yes", "note": "a build year of 2007 is not in the document (the layout was unveiled in 2007)", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-3ab8c81fa2", "label": "yes", "note": "'Yes ... as shown' is not in the documents, which give only the aim", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-3bcdb093db", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-3ccf401928", "label": "exclude", "note": "degenerate repeated text; the flagged claims are largely supported by Document 1", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-40295a8e90", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-40ed8c02b3", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-413ce1d1c1", "label": "yes", "note": "reverses Document 2: Morita was rigorous like Klein", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-41b15a35c2", "label": "exclude", "note": "restates the question as a study aim; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-42cef946d2", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-42e8c1be02", "label": "yes", "note": "'Yes, it is related' is not in the documents, which give only the aim", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-45930cd74f", "label": "no", "note": "Documents 3 and 4 support the Manor in Hertfordshire", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-471d2dafb1", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-47ca944c9a", "label": "exclude", "note": "'lower success rate' on the first attempt: the direction is not stated", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-484c05f54c", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-4a456e3c6b", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-4a4acd2446", "label": "yes", "note": "'Yes, it can help' is not in the documents, which give only the aim", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-4ba680aca5", "label": "yes", "note": "'the DVD does aid' is not in the documents, which give only methods", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-4bcc0e48d0", "label": "no", "note": "all three documents do give atomic number 80", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-4bdc5d29e0", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-4bea3a80b7", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-4c1afe2534", "label": "exclude", "note": "conclusion drawn from an 'implicit assumption'; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-4c878abadc", "label": "no", "note": "the flagged sentence paraphrases Document 1", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-4d34f4d691", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-4ded6e18b4", "label": "yes", "note": "the cited references are not in the documents", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-50efadb532", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-511e4bff15", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-5363251283", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-5523d5890c", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-58cbdefd58", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-5d0cb1e4cd", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-61eb6383e5", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-62630a0a0d", "label": "yes", "note": "the answer 'no' is not in the documents, which give only the study aim", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-62e14a3ab8", "label": "yes", "note": "'increased fall risk' conclusion is not in the documents", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-6340db0243", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-64ef585983", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-653b331dd3", "label": "exclude", "note": "'first installment' is ambiguous (publication vs chronology)", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-65f3b2ef22", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-672b73d216", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-698413e23b", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-6c1db8750d", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-6cfc6aa25e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-6d292f64e3", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-6d2a1c35be", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-6fe5444e11", "label": "exclude", "note": "'Yes' implies the test predicts outcomes; the documents give only the aim", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-72f4484751", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-739bd954cc", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-7413943d8c", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-7908d765ca", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-7b18756317", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-7e69618201", "label": "exclude", "note": "'viable' is a mild inference; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-7ea2f3336f", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-802ac5cb1b", "label": "yes", "note": "the documents report no results showing the association", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-806e22e7d7", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-812f82c0bd", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-81bebed77f", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-8305f2b9e5", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-83b587c842", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-84f2ae958e", "label": "yes", "note": "the special-election rule in Document 1 is Brazil's, not the USA's", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-8557c23c0b", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-85f56f4f6b", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-86b115c8ff", "label": "yes", "note": "'did show efficacy' is not in the documents, which give no results", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-88a2112706", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-89515dd4e5", "label": "yes", "note": "'Yes, it can affect' is not in the documents, which give only methods", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-8968e089b8", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-8b1df7d6f2", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-8be4e64b56", "label": "exclude", "note": "plausible inference from 'unarmed' vs 'night fighter'; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-8de436d1e4", "label": "yes", "note": "'Yes ... may be more useful' is not in the documents, which give only the aim", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-8e5bf11954", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-8edfb2b333", "label": "yes", "note": "97,500 is not in the documents (32,550; more than 100,000)", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-8f305178c1", "label": "no", "note": "Document 1 gives Eindhoven, 2001", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-91d6778bd4", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-947a865dbe", "label": "no", "note": "Documents 2 and 4 support the League of the Three Emperors", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-956fb3b43a", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-9610749ee4", "label": "exclude", "note": "'biggest tour' vs 'largest organization'; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-982c5582bd", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-984579a4c2", "label": "exclude", "note": "generic synthesis; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-98feab2261", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-9913dba9f9", "label": "yes", "note": "the online experiment's results are not in the documents, only its method", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-99cd2791d0", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-9a6a61cfac", "label": "yes", "note": "the stylist's name is not in the document", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-9a8dd70478", "label": "exclude", "note": "meta-statement about the context", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-9d35548713", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-a143671e2a", "label": "exclude", "note": "'Yes' with only study aims as support; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-a34ee0cd68", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-a86d3b1c5d", "label": "exclude", "note": "two-step inference from Taipei's distance to Keelung; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-ab9a085d35", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-abf9c595e2", "label": "exclude", "note": "Document 4 is truncated at the draft team; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-add4a7cce7", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-ae37e3e193", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-ae64a6b4aa", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-af11af9648", "label": "exclude", "note": "largely supported by Document 1; the rest is a generic hedge", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-af42c3c71e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-af6b78ef02", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-afa85c1464", "label": "exclude", "note": "hedged synthesis of several documents; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-b0274ea56d", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-b08a8ac6b1", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-b0d4d59a3a", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-b0dc31614c", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-b10ee76cff", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-b1bc8e65fb", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-b388916c77", "label": "exclude", "note": "'plantation' is not in the document; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-b408fde371", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-b41e348af7", "label": "exclude", "note": "loose synthesis; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-b424318d34", "label": "yes", "note": "Arsenal won the 1994 Cup Winners' Cup, not the European Cup", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-b51b973eb5", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-b6841dde03", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-b8f7571409", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-b91d4c4868", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-b9b684c0e7", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-ba2b721a5d", "label": "exclude", "note": "generalises one study's procedure to how notification 'is typically made'; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-bae866054d", "label": "no", "note": "Documents 1 and 2 support Sotomayor, Alleyne and Apprendi", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-bc6c8cf81c", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-be8f98b9c4", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-c02ca3ddc4", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-c28f3c0b39", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-c636d16355", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-c74191bac8", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-ca76fa5c04", "label": "exclude", "note": "source has 'Olympischer', not the queried form; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-cb72eb4a87", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-cb9c8f27f0", "label": "exclude", "note": "mostly meta-commentary on the documents; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-cdbd91e550", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-ce67c29a21", "label": "exclude", "note": "mild conflation of two studies; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-cf5b058731", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-cf5e6f546c", "label": "exclude", "note": "tautology, no checkable claim", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-d025bc82e6", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-d12c27dfe8", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-d4af3c50af", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-d4e160c007", "label": "yes", "note": "Document 6 says those markets have since shrunk", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-d5570b459c", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-d66a82d414", "label": "exclude", "note": "Document 1 offers suggestions to avert it; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-d6f4871c47", "label": "yes", "note": "'Yes, it can identify' is not in the documents, which give only the aim", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-d81698efa1", "label": "yes", "note": "'comprised of several houses' is not in the document", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-d8a7c41bad", "label": "exclude", "note": "meta-statement about the context", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-da37d9a3ac", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-dc99f406fe", "label": "exclude", "note": "degenerate reply fragment", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-dff1a39a9c", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-e3a6ad27a1", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-e44fc01c04", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-e50722170e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-e56d7aab73", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-e585e9c2bb", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-edee2b08d3", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f00535aa9e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f0c7250bfa", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f3b02f70a3", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f41abb4b2b", "label": "exclude", "note": "meta-statement; only 'normotensive' is unsupported", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f4d38d65dc", "label": "exclude", "note": "'designer board game' is stated for San Marco only; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f4e7e6009b", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f62fa74630", "label": "exclude", "note": "meta-commentary; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f6c8df2b6e", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f73b3a7863", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f763d6da11", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f8200b8729", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f9c0d8ebab", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f9cd5d5caf", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f9f7e27e0f", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-fb8fcc05f3", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-fc375e7b04", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-fec3c4566b", "label": "no", "note": "Document 2: 'The first novel, Patternmaster (1976)'", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-summedits-010638784d", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-031b9f0081", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-0356220f0b", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-0359c25f4b", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-078ea3a49e", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-078f79515d", "label": "no", "note": "edits are paraphrases", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-07e3bd4555", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-089e5edb89", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-0967f0f2b7", "label": "yes", "note": "job title changed (account executive -> manager)", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-0a4e9c7a0e", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-0bbe9e4ee5", "label": "no", "note": "'discount' -> 'disregard', a paraphrase", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-0bc41724b2", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-0d8805714e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-0d9cdfc4b2", "label": "yes", "note": "'only provides the consultation' contradicts 'also offers benefits and incentives'", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-0e5b0104e3", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-0e6a1256e4", "label": "exclude", "note": "'by region' -> 'by country' changes the schedule rule; labelled consistent", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-0f2aa33682", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-10758929a0", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1240ec63c9", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-12561d0f54", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1276883bf8", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-146cdeb7c2", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-14e7956687", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-17166a7a7e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-17651a46a3", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-17cc83e078", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1885c8ed51", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1ac0f4cf28", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1acb441f63", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1b1365ebf8", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1b4c964ab9", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1b6b5d627f", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1b7e9e45d7", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1c4c9cb32e", "label": "yes", "note": "'excludes area and economic development activities' contradicts the seed's 'including'", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1cadf76c70", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1cf71fa1b7", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1d1be5847e", "label": "no", "note": "only edit is 'novel' -> 'unique', a paraphrase", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1d807dac92", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1dc45ec597", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1dcb7bba4f", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1ded987916", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1f3f50c3ce", "label": "exclude", "note": "inserted 'all' may widen the claim; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-204bcca1be", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-21c37ce184", "label": "yes", "note": "technical term changed (space-by-time -> spatial-by-time)", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-236bd20b62", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-23ce08f36f", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-24c219df82", "label": "exclude", "note": "tense change only; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-2716be00a3", "label": "no", "note": "'is willing to' insertion keeps the meaning", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-2988530077", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-2a05627f6e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-2a1471733f", "label": "no", "note": "edits are paraphrases", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-2a2226e2ab", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-2ae37b44fb", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-2b002a306f", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-2b12b6a836", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-2c454d8ba2", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-2e448a00f0", "label": "no", "note": "edits are paraphrases", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-2f29e8c7e0", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-33e29d0a66", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-341b89c755", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-34f817d76d", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-35c84f7946", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-36b2ce0c5c", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-372322a54f", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-378f109945", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-37c7f27e26", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-38b8136bf3", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-3b1ae99bfc", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-3c571e9242", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-3d8696a635", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-3e04bb0b0e", "label": "exclude", "note": "only a product-bundle name changes; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-3efbff04f2", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-3fa1d83fc6", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4047d29981", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4147fa95cc", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4240795e24", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4444a4b920", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-44a9ebb145", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-44dfcb349f", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-452b076e44", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4638c54741", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4a25eb7342", "label": "exclude", "note": "stray '6)' list marker in the summary", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4abf2b40f3", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4ad5316fdf", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4be2ebc6e1", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4c3ac8e77e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4c4b854b72", "label": "no", "note": "edits are paraphrases", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4c929d9241", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4d499409c1", "label": "no", "note": "edits are paraphrases", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4e3d1a289a", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4fa383d26f", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-5106f67aa3", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-52dc17efa0", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-54bbe7bfe0", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-559bd03734", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-56bce4240a", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-57309e7a79", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-57be5cf531", "label": "no", "note": "edits are paraphrases (health/healthcare insurance)", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-5974b747d5", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-5c1feb60bc", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-5c9fe0fbf9", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-5dfe24a680", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-5e03badee4", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-5eb09f522f", "label": "exclude", "note": "stray '2)' list marker in the summary", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-5edc9f8525", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-5efb916b02", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-5f7839f04e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-615bb64210", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-6283650685", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-635eab4499", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-66384ccea9", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-66ac1aed91", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-681842cba0", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-688d1c80c4", "label": "no", "note": "edits are paraphrases", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-6973f65a29", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-6984351523", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-6dab474dae", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-6e1641f247", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-6f15978edc", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-6f4893cda7", "label": "yes", "note": "'good' -> 'excellent' credit scores narrows the discount condition", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-6f5db23d80", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-702a58b1dc", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-70da08b7ec", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-71c995a8c4", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-71f4cf2894", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-75e4a98726", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-772174a0d6", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-78bfc6f6ea", "label": "no", "note": "edits are paraphrases", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-7aa9b2c033", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-7b196ebb17", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-7c59b38e90", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-7ca4c350cf", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-7cc702ea4c", "label": "no", "note": "edits are paraphrases (offer/present, includes/offers, tailored/tailor-made)", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-7d58d8555a", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-7e1946de2c", "label": "no", "note": "edits are paraphrases", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-7efb4b6d37", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-8036f3aca0", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-829fd335a9", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-845d5f51ff", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-847f2ee2c7", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-85de844c72", "label": "yes", "note": "role changed (marketing expert -> consultant)", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-89a0db8d6a", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-89ae337345", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-8a725e8174", "label": "no", "note": "edits are paraphrases", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-8c9518ea98", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-8cf753a0d0", "label": "exclude", "note": "'plausible customer' is odd wording, not clearly a claim change", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-8d13997419", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-8d1c582c57", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-8d9b07532e", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-8ebaddd53a", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-8f49565ff4", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-9002d901f4", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-905ff33be5", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-91e2acab84", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-92792c7694", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-952d7d263c", "label": "no", "note": "edits are paraphrases", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-9801584291", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-983831c972", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-988804cdc6", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-992c56d861", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-9b8ace6867", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-a02117f5f1", "label": "exclude", "note": "'product' -> 'production' price; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-a0b27b41e9", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-a0e0bf7edf", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-a314cb8f48", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-a4e19b10be", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-a6d8e40a5a", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-a92148a86c", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-aa829d2891", "label": "exclude", "note": "tense change only; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-abaab7a270", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-ac114d364d", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-ad3f278f19", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-ada3968ba7", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-addd2862ef", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-adf9726ffe", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b095166bce", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b0be89e4f1", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b10a21d990", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b1b0e503bf", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b2b906e22d", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b5490b2071", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b5a1db533f", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b61672d9df", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b627c6f620", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b649e628b0", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b67b72ff4f", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b69a27ca7d", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b6ca6079de", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b6d5176f05", "label": "exclude", "note": "paraphrases plus a dropped 'with'; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b716e4cb41", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b78a522c91", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b8ef0ccf92", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-ba0d474a96", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-ba52bfff2e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-baa762f65b", "label": "yes", "note": "the Act's title is changed (Fairness -> Equality)", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-bb23e6a9e5", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-bd9183d1d3", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-bf385da8df", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-bf73948aec", "label": "no", "note": "edits are paraphrases", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-bf79847afd", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c146fa8e4b", "label": "no", "note": "edits are paraphrases", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c1d0d97f80", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c2a356607f", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c36176679b", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c3babf68cd", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c4c8c323a4", "label": "exclude", "note": "'introducing' -> 'discussing' only; borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c4d0d5b63e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c58555e0d2", "label": "no", "note": "edits are paraphrases", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c7586fd164", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c85083eb7f", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c8c1b300e5", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c9778bee08", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-cddd9032e4", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-cf0d21ddba", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-d1d1d77213", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-d1d6f19d41", "label": "yes", "note": "'in addition to' contradicts 'in lieu of'", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-d32d5001ff", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-d3619d62e1", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-d3720ac3b5", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-d4cc422e17", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-d5d9fa2f83", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-d5ec768fb1", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-d61560bb33", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-d85caee5cd", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-d8c07b4c1f", "label": "exclude", "note": "tense change only ('assigns' -> 'will apportion'); borderline", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-da134f26b3", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-da9ad20fd4", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-db9cdd1c27", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-dbc4cfd258", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-de3c1b672f", "label": "no", "note": "edits are paraphrases", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-de60637768", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-e116b001c6", "label": "no", "note": "'examples' -> 'attacks' keeps the meaning", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-e132dd45c1", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-e27d8dfcce", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-e2d94ebecb", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-e3ad561cfc", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-e4116d03f9", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-e419e654cc", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-e41bb374ff", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-e60aebaa75", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-e9058022e4", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-ea93692d26", "label": "yes", "note": "'risk-free' trial -> 'free' trial", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-eaae2efd86", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-ebda495f5a", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-ed56a9803c", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-edae9c3eac", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-f0e14eb84c", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-f28ea090bb", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-f2d63163d0", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-f351807c6c", "label": "exclude", "note": "drops 'not' from 'not very expensive'; labelled consistent", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-f3b892e29e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-f3cdf5cefd", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-f5d2de1287", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-f7236ebc84", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-f9a7330958", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-fa4dbf3c98", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-fd6f6c9311", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-ff1cc40894", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-ff92bb8b66", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-faithdial-00474698e2", "label": "exclude", "note": "garbled paraphrase; reverses cause and effect of the knowledge, borderline", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied"}
+{"id": "f6-faithdial-058bef7885", "label": "yes", "note": "'most countries' where the knowledge says 'some'", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied"}
+{"id": "f6-faithdial-2244dee20d", "label": "yes", "note": "claims Scandinavia is ridiculously cold; not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied"}
+{"id": "f6-faithdial-27e6ca8f35", "label": "no", "note": "restates the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied"}
+{"id": "f6-faithdial-3852c28e87", "label": "yes", "note": "'close second since 1998' is not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied"}
+{"id": "f6-faithdial-39f55afa3a", "label": "yes", "note": "attraction to blonde hair and the history of 'blonde' are not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied"}
+{"id": "f6-faithdial-7316a23060", "label": "no", "note": "a question, no claim", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied"}
+{"id": "f6-faithdial-8000f4ce04", "label": "no", "note": "claims restate the knowledge; the rest is enthusiasm, not a factual claim", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied"}
+{"id": "f6-faithdial-9e8a81838e", "label": "yes", "note": "claim about how children learn syllabaries is not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied"}
+{"id": "f6-faithdial-a8b48c9cca", "label": "yes", "note": "says the channel premiered on that date; the knowledge says the series did", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied"}
+{"id": "f6-ragbench-1129f06f5b", "label": "no", "note": "each claim traces to documents 2 and 3", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-16d66613c7", "label": "no", "note": "restates document 1, hedge kept", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-197a27867b", "label": "exclude", "note": "'skill level does matter' is an interpretation of mixed figures; document 2 also says the IP dipstick was best irrespective of skill", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-afe7b02d75", "label": "yes", "note": "'cardiologists may not always follow guidelines': no document mentions guidelines for this; a hedged unsupported claim counts (ruling 4)", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-bba5ce3963", "label": "no", "note": "document 1", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "reply read against the documents"}
+{"id": "f6-summedits-03eac05071", "label": "no", "note": "drops 'correct': an omission, not an unsupported claim (ruling 4)", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-0c7087f5aa", "label": "no", "note": "paraphrase", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-129a220312", "label": "no", "note": "paraphrase", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-199ed72989", "label": "exclude", "note": "'unmarried' -> 'solitary' shifts the legal category; borderline", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-215918a99d", "label": "no", "note": "'novel' -> 'unique' is a synonym swap", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4e1c6ae986", "label": "no", "note": "paraphrase", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-50c5eb3ffd", "label": "exclude", "note": "'carry' -> 'govern' and 'and' -> 'or' change meaning slightly; borderline", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-582bf653b0", "label": "yes", "note": "Caius -> Marcus, some -> all", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-5860401b8e", "label": "yes", "note": "invented lost battle; kindness -> betrayed", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-5aaf9e2231", "label": "no", "note": "paraphrase", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-6540081a48", "label": "no", "note": "increase -> amplify", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-728a7dd010", "label": "no", "note": "paraphrase", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-889275a1f2", "label": "yes", "note": "adds 'negative' impact", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-8e45317159", "label": "yes", "note": "'no mention of voice recognition' contradicts the seed", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-a30a5583c6", "label": "exclude", "note": "'effectiveness' -> 'efficiency' is a meaning shift; borderline", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-b409a0be8f", "label": "yes", "note": "Coriolanus -> Menenius", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c14a986c7b", "label": "exclude", "note": "'will become' -> 'could qualify as'; borderline", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-cc0471e9ff", "label": "yes", "note": "traitor -> patriot, tribunes -> consuls", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-d49d4926bd", "label": "no", "note": "paraphrase", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-f7c8d28bf0", "label": "yes", "note": "limited -> abundant", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-faithdial-6dd72c6dc8", "label": "yes", "note": "mobility and seeking markets are not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied"}
+{"id": "f6-faithdial-9ac259be85", "label": "yes", "note": "online Black Friday shopping is not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied"}
+{"id": "f6-ragbench-ab82294972", "label": "no", "note": "figures from document 5; the closing sentence restates them with a hedge", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-af0e7475d9", "label": "no", "note": "document 4 supports the association; the conclusion restates it", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "reply read against the documents"}
+{"id": "f6-summedits-05fe067e2c", "label": "no", "note": "'the first verification' -> 'evidence' drops a qualifier; nothing new is asserted (ruling 4: omissions are not failures)", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-24ee6828e1", "label": "no", "note": "the verified seed summary itself", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-2526ac7088", "label": "yes", "note": "diverse -> identical", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-a8ee898cf1", "label": "no", "note": "paraphrase", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c76ef9931e", "label": "no", "note": "the verified seed summary itself", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-f09331d25b", "label": "yes", "note": "common people -> nobles", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-faithdial-bc3d052cb8", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-e197ef285a", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-ragbench-0bae81e73e", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-514c8ee7d8", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-faithdial-96a17962fd", "label": "yes", "note": "fuel efficiency and size of the F-150 are not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied"}
+{"id": "f6-faithdial-f37ade336d", "label": "yes", "note": "pellet smokers and smoke tubes are not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied"}
+{"id": "f6-summedits-3100bbc05e", "label": "yes", "note": "internal -> external, 35% -> 65%", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-a5f363f42f", "label": "yes", "note": "35% increase -> negligible changes", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c2ba22e5a0", "label": "yes", "note": "first -> second, adds 'other'", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-eb1311b44a", "label": "no", "note": "paraphrase; 'deal with' for 'solve' is close", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-12ad6a71b1", "label": "yes", "note": "neural network -> traditional algorithm", "labeller": "first labeller (Claude, AI), 2026-10-03, owner ruling 4 applied", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-faithdial-11edf43b7e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-184b67909c", "label": "yes", "note": "the top 1% and a growing gap are not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-23f687b62e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-2690551649", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-30bbdde7c5", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-31589365eb", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-3be71d242e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-3d155ea3f2", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-3e575d8646", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-3e79fd944a", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-445653a3ee", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-454c69558a", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-4998776baa", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-4beed5592d", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-54557bf8ad", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-5ced1a5625", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-6963f3178d", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-75f70bccaf", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-77f72cce10", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-82d4e15144", "label": "yes", "note": "evolution of bows not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-8df10bf62e", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-920994d963", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-9a5eb57b6a", "label": "yes", "note": "the manager's rules are not in the knowledge", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-9c52622f58", "label": "yes", "note": "'mutations based on where they live' is not what the knowledge says", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a1462d1072", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a1a186533c", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a5a68742bb", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a67931a665", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a80a060f52", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a8810aded4", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-a952a99fcb", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-abffa07827", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-acd170ba28", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-b5f93e1c94", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-c5ac7844ef", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-d1421e2440", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-d5f3911f99", "label": "yes", "note": "[withheld: quotes row text that is private or whose source licence is not cleared; original in local/withheld-rationales.jsonl]", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-db546e2234", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-dbccccafdd", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-e34a20ed21", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-e8587b2cce", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-e971be818b", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-ea3f6cd318", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-edb2c79452", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-eecc3a0ef8", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f237bd0c26", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f5acd34403", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-faithdial-f8f0ed7124", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02"}
+{"id": "f6-ragbench-099de6233a", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-11fa1a5b7d", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-13a80bada4", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-13e5cb4bdf", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-1bfae7b782", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-1cfe5de0ee", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-20ec36d397", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-21bfbce22a", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-38110ebd71", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-39cea2319a", "label": "yes", "note": "the documents credit Archimedes with the area formula and bounds, not the circumference formula", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-3f20d17068", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-44f9682bfe", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-465762df7a", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-48bc164d41", "label": "yes", "note": "Limbo was developed by Playdead, per Document 3", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-583e2f26a3", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-59e013bc58", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-5c28e26874", "label": "yes", "note": "the birth date is not in the document", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-81866e3556", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-86ab1c3cf2", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-87b47016fb", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-8af940d9d4", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-8e162e4693", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-99719b973d", "label": "no", "note": "Document 1 reports the suggested possible link", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-9c0bab118c", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-a4bfc91110", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-a50d8be1fa", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-bedb93ec94", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-c444c59ac7", "label": "yes", "note": "the guest appearances belong to a different character (the daughter) in Document 1", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-d19143b33a", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-d269877c28", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-dc34751478", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-ed4e797c99", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f16aa515d1", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f37df22070", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f5d9bb7f83", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-ragbench-f92e77f2e9", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "reply read against the documents"}
+{"id": "f6-summedits-018eb14c64", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-01e55b849c", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-055762d1e2", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-092b52d8fa", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1406f497af", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-15b35bab1a", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-1c1a13c77f", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-200cc1ed41", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-21b3c46080", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-21cbdd345a", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-255e420b07", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-26e756660b", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-2717d764b7", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-2ea346b8af", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-378b6fc8e7", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-3ccae7b4c8", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-44621b7cac", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4c558719ef", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-4ed57f0128", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-576d71a6fb", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-5774e5f518", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-58b18a6ec4", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-5e3303be96", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-63c363c1fc", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-64fb650b55", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-66fa674ec1", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-6ce43dde5f", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-7323b46b2b", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-73682b6760", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-74acb3759d", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-776853eba0", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-783f2f61a5", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-7baa429ab2", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-843375b145", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-8887aa6497", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-924f128480", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-984eab582d", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-996595c54e", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-9a711fda8a", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-9d798c051f", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-a60a8a41fe", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-a7d8f912e2", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-a9acccb354", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-af11b9abe7", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-be3beb6577", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c125d7ccd4", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c36123d6fa", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-c909cc02f3", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-d230063cdc", "label": "yes", "note": "the Act's title is changed (Redesign -> Restructuring)", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-d4157392e4", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-d71638f967", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-d9542fe41e", "label": "no", "note": "'allow' -> 'award' a tax credit, a paraphrase", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-db2a7e7f20", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-dcbad0e3e7", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-def92e8216", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-df11109579", "label": "yes", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-df92d44525", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-eb1c2efa91", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-eddc342be5", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-fc19103252", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-fd5c9b8cc7", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
+{"id": "f6-summedits-fec5b2924c", "label": "no", "note": "", "labeller": "first labeller (Claude, AI), 2026-10-02", "basis": "edit diff against the verified seed summary"}
