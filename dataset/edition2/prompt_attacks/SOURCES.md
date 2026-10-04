@@ -246,6 +246,29 @@ authored rows (`e2_prompt_attacks_controls_v3.py`, CC-BY-4.0, `authored-2026-10-
 the in-the-wild quotas whose label follows a phrase. No row was retired or chosen by a model. Numbers, method and the
 limits of the pass are in `ADVERSARIAL-FILTERING.md`.
 
+## 5 October, round 6
+
+pplx-decider-v1-27b's published recipe trains on the Aegis 2.0 train split and tunes on its validation split. Aegis
+2.0 copied many prompts from the in-the-wild jailbreak set and some from jackhhao, so 275 public test and 116
+unpublished rows here had their text in those splits. All of them left edition 2 (`EXCLUDED.jsonl`, reason "text in
+pplx-decider-v1-27b training or development data"). 65 tune rows matched too. They stay, and
+`dataset/edition2/MODEL-TRAINING-OVERLAP.json` lists them.
+
+The builder then refilled the quotas from the same pools, under the same PLAN and selection. Two new screens apply to
+rows that were not in the previous build. A row whose text is in any split a benchmarked model's recipe trains or
+tunes on stays out (`model_overlap.seen_by_model`, 3,318 in-the-wild rows). So does a row that repeats another edition 2
+suite's text once case and punctuation are ignored (12 rows; one of them repeated a public content row whose copy here
+would have been withheld text). Previous tune rows that a smoke ledger has used since keep their place: the builder no
+longer treats their ids as overlap. No row was retired or chosen by a model score.
+
+The rebuild added 405 rows, almost all from the in-the-wild set. Two of them share text with TypeSafe's cookbook and
+left under ruling 18, so 403 remain. A blind labeller saw them under opaque ids with only the policy
+(`relabel-round6.jsonl`). It agreed on 391. The 12 disputes wait for the owner as question PA-Q13; rulings 2 to 5 were
+not applied to them.
+
+The shortcut gate moved by at most 0.013 and still fails (48 of 120 cells), so the suite stays provisional. Only the
+recorded numbers in `benchmark/contracts/v2.0.json` changed.
+
 ## Known limits
 
 - **Leakage attacks are 78% Lakera** (Mosscap 316, Gandalf summarization 26), the vendor whose Gandalf data made up

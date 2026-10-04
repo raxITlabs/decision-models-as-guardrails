@@ -460,7 +460,7 @@ def test_word_filters_and_round5_are_wired_in():
     assert e2.SCORED[("F4", "profanity")] == (e2.TEST_FLOOR, e2.TEST_FLOOR)
     assert ("F4", "word") not in e2.SCORED                    # ruling 13: custom words are outside the score
     assert "relabel-round5.jsonl" in e2_local.RELABEL_ROUNDS
-    assert [e2_local.round_number(n) for n in e2_local.RELABEL_ROUNDS] == [1, 2, 3, 5]
+    assert [e2_local.round_number(n) for n in e2_local.RELABEL_ROUNDS] == [1, 2, 3, 5, 6]   # round 6: 5 October
     for suite in ("prompt_attacks", "word_filters"):
         assert "relabel-round5.jsonl" in e2_local.ROW_FILES[suite]
 
@@ -524,7 +524,9 @@ def test_resolved_disputes_return_with_their_final_labels_and_the_rest_wait(part
             else:
                 assert bucket in ("review", "review_private"), rid
                 assert r.attribute["e2"]["owner_question"] == d["question"]
-    assert n_resolved >= 75        # 80 before the round 3 pass (+9) and the ruling 8 confirmations went back (-14)
+    # 80 before the round 3 pass (+9) and the ruling 8 confirmations went back (-14); 5 October, round 6: resolved rows
+    # whose text is in pplx-decider-v1-27b's training or development data left with the owner exclusion (-4)
+    assert n_resolved >= 71
 
 
 def _suite(name):
@@ -664,7 +666,8 @@ def test_ruling8_resolutions_wait_for_the_owners_confirmation():
     lines = [d for d in e2._jsonl(e2_local.suite_dir("content") / "resolutions.jsonl")]
     assert not [d["id"] for d in lines if d.get("status") == e2.RESOLVED and d.get("ruling") == 8]
     confirm = [d for d in lines if d.get("question") == "C-R8"]
-    assert len(confirm) == 14 and all(d["status"] == e2.OWNER_REVIEW and d["proposed"]["ruling"] == 8 for d in confirm)
+    # 14 until 5 October; one of those rows left with the pplx-decider-v1-27b exclusion (round 6)
+    assert len(confirm) == 13 and all(d["status"] == e2.OWNER_REVIEW and d["proposed"]["ruling"] == 8 for d in confirm)
     assert content.name == "content"
 
 

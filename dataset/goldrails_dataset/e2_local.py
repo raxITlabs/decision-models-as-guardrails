@@ -62,14 +62,15 @@ DEFAULT_STYLE = {"ensure_ascii": False, "sort_keys": True}
 # resolutions.jsonl: the owner-ruling resolution of each disputed row (docs/benchmark/29-owner-rulings-2026-10-03.md).
 ROW_FILES = {"content": ("relabel.jsonl", "resolutions.jsonl"),
              "prompt_attacks": ("relabel.jsonl", "relabel-round2.jsonl", "relabel-round3.jsonl", "relabel-round5.jsonl",
-                                "resolutions.jsonl"),
+                                "relabel-round6.jsonl", "resolutions.jsonl"),
              "denied_topics": ("relabel.jsonl", "resolutions.jsonl"),
              "pii": ("relabel.jsonl", "resolutions.jsonl", "corrections.jsonl"),
              "grounding": ("relabel.jsonl", "relabel-round3.jsonl", "first_labels.jsonl", "resolutions.jsonl"),
-             "word_filters": ("relabel.jsonl", "relabel-round5.jsonl", "resolutions.jsonl")}
+             "word_filters": ("relabel.jsonl", "relabel-round5.jsonl", "relabel-round6.jsonl", "resolutions.jsonl")}
 # Second-label rounds in order. The number is in the name (round 4 was an owner review, not a labelling round), so a
 # round keeps its own number whatever files a suite has.
-RELABEL_ROUNDS = ("relabel.jsonl", "relabel-round2.jsonl", "relabel-round3.jsonl", "relabel-round5.jsonl")
+RELABEL_ROUNDS = ("relabel.jsonl", "relabel-round2.jsonl", "relabel-round3.jsonl", "relabel-round5.jsonl",
+                  "relabel-round6.jsonl")
 
 
 def round_number(name: str) -> int:
@@ -615,6 +616,40 @@ def split(suites=SUITES, root: Path = E2, pol: dict | None = None) -> dict:
         if s in report:
             report[s]["notes"] = publish_notes(s, private_ids, withheld, texts, root)
     return report
+
+
+def purge(ids: set, suites=SUITES, root: Path = E2) -> dict:
+    """Take rows out of every per-suite file: candidates, the per-row files (second labels, resolutions,
+    corrections), order.txt and the text cache, tracked and private parts alike. For rows an owner exclusion
+    (EXCLUDED.jsonl) has taken out of edition 2, so no candidate or label file still names them. Returns lines removed
+    per suite."""
+    out = {}
+    for s in suites:
+        n = 0
+        for d in (suite_dir(s, root), private_dir(s, root)):
+            for name in ("candidates.jsonl",) + tuple(ROW_FILES.get(s, ())):
+                p = d / name
+                if not p.exists():
+                    continue
+                lines = [l for l in p.read_text(encoding="utf-8").split("\n") if l.strip()]
+                keep = [l for l in lines if json.loads(l)["id"] not in ids]
+                if len(keep) != len(lines):
+                    _write_lines(p, keep)
+                    n += len(lines) - len(keep)
+        order = private_dir(s, root) / "order.txt"
+        if order.exists():
+            o = order.read_text(encoding="utf-8").split()
+            if set(o) & ids:
+                _write_lines(order, [i for i in o if i not in ids])
+        cache = text_cache(s, root)
+        if cache.exists():
+            lines = [l for l in cache.read_text(encoding="utf-8").split("\n") if l.strip()]
+            keep = [l for l in lines if json.loads(l)["id"] not in ids]
+            if len(keep) != len(lines):
+                _write_lines(cache, keep)
+        if n:
+            out[s] = n
+    return out
 
 
 # --- notes ----------------------------------------------------------------------------------------------------------

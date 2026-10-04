@@ -7,15 +7,15 @@
       "path": "F1.tune.jsonl",
       "feature": "F1",
       "split": "tune",
-      "n": 354,
-      "sha256": "ffb7bd6f177e6eee5310440c9883a0babec9f41cda949e4b812eaaef64b6afd5"
+      "n": 348,
+      "sha256": "fadaf2fe31b54e12a082df6e01c1964c87c68e7f96c0c7504ce555191a9cf658"
     },
     {
       "path": "F2.tune.jsonl",
       "feature": "F2",
       "split": "tune",
-      "n": 525,
-      "sha256": "6914cd6353433a00eeab1e92158c969d1b03fbfddfd0b44cc8dc3d9df0e54dbd"
+      "n": 544,
+      "sha256": "faf68b2ece5c01acb29010949a51ea1c37a4a3fb5fcae2516c94347063e9b33c"
     },
     {
       "path": "F3.tune.jsonl",
@@ -28,8 +28,8 @@
       "path": "F4.tune.jsonl",
       "feature": "F4",
       "split": "tune",
-      "n": 146,
-      "sha256": "6dfdceebf9c4a61049cb85df51e01c6e7958f85161bc811b5704c8dbb30e799d"
+      "n": 162,
+      "sha256": "52d7fbb0b8f8a269c3359cb8a5f5e4722d3afd91173bac3d89bed717249af031"
     },
     {
       "path": "F5.tune.jsonl",
@@ -49,15 +49,15 @@
       "path": "F1.test.jsonl",
       "feature": "F1",
       "split": "test",
-      "n": 1918,
-      "sha256": "82b7a89781caec1c5344d96a969613e87928fc90ce389bb03a34897e7c4c0aa9"
+      "n": 2092,
+      "sha256": "765a1d224a4301719b67fecec30d53e337cd7354391c04ab35cf80508ffef744"
     },
     {
       "path": "F2.test.jsonl",
       "feature": "F2",
       "split": "test",
-      "n": 1882,
-      "sha256": "417424a507b2aa7c469bf0a640254395cef568150a543f6e341f62943ecab84d"
+      "n": 1815,
+      "sha256": "3ded53447d6d399289cdc926f41c90c843511dcca28136d2d3f52111e976f463"
     },
     {
       "path": "F3.test.jsonl",
@@ -70,8 +70,8 @@
       "path": "F4.test.jsonl",
       "feature": "F4",
       "split": "test",
-      "n": 733,
-      "sha256": "7d9429b7b9c45161f16726889bafa62ac6dad1f631ae7bdc832a196ec3afcc4d"
+      "n": 678,
+      "sha256": "e1e3e0df2a64ac08d25dd1586f8cd46dc0c636740d7fb3661755cd4cf1979bc6"
     },
     {
       "path": "F5.test.jsonl",
@@ -89,21 +89,21 @@
     }
   ],
   "private_slice": {
-    "rows": 1530,
+    "rows": 1585,
     "where": "build/private/ (git-ignored, never published)"
   },
   "needs_owner_review": {
-    "public": 210,
-    "private": 53,
+    "public": 194,
+    "private": 48,
     "file": "needs-owner-review.jsonl"
   },
   "resolved_by_ruling": {
-    "public": 64,
-    "private": 11,
+    "public": 62,
+    "private": 9,
     "file": "<suite>/resolutions.jsonl"
   },
   "dropped": {
-    "public": 20,
+    "public": 18,
     "private": 8,
     "file": "dropped.jsonl",
     "rule": "cross-suite duplicate text in another split (test, then private, kept); a test or private row overlapping an examined, ledger or v1 row"

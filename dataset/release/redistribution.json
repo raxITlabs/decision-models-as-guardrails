@@ -325,6 +325,18 @@
    "reviewed": false,
    "evidence": "HF nvidia/Nemotron-PII at b70ffaf, test split (dataset/edition2/pii/SOURCES.md says the v1.3 rights.json cleared it; this file had no entry)",
    "note": "pending owner review: no entry existed, so the default (ids_only) applied; ids, labels and hashes ship, the text stays in a git-ignored local cache"
+  },
+  "e2_content_aegis2_test": {
+   "mode": "text",
+   "basis": "CC-BY-4.0",
+   "reviewed": false,
+   "evidence": "same HF repo and revision as aegis2 (d86bb8b), not gated; held to the e2_content_aegis2_val precedent until reviewed"
+  },
+  "e2_content_beavertails": {
+   "mode": "ids_only",
+   "basis": "CC-BY-NC-4.0 (non-commercial)",
+   "reviewed": false,
+   "evidence": "HF cardData.license cc-by-nc-4.0 at 8401fe6, not gated; text rebuilt locally from the pinned revision"
   }
  },
  "gate": "A source whose mode is text but reviewed is false ships ids_only until its licence review is recorded here as reviewed: true.",

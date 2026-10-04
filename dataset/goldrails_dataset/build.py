@@ -108,8 +108,9 @@ REVIEW_GATED = AUTHORED + ("civil_comments_profanity", "e2_oasst2", "ragbench", 
 # goldrails_dataset.edition2 assembles them. Re-sampling with build() would undo the first labeller's drops and the
 # length matching. Provenance source names, not registry keys (e2_pii_nemotron rows keep source nemotron_pii).
 E2_PLAN = {
-    ("F1", "input"): ["aegis2", "openai_moderation", "ailuminate_demo"],
-    ("F1", "output"): ["e2_content_aegis2_val", "e2_content_harmbench_cls"],
+    ("F1", "input"): ["aegis2", "openai_moderation", "ailuminate_demo", "e2_content_aegis2_test"],
+    # 5 October 2026: e2_content_aegis2_val left (pplx-decider-v1-27b tunes on the Aegis validation split)
+    ("F1", "output"): ["e2_content_beavertails", "e2_content_harmbench_cls"],
     ("F1", "harmful_goal"): ["e2_content_harmbench", "e2_content_xstest", "e2_content_orbench80k"],
     ("F1", "over_refusal"): ["orbench", "e2_content_orbench80k"],
     ("F2", "injection"): ["deepset_injections_test", "yanis_prompt_injections", "neuralchemy_injection", "notinject",

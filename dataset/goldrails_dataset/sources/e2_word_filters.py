@@ -178,33 +178,47 @@ def read_civil_comments():
                    "insult": float(r["insult"] or 0), "toxicity": float(r["toxicity"] or 0)}
 
 
-def read_rtp():
-    with open(_hf(RTP, "prompts.jsonl"), encoding="utf-8") as fh:
-        for line in fh:
-            d = json.loads(line)
-            p, c = d["prompt"], d["continuation"]
-            text = ((p.get("text") or "") + (c.get("text") or "")).strip()
-            sc = lambda k: max(float(p.get(k) or 0), float(c.get(k) or 0))
-            yield {"source": RTP["name"], "source_id": f"{d['filename']}:{d['begin']}-{d['end']}",
-                   "group": f"rtp:{d['filename']}", "role": "user", "text": text, "upstream_split": "all",
-                   "scores": {k: round(sc(k), 4) for k in ("toxicity", "profanity", "insult")},
-                   "challenging": d.get("challenging"), "insult": sc("insult"), "toxicity": sc("toxicity")}
+def _lines(src: dict, f: str, stream: bool):
+    """Lines of an upstream file: the Hugging Face cache (downloading it whole), or with ``stream`` read over HTTP at
+    the pinned revision without keeping a copy (round 6: the disk could not hold the two files)."""
+    if not stream:
+        opener = gzip.open if f.endswith(".gz") else open
+        with opener(_hf(src, f), "rt", encoding="utf-8") as fh:
+            yield from fh
+        return
+    import io
+    import urllib.request
+    url = f"https://huggingface.co/datasets/{src['repo']}/resolve/{src['revision']}/{f}"
+    with urllib.request.urlopen(url) as resp:
+        raw = gzip.GzipFile(fileobj=resp) if f.endswith(".gz") else resp
+        yield from io.TextIOWrapper(raw, encoding="utf-8")
 
 
-def read_oasst(skip_ids: set):
-    with gzip.open(_hf(OASST, OASST["files"][0]), "rt", encoding="utf-8") as fh:
-        for line in fh:
-            d = json.loads(line)
-            if d.get("lang") != "en" or d.get("deleted") or d.get("review_result") is False:
-                continue
-            if d["message_id"] in skip_ids:
-                continue
-            dx = d.get("detoxify") or {}
-            yield {"source": OASST["name"], "source_id": d["message_id"], "group": f"oasst2:{d['message_tree_id']}",
-                   "role": "user" if d["role"] == "prompter" else "assistant", "text": (d["text"] or "").strip(),
-                   "upstream_split": "all",
-                   "scores": {k: round(float(dx.get(k) or 0), 4) for k in ("toxicity", "obscene", "insult")},
-                   "insult": float(dx.get("insult") or 0), "toxicity": float(dx.get("toxicity") or 0)}
+def read_rtp(stream: bool = False):
+    for line in _lines(RTP, "prompts.jsonl", stream):
+        d = json.loads(line)
+        p, c = d["prompt"], d["continuation"]
+        text = ((p.get("text") or "") + (c.get("text") or "")).strip()
+        sc = lambda k: max(float(p.get(k) or 0), float(c.get(k) or 0))
+        yield {"source": RTP["name"], "source_id": f"{d['filename']}:{d['begin']}-{d['end']}",
+               "group": f"rtp:{d['filename']}", "role": "user", "text": text, "upstream_split": "all",
+               "scores": {k: round(sc(k), 4) for k in ("toxicity", "profanity", "insult")},
+               "challenging": d.get("challenging"), "insult": sc("insult"), "toxicity": sc("toxicity")}
+
+
+def read_oasst(skip_ids: set, stream: bool = False):
+    for line in _lines(OASST, OASST["files"][0], stream):
+        d = json.loads(line)
+        if d.get("lang") != "en" or d.get("deleted") or d.get("review_result") is False:
+            continue
+        if d["message_id"] in skip_ids:
+            continue
+        dx = d.get("detoxify") or {}
+        yield {"source": OASST["name"], "source_id": d["message_id"], "group": f"oasst2:{d['message_tree_id']}",
+               "role": "user" if d["role"] == "prompter" else "assistant", "text": (d["text"] or "").strip(),
+               "upstream_split": "all",
+               "scores": {k: round(float(dx.get(k) or 0), 4) for k in ("toxicity", "obscene", "insult")},
+               "insult": float(dx.get("insult") or 0), "toxicity": float(dx.get("toxicity") or 0)}
 
 
 # --- what must not be selected again ------------------------------------------------------------------------------------
@@ -316,6 +330,85 @@ def select(write: bool = True) -> list:
     return pool
 
 
+# --- round 6 (5 October 2026): profanity top-up ---------------------------------------------------------------------
+# 126 public test and 28 unpublished Civil Comments rows left edition 2: their text is in the Civil Comments
+# validation split, which pplx-decider-v1-27b's published recipe tunes on (model_overlap; EXCLUDED.jsonl). Public
+# test profanity fell to 241 yes. Round 6 adds rows from the two sources no published recipe draws from (RTP and
+# OASST2), with the same buckets and screens as ``select`` plus: no text, group (RTP document, OASST2 tree) or
+# near-duplicate of any row already in the pool, and no text in a split a benchmarked model trains or tunes on
+# (model_overlap.seen_by_model). Order is salted (e2_local.salted). New rows carry "round": 6 in the pool; their
+# groups get salted splits (``assign_splits_salted``) and the groups already in the pool keep theirs.
+ROUND6 = 6
+ROUND6_TARGETS = {
+    RTP["name"]: {"strong": 45, "ambiguous": 15, "confuser": 8, "clean": 5},
+    OASST["name"]: {"strong": 25, "ambiguous": 10, "confuser": 7, "clean": 5},
+}
+
+
+def select_round6(write: bool = True, stream: bool = True) -> dict:
+    """Append the round 6 rows to the frozen pool. Returns counts per source and bucket."""
+    from goldrails_bench import overlap
+    from .. import e2_local, model_overlap
+    pool = read_pool()
+    if any(r.get("round") == ROUND6 for r in pool):
+        raise SystemExit("round 6 rows are already in the pool")
+    seen, v1_f4 = reference_texts()
+    seen |= {norm(r["text"]) for r in pool}
+    ref_sh = [overlap.shingles(t) for t in v1_f4 if t] + [overlap.shingles(r["text"]) for r in pool]
+    taken_groups = {r["group"] for r in pool}
+    skipped, new = Counter(), []
+    readers = ((RTP["name"], read_rtp(stream)), (OASST["name"], read_oasst(denied_topics_oasst_ids(), stream)))
+    for name, rows in readers:
+        targets = ROUND6_TARGETS[name]
+        pools, taken_text = defaultdict(list), set()
+        for r in rows:
+            t = r["text"]
+            if not LENGTH[0] <= len(t) <= LENGTH[1] or not english(t):
+                continue
+            n = norm(t)
+            if n in seen or n in taken_text or r["group"] in taken_groups:
+                continue
+            b, terms = bucket_of(t, r["insult"], r["toxicity"])
+            if b not in targets:
+                continue
+            taken_text.add(n)
+            pools[b].append({**{k: v for k, v in r.items() if k not in ("insult", "toxicity")}, "bucket": b,
+                             "terms": terms})
+        groups = set()
+        for b in BUCKETS:
+            if b not in targets:
+                continue
+            cand = sorted(pools[b], key=lambda r: e2_local.salted("e2wf-round6", r["source"], r["source_id"]))
+            per_word, picked = Counter(), 0
+            for r in cand:
+                if picked >= targets[b]:
+                    break
+                if r["group"] in groups:
+                    continue
+                if b == "confuser":
+                    key = r["terms"]["confusers"][0]
+                    if per_word[key] >= CONFUSER_CAP:
+                        continue
+                if model_overlap.seen_by_model([r["text"]]):
+                    skipped[f"{name}:model_training_overlap"] += 1
+                    continue
+                sh = overlap.shingles(r["text"])
+                if any(overlap.is_near_duplicate(sh, v) for v in ref_sh):
+                    skipped[f"{name}:near_duplicate_of_pool_or_v1"] += 1
+                    continue
+                if b == "confuser":
+                    per_word[key] += 1
+                groups.add(r["group"])
+                ref_sh.append(sh)
+                new.append({**r, "round": ROUND6, "key": make_id("F4", r["source"], r["source_id"])})
+                picked += 1
+    if write:
+        out = sorted(pool + new, key=lambda r: r["key"])
+        POOL.write_text("".join(json.dumps(r, ensure_ascii=False, sort_keys=True) + "\n" for r in out), encoding="utf-8")
+    return {"added": dict(sorted(Counter(f"{r['source']}:{r['bucket']}" for r in new).items())),
+            "skipped": dict(sorted(skipped.items())), "ids": [r["key"] for r in new]}
+
+
 def read_pool() -> list:
     from .. import e2_local
     if not POOL.exists():
@@ -392,6 +485,23 @@ def assign_splits(items: list) -> dict:
     return out
 
 
+def assign_splits_salted(items: list, tag: str = "e2wf-split-round6") -> dict:
+    """``assign_splits`` for groups added after the first draw: same shares per stratum, in an order salted with the
+    owner's private salt (e2_local.salted), so the published code does not give which rows are unpublished."""
+    from .. import e2_local
+    strata = defaultdict(set)
+    for g, s in items:
+        strata[s].add(g)
+    out = {}
+    for s, groups in sorted(strata.items()):
+        order = sorted(groups, key=lambda g: e2_local.salted(tag, g))
+        n = len(order)
+        for k, g in enumerate(order):
+            frac = k / n
+            out[g] = "test" if frac < SHARES[0][1] else "tune" if frac < SHARES[0][1] + SHARES[1][1] else "private"
+    return out
+
+
 def profanity_candidates() -> tuple[list, list]:
     """(candidate rows, excluded rows) from the frozen pool and the first labels."""
     pool, labels = read_pool(), read_first_labels()
@@ -408,7 +518,11 @@ def profanity_candidates() -> tuple[list, list]:
     # stratum: (source, label of the group's first row by key); a mixed group follows its first row
     items = [(g, (min(rs, key=lambda r: r["key"])["source"], labels[min(rs, key=lambda r: r["key"])["key"]]["label"]))
              for g, rs in by_group.items()]
-    splits = assign_splits(items)
+    # round 6 groups (every member added in round 6) are split on their own, salted; the first draw's groups keep
+    # the split they had
+    new = {g for g, rs in by_group.items() if all(r.get("round") == ROUND6 for r in rs)}
+    splits = assign_splits([it for it in items if it[0] not in new])
+    splits.update(assign_splits_salted([it for it in items if it[0] in new]))
     out = []
     for r in kept:
         lab = labels[r["key"]]
@@ -418,6 +532,11 @@ def profanity_candidates() -> tuple[list, list]:
                     "source": r["source"], "licence": SOURCES[r["source"]]["licence"], "bucket": r["bucket"],
                     "labeller": lab["labeller"], "label_rationale": lab["rationale"], "label_basis": "llm",
                     "upstream_split": r["upstream_split"]})
+    # rows the owner took out of edition 2 (EXCLUDED.jsonl) leave the candidates; the splits above still count them,
+    # so no other row moves
+    from ..edition2 import excluded as owner_excluded
+    drop = owner_excluded()
+    out = [o for o in out if o["id"] not in drop]
     return out, excluded
 
 
@@ -635,7 +754,9 @@ def build() -> dict:
 def main(argv=None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     cmd = argv[0] if argv else "counts"
-    if cmd == "select":
+    if cmd == "select-round6":
+        print(json.dumps({k: v for k, v in select_round6().items() if k != "ids"}, indent=1))
+    elif cmd == "select":
         pool = select()
         print(json.dumps({"rows": len(pool), "by_source_bucket": dict(sorted(Counter(
             f"{r['source']}:{r['bucket']}" for r in pool).items()))}, indent=1))

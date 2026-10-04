@@ -77,3 +77,23 @@ rows), the frozen pool, the first labels with exclusions and the packet. `local/
 other edition 2 suites. It found no shared id, no shared text and no near-duplicate (word 3-gram Jaccard or containment
 at 0.8 or above). Selection already skipped any text found in a v1 build, a frozen file, a results ledger or another
 edition 2 suite.
+
+## Round 6, 5 October 2026
+
+pplx-decider-v1-27b's published recipe tunes on the Civil Comments validation split. 126 public test and 28
+unpublished `e2_profanity_civil_comments` rows came from that split, so they left edition 2 (`EXCLUDED.jsonl`, reason
+"text in pplx-decider-v1-27b training or development data"). 19 tune rows from it stay and are listed in
+`dataset/edition2/MODEL-TRAINING-OVERLAP.json`. Public test profanity fell to 241 yes.
+
+`select-round6` drew 103 more rows from RTP and OASST2, the two sources no published recipe uses, with the same
+buckets as the first draw. A new row may not share a text, an RTP document, an OASST2 tree or a near-duplicate with
+any pool row, and its text may not be in any split a benchmarked model trains or tunes on
+(`goldrails_dataset.model_overlap`). OASST2 ran out of unused trees with a strong term after 8 rows. The draw order
+and the split of the new groups are salted (`assign_splits_salted`), and every older group keeps its split, so
+`build` still reproduces the first draw's rows unchanged. The pool marks the new rows `"round": 6`.
+
+Claude first-labelled the 103 rows against the definition (66 yes, 34 no, 3 left out because the definition does not
+settle them). A separate blind labeller, who saw only the definition and the shuffled texts under opaque ids,
+second-labelled the 100 kept rows (`relabel-round6.jsonl`).
+
+    uv run python -m goldrails_dataset.sources.e2_word_filters select-round6   # streams RTP and OASST2, no download

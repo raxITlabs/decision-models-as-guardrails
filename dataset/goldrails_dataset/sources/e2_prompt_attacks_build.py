@@ -379,8 +379,37 @@ class _Pool:
         return [c for c in list(self.cells) if self.head(c) is not None]
 
 
+MODEL_SCREEN = "new-row screen: text in a benchmarked model's published training or development data (model_overlap)"
+CROSS_SUITE_SCREEN = "new-row screen: same text (punctuation and case aside) as a row of another edition 2 suite"
+
+
+def loose(text: str) -> str:
+    """Lower case, punctuation as spaces, whitespace collapsed (e2_content.norm_loose)."""
+    return re.sub(r"\s+", " ", re.sub(r"[^\w\s]", " ", (text or "").lower())).strip()
+
+
+def other_suite_texts() -> set:
+    """``loose`` texts of every other edition 2 suite's candidates (text restored where this machine has it)."""
+    out = set()
+    for s in e2_local.SUITES:
+        if s == SUITE:
+            continue
+        try:
+            rows = e2_local.candidates(s)
+        except e2_local.LocalDataMissing:
+            rows = e2_local.candidates(s, private=False, text=False)
+        for c in rows:
+            for st in (c.get("state"), (c.get("record") or {}).get("state")):
+                for t in [(st or {}).get("text")] + [x.get("text") for x in (st or {}).get("context") or []
+                                                     if isinstance(x, dict)]:
+                    if t:
+                        out.add(loose(t))
+    return out
+
+
 def select(rows: list, ref: dict, excluded: Counter, target: int = TARGET, prev: dict | None = None,
-           keep: set | None = None, plan: dict | None = None, pin_prev: bool | str = False) -> list:
+           keep: set | None = None, plan: dict | None = None, pin_prev: bool | str = False,
+           model_screen=None, other_texts: set | None = None) -> list:
     """Per subtask, fill each (label, pool) to its PLAN quota, one row at a time. Each step serves the label with
     fewer rows and picks, among its pools with quota left, a row whose cell (secret keyword, length bin) the other
     label has more of, inside the row's own source when the source has both classes, else overall. Among those,
@@ -389,7 +418,9 @@ def select(rows: list, ref: dict, excluded: Counter, target: int = TARGET, prev:
     the owner) are taken first, so the disagreement notes stay valid. A pool that runs short passes its shortfall to
     the next pool of the same label. ``pin_prev`` (set when the previous build was made by this same selection,
     ``SELECTION`` in counts.json) takes every previous row first, up to its pool's quota, so a rebuild reproduces the
-    build it starts from."""
+    build it starts from. ``model_screen(texts)`` (model_overlap.seen_by_model; 5 October 2026) keeps out a new row
+    whose text is in a split a benchmarked model's published recipe trains or tunes on; rows of the previous build
+    are not screened again (their test and unpublished matches are owner exclusions, EXCLUDED.jsonl)."""
     prev, keep, plan = prev or {}, keep or set(), plan or PLAN
     by = defaultdict(list)
     for r in rows:
@@ -397,6 +428,11 @@ def select(rows: list, ref: dict, excluded: Counter, target: int = TARGET, prev:
             excluded[(r.provenance.source, r.provenance.exclude_reason.split(":")[0][:80])] += 1
             continue
         why = None if r.id in prev else new_row_screen(r)
+        if not why and r.id not in prev and model_screen is not None \
+                and model_screen([r.state.text] + [c["text"] for c in r.state.context or [] if isinstance(c, dict)]):
+            why = MODEL_SCREEN
+        if not why and r.id not in prev and other_texts and loose(r.state.text) in other_texts:
+            why = CROSS_SUITE_SCREEN
         if why:
             excluded[(r.provenance.source, why)] += 1
             continue
@@ -757,6 +793,13 @@ def main(out: Path = OUT, fetch_pools: bool = True) -> dict:
     dropped = owner_excluded()           # rows the owner took out of edition 2 (EXCLUDED.jsonl): never selected again
     rows = [r for r in load_all() if r.id not in retired and r.id not in dropped]
     prev, seconds = previous_build(out)
+    # A tune row of the previous build that a smoke or pilot ledger has since sent to a model is still a tune row:
+    # tune is for exactly that. Its id is in the ledgers now, so it would fail the id check; it passed that check when
+    # it was first selected, so previous tune rows are exempt from it (test and private rows are not).
+    ref["ids"] = ref["ids"] - {i for i, d in prev.items() if d["proposed_split"] == "tune"}
+    from .. import model_overlap
+    model_screen = model_overlap.seen_by_model
+    other_texts = other_suite_texts()     # 5 October: a new row may not repeat another suite's text
     try:
         was = json.loads((OUT / "counts.json").read_text(encoding="utf-8"))
         # a rebuild from the same selection and PLAN keeps every previous row; a changed PLAN keeps them up to quota
@@ -769,7 +812,7 @@ def main(out: Path = OUT, fetch_pools: bool = True) -> dict:
     while True:     # a new row that joins previous rows of different splits into one group is dropped, then reselect
         excluded = Counter()
         chosen = select([r for r in rows if r.id not in banned], ref, excluded, prev=prev, keep=keep,
-                        pin_prev=pin_prev)
+                        pin_prev=pin_prev, model_screen=model_screen, other_texts=other_texts)
         groups = assign_groups(chosen)
         same = {r.id for r in chosen if r.id in prev and (prev[r.id]["subtask"], prev[r.id]["label"]) == (r.subtask, r.expected)}
         pinned = defaultdict(set)

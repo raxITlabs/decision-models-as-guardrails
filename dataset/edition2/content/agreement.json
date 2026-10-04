@@ -3,77 +3,85 @@
  "ruling": "7 (docs/benchmark/29-owner-rulings-2026-10-03.md)",
  "guide": "docs/benchmark/30-content-sample-labelling.md",
  "status": "awaiting labels",
- "updated": "2026-10-03T22:27:43+00:00",
+ "updated": "2026-10-04T10:22:44+00:00",
  "design": {
   "seed": 20261003,
   "n": 400,
   "min_per_stratum": 10,
-  "sample_key": "91a5607751fe2ef7",
-  "population_rows": 2268,
+  "sample_key": "36adc25835740ba0",
+  "population_rows": 2436,
   "build_files": {
-   "F1.tune.jsonl": "7344c048801a95d3145c769e196368c06ceb682931d2b783668d2745c0bab623",
-   "F1.test.jsonl": "32c165d1256a7fffb37c0c522106b236ee9ac896c36eb47584a93a4a118bff69"
+   "F1.tune.jsonl": "500bf3fb66beb46f3c4a2513ca014489cf9b35e5e85a5eaebf8304787efd2733",
+   "F1.test.jsonl": "e1d65bb215f16b6bf88d944264fc7e9144e03fe65d50c09a8228ae482bacb77c"
   },
   "strata": {
    "harmful_goal|no|e2_content_orbench80k": {
     "population": 141,
-    "sample": 25
+    "sample": 23
    },
    "harmful_goal|no|e2_content_xstest": {
     "population": 197,
-    "sample": 33
+    "sample": 29
    },
    "harmful_goal|yes|e2_content_harmbench": {
     "population": 188,
-    "sample": 32
+    "sample": 29
    },
    "harmful_goal|yes|e2_content_xstest": {
-    "population": 157,
-    "sample": 28
+    "population": 156,
+    "sample": 25
    },
    "input|no|aegis2": {
-    "population": 152,
-    "sample": 26
+    "population": 147,
+    "sample": 23
+   },
+   "input|no|e2_content_aegis2_test": {
+    "population": 25,
+    "sample": 11
    },
    "input|no|openai_moderation": {
     "population": 152,
-    "sample": 26
+    "sample": 25
    },
    "input|yes|aegis2": {
-    "population": 95,
-    "sample": 20
+    "population": 87,
+    "sample": 17
    },
    "input|yes|ailuminate_demo": {
     "population": 111,
-    "sample": 21
+    "sample": 20
+   },
+   "input|yes|e2_content_aegis2_test": {
+    "population": 79,
+    "sample": 17
    },
    "input|yes|openai_moderation": {
     "population": 89,
-    "sample": 19
+    "sample": 18
    },
-   "output|no|e2_content_aegis2_val": {
-    "population": 175,
-    "sample": 30
+   "output|no|e2_content_beavertails": {
+    "population": 223,
+    "sample": 32
    },
    "output|no|e2_content_harmbench_cls": {
     "population": 147,
-    "sample": 26
+    "sample": 23
    },
-   "output|yes|e2_content_aegis2_val": {
-    "population": 189,
+   "output|yes|e2_content_beavertails": {
+    "population": 219,
     "sample": 32
    },
    "output|yes|e2_content_harmbench_cls": {
     "population": 155,
-    "sample": 27
+    "sample": 25
    },
    "over_refusal|no|e2_content_orbench80k": {
     "population": 92,
-    "sample": 19
+    "sample": 18
    },
    "over_refusal|no|orbench": {
     "population": 228,
-    "sample": 36
+    "sample": 33
    }
   },
   "population": "content rows in the public F1 tune and test build files, public candidates only",

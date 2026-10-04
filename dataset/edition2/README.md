@@ -102,10 +102,17 @@ readers and the prompt-attack pool builder all skip these ids.
 The prompt-attack shortcut gate has two halves. In sample, each baseline runs grouped five-fold CV on the built test
 split (and with the unpublished slice). Held back, it is fitted on rows it then does not score: seeded group halves of
 test and unpublished, both ways; tune to test; tune to the unpublished slice; test and unpublished to tune; tune plus 70%
-of the test and unpublished groups to the other 30%. A constant fit fails. Since 4 October the gate fails (49 of 120
-cells, every one of them an n-gram model except source id on tune to the unpublished slice). Under owner ruling 17 the
+of the test and unpublished groups to the other 30%. A constant fit fails. Since 4 October the gate fails. After the
+5 October round it fails 48 of 120 cells: 46 of the 48 n-gram cells, plus source id on two held-back injection views. Under owner ruling 17 the
 build still passes, because `benchmark/contracts/v2.0.json` marks the prompt-attack suite provisional and records the
 gate's numbers. If a rebuild moves those numbers by more than 0.01, the build fails until the contract is updated.
+
+`MODEL-TRAINING-OVERLAP.json` lists every row whose text is in a split that a benchmarked model's published
+training recipe draws from (Strands Decider 2B, pplx-decider-v1-27b). Since 5 October no test or unpublished row
+matches pplx-decider-v1-27b's training or development splits: those rows are in `EXCLUDED.jsonl`, and tune rows that
+match stay and are listed. `uv run python -m goldrails_dataset.model_overlap report | exclude | purge` reruns the scan,
+adds new matches to the exclusion lists and takes excluded ids out of every suite file. Builders screen new rows with
+the same check.
 
 `<suite>/corrections.jsonl` holds a ruling applied to a row nobody disputed. So far that is ruling 5 on PII rows whose
 only ADDRESS spans are a bare city or state (`uv run python -m goldrails_dataset.edition2 ruling5`). Unpublished-slice ids

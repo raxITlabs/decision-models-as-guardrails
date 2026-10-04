@@ -42,7 +42,8 @@ REPO = Path(__file__).resolve().parents[3]
 FIVE = ("hate", "insults", "sexual", "violence", "misconduct")      # Bedrock content filter categories
 OUTSIDE = ("pii", "topic", "other")
 HARM_CATEGORIES = FIVE + OUTSIDE
-VENDOR = {"openai_moderation": "OpenAI", "aegis2": "NVIDIA", "e2_content_aegis2_val": "NVIDIA"}
+VENDOR = {"openai_moderation": "OpenAI", "aegis2": "NVIDIA", "e2_content_aegis2_val": "NVIDIA", "e2_content_aegis2_test": "NVIDIA"}
+AEGIS_SOURCES = ("aegis2", "e2_content_aegis2_val", "e2_content_aegis2_test")
 
 # ---- source label -> (harm category, subcategory) ------------------------------------------------------------------
 # Bedrock definitions used: Hate = attacks on identity; Insults = demeaning, mocking, bullying; Sexual; Violence =
@@ -79,6 +80,20 @@ JBB = {"Harassment/Discrimination": ("hate", "harassment_discrimination"), "Malw
 HARMBENCH = {"chemical_biological": ("misconduct", "cbrn"), "cybercrime_intrusion": ("misconduct", "cybercrime"),
              "illegal": ("misconduct", "illegal_activity"), "misinformation_disinformation": ("other", "misinformation"),
              "harassment_bullying": ("insults", "harassment"), "harmful": ("other", "general_harm")}
+# BeaverTails' 14 categories (e2_content_beavertails). Every category a pair carries is kept.
+BEAVERTAILS = {
+    "animal_abuse": [("misconduct", "animal_harm")], "child_abuse": [("violence", "child_abuse")],
+    "controversial_topics,politics": [("other", "controversial_topics")],
+    "discrimination,stereotype,injustice": [("hate", "discrimination")],
+    "drug_abuse,weapons,banned_substance": [("misconduct", "drugs_weapons")],
+    "financial_crime,property_crime,theft": [("misconduct", "financial_property_crime")],
+    "hate_speech,offensive_language": [("hate", "hate_speech"), ("insults", "offensive_language")],
+    "misinformation_regarding_ethics,laws_and_safety": [("other", "misinformation")],
+    "non_violent_unethical_behavior": [("other", "unethical")], "privacy_violation": [("pii", "privacy")],
+    "self_harm": [("violence", "self_harm")], "sexually_explicit,adult_content": [("sexual", "sexual")],
+    "terrorism,organized_crime": [("violence", "terrorism"), ("misconduct", "organized_crime")],
+    "violence,aiding_and_abetting,incitement": [("violence", "violence"), ("misconduct", "aiding_and_abetting")],
+}
 # HarmBench "harmful" is a catch-all; each behaviour was read and filed (first labeller, edition 2).
 HARMBENCH_OVERRIDE = {
     "infant_honey_feeding_persuasion": [("misconduct", "endangerment")], "live_animal_dismemberment_description": [("violence", "graphic_violence")],
@@ -190,10 +205,14 @@ def harm_tags(r: Record, aegis_categories: dict | None = None, harmbench_semanti
     if r.id in V1_OUTSIDE_FIVE or r.id in ROW_OVERRIDE:
         cats, why = (V1_OUTSIDE_FIVE[r.id][0], V1_OUTSIDE_FIVE[r.id][2]) if r.id in V1_OUTSIDE_FIVE else ROW_OVERRIDE[r.id]
         pairs, rule = [(c, "read") for c in cats], f"read individually: {why}"
-    elif src in ("aegis2", "e2_content_aegis2_val"):
+    elif src in AEGIS_SOURCES:
         raw = (aegis_categories or {}).get(r.provenance.source_id.split(":")[0]) or _raw_labels(r)
         pairs = [AEGIS[c] for c in raw if c in AEGIS]
         rule = f"Aegis violated_categories {raw}"
+    elif src == "e2_content_beavertails":
+        from .e2_content_beavertails import categories_of
+        raw = categories_of(r)
+        pairs, rule = [p for c in raw for p in BEAVERTAILS[c]], f"BeaverTails categories {raw}"
     elif src == "openai_moderation":
         raw = _raw_labels(r)
         pairs, rule = [OPENAI[c] for c in raw if c in OPENAI], f"OpenAI moderation columns {raw}"
@@ -454,10 +473,13 @@ def assign_splits(rows: list) -> dict:
 def label_rationale(r: Record, tag: dict) -> str:
     src, y = r.provenance.source, r.expected == "yes"
     basis = r.provenance.label_basis
-    if src in ("aegis2", "e2_content_aegis2_val"):
+    if src in AEGIS_SOURCES:
         side = "response_label" if r.subtask == "output" else "prompt_label"
         split = "validation" if src == "e2_content_aegis2_val" else "test"
         why = f"Aegis 2.0 ({split} split) {side}={'unsafe' if y else 'safe'} (label source: {'human' if basis == 'human' else 'LLM jury'})."
+    elif src == "e2_content_beavertails":
+        why = (f"BeaverTails (330k_test split) is_safe={'false' if y else 'true'}, judged by crowd annotators"
+               + (f"; categories {tag['harm_categories']}." if y else "."))
     elif src == "openai_moderation":
         why = (f"OpenAI moderation eval flags {r.category.source_label}." if y else "OpenAI moderation eval: all eight category columns are 0.")
     elif src == "ailuminate_demo":
@@ -488,7 +510,8 @@ def candidate_row(r: Record, split: str, tag: dict) -> dict:
     d["visibility"] = "heldout" if split == "private" else "public"
     d["review_status"] = r.review_status or ("source_label" if r.provenance.label_basis != "deterministic" else "deterministic")
     upstream = "train" if r.provenance.source in ("orbench", "openai_moderation", "e2_content_orbench80k") else \
-               {"e2_content_harmbench_cls": "classifier_val", "e2_content_aegis2_val": "validation"}.get(r.provenance.source, "test")
+               {"e2_content_harmbench_cls": "classifier_val", "e2_content_aegis2_val": "validation",
+                "e2_content_beavertails": "330k_test"}.get(r.provenance.source, "test")
     d.update({
         "suite": "content", "label": r.expected, "source": r.provenance.source,
         "licence": r.provenance.licence, "proposed_split": split, **tag,
@@ -657,12 +680,183 @@ def counts(rows: list) -> dict:
     return {k: dict(sorted((kk, vv) for kk, vv in v.items() if vv)) for k, v in c.items()}
 
 
+# ---- round 6 (5 October 2026): Aegis validation rows out, Aegis test and BeaverTails in ------------------------------
+# pplx-decider-v1-27b's published recipe trains on the Aegis 2.0 train split and tunes on its validation split, so the
+# e2_content_aegis2_val rows cannot be fair test rows for it. They leave edition 2 whole (tune too). Their place goes
+# to rows the recipes never draw from:
+# - e2_content_aegis2_test: Aegis 2.0 test rows v1 did not take. Every labelled test reply is a v1 row already, so this
+#   adds prompts (input) only;
+# - e2_content_beavertails: BeaverTails 330k_test replies with human safety labels, the second reply source beside
+#   the HarmBench classifier set.
+# round6() does not re-draw anything already in the suite: every kept row keeps its split, so the unpublished slice
+# and the ruling 7 population change only by the rows added and removed. New rows pass the same exclusions as the
+# first build (v1 id, text, group or near-duplicate) plus: anything already in edition 2 (any suite, same tests), any
+# text in a split a benchmarked model's published recipe trains or tunes on (model_overlap.seen_by_model), and an
+# upstream positive with no Bedrock-five category, which the content policy (ruling 8, C1: personal data alone is
+# not a content violation) does not settle from the source label. Selection and split order are salted (rng).
+RETIRED_SOURCES = ("e2_content_aegis2_val",)
+ROUND6_QUOTA = {
+    ("input", "yes"): {"e2_content_aegis2_test": 80},
+    ("input", "no"): {"e2_content_aegis2_test": 40},
+    ("output", "yes"): {"e2_content_beavertails": 230},
+    ("output", "no"): {"e2_content_beavertails": 240},
+}
+ROUND6_PER_GROUP = 2            # replies per BeaverTails question (or rows per Aegis conversation)
+ROUND6_LABELLER = "first (edition 2 content agent, round 6): upstream label read under the content policy"
+
+
+def round6(existing: list, new_rows: list, ref: Reference, aegis_cats: dict, others: list,
+           excluded_ids: set, seen_by_model) -> tuple[list, dict]:
+    """(new candidate rows, report). ``existing``: the content candidates (text restored); ``others``: every other
+    edition 2 suite's candidates; ``excluded_ids``: owner exclusions (not counted towards split targets);
+    ``seen_by_model(texts)``: model_overlap.seen_by_model."""
+    keep = [c for c in existing if c["source"] not in RETIRED_SOURCES]
+    rep = {"removed": Counter(f"{c['source']}|{c['subtask']}|{c['label']}|{c['proposed_split']}"
+                              for c in existing if c["source"] in RETIRED_SOURCES),
+           "loaded": Counter(), "excluded": Counter()}
+    have = Reference()
+    for c in keep:
+        have.add_record(c)
+    for c in others:
+        for st in [c.get("state")] + [(c.get("record") or {}).get("state")]:
+            for t in [(st or {}).get("text")] + [x.get("text") for x in (st or {}).get("context") or [] if isinstance(x, dict)]:
+                if t:
+                    have.texts.update((norm(t), norm_loose(t)))
+    ref_idx, have_idx = token_index(ref), token_index(have)
+    bad_groups, eligible = set(), []
+    for r in sorted(new_rows, key=lambda r: r.id):
+        src = r.provenance.source
+        rep["loaded"][f"{src}|{r.subtask}|{r.expected}"] += 1
+        why = r.provenance.exclude_reason
+        if not why:
+            ov = overlap_reason(r, ref, ref_idx)
+            why = f"v1_overlap:{ov}" if ov else None
+        if not why:
+            ov = overlap_reason(r, have, have_idx)
+            why = f"edition2_overlap:{ov}" if ov else None
+        if why and ("overlap" in why):
+            bad_groups.add(r.group)
+        if not why and seen_by_model([r.state.text] + [c["text"] for c in r.state.context]):
+            why = "model_training_overlap"
+        tag = harm_tags(r, aegis_cats)
+        if not why and r.expected == "yes" and not tag["in_bedrock_five"]:
+            why = "no_bedrock_five_category"
+        if why:
+            rep["excluded"][f"{src}|{why}"] += 1
+            continue
+        eligible.append(r)
+    pools, seen_text = defaultdict(list), set()
+    for r in eligible:
+        if r.group in bad_groups:
+            rep["excluded"][f"{r.provenance.source}|v1_or_edition2_overlap:sibling"] += 1
+            continue
+        key = norm_loose(r.state.text)
+        if key in seen_text:
+            rep["excluded"][f"{r.provenance.source}|duplicate_text"] += 1
+            continue
+        seen_text.add(key)
+        pools[(r.subtask, r.expected, r.provenance.source)].append(r)
+    rep["available"] = {f"{k[0]}|{k[1]}|{k[2]}": len(v) for k, v in sorted(pools.items())}
+    chosen, per_group = [], Counter()
+    for (subtask, cls), per_source in ROUND6_QUOTA.items():
+        for src, n in per_source.items():
+            rows = sorted(pools.get((subtask, cls, src), []), key=lambda r: r.id)
+            rng("select-round6", subtask, cls, src).shuffle(rows)
+            got = 0
+            for r in rows:
+                if got >= n:
+                    break
+                if per_group[r.group] >= ROUND6_PER_GROUP:
+                    continue
+                per_group[r.group] += 1
+                chosen.append(r)
+                got += 1
+    rep["groups_merged"] = merge_groups(chosen)
+    # splits: the kept rows hold theirs; new groups fill each cell's tune and private targets, the rest is test
+    filled = defaultdict(Counter)
+    for c in keep:
+        if c["id"] not in excluded_ids:
+            filled[(c["subtask"], c["label"])][c["proposed_split"]] += 1
+    split_of: dict = {}
+    cells = defaultdict(list)
+    for r in chosen:
+        cells[(r.subtask, r.expected)].append(r)
+    for cell in sorted(cells):
+        cell_rows = sorted(cells[cell], key=lambda r: r.id)
+        rng("split-round6", *cell).shuffle(cell_rows)
+        size = Counter(r.group for r in cell_rows)
+        for g in size:
+            if g in split_of:
+                filled[cell][split_of[g]] += size[g]
+        for want in ("tune", "private"):
+            for r in cell_rows:
+                if filled[cell][want] >= SPLIT_TARGET[want]:
+                    break
+                if r.group in split_of:
+                    continue
+                split_of[r.group] = want
+                filled[cell][want] += size[r.group]
+    for r in chosen:
+        split_of.setdefault(r.group, "test")
+    out = []
+    for r in sorted(chosen, key=lambda r: r.id):
+        d = candidate_row(r, split_of[r.group], harm_tags(r, aegis_cats))
+        d["labeller"] = ROUND6_LABELLER
+        d["round"] = 6
+        out.append(d)
+    rep["added"] = Counter(f"{d['source']}|{d['subtask']}|{d['label']}|{d['proposed_split']}" for d in out)
+    return keep + out, {k: (dict(sorted(v.items())) if isinstance(v, Counter) else v) for k, v in rep.items()}
+
+
+def run_round6(out: Path = REPO / "dataset" / "edition2" / "content", builds: list | None = None) -> dict:
+    """Apply round 6 to the committed content candidates and split them again (e2_local.split)."""
+    from . import e2_content_aegis2_test, e2_content_beavertails
+    from .. import model_overlap
+    from ..edition2 import excluded
+    e2_local.private_salt()
+    builds = builds or sorted(glob.glob(str(REPO / "dataset" / "release" / "*" / "build")))
+    if not builds:
+        raise SystemExit("no v1 release build found: the overlap check cannot run")
+    ref = load_reference(builds)
+    existing = e2_local.candidates("content")
+    others = [c for s in e2_local.SUITES if s != "content" for c in e2_local.candidates(s)]
+    new_rows = e2_content_aegis2_test.load() + e2_content_beavertails.load()
+    rows, rep = round6(existing, new_rows, ref, aegis_raw_categories(), others, set(excluded()),
+                       model_overlap.seen_by_model)
+    rows = sorted(rows, key=lambda d: d["id"])
+    for d in rows:
+        Record.from_dict(d)
+    public = [d for d in rows if d["proposed_split"] != "private"]
+    private = [d for d in rows if d["proposed_split"] == "private"]
+    for path, part in ((out / "candidates.jsonl", public), (out / "private" / "candidates.jsonl", private)):
+        with open(path, "w", encoding="utf-8") as fh:
+            for d in part:
+                fh.write(json.dumps(d, ensure_ascii=False, sort_keys=True) + "\n")
+    write_packet(public, out / "review-packet")
+    write_packet(private, out / "private" / "review-packet")
+    summary = json.loads((out / "counts.json").read_text(encoding="utf-8"))
+    summary.update({"candidates": len(rows), "counts": counts(rows), "round6": {
+        "date": "2026-10-05", "what": "e2_content_aegis2_val removed (pplx-decider-v1-27b tunes on the Aegis 2.0 "
+                                      "validation split); Aegis 2.0 test prompts and BeaverTails replies added",
+        "quota": {f"{k[0]}|{k[1]}": v for k, v in ROUND6_QUOTA.items()}, "per_group": ROUND6_PER_GROUP,
+        "removed": rep["removed"], "loaded": rep["loaded"], "excluded": rep["excluded"],
+        "available_after_exclusion": rep["available"], "added": rep["added"], "groups_merged": rep["groups_merged"]}})
+    (out / "counts.json").write_text(json.dumps(summary, indent=1, sort_keys=True), encoding="utf-8")
+    if out.resolve() == (REPO / "dataset" / "edition2" / "content").resolve():
+        e2_local.split()
+    return summary["round6"]
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--out", default=str(REPO / "dataset" / "edition2" / "content"))
     ap.add_argument("--v1-build", action="append", default=[], help="a v1 release build directory (repeatable)")
+    ap.add_argument("--round6", action="store_true", help="apply round 6 to the committed candidates (run_round6)")
     ap.add_argument("--tag-build", default=None, help="release build to write the v1 tag sheet from (default: the last --v1-build)")
     args = ap.parse_args(argv)
+    if args.round6:
+        print(json.dumps(run_round6(Path(args.out)), indent=1, sort_keys=True))
+        return
     builds = args.v1_build + [p for p in os.environ.get("GOLDRAILS_V1_BUILDS", "").split(os.pathsep) if p]
     builds += [p for p in sorted(glob.glob(str(REPO / "dataset" / "release" / "*" / "build"))) if p not in builds]
     if not builds:

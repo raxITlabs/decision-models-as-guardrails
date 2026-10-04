@@ -29,6 +29,8 @@ dataset/publish/*/data/
 dataset/edition2/*/private/
 # the private-slice salt (dataset/goldrails_dataset/e2_local.py): owner only, back it up with the private/ folders
 dataset/edition2/.private-salt
+# digests of upstream training splits for the model-training overlap check (goldrails_dataset.model_overlap)
+dataset/edition2/.model-overlap-cache/
 dataset/edition2/*/local/
 dataset/edition2/**/_lead/
 # content human second-label sample (ruling 7): label.html embeds row text, much of it harmful

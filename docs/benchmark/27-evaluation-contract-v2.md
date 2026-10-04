@@ -203,15 +203,21 @@ reason is the shortcut gate. It fits baselines that never judge an attack (sourc
 L2 logistic regression on character 2-5-grams and on word 1-2-grams) and asks each to stay at or under balanced
 accuracy 0.70 and AUROC 0.75. A fit that gives every row the same score counts as a failure, not a pass. After the
 4 October round the gate still fails, in sample and on rows the baselines were not fitted on. The two n-gram models
-do the damage; source id fails one held-back cell (tune to the unpublished slice, injection, AUROC 0.796).
+do the damage; source id fails two held-back injection cells (tune to the unpublished slice, AUROC 0.763, and one seeded
+group half to the other, AUROC 0.76).
 
 Highest BA / AUROC of any baseline in any view (bounds 0.70 / 0.75):
 
 | Subtask | In sample | Held back |
 |---|---|---|
-| injection | 0.83 / 0.908 | 0.865 / 0.941 |
-| jailbreak | 0.872 / 0.951 | 0.938 / 0.981 |
-| leakage | 0.869 / 0.944 | 0.871 / 0.93 |
+| injection | 0.842 / 0.912 | 0.862 / 0.943 |
+| jailbreak | 0.885 / 0.949 | 0.94 / 0.984 |
+| leakage | 0.866 / 0.938 | 0.877 / 0.939 |
+
+These are the 5 October numbers (round 6). That round took out every test and unpublished row whose text is in
+pplx-decider-v1-27b's training or development data and topped the suite up from the same pools; it did not touch the
+gate or filter on it. The gate moved by at most 0.013 and still fails (48 of 120 cells), so the suite stays
+provisional and only the recorded numbers in `v2.0.json` changed.
 
 So the labels are partly predictable from source and writing style. A prompt-attack score partly measures how well a
 system picks up that style, not only whether it recognises an attack. We stopped changing the prompt-attack data here,

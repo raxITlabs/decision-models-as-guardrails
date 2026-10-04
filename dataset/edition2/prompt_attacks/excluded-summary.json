@@ -12,20 +12,22 @@
   },
   "itw_jailbreak_prompts": {
     "benign pool filter": 2118,
-    "duplicate of another edition 2 row (normalised text)": 45,
+    "duplicate of another edition 2 row (normalised text)": 21,
     "first labeller disagrees with source label": 279,
     "longer than 4000 characters": 241,
-    "near-duplicate of a v1 row (5-gram Jaccard >= 0.7)": 3,
+    "near-duplicate of a v1 row (5-gram Jaccard >= 0.7)": 13,
     "new-row screen: override phrase not in the first 300 characters": 29,
+    "new-row screen: same text (punctuation and case aside) as a row of another edition 2 suite": 77,
+    "new-row screen: text in a benchmarked model's published training or development data (model_overlap)": 3318,
     "non_english": 548,
     "outside 80-4000 characters": 1918,
-    "overlap with v1: id": 4,
-    "overlap with v1: normalised text": 7
+    "overlap with v1: id": 2,
+    "overlap with v1: normalised text": 20
   },
   "jackhhao_jailbreak": {
     "first labeller disagrees with source label": 12,
     "longer than 4000 characters": 26,
-    "near-duplicate of a v1 row (5-gram Jaccard >= 0.7)": 1,
+    "new-row screen: text in a benchmarked model's published training or development data (model_overlap)": 1,
     "non_english": 1,
     "overlap with v1: normalised text": 2
   },
@@ -47,6 +49,7 @@
     "category training_extraction": 23,
     "first labeller disagrees with source label": 42,
     "longer than 4000 characters": 1,
+    "near-duplicate of a v1 row (5-gram Jaccard >= 0.7)": 1,
     "non_english": 88,
     "overlap with v1: normalised text": 40,
     "plain harmful goal with no attack technique (belongs to F1 harmful_goal)": 30,

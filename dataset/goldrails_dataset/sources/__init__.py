@@ -18,7 +18,7 @@ SOURCES = {
 # dataset/edition2/<suite>/candidates.jsonl, which already fixes selection, groups and splits; these entries make the
 # loaders auditable. Builders and helpers (e2_content, e2_grounding, e2_pii, e2_prompt_attacks_build/_common,
 # e2_denied_topics_cases_*) are not sources.
-from . import (e2_content_aegis2_val, e2_content_harmbench, e2_content_harmbench_cls, e2_content_orbench80k,  # noqa: E402
+from . import (e2_content_aegis2_test, e2_content_aegis2_val, e2_content_beavertails, e2_content_harmbench, e2_content_harmbench_cls, e2_content_orbench80k,  # noqa: E402
                e2_content_xstest, e2_denied_topics, e2_denied_topics_oasst, e2_grounding_faithdial,
                e2_grounding_ragbench, e2_grounding_summedits, e2_pii_controls, e2_pii_gretel, e2_pii_gretel_finance,
                e2_pii_nemotron, e2_prompt_attacks_controls, e2_prompt_attacks_deepset_test, e2_prompt_attacks_itw,
@@ -43,6 +43,7 @@ class _E2Oasst:
 E2_SOURCES = {
     # F1 content
     "e2_content_aegis2_val": e2_content_aegis2_val, "e2_content_harmbench": e2_content_harmbench,
+    "e2_content_aegis2_test": e2_content_aegis2_test, "e2_content_beavertails": e2_content_beavertails,
     "e2_content_harmbench_cls": e2_content_harmbench_cls, "e2_content_xstest": e2_content_xstest,
     "e2_content_orbench80k": e2_content_orbench80k,
     # F2 prompt attacks

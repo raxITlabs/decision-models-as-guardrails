@@ -1,20 +1,20 @@
 {
   "built_projection": {
     "by_subtask_label_split": {
-      "injection|no|private": 107,
-      "injection|no|test": 325,
+      "injection|no|private": 123,
+      "injection|no|test": 309,
       "injection|no|tune": 96,
-      "injection|yes|private": 100,
-      "injection|yes|test": 290,
+      "injection|yes|private": 118,
+      "injection|yes|test": 270,
       "injection|yes|tune": 73,
-      "jailbreak|no|private": 101,
-      "jailbreak|no|test": 313,
+      "jailbreak|no|private": 121,
+      "jailbreak|no|test": 301,
       "jailbreak|no|tune": 94,
-      "jailbreak|yes|private": 98,
-      "jailbreak|yes|test": 285,
-      "jailbreak|yes|tune": 86,
-      "leakage|no|private": 115,
-      "leakage|no|test": 349,
+      "jailbreak|yes|private": 109,
+      "jailbreak|yes|test": 282,
+      "jailbreak|yes|tune": 105,
+      "leakage|no|private": 127,
+      "leakage|no|test": 337,
       "leakage|no|tune": 91,
       "leakage|yes|private": 103,
       "leakage|yes|test": 313,
@@ -24,9 +24,9 @@
   },
   "by_source_licence": {
     "deepset_injections_test|apache-2.0": 56,
-    "e2_attack_controls|cc-by-4.0": 952,
-    "itw_jailbreak_prompts|mit": 1000,
-    "jackhhao_jailbreak|apache-2.0": 145,
+    "e2_attack_controls|cc-by-4.0": 954,
+    "itw_jailbreak_prompts|mit": 1061,
+    "jackhhao_jailbreak|apache-2.0": 94,
     "lakera_gandalf_summarization|mit": 26,
     "lakera_mosscap|mit": 582,
     "neuralchemy_injection|apache-2.0": 167,
@@ -34,9 +34,9 @@
     "yanis_prompt_injections|apache-2.0": 173
   },
   "by_split": {
-    "private": 673,
-    "test": 2000,
-    "tune": 553
+    "private": 744,
+    "test": 1922,
+    "tune": 572
   },
   "by_subtask_label_source": {
     "injection|no|deepset_injections_test": 29,
@@ -45,17 +45,17 @@
     "injection|no|neuralchemy_injection": 15,
     "injection|no|notinject": 125,
     "injection|yes|deepset_injections_test": 27,
-    "injection|yes|e2_attack_controls": 126,
-    "injection|yes|itw_jailbreak_prompts": 190,
+    "injection|yes|e2_attack_controls": 128,
+    "injection|yes|itw_jailbreak_prompts": 188,
     "injection|yes|neuralchemy_injection": 114,
     "injection|yes|yanis_prompt_injections": 83,
     "jailbreak|no|e2_attack_controls": 214,
-    "jailbreak|no|itw_jailbreak_prompts": 243,
+    "jailbreak|no|itw_jailbreak_prompts": 245,
     "jailbreak|no|jackhhao_jailbreak": 80,
     "jailbreak|no|neuralchemy_injection": 1,
     "jailbreak|yes|e2_attack_controls": 144,
-    "jailbreak|yes|itw_jailbreak_prompts": 262,
-    "jailbreak|yes|jackhhao_jailbreak": 65,
+    "jailbreak|yes|itw_jailbreak_prompts": 323,
+    "jailbreak|yes|jackhhao_jailbreak": 14,
     "jailbreak|yes|neuralchemy_injection": 27,
     "jailbreak|yes|yanis_prompt_injections": 30,
     "leakage|no|e2_attack_controls": 172,
@@ -69,50 +69,51 @@
     "leakage|yes|yanis_prompt_injections": 60
   },
   "by_subtask_label_split": {
-    "injection|no|private": 112,
-    "injection|no|test": 331,
+    "injection|no|private": 127,
+    "injection|no|test": 316,
     "injection|no|tune": 97,
-    "injection|yes|private": 111,
-    "injection|yes|test": 340,
+    "injection|yes|private": 131,
+    "injection|yes|test": 320,
     "injection|yes|tune": 89,
-    "jailbreak|no|private": 110,
-    "jailbreak|no|test": 334,
+    "jailbreak|no|private": 128,
+    "jailbreak|no|test": 318,
     "jailbreak|no|tune": 94,
-    "jailbreak|yes|private": 115,
-    "jailbreak|yes|test": 324,
-    "jailbreak|yes|tune": 89,
-    "leakage|no|private": 117,
-    "leakage|no|test": 333,
+    "jailbreak|yes|private": 121,
+    "jailbreak|yes|test": 309,
+    "jailbreak|yes|tune": 108,
+    "leakage|no|private": 129,
+    "leakage|no|test": 321,
     "leakage|no|tune": 90,
     "leakage|yes|private": 108,
     "leakage|yes|test": 338,
     "leakage|yes|tune": 94
   },
-  "candidates_sha256": "7d4f21bd8c8f357ee9c470c6c2d12ac2f2a8e4f7f1053c2d61ab0bdaab86d932",
+  "candidates_sha256": "e34b78b4ad03a2c82b032ad4537c439bcdc8293901b21930e12baa832f989753",
   "entity_types": "not applicable to prompt attacks",
   "groups_by_subtask_label": {
     "injection|no": 537,
-    "injection|yes": 529,
-    "jailbreak|no": 537,
-    "jailbreak|yes": 462,
+    "injection|yes": 526,
+    "jailbreak|no": 539,
+    "jailbreak|yes": 427,
     "leakage|no": 537,
     "leakage|yes": 540
   },
   "plan_sha256": "669b0f6ff9294cc9feaadc34afc46cce5ecea2d85b39d4bf7f662aa2f0dd8c1f",
   "previous_build": {
-    "added": 0,
-    "dropped": 0,
-    "kept": 3240,
-    "rows": 3240
+    "added": 405,
+    "dropped": 391,
+    "kept": 2835,
+    "rows": 3226
   },
   "second_label": {
     "by_round": {
-      "1": 971,
-      "2": 512,
-      "3": 1092,
-      "5": 651
+      "1": 878,
+      "2": 418,
+      "3": 890,
+      "5": 649,
+      "6": 403
     },
-    "labelled": 3226,
+    "labelled": 3238,
     "missing": 0
   },
   "selection": "heldback-contrast-2026-10-04",
@@ -127,39 +128,39 @@
             10.0,
             10.0
           ],
-          "auroc": 0.914,
-          "ba": 0.827,
+          "auroc": 0.912,
+          "ba": 0.844,
           "constant_prediction": false,
           "meets_target": false
         },
         "char_ngram_logreg": {
           "C": [
-            100.0,
             10.0,
             10.0,
             10.0,
-            100.0
+            10.0,
+            10.0
           ],
-          "auroc": 0.874,
-          "ba": 0.796,
+          "auroc": 0.888,
+          "ba": 0.822,
           "constant_prediction": false,
           "meets_target": false
         },
         "keyword_regex": {
-          "auroc": 0.501,
-          "ba": 0.501,
+          "auroc": 0.502,
+          "ba": 0.502,
           "meets_target": true
         },
         "length": {
-          "auroc": 0.539,
-          "ba": 0.549,
+          "auroc": 0.524,
+          "ba": 0.546,
           "meets_target": true
         },
         "n_no": 540,
         "n_yes": 540,
         "source_id": {
-          "auroc": 0.712,
-          "ba": 0.659,
+          "auroc": 0.729,
+          "ba": 0.664,
           "constant_prediction": false,
           "meets_target": true
         }
@@ -168,13 +169,13 @@
         "bow_logreg": {
           "C": [
             100.0,
+            10.0,
+            10.0,
             100.0,
-            100.0,
-            100.0,
-            100.0
+            10.0
           ],
-          "auroc": 0.941,
-          "ba": 0.857,
+          "auroc": 0.948,
+          "ba": 0.877,
           "constant_prediction": false,
           "meets_target": false
         },
@@ -184,28 +185,28 @@
             10.0,
             10.0,
             100.0,
-            100.0
+            10.0
           ],
-          "auroc": 0.931,
-          "ba": 0.85,
+          "auroc": 0.948,
+          "ba": 0.886,
           "constant_prediction": false,
           "meets_target": false
         },
         "keyword_regex": {
-          "auroc": 0.516,
-          "ba": 0.516,
+          "auroc": 0.517,
+          "ba": 0.517,
           "meets_target": true
         },
         "length": {
-          "auroc": 0.561,
-          "ba": 0.543,
+          "auroc": 0.598,
+          "ba": 0.583,
           "meets_target": true
         },
-        "n_no": 538,
-        "n_yes": 528,
+        "n_no": 540,
+        "n_yes": 538,
         "source_id": {
-          "auroc": 0.591,
-          "ba": 0.557,
+          "auroc": 0.65,
+          "ba": 0.625,
           "constant_prediction": false,
           "meets_target": true
         }
@@ -213,14 +214,14 @@
       "leakage": {
         "bow_logreg": {
           "C": [
-            10.0,
-            10.0,
-            10.0,
             100.0,
+            10.0,
+            10.0,
+            10.0,
             100.0
           ],
-          "auroc": 0.942,
-          "ba": 0.888,
+          "auroc": 0.945,
+          "ba": 0.886,
           "constant_prediction": false,
           "meets_target": false
         },
@@ -233,7 +234,7 @@
             10.0
           ],
           "auroc": 0.943,
-          "ba": 0.868,
+          "ba": 0.878,
           "constant_prediction": false,
           "meets_target": false
         },
@@ -264,11 +265,11 @@
             10.0,
             10.0,
             10.0,
-            10.0,
+            100.0,
             10.0
           ],
-          "auroc": 0.898,
-          "ba": 0.81,
+          "auroc": 0.884,
+          "ba": 0.824,
           "constant_prediction": false,
           "meets_target": false
         },
@@ -277,11 +278,11 @@
             10.0,
             10.0,
             10.0,
-            100.0,
+            10.0,
             10.0
           ],
           "auroc": 0.87,
-          "ba": 0.794,
+          "ba": 0.786,
           "constant_prediction": false,
           "meets_target": false
         },
@@ -291,15 +292,15 @@
           "meets_target": true
         },
         "length": {
-          "auroc": 0.535,
-          "ba": 0.543,
+          "auroc": 0.528,
+          "ba": 0.537,
           "meets_target": true
         },
-        "n_no": 325,
-        "n_yes": 290,
+        "n_no": 309,
+        "n_yes": 270,
         "source_id": {
-          "auroc": 0.709,
-          "ba": 0.64,
+          "auroc": 0.728,
+          "ba": 0.639,
           "constant_prediction": false,
           "meets_target": true
         }
@@ -308,44 +309,44 @@
         "bow_logreg": {
           "C": [
             100.0,
-            100.0,
+            10.0,
             100.0,
             100.0,
             100.0
           ],
-          "auroc": 0.951,
-          "ba": 0.865,
+          "auroc": 0.95,
+          "ba": 0.858,
           "constant_prediction": false,
           "meets_target": false
         },
         "char_ngram_logreg": {
           "C": [
-            100.0,
             10.0,
             10.0,
             100.0,
-            10.0
+            100.0,
+            100.0
           ],
-          "auroc": 0.936,
-          "ba": 0.86,
+          "auroc": 0.933,
+          "ba": 0.873,
           "constant_prediction": false,
           "meets_target": false
         },
         "keyword_regex": {
-          "auroc": 0.505,
-          "ba": 0.505,
+          "auroc": 0.509,
+          "ba": 0.509,
           "meets_target": true
         },
         "length": {
-          "auroc": 0.538,
-          "ba": 0.514,
+          "auroc": 0.563,
+          "ba": 0.576,
           "meets_target": true
         },
-        "n_no": 313,
-        "n_yes": 285,
+        "n_no": 301,
+        "n_yes": 282,
         "source_id": {
-          "auroc": 0.557,
-          "ba": 0.558,
+          "auroc": 0.647,
+          "ba": 0.623,
           "constant_prediction": false,
           "meets_target": true
         }
@@ -354,43 +355,43 @@
         "bow_logreg": {
           "C": [
             100.0,
-            100.0,
+            10.0,
             100.0,
             100.0,
             100.0
           ],
           "auroc": 0.916,
-          "ba": 0.84,
+          "ba": 0.835,
           "constant_prediction": false,
           "meets_target": false
         },
         "char_ngram_logreg": {
           "C": [
-            10.0,
-            10.0,
+            100.0,
+            100.0,
             10.0,
             100.0,
-            10.0
+            100.0
           ],
-          "auroc": 0.899,
-          "ba": 0.836,
+          "auroc": 0.896,
+          "ba": 0.824,
           "constant_prediction": false,
           "meets_target": false
         },
         "keyword_regex": {
-          "auroc": 0.538,
-          "ba": 0.538,
+          "auroc": 0.534,
+          "ba": 0.534,
           "meets_target": true
         },
         "length": {
-          "auroc": 0.535,
-          "ba": 0.564,
+          "auroc": 0.553,
+          "ba": 0.559,
           "meets_target": true
         },
-        "n_no": 349,
+        "n_no": 337,
         "n_yes": 313,
         "source_id": {
-          "auroc": 0.612,
+          "auroc": 0.586,
           "ba": 0.581,
           "constant_prediction": false,
           "meets_target": true
@@ -407,8 +408,8 @@
             10.0,
             10.0
           ],
-          "auroc": 0.913,
-          "ba": 0.83,
+          "auroc": 0.916,
+          "ba": 0.841,
           "constant_prediction": false,
           "meets_target": false
         },
@@ -416,30 +417,30 @@
           "C": [
             10.0,
             10.0,
-            100.0,
+            10.0,
             10.0,
             10.0
           ],
-          "auroc": 0.884,
-          "ba": 0.801,
+          "auroc": 0.89,
+          "ba": 0.818,
           "constant_prediction": false,
           "meets_target": false
         },
         "keyword_regex": {
-          "auroc": 0.504,
-          "ba": 0.504,
+          "auroc": 0.503,
+          "ba": 0.503,
           "meets_target": true
         },
         "length": {
-          "auroc": 0.505,
-          "ba": 0.523,
+          "auroc": 0.514,
+          "ba": 0.531,
           "meets_target": true
         },
         "n_no": 432,
-        "n_yes": 390,
+        "n_yes": 388,
         "source_id": {
-          "auroc": 0.709,
-          "ba": 0.632,
+          "auroc": 0.713,
+          "ba": 0.633,
           "constant_prediction": false,
           "meets_target": true
         }
@@ -448,44 +449,44 @@
         "bow_logreg": {
           "C": [
             100.0,
+            10.0,
             100.0,
-            100.0,
-            100.0,
-            10.0
+            10.0,
+            100.0
           ],
-          "auroc": 0.946,
-          "ba": 0.869,
+          "auroc": 0.948,
+          "ba": 0.876,
           "constant_prediction": false,
           "meets_target": false
         },
         "char_ngram_logreg": {
           "C": [
+            100.0,
             10.0,
             100.0,
             100.0,
-            10.0,
-            100.0
+            10.0
           ],
-          "auroc": 0.944,
-          "ba": 0.871,
+          "auroc": 0.953,
+          "ba": 0.891,
           "constant_prediction": false,
           "meets_target": false
         },
         "keyword_regex": {
-          "auroc": 0.509,
-          "ba": 0.509,
+          "auroc": 0.513,
+          "ba": 0.513,
           "meets_target": true
         },
         "length": {
-          "auroc": 0.555,
-          "ba": 0.534,
+          "auroc": 0.596,
+          "ba": 0.601,
           "meets_target": true
         },
-        "n_no": 414,
-        "n_yes": 383,
+        "n_no": 422,
+        "n_yes": 391,
         "source_id": {
-          "auroc": 0.567,
-          "ba": 0.538,
+          "auroc": 0.667,
+          "ba": 0.629,
           "constant_prediction": false,
           "meets_target": true
         }
@@ -495,25 +496,25 @@
           "C": [
             100.0,
             100.0,
-            10.0,
             100.0,
+            10.0,
             100.0
           ],
-          "auroc": 0.933,
-          "ba": 0.861,
+          "auroc": 0.944,
+          "ba": 0.872,
           "constant_prediction": false,
           "meets_target": false
         },
         "char_ngram_logreg": {
           "C": [
             100.0,
-            100.0,
+            10.0,
             10.0,
             10.0,
             10.0
           ],
-          "auroc": 0.924,
-          "ba": 0.864,
+          "auroc": 0.932,
+          "ba": 0.857,
           "constant_prediction": false,
           "meets_target": false
         },
@@ -524,13 +525,13 @@
         },
         "length": {
           "auroc": 0.549,
-          "ba": 0.566,
+          "ba": 0.551,
           "meets_target": true
         },
         "n_no": 464,
         "n_yes": 416,
         "source_id": {
-          "auroc": 0.632,
+          "auroc": 0.608,
           "ba": 0.591,
           "constant_prediction": false,
           "meets_target": true
@@ -557,83 +558,81 @@
         100.0
       ],
       "failures": [
-        "heldback_half_a_to_half_b/injection/char_ngram_logreg: BA 0.789, AUROC 0.844",
-        "heldback_half_a_to_half_b/injection/bow_logreg: BA 0.792, AUROC 0.886",
-        "heldback_half_a_to_half_b/jailbreak/char_ngram_logreg: BA 0.84, AUROC 0.926",
-        "heldback_half_a_to_half_b/jailbreak/bow_logreg: BA 0.85, AUROC 0.922",
-        "heldback_half_a_to_half_b/leakage/char_ngram_logreg: BA 0.831, AUROC 0.912",
-        "heldback_half_a_to_half_b/leakage/bow_logreg: BA 0.86, AUROC 0.937",
-        "heldback_half_b_to_half_a/injection/char_ngram_logreg: BA 0.771, AUROC 0.864",
-        "heldback_half_b_to_half_a/injection/bow_logreg: BA 0.78, AUROC 0.875",
-        "heldback_half_b_to_half_a/jailbreak/char_ngram_logreg: BA 0.858, AUROC 0.924",
-        "heldback_half_b_to_half_a/jailbreak/bow_logreg: BA 0.855, AUROC 0.923",
-        "heldback_half_b_to_half_a/leakage/char_ngram_logreg: BA 0.816, AUROC 0.899",
-        "heldback_half_b_to_half_a/leakage/bow_logreg: BA 0.837, AUROC 0.916",
-        "heldback_tune_to_public_test/injection/char_ngram_logreg: BA 0.708, AUROC 0.796",
-        "heldback_tune_to_public_test/injection/bow_logreg: BA 0.731, AUROC 0.829",
-        "heldback_tune_to_public_test/jailbreak/char_ngram_logreg: BA 0.83, AUROC 0.914",
-        "heldback_tune_to_public_test/jailbreak/bow_logreg: BA 0.825, AUROC 0.904",
-        "heldback_tune_to_public_test/leakage/char_ngram_logreg: BA 0.769, AUROC 0.846",
-        "heldback_tune_to_public_test/leakage/bow_logreg: BA 0.737, AUROC 0.81",
-        "heldback_tune_to_private/injection/source_id: BA 0.661, AUROC 0.796",
-        "heldback_tune_to_private/injection/char_ngram_logreg: BA 0.69, AUROC 0.765",
-        "heldback_tune_to_private/injection/bow_logreg: BA 0.72, AUROC 0.808",
-        "heldback_tune_to_private/jailbreak/char_ngram_logreg: BA 0.828, AUROC 0.917",
-        "heldback_tune_to_private/jailbreak/bow_logreg: BA 0.848, AUROC 0.91",
-        "heldback_tune_to_private/leakage/char_ngram_logreg: BA 0.801, AUROC 0.887",
-        "heldback_tune_to_private/leakage/bow_logreg: BA 0.782, AUROC 0.857",
-        "heldback_test_and_private_to_tune/injection/char_ngram_logreg: BA 0.843, AUROC 0.908",
-        "heldback_test_and_private_to_tune/injection/bow_logreg: BA 0.864, AUROC 0.933",
-        "heldback_test_and_private_to_tune/jailbreak/char_ngram_logreg: BA 0.889, AUROC 0.971",
-        "heldback_test_and_private_to_tune/jailbreak/bow_logreg: BA 0.939, AUROC 0.982",
-        "heldback_test_and_private_to_tune/leakage/char_ngram_logreg: BA 0.84, AUROC 0.926",
-        "heldback_test_and_private_to_tune/leakage/bow_logreg: BA 0.84, AUROC 0.921",
-        "heldback_seeded_groups/injection/char_ngram_logreg: BA 0.787, AUROC 0.894",
-        "heldback_seeded_groups/injection/bow_logreg: BA 0.814, AUROC 0.906",
-        "heldback_seeded_groups/jailbreak/char_ngram_logreg: BA 0.844, AUROC 0.941",
-        "heldback_seeded_groups/jailbreak/bow_logreg: BA 0.872, AUROC 0.95",
-        "heldback_seeded_groups/leakage/char_ngram_logreg: BA 0.844, AUROC 0.934",
-        "heldback_seeded_groups/leakage/bow_logreg: BA 0.865, AUROC 0.93"
+        "heldback_half_a_to_half_b/injection/char_ngram_logreg: BA 0.784, AUROC 0.854",
+        "heldback_half_a_to_half_b/injection/bow_logreg: BA 0.793, AUROC 0.879",
+        "heldback_half_a_to_half_b/jailbreak/char_ngram_logreg: BA 0.895, AUROC 0.968",
+        "heldback_half_a_to_half_b/jailbreak/bow_logreg: BA 0.871, AUROC 0.962",
+        "heldback_half_a_to_half_b/leakage/char_ngram_logreg: BA 0.838, AUROC 0.92",
+        "heldback_half_a_to_half_b/leakage/bow_logreg: BA 0.833, AUROC 0.914",
+        "heldback_half_b_to_half_a/injection/char_ngram_logreg: BA 0.79, AUROC 0.87",
+        "heldback_half_b_to_half_a/injection/bow_logreg: BA 0.795, AUROC 0.879",
+        "heldback_half_b_to_half_a/jailbreak/char_ngram_logreg: BA 0.876, AUROC 0.942",
+        "heldback_half_b_to_half_a/jailbreak/bow_logreg: BA 0.86, AUROC 0.943",
+        "heldback_half_b_to_half_a/leakage/char_ngram_logreg: BA 0.837, AUROC 0.918",
+        "heldback_half_b_to_half_a/leakage/bow_logreg: BA 0.854, AUROC 0.925",
+        "heldback_tune_to_public_test/injection/char_ngram_logreg: BA 0.707, AUROC 0.82",
+        "heldback_tune_to_public_test/injection/bow_logreg: BA 0.728, AUROC 0.834",
+        "heldback_tune_to_public_test/jailbreak/char_ngram_logreg: BA 0.827, AUROC 0.919",
+        "heldback_tune_to_public_test/jailbreak/bow_logreg: BA 0.816, AUROC 0.91",
+        "heldback_tune_to_public_test/leakage/char_ngram_logreg: BA 0.767, AUROC 0.844",
+        "heldback_tune_to_public_test/leakage/bow_logreg: BA 0.734, AUROC 0.807",
+        "heldback_tune_to_private/injection/source_id: BA 0.636, AUROC 0.763",
+        "heldback_tune_to_private/injection/bow_logreg: BA 0.657, AUROC 0.757",
+        "heldback_tune_to_private/jailbreak/char_ngram_logreg: BA 0.817, AUROC 0.909",
+        "heldback_tune_to_private/jailbreak/bow_logreg: BA 0.812, AUROC 0.902",
+        "heldback_tune_to_private/leakage/char_ngram_logreg: BA 0.809, AUROC 0.894",
+        "heldback_tune_to_private/leakage/bow_logreg: BA 0.787, AUROC 0.865",
+        "heldback_test_and_private_to_tune/injection/char_ngram_logreg: BA 0.826, AUROC 0.914",
+        "heldback_test_and_private_to_tune/injection/bow_logreg: BA 0.869, AUROC 0.937",
+        "heldback_test_and_private_to_tune/jailbreak/char_ngram_logreg: BA 0.911, AUROC 0.976",
+        "heldback_test_and_private_to_tune/jailbreak/bow_logreg: BA 0.936, AUROC 0.984",
+        "heldback_test_and_private_to_tune/leakage/char_ngram_logreg: BA 0.862, AUROC 0.928",
+        "heldback_test_and_private_to_tune/leakage/bow_logreg: BA 0.84, AUROC 0.924",
+        "heldback_seeded_groups/injection/char_ngram_logreg: BA 0.811, AUROC 0.9",
+        "heldback_seeded_groups/injection/bow_logreg: BA 0.858, AUROC 0.934",
+        "heldback_seeded_groups/jailbreak/char_ngram_logreg: BA 0.856, AUROC 0.947",
+        "heldback_seeded_groups/jailbreak/bow_logreg: BA 0.883, AUROC 0.956",
+        "heldback_seeded_groups/leakage/char_ngram_logreg: BA 0.863, AUROC 0.926",
+        "heldback_seeded_groups/leakage/bow_logreg: BA 0.866, AUROC 0.937"
       ],
       "inner_folds": 5,
       "over_bounds": [
-        "heldback_half_a_to_half_b/injection/char_ngram_logreg: BA 0.789, AUROC 0.844",
-        "heldback_half_a_to_half_b/injection/bow_logreg: BA 0.792, AUROC 0.886",
-        "heldback_half_a_to_half_b/jailbreak/char_ngram_logreg: BA 0.84, AUROC 0.926",
-        "heldback_half_a_to_half_b/jailbreak/bow_logreg: BA 0.85, AUROC 0.922",
-        "heldback_half_a_to_half_b/leakage/char_ngram_logreg: BA 0.831, AUROC 0.912",
-        "heldback_half_a_to_half_b/leakage/bow_logreg: BA 0.86, AUROC 0.937",
-        "heldback_half_b_to_half_a/injection/char_ngram_logreg: BA 0.771, AUROC 0.864",
-        "heldback_half_b_to_half_a/injection/bow_logreg: BA 0.78, AUROC 0.875",
-        "heldback_half_b_to_half_a/jailbreak/char_ngram_logreg: BA 0.858, AUROC 0.924",
-        "heldback_half_b_to_half_a/jailbreak/bow_logreg: BA 0.855, AUROC 0.923",
-        "heldback_half_b_to_half_a/leakage/char_ngram_logreg: BA 0.816, AUROC 0.899",
-        "heldback_half_b_to_half_a/leakage/bow_logreg: BA 0.837, AUROC 0.916",
-        "heldback_tune_to_public_test/injection/char_ngram_logreg: BA 0.708, AUROC 0.796",
-        "heldback_tune_to_public_test/injection/bow_logreg: BA 0.731, AUROC 0.829",
-        "heldback_tune_to_public_test/jailbreak/char_ngram_logreg: BA 0.83, AUROC 0.914",
-        "heldback_tune_to_public_test/jailbreak/bow_logreg: BA 0.825, AUROC 0.904",
-        "heldback_tune_to_public_test/leakage/char_ngram_logreg: BA 0.769, AUROC 0.846",
-        "heldback_tune_to_public_test/leakage/bow_logreg: BA 0.737, AUROC 0.81",
-        "heldback_tune_to_private/injection/source_id: BA 0.661, AUROC 0.796",
-        "heldback_tune_to_private/injection/char_ngram_logreg: BA 0.69, AUROC 0.765",
-        "heldback_tune_to_private/injection/bow_logreg: BA 0.72, AUROC 0.808",
-        "heldback_tune_to_private/jailbreak/char_ngram_logreg: BA 0.828, AUROC 0.917",
-        "heldback_tune_to_private/jailbreak/bow_logreg: BA 0.848, AUROC 0.91",
-        "heldback_tune_to_private/leakage/char_ngram_logreg: BA 0.801, AUROC 0.887",
-        "heldback_tune_to_private/leakage/bow_logreg: BA 0.782, AUROC 0.857",
-        "heldback_test_and_private_to_tune/injection/char_ngram_logreg: BA 0.843, AUROC 0.908",
-        "heldback_test_and_private_to_tune/injection/bow_logreg: BA 0.864, AUROC 0.933",
-        "heldback_test_and_private_to_tune/jailbreak/char_ngram_logreg: BA 0.889, AUROC 0.971",
-        "heldback_test_and_private_to_tune/jailbreak/bow_logreg: BA 0.939, AUROC 0.982",
-        "heldback_test_and_private_to_tune/leakage/char_ngram_logreg: BA 0.84, AUROC 0.926",
-        "heldback_test_and_private_to_tune/leakage/bow_logreg: BA 0.84, AUROC 0.921",
-        "heldback_seeded_groups/injection/char_ngram_logreg: BA 0.787, AUROC 0.894",
-        "heldback_seeded_groups/injection/bow_logreg: BA 0.814, AUROC 0.906",
-        "heldback_seeded_groups/jailbreak/char_ngram_logreg: BA 0.844, AUROC 0.941",
-        "heldback_seeded_groups/jailbreak/bow_logreg: BA 0.872, AUROC 0.95",
-        "heldback_seeded_groups/leakage/char_ngram_logreg: BA 0.844, AUROC 0.934",
-        "heldback_seeded_groups/leakage/bow_logreg: BA 0.865, AUROC 0.93"
+        "heldback_half_a_to_half_b/injection/char_ngram_logreg: BA 0.784, AUROC 0.854",
+        "heldback_half_a_to_half_b/injection/bow_logreg: BA 0.793, AUROC 0.879",
+        "heldback_half_a_to_half_b/jailbreak/char_ngram_logreg: BA 0.895, AUROC 0.968",
+        "heldback_half_a_to_half_b/jailbreak/bow_logreg: BA 0.871, AUROC 0.962",
+        "heldback_half_a_to_half_b/leakage/char_ngram_logreg: BA 0.838, AUROC 0.92",
+        "heldback_half_a_to_half_b/leakage/bow_logreg: BA 0.833, AUROC 0.914",
+        "heldback_half_b_to_half_a/injection/char_ngram_logreg: BA 0.79, AUROC 0.87",
+        "heldback_half_b_to_half_a/injection/bow_logreg: BA 0.795, AUROC 0.879",
+        "heldback_half_b_to_half_a/jailbreak/char_ngram_logreg: BA 0.876, AUROC 0.942",
+        "heldback_half_b_to_half_a/jailbreak/bow_logreg: BA 0.86, AUROC 0.943",
+        "heldback_half_b_to_half_a/leakage/char_ngram_logreg: BA 0.837, AUROC 0.918",
+        "heldback_half_b_to_half_a/leakage/bow_logreg: BA 0.854, AUROC 0.925",
+        "heldback_tune_to_public_test/injection/char_ngram_logreg: BA 0.707, AUROC 0.82",
+        "heldback_tune_to_public_test/injection/bow_logreg: BA 0.728, AUROC 0.834",
+        "heldback_tune_to_public_test/jailbreak/char_ngram_logreg: BA 0.827, AUROC 0.919",
+        "heldback_tune_to_public_test/jailbreak/bow_logreg: BA 0.816, AUROC 0.91",
+        "heldback_tune_to_public_test/leakage/char_ngram_logreg: BA 0.767, AUROC 0.844",
+        "heldback_tune_to_public_test/leakage/bow_logreg: BA 0.734, AUROC 0.807",
+        "heldback_tune_to_private/injection/source_id: BA 0.636, AUROC 0.763",
+        "heldback_tune_to_private/injection/bow_logreg: BA 0.657, AUROC 0.757",
+        "heldback_tune_to_private/jailbreak/char_ngram_logreg: BA 0.817, AUROC 0.909",
+        "heldback_tune_to_private/jailbreak/bow_logreg: BA 0.812, AUROC 0.902",
+        "heldback_tune_to_private/leakage/char_ngram_logreg: BA 0.809, AUROC 0.894",
+        "heldback_tune_to_private/leakage/bow_logreg: BA 0.787, AUROC 0.865",
+        "heldback_test_and_private_to_tune/injection/char_ngram_logreg: BA 0.826, AUROC 0.914",
+        "heldback_test_and_private_to_tune/injection/bow_logreg: BA 0.869, AUROC 0.937",
+        "heldback_test_and_private_to_tune/jailbreak/char_ngram_logreg: BA 0.911, AUROC 0.976",
+        "heldback_test_and_private_to_tune/jailbreak/bow_logreg: BA 0.936, AUROC 0.984",
+        "heldback_test_and_private_to_tune/leakage/char_ngram_logreg: BA 0.862, AUROC 0.928",
+        "heldback_test_and_private_to_tune/leakage/bow_logreg: BA 0.84, AUROC 0.924",
+        "heldback_seeded_groups/injection/char_ngram_logreg: BA 0.811, AUROC 0.9",
+        "heldback_seeded_groups/injection/bow_logreg: BA 0.858, AUROC 0.934",
+        "heldback_seeded_groups/jailbreak/char_ngram_logreg: BA 0.856, AUROC 0.947",
+        "heldback_seeded_groups/jailbreak/bow_logreg: BA 0.883, AUROC 0.956",
+        "heldback_seeded_groups/leakage/char_ngram_logreg: BA 0.863, AUROC 0.926",
+        "heldback_seeded_groups/leakage/bow_logreg: BA 0.866, AUROC 0.937"
       ],
       "pass": false,
       "seed": 20261004,
@@ -645,8 +644,8 @@
       "table": [
         {
           "C": null,
-          "auroc": 0.689,
-          "ba": 0.626,
+          "auroc": 0.697,
+          "ba": 0.633,
           "baseline": "source_id",
           "constant_prediction": false,
           "pass": true,
@@ -655,8 +654,8 @@
         },
         {
           "C": null,
-          "auroc": 0.504,
-          "ba": 0.504,
+          "auroc": 0.505,
+          "ba": 0.505,
           "baseline": "keyword_regex",
           "constant_prediction": false,
           "pass": true,
@@ -665,8 +664,8 @@
         },
         {
           "C": null,
-          "auroc": 0.542,
-          "ba": 0.507,
+          "auroc": 0.511,
+          "ba": 0.53,
           "baseline": "length",
           "constant_prediction": false,
           "pass": true,
@@ -674,9 +673,9 @@
           "view": "heldback_half_a_to_half_b"
         },
         {
-          "C": 10.0,
-          "auroc": 0.844,
-          "ba": 0.789,
+          "C": 100.0,
+          "auroc": 0.854,
+          "ba": 0.784,
           "baseline": "char_ngram_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -685,88 +684,88 @@
         },
         {
           "C": 10.0,
-          "auroc": 0.886,
-          "ba": 0.792,
+          "auroc": 0.879,
+          "ba": 0.793,
           "baseline": "bow_logreg",
           "constant_prediction": false,
           "pass": false,
           "subtask": "injection",
+          "view": "heldback_half_a_to_half_b"
+        },
+        {
+          "C": null,
+          "auroc": 0.677,
+          "ba": 0.631,
+          "baseline": "source_id",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "jailbreak",
+          "view": "heldback_half_a_to_half_b"
+        },
+        {
+          "C": null,
+          "auroc": 0.519,
+          "ba": 0.519,
+          "baseline": "keyword_regex",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "jailbreak",
+          "view": "heldback_half_a_to_half_b"
+        },
+        {
+          "C": null,
+          "auroc": 0.621,
+          "ba": 0.603,
+          "baseline": "length",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "jailbreak",
+          "view": "heldback_half_a_to_half_b"
+        },
+        {
+          "C": 100.0,
+          "auroc": 0.968,
+          "ba": 0.895,
+          "baseline": "char_ngram_logreg",
+          "constant_prediction": false,
+          "pass": false,
+          "subtask": "jailbreak",
+          "view": "heldback_half_a_to_half_b"
+        },
+        {
+          "C": 100.0,
+          "auroc": 0.962,
+          "ba": 0.871,
+          "baseline": "bow_logreg",
+          "constant_prediction": false,
+          "pass": false,
+          "subtask": "jailbreak",
+          "view": "heldback_half_a_to_half_b"
+        },
+        {
+          "C": null,
+          "auroc": 0.618,
+          "ba": 0.59,
+          "baseline": "source_id",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "leakage",
+          "view": "heldback_half_a_to_half_b"
+        },
+        {
+          "C": null,
+          "auroc": 0.529,
+          "ba": 0.529,
+          "baseline": "keyword_regex",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "leakage",
           "view": "heldback_half_a_to_half_b"
         },
         {
           "C": null,
           "auroc": 0.568,
-          "ba": 0.541,
-          "baseline": "source_id",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "jailbreak",
-          "view": "heldback_half_a_to_half_b"
-        },
-        {
-          "C": null,
-          "auroc": 0.512,
-          "ba": 0.512,
-          "baseline": "keyword_regex",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "jailbreak",
-          "view": "heldback_half_a_to_half_b"
-        },
-        {
-          "C": null,
-          "auroc": 0.543,
-          "ba": 0.524,
-          "baseline": "length",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "jailbreak",
-          "view": "heldback_half_a_to_half_b"
-        },
-        {
-          "C": 10.0,
-          "auroc": 0.926,
-          "ba": 0.84,
-          "baseline": "char_ngram_logreg",
-          "constant_prediction": false,
-          "pass": false,
-          "subtask": "jailbreak",
-          "view": "heldback_half_a_to_half_b"
-        },
-        {
-          "C": 10.0,
-          "auroc": 0.922,
-          "ba": 0.85,
-          "baseline": "bow_logreg",
-          "constant_prediction": false,
-          "pass": false,
-          "subtask": "jailbreak",
-          "view": "heldback_half_a_to_half_b"
-        },
-        {
-          "C": null,
-          "auroc": 0.625,
-          "ba": 0.596,
-          "baseline": "source_id",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "leakage",
-          "view": "heldback_half_a_to_half_b"
-        },
-        {
-          "C": null,
-          "auroc": 0.532,
-          "ba": 0.532,
-          "baseline": "keyword_regex",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "leakage",
-          "view": "heldback_half_a_to_half_b"
-        },
-        {
-          "C": null,
-          "auroc": 0.564,
-          "ba": 0.571,
+          "ba": 0.568,
           "baseline": "length",
           "constant_prediction": false,
           "pass": true,
@@ -775,8 +774,8 @@
         },
         {
           "C": 10.0,
-          "auroc": 0.912,
-          "ba": 0.831,
+          "auroc": 0.92,
+          "ba": 0.838,
           "baseline": "char_ngram_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -784,9 +783,9 @@
           "view": "heldback_half_a_to_half_b"
         },
         {
-          "C": 100.0,
-          "auroc": 0.937,
-          "ba": 0.86,
+          "C": 10.0,
+          "auroc": 0.914,
+          "ba": 0.833,
           "baseline": "bow_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -795,8 +794,8 @@
         },
         {
           "C": null,
-          "auroc": 0.717,
-          "ba": 0.63,
+          "auroc": 0.734,
+          "ba": 0.637,
           "baseline": "source_id",
           "constant_prediction": false,
           "pass": true,
@@ -805,8 +804,8 @@
         },
         {
           "C": null,
-          "auroc": 0.504,
-          "ba": 0.504,
+          "auroc": 0.502,
+          "ba": 0.502,
           "baseline": "keyword_regex",
           "constant_prediction": false,
           "pass": true,
@@ -815,8 +814,8 @@
         },
         {
           "C": null,
-          "auroc": 0.531,
-          "ba": 0.524,
+          "auroc": 0.537,
+          "ba": 0.54,
           "baseline": "length",
           "constant_prediction": false,
           "pass": true,
@@ -825,8 +824,8 @@
         },
         {
           "C": 10.0,
-          "auroc": 0.864,
-          "ba": 0.771,
+          "auroc": 0.87,
+          "ba": 0.79,
           "baseline": "char_ngram_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -834,9 +833,9 @@
           "view": "heldback_half_b_to_half_a"
         },
         {
-          "C": 100.0,
-          "auroc": 0.875,
-          "ba": 0.78,
+          "C": 10.0,
+          "auroc": 0.879,
+          "ba": 0.795,
           "baseline": "bow_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -845,8 +844,8 @@
         },
         {
           "C": null,
-          "auroc": 0.583,
-          "ba": 0.552,
+          "auroc": 0.676,
+          "ba": 0.631,
           "baseline": "source_id",
           "constant_prediction": false,
           "pass": true,
@@ -865,8 +864,8 @@
         },
         {
           "C": null,
-          "auroc": 0.566,
-          "ba": 0.554,
+          "auroc": 0.571,
+          "ba": 0.583,
           "baseline": "length",
           "constant_prediction": false,
           "pass": true,
@@ -875,8 +874,8 @@
         },
         {
           "C": 100.0,
-          "auroc": 0.924,
-          "ba": 0.858,
+          "auroc": 0.942,
+          "ba": 0.876,
           "baseline": "char_ngram_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -885,8 +884,8 @@
         },
         {
           "C": 100.0,
-          "auroc": 0.923,
-          "ba": 0.855,
+          "auroc": 0.943,
+          "ba": 0.86,
           "baseline": "bow_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -895,8 +894,8 @@
         },
         {
           "C": null,
-          "auroc": 0.631,
-          "ba": 0.587,
+          "auroc": 0.626,
+          "ba": 0.592,
           "baseline": "source_id",
           "constant_prediction": false,
           "pass": true,
@@ -905,8 +904,8 @@
         },
         {
           "C": null,
-          "auroc": 0.557,
-          "ba": 0.557,
+          "auroc": 0.562,
+          "ba": 0.562,
           "baseline": "keyword_regex",
           "constant_prediction": false,
           "pass": true,
@@ -916,7 +915,7 @@
         {
           "C": null,
           "auroc": 0.532,
-          "ba": 0.568,
+          "ba": 0.566,
           "baseline": "length",
           "constant_prediction": false,
           "pass": true,
@@ -924,9 +923,9 @@
           "view": "heldback_half_b_to_half_a"
         },
         {
-          "C": 100.0,
-          "auroc": 0.899,
-          "ba": 0.816,
+          "C": 10.0,
+          "auroc": 0.918,
+          "ba": 0.837,
           "baseline": "char_ngram_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -934,9 +933,9 @@
           "view": "heldback_half_b_to_half_a"
         },
         {
-          "C": 10.0,
-          "auroc": 0.916,
-          "ba": 0.837,
+          "C": 100.0,
+          "auroc": 0.925,
+          "ba": 0.854,
           "baseline": "bow_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -945,8 +944,8 @@
         },
         {
           "C": null,
-          "auroc": 0.695,
-          "ba": 0.627,
+          "auroc": 0.713,
+          "ba": 0.637,
           "baseline": "source_id",
           "constant_prediction": false,
           "pass": true,
@@ -965,8 +964,8 @@
         },
         {
           "C": null,
-          "auroc": 0.535,
-          "ba": 0.526,
+          "auroc": 0.528,
+          "ba": 0.524,
           "baseline": "length",
           "constant_prediction": false,
           "pass": true,
@@ -975,8 +974,8 @@
         },
         {
           "C": 100.0,
-          "auroc": 0.796,
-          "ba": 0.708,
+          "auroc": 0.82,
+          "ba": 0.707,
           "baseline": "char_ngram_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -985,8 +984,8 @@
         },
         {
           "C": 10.0,
-          "auroc": 0.829,
-          "ba": 0.731,
+          "auroc": 0.834,
+          "ba": 0.728,
           "baseline": "bow_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -995,8 +994,8 @@
         },
         {
           "C": null,
-          "auroc": 0.583,
-          "ba": 0.559,
+          "auroc": 0.671,
+          "ba": 0.623,
           "baseline": "source_id",
           "constant_prediction": false,
           "pass": true,
@@ -1005,8 +1004,8 @@
         },
         {
           "C": null,
-          "auroc": 0.505,
-          "ba": 0.505,
+          "auroc": 0.509,
+          "ba": 0.509,
           "baseline": "keyword_regex",
           "constant_prediction": false,
           "pass": true,
@@ -1015,8 +1014,8 @@
         },
         {
           "C": null,
-          "auroc": 0.538,
-          "ba": 0.537,
+          "auroc": 0.563,
+          "ba": 0.564,
           "baseline": "length",
           "constant_prediction": false,
           "pass": true,
@@ -1025,168 +1024,168 @@
         },
         {
           "C": 10.0,
-          "auroc": 0.914,
-          "ba": 0.83,
+          "auroc": 0.919,
+          "ba": 0.827,
           "baseline": "char_ngram_logreg",
           "constant_prediction": false,
           "pass": false,
           "subtask": "jailbreak",
           "view": "heldback_tune_to_public_test"
-        },
-        {
-          "C": 10.0,
-          "auroc": 0.904,
-          "ba": 0.825,
-          "baseline": "bow_logreg",
-          "constant_prediction": false,
-          "pass": false,
-          "subtask": "jailbreak",
-          "view": "heldback_tune_to_public_test"
-        },
-        {
-          "C": null,
-          "auroc": 0.62,
-          "ba": 0.554,
-          "baseline": "source_id",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "leakage",
-          "view": "heldback_tune_to_public_test"
-        },
-        {
-          "C": null,
-          "auroc": 0.538,
-          "ba": 0.538,
-          "baseline": "keyword_regex",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "leakage",
-          "view": "heldback_tune_to_public_test"
-        },
-        {
-          "C": null,
-          "auroc": 0.535,
-          "ba": 0.516,
-          "baseline": "length",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "leakage",
-          "view": "heldback_tune_to_public_test"
-        },
-        {
-          "C": 100.0,
-          "auroc": 0.846,
-          "ba": 0.769,
-          "baseline": "char_ngram_logreg",
-          "constant_prediction": false,
-          "pass": false,
-          "subtask": "leakage",
-          "view": "heldback_tune_to_public_test"
-        },
-        {
-          "C": 10.0,
-          "auroc": 0.81,
-          "ba": 0.737,
-          "baseline": "bow_logreg",
-          "constant_prediction": false,
-          "pass": false,
-          "subtask": "leakage",
-          "view": "heldback_tune_to_public_test"
-        },
-        {
-          "C": null,
-          "auroc": 0.796,
-          "ba": 0.661,
-          "baseline": "source_id",
-          "constant_prediction": false,
-          "pass": false,
-          "subtask": "injection",
-          "view": "heldback_tune_to_private"
-        },
-        {
-          "C": null,
-          "auroc": 0.5,
-          "ba": 0.5,
-          "baseline": "keyword_regex",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "injection",
-          "view": "heldback_tune_to_private"
-        },
-        {
-          "C": null,
-          "auroc": 0.572,
-          "ba": 0.567,
-          "baseline": "length",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "injection",
-          "view": "heldback_tune_to_private"
-        },
-        {
-          "C": 100.0,
-          "auroc": 0.765,
-          "ba": 0.69,
-          "baseline": "char_ngram_logreg",
-          "constant_prediction": false,
-          "pass": false,
-          "subtask": "injection",
-          "view": "heldback_tune_to_private"
-        },
-        {
-          "C": 10.0,
-          "auroc": 0.808,
-          "ba": 0.72,
-          "baseline": "bow_logreg",
-          "constant_prediction": false,
-          "pass": false,
-          "subtask": "injection",
-          "view": "heldback_tune_to_private"
-        },
-        {
-          "C": null,
-          "auroc": 0.619,
-          "ba": 0.6,
-          "baseline": "source_id",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "jailbreak",
-          "view": "heldback_tune_to_private"
-        },
-        {
-          "C": null,
-          "auroc": 0.52,
-          "ba": 0.52,
-          "baseline": "keyword_regex",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "jailbreak",
-          "view": "heldback_tune_to_private"
-        },
-        {
-          "C": null,
-          "auroc": 0.586,
-          "ba": 0.58,
-          "baseline": "length",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "jailbreak",
-          "view": "heldback_tune_to_private"
-        },
-        {
-          "C": 10.0,
-          "auroc": 0.917,
-          "ba": 0.828,
-          "baseline": "char_ngram_logreg",
-          "constant_prediction": false,
-          "pass": false,
-          "subtask": "jailbreak",
-          "view": "heldback_tune_to_private"
         },
         {
           "C": 10.0,
           "auroc": 0.91,
-          "ba": 0.848,
+          "ba": 0.816,
+          "baseline": "bow_logreg",
+          "constant_prediction": false,
+          "pass": false,
+          "subtask": "jailbreak",
+          "view": "heldback_tune_to_public_test"
+        },
+        {
+          "C": null,
+          "auroc": 0.607,
+          "ba": 0.538,
+          "baseline": "source_id",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "leakage",
+          "view": "heldback_tune_to_public_test"
+        },
+        {
+          "C": null,
+          "auroc": 0.534,
+          "ba": 0.534,
+          "baseline": "keyword_regex",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "leakage",
+          "view": "heldback_tune_to_public_test"
+        },
+        {
+          "C": null,
+          "auroc": 0.553,
+          "ba": 0.505,
+          "baseline": "length",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "leakage",
+          "view": "heldback_tune_to_public_test"
+        },
+        {
+          "C": 100.0,
+          "auroc": 0.844,
+          "ba": 0.767,
+          "baseline": "char_ngram_logreg",
+          "constant_prediction": false,
+          "pass": false,
+          "subtask": "leakage",
+          "view": "heldback_tune_to_public_test"
+        },
+        {
+          "C": 10.0,
+          "auroc": 0.807,
+          "ba": 0.734,
+          "baseline": "bow_logreg",
+          "constant_prediction": false,
+          "pass": false,
+          "subtask": "leakage",
+          "view": "heldback_tune_to_public_test"
+        },
+        {
+          "C": null,
+          "auroc": 0.763,
+          "ba": 0.636,
+          "baseline": "source_id",
+          "constant_prediction": false,
+          "pass": false,
+          "subtask": "injection",
+          "view": "heldback_tune_to_private"
+        },
+        {
+          "C": null,
+          "auroc": 0.504,
+          "ba": 0.504,
+          "baseline": "keyword_regex",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "injection",
+          "view": "heldback_tune_to_private"
+        },
+        {
+          "C": null,
+          "auroc": 0.587,
+          "ba": 0.618,
+          "baseline": "length",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "injection",
+          "view": "heldback_tune_to_private"
+        },
+        {
+          "C": 100.0,
+          "auroc": 0.697,
+          "ba": 0.631,
+          "baseline": "char_ngram_logreg",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "injection",
+          "view": "heldback_tune_to_private"
+        },
+        {
+          "C": 10.0,
+          "auroc": 0.757,
+          "ba": 0.657,
+          "baseline": "bow_logreg",
+          "constant_prediction": false,
+          "pass": false,
+          "subtask": "injection",
+          "view": "heldback_tune_to_private"
+        },
+        {
+          "C": null,
+          "auroc": 0.689,
+          "ba": 0.649,
+          "baseline": "source_id",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "jailbreak",
+          "view": "heldback_tune_to_private"
+        },
+        {
+          "C": null,
+          "auroc": 0.523,
+          "ba": 0.523,
+          "baseline": "keyword_regex",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "jailbreak",
+          "view": "heldback_tune_to_private"
+        },
+        {
+          "C": null,
+          "auroc": 0.673,
+          "ba": 0.627,
+          "baseline": "length",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "jailbreak",
+          "view": "heldback_tune_to_private"
+        },
+        {
+          "C": 10.0,
+          "auroc": 0.909,
+          "ba": 0.817,
+          "baseline": "char_ngram_logreg",
+          "constant_prediction": false,
+          "pass": false,
+          "subtask": "jailbreak",
+          "view": "heldback_tune_to_private"
+        },
+        {
+          "C": 10.0,
+          "auroc": 0.902,
+          "ba": 0.812,
           "baseline": "bow_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -1195,8 +1194,8 @@
         },
         {
           "C": null,
-          "auroc": 0.66,
-          "ba": 0.561,
+          "auroc": 0.692,
+          "ba": 0.602,
           "baseline": "source_id",
           "constant_prediction": false,
           "pass": true,
@@ -1205,8 +1204,8 @@
         },
         {
           "C": null,
-          "auroc": 0.568,
-          "ba": 0.568,
+          "auroc": 0.575,
+          "ba": 0.575,
           "baseline": "keyword_regex",
           "constant_prediction": false,
           "pass": true,
@@ -1215,8 +1214,8 @@
         },
         {
           "C": null,
-          "auroc": 0.586,
-          "ba": 0.538,
+          "auroc": 0.538,
+          "ba": 0.51,
           "baseline": "length",
           "constant_prediction": false,
           "pass": true,
@@ -1225,8 +1224,8 @@
         },
         {
           "C": 100.0,
-          "auroc": 0.887,
-          "ba": 0.801,
+          "auroc": 0.894,
+          "ba": 0.809,
           "baseline": "char_ngram_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -1235,8 +1234,8 @@
         },
         {
           "C": 10.0,
-          "auroc": 0.857,
-          "ba": 0.782,
+          "auroc": 0.865,
+          "ba": 0.787,
           "baseline": "bow_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -1245,7 +1244,7 @@
         },
         {
           "C": null,
-          "auroc": 0.651,
+          "auroc": 0.679,
           "ba": 0.583,
           "baseline": "source_id",
           "constant_prediction": false,
@@ -1266,7 +1265,7 @@
         {
           "C": null,
           "auroc": 0.539,
-          "ba": 0.525,
+          "ba": 0.512,
           "baseline": "length",
           "constant_prediction": false,
           "pass": true,
@@ -1275,8 +1274,8 @@
         },
         {
           "C": 10.0,
-          "auroc": 0.908,
-          "ba": 0.843,
+          "auroc": 0.914,
+          "ba": 0.826,
           "baseline": "char_ngram_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -1285,8 +1284,8 @@
         },
         {
           "C": 10.0,
-          "auroc": 0.933,
-          "ba": 0.864,
+          "auroc": 0.937,
+          "ba": 0.869,
           "baseline": "bow_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -1295,8 +1294,8 @@
         },
         {
           "C": null,
-          "auroc": 0.583,
-          "ba": 0.53,
+          "auroc": 0.645,
+          "ba": 0.632,
           "baseline": "source_id",
           "constant_prediction": false,
           "pass": true,
@@ -1305,8 +1304,8 @@
         },
         {
           "C": null,
-          "auroc": 0.518,
-          "ba": 0.518,
+          "auroc": 0.514,
+          "ba": 0.514,
           "baseline": "keyword_regex",
           "constant_prediction": false,
           "pass": true,
@@ -1315,8 +1314,8 @@
         },
         {
           "C": null,
-          "auroc": 0.572,
-          "ba": 0.545,
+          "auroc": 0.624,
+          "ba": 0.585,
           "baseline": "length",
           "constant_prediction": false,
           "pass": true,
@@ -1325,8 +1324,8 @@
         },
         {
           "C": 100.0,
-          "auroc": 0.971,
-          "ba": 0.889,
+          "auroc": 0.976,
+          "ba": 0.911,
           "baseline": "char_ngram_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -1334,9 +1333,9 @@
           "view": "heldback_test_and_private_to_tune"
         },
         {
-          "C": 100.0,
-          "auroc": 0.982,
-          "ba": 0.939,
+          "C": 10.0,
+          "auroc": 0.984,
+          "ba": 0.936,
           "baseline": "bow_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -1375,8 +1374,8 @@
         },
         {
           "C": 10.0,
-          "auroc": 0.926,
-          "ba": 0.84,
+          "auroc": 0.928,
+          "ba": 0.862,
           "baseline": "char_ngram_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -1385,7 +1384,7 @@
         },
         {
           "C": 100.0,
-          "auroc": 0.921,
+          "auroc": 0.924,
           "ba": 0.84,
           "baseline": "bow_logreg",
           "constant_prediction": false,
@@ -1395,8 +1394,8 @@
         },
         {
           "C": null,
-          "auroc": 0.729,
-          "ba": 0.637,
+          "auroc": 0.733,
+          "ba": 0.65,
           "baseline": "source_id",
           "constant_prediction": false,
           "pass": true,
@@ -1405,8 +1404,8 @@
         },
         {
           "C": null,
-          "auroc": 0.511,
-          "ba": 0.511,
+          "auroc": 0.507,
+          "ba": 0.507,
           "baseline": "keyword_regex",
           "constant_prediction": false,
           "pass": true,
@@ -1415,8 +1414,8 @@
         },
         {
           "C": null,
-          "auroc": 0.521,
-          "ba": 0.516,
+          "auroc": 0.53,
+          "ba": 0.549,
           "baseline": "length",
           "constant_prediction": false,
           "pass": true,
@@ -1425,108 +1424,108 @@
         },
         {
           "C": 10.0,
-          "auroc": 0.894,
-          "ba": 0.787,
+          "auroc": 0.9,
+          "ba": 0.811,
           "baseline": "char_ngram_logreg",
           "constant_prediction": false,
           "pass": false,
           "subtask": "injection",
-          "view": "heldback_seeded_groups"
-        },
-        {
-          "C": 10.0,
-          "auroc": 0.906,
-          "ba": 0.814,
-          "baseline": "bow_logreg",
-          "constant_prediction": false,
-          "pass": false,
-          "subtask": "injection",
-          "view": "heldback_seeded_groups"
-        },
-        {
-          "C": null,
-          "auroc": 0.597,
-          "ba": 0.551,
-          "baseline": "source_id",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "jailbreak",
-          "view": "heldback_seeded_groups"
-        },
-        {
-          "C": null,
-          "auroc": 0.519,
-          "ba": 0.519,
-          "baseline": "keyword_regex",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "jailbreak",
-          "view": "heldback_seeded_groups"
-        },
-        {
-          "C": null,
-          "auroc": 0.537,
-          "ba": 0.531,
-          "baseline": "length",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "jailbreak",
-          "view": "heldback_seeded_groups"
-        },
-        {
-          "C": 100.0,
-          "auroc": 0.941,
-          "ba": 0.844,
-          "baseline": "char_ngram_logreg",
-          "constant_prediction": false,
-          "pass": false,
-          "subtask": "jailbreak",
-          "view": "heldback_seeded_groups"
-        },
-        {
-          "C": 100.0,
-          "auroc": 0.95,
-          "ba": 0.872,
-          "baseline": "bow_logreg",
-          "constant_prediction": false,
-          "pass": false,
-          "subtask": "jailbreak",
-          "view": "heldback_seeded_groups"
-        },
-        {
-          "C": null,
-          "auroc": 0.613,
-          "ba": 0.575,
-          "baseline": "source_id",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "leakage",
-          "view": "heldback_seeded_groups"
-        },
-        {
-          "C": null,
-          "auroc": 0.536,
-          "ba": 0.536,
-          "baseline": "keyword_regex",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "leakage",
-          "view": "heldback_seeded_groups"
-        },
-        {
-          "C": null,
-          "auroc": 0.577,
-          "ba": 0.584,
-          "baseline": "length",
-          "constant_prediction": false,
-          "pass": true,
-          "subtask": "leakage",
           "view": "heldback_seeded_groups"
         },
         {
           "C": 10.0,
           "auroc": 0.934,
-          "ba": 0.844,
+          "ba": 0.858,
+          "baseline": "bow_logreg",
+          "constant_prediction": false,
+          "pass": false,
+          "subtask": "injection",
+          "view": "heldback_seeded_groups"
+        },
+        {
+          "C": null,
+          "auroc": 0.634,
+          "ba": 0.584,
+          "baseline": "source_id",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "jailbreak",
+          "view": "heldback_seeded_groups"
+        },
+        {
+          "C": null,
+          "auroc": 0.506,
+          "ba": 0.506,
+          "baseline": "keyword_regex",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "jailbreak",
+          "view": "heldback_seeded_groups"
+        },
+        {
+          "C": null,
+          "auroc": 0.563,
+          "ba": 0.56,
+          "baseline": "length",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "jailbreak",
+          "view": "heldback_seeded_groups"
+        },
+        {
+          "C": 100.0,
+          "auroc": 0.947,
+          "ba": 0.856,
+          "baseline": "char_ngram_logreg",
+          "constant_prediction": false,
+          "pass": false,
+          "subtask": "jailbreak",
+          "view": "heldback_seeded_groups"
+        },
+        {
+          "C": 100.0,
+          "auroc": 0.956,
+          "ba": 0.883,
+          "baseline": "bow_logreg",
+          "constant_prediction": false,
+          "pass": false,
+          "subtask": "jailbreak",
+          "view": "heldback_seeded_groups"
+        },
+        {
+          "C": null,
+          "auroc": 0.63,
+          "ba": 0.599,
+          "baseline": "source_id",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "leakage",
+          "view": "heldback_seeded_groups"
+        },
+        {
+          "C": null,
+          "auroc": 0.563,
+          "ba": 0.563,
+          "baseline": "keyword_regex",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "leakage",
+          "view": "heldback_seeded_groups"
+        },
+        {
+          "C": null,
+          "auroc": 0.59,
+          "ba": 0.581,
+          "baseline": "length",
+          "constant_prediction": false,
+          "pass": true,
+          "subtask": "leakage",
+          "view": "heldback_seeded_groups"
+        },
+        {
+          "C": 10.0,
+          "auroc": 0.926,
+          "ba": 0.863,
           "baseline": "char_ngram_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -1535,8 +1534,8 @@
         },
         {
           "C": 100.0,
-          "auroc": 0.93,
-          "ba": 0.865,
+          "auroc": 0.937,
+          "ba": 0.866,
           "baseline": "bow_logreg",
           "constant_prediction": false,
           "pass": false,
@@ -1557,39 +1556,39 @@
           "injection": {
             "bow_logreg": {
               "C": 10.0,
-              "auroc": 0.886,
-              "ba": 0.792,
+              "auroc": 0.879,
+              "ba": 0.793,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
-              "C": 10.0,
-              "auroc": 0.844,
-              "ba": 0.789,
+              "C": 100.0,
+              "auroc": 0.854,
+              "ba": 0.784,
               "constant_prediction": false,
               "pass": false
             },
             "fitted_on": {
-              "n_no": 220,
-              "n_yes": 198
+              "n_no": 222,
+              "n_yes": 185
             },
             "keyword_regex": {
-              "auroc": 0.504,
-              "ba": 0.504,
+              "auroc": 0.505,
+              "ba": 0.505,
               "pass": true
             },
             "length": {
-              "auroc": 0.542,
-              "ba": 0.507,
+              "auroc": 0.511,
+              "ba": 0.53,
               "pass": true
             },
             "scored": {
-              "n_no": 212,
-              "n_yes": 192
+              "n_no": 210,
+              "n_yes": 203
             },
             "source_id": {
-              "auroc": 0.689,
-              "ba": 0.626,
+              "auroc": 0.697,
+              "ba": 0.633,
               "constant_prediction": false,
               "pass": true,
               "unseen_source_share": 0.0
@@ -1597,40 +1596,40 @@
           },
           "jailbreak": {
             "bow_logreg": {
-              "C": 10.0,
-              "auroc": 0.922,
-              "ba": 0.85,
+              "C": 100.0,
+              "auroc": 0.962,
+              "ba": 0.871,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
-              "C": 10.0,
-              "auroc": 0.926,
-              "ba": 0.84,
+              "C": 100.0,
+              "auroc": 0.968,
+              "ba": 0.895,
               "constant_prediction": false,
               "pass": false
             },
             "fitted_on": {
-              "n_no": 197,
-              "n_yes": 213
+              "n_no": 210,
+              "n_yes": 210
             },
             "keyword_regex": {
-              "auroc": 0.512,
-              "ba": 0.512,
+              "auroc": 0.519,
+              "ba": 0.519,
               "pass": true
             },
             "length": {
-              "auroc": 0.543,
-              "ba": 0.524,
+              "auroc": 0.621,
+              "ba": 0.603,
               "pass": true
             },
             "scored": {
-              "n_no": 217,
-              "n_yes": 170
+              "n_no": 212,
+              "n_yes": 181
             },
             "source_id": {
-              "auroc": 0.568,
-              "ba": 0.541,
+              "auroc": 0.677,
+              "ba": 0.631,
               "constant_prediction": false,
               "pass": true,
               "unseen_source_share": 0.0
@@ -1638,40 +1637,40 @@
           },
           "leakage": {
             "bow_logreg": {
-              "C": 100.0,
-              "auroc": 0.937,
-              "ba": 0.86,
+              "C": 10.0,
+              "auroc": 0.914,
+              "ba": 0.833,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
               "C": 10.0,
-              "auroc": 0.912,
-              "ba": 0.831,
+              "auroc": 0.92,
+              "ba": 0.838,
               "constant_prediction": false,
               "pass": false
             },
             "fitted_on": {
-              "n_no": 229,
-              "n_yes": 219
+              "n_no": 238,
+              "n_yes": 217
             },
             "keyword_regex": {
-              "auroc": 0.532,
-              "ba": 0.532,
+              "auroc": 0.529,
+              "ba": 0.529,
               "pass": true
             },
             "length": {
-              "auroc": 0.564,
-              "ba": 0.571,
+              "auroc": 0.568,
+              "ba": 0.568,
               "pass": true
             },
             "scored": {
-              "n_no": 235,
-              "n_yes": 197
+              "n_no": 226,
+              "n_yes": 199
             },
             "source_id": {
-              "auroc": 0.625,
-              "ba": 0.596,
+              "auroc": 0.618,
+              "ba": 0.59,
               "constant_prediction": false,
               "pass": true,
               "unseen_source_share": 0.0
@@ -1681,40 +1680,40 @@
         "heldback_half_b_to_half_a": {
           "injection": {
             "bow_logreg": {
-              "C": 100.0,
-              "auroc": 0.875,
-              "ba": 0.78,
+              "C": 10.0,
+              "auroc": 0.879,
+              "ba": 0.795,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
               "C": 10.0,
-              "auroc": 0.864,
-              "ba": 0.771,
+              "auroc": 0.87,
+              "ba": 0.79,
               "constant_prediction": false,
               "pass": false
             },
             "fitted_on": {
-              "n_no": 212,
-              "n_yes": 192
+              "n_no": 210,
+              "n_yes": 203
             },
             "keyword_regex": {
-              "auroc": 0.504,
-              "ba": 0.504,
+              "auroc": 0.502,
+              "ba": 0.502,
               "pass": true
             },
             "length": {
-              "auroc": 0.531,
-              "ba": 0.524,
+              "auroc": 0.537,
+              "ba": 0.54,
               "pass": true
             },
             "scored": {
-              "n_no": 220,
-              "n_yes": 198
+              "n_no": 222,
+              "n_yes": 185
             },
             "source_id": {
-              "auroc": 0.717,
-              "ba": 0.63,
+              "auroc": 0.734,
+              "ba": 0.637,
               "constant_prediction": false,
               "pass": true,
               "unseen_source_share": 0.0
@@ -1723,21 +1722,21 @@
           "jailbreak": {
             "bow_logreg": {
               "C": 100.0,
-              "auroc": 0.923,
-              "ba": 0.855,
+              "auroc": 0.943,
+              "ba": 0.86,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
               "C": 100.0,
-              "auroc": 0.924,
-              "ba": 0.858,
+              "auroc": 0.942,
+              "ba": 0.876,
               "constant_prediction": false,
               "pass": false
             },
             "fitted_on": {
-              "n_no": 217,
-              "n_yes": 170
+              "n_no": 212,
+              "n_yes": 181
             },
             "keyword_regex": {
               "auroc": 0.507,
@@ -1745,17 +1744,17 @@
               "pass": true
             },
             "length": {
-              "auroc": 0.566,
-              "ba": 0.554,
+              "auroc": 0.571,
+              "ba": 0.583,
               "pass": true
             },
             "scored": {
-              "n_no": 197,
-              "n_yes": 213
+              "n_no": 210,
+              "n_yes": 210
             },
             "source_id": {
-              "auroc": 0.583,
-              "ba": 0.552,
+              "auroc": 0.676,
+              "ba": 0.631,
               "constant_prediction": false,
               "pass": true,
               "unseen_source_share": 0.0
@@ -1763,40 +1762,40 @@
           },
           "leakage": {
             "bow_logreg": {
-              "C": 10.0,
-              "auroc": 0.916,
-              "ba": 0.837,
+              "C": 100.0,
+              "auroc": 0.925,
+              "ba": 0.854,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
-              "C": 100.0,
-              "auroc": 0.899,
-              "ba": 0.816,
+              "C": 10.0,
+              "auroc": 0.918,
+              "ba": 0.837,
               "constant_prediction": false,
               "pass": false
             },
             "fitted_on": {
-              "n_no": 235,
-              "n_yes": 197
+              "n_no": 226,
+              "n_yes": 199
             },
             "keyword_regex": {
-              "auroc": 0.557,
-              "ba": 0.557,
+              "auroc": 0.562,
+              "ba": 0.562,
               "pass": true
             },
             "length": {
               "auroc": 0.532,
-              "ba": 0.568,
+              "ba": 0.566,
               "pass": true
             },
             "scored": {
-              "n_no": 229,
-              "n_yes": 219
+              "n_no": 238,
+              "n_yes": 217
             },
             "source_id": {
-              "auroc": 0.631,
-              "ba": 0.587,
+              "auroc": 0.626,
+              "ba": 0.592,
               "constant_prediction": false,
               "pass": true,
               "unseen_source_share": 0.0
@@ -1807,39 +1806,39 @@
           "injection": {
             "bow_logreg": {
               "C": 10.0,
-              "auroc": 0.906,
-              "ba": 0.814,
+              "auroc": 0.934,
+              "ba": 0.858,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
               "C": 10.0,
-              "auroc": 0.894,
-              "ba": 0.787,
+              "auroc": 0.9,
+              "ba": 0.811,
               "constant_prediction": false,
               "pass": false
             },
             "fitted_on": {
-              "n_no": 388,
-              "n_yes": 361
+              "n_no": 402,
+              "n_yes": 362
             },
             "keyword_regex": {
-              "auroc": 0.511,
-              "ba": 0.511,
+              "auroc": 0.507,
+              "ba": 0.507,
               "pass": true
             },
             "length": {
-              "auroc": 0.521,
-              "ba": 0.516,
+              "auroc": 0.53,
+              "ba": 0.549,
               "pass": true
             },
             "scored": {
-              "n_no": 140,
-              "n_yes": 102
+              "n_no": 126,
+              "n_yes": 99
             },
             "source_id": {
-              "auroc": 0.729,
-              "ba": 0.637,
+              "auroc": 0.733,
+              "ba": 0.65,
               "constant_prediction": false,
               "pass": true,
               "unseen_source_share": 0.0
@@ -1848,39 +1847,39 @@
           "jailbreak": {
             "bow_logreg": {
               "C": 100.0,
-              "auroc": 0.95,
-              "ba": 0.872,
+              "auroc": 0.956,
+              "ba": 0.883,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
               "C": 100.0,
-              "auroc": 0.941,
-              "ba": 0.844,
+              "auroc": 0.947,
+              "ba": 0.856,
               "constant_prediction": false,
               "pass": false
             },
             "fitted_on": {
-              "n_no": 385,
-              "n_yes": 361
+              "n_no": 396,
+              "n_yes": 393
             },
             "keyword_regex": {
-              "auroc": 0.519,
-              "ba": 0.519,
+              "auroc": 0.506,
+              "ba": 0.506,
               "pass": true
             },
             "length": {
-              "auroc": 0.537,
-              "ba": 0.531,
+              "auroc": 0.563,
+              "ba": 0.56,
               "pass": true
             },
             "scored": {
-              "n_no": 123,
-              "n_yes": 108
+              "n_no": 120,
+              "n_yes": 103
             },
             "source_id": {
-              "auroc": 0.597,
-              "ba": 0.551,
+              "auroc": 0.634,
+              "ba": 0.584,
               "constant_prediction": false,
               "pass": true,
               "unseen_source_share": 0.0
@@ -1889,39 +1888,39 @@
           "leakage": {
             "bow_logreg": {
               "C": 100.0,
-              "auroc": 0.93,
-              "ba": 0.865,
+              "auroc": 0.937,
+              "ba": 0.866,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
               "C": 10.0,
-              "auroc": 0.934,
-              "ba": 0.844,
+              "auroc": 0.926,
+              "ba": 0.863,
               "constant_prediction": false,
               "pass": false
             },
             "fitted_on": {
-              "n_no": 415,
-              "n_yes": 380
+              "n_no": 400,
+              "n_yes": 375
             },
             "keyword_regex": {
-              "auroc": 0.536,
-              "ba": 0.536,
+              "auroc": 0.563,
+              "ba": 0.563,
               "pass": true
             },
             "length": {
-              "auroc": 0.577,
-              "ba": 0.584,
+              "auroc": 0.59,
+              "ba": 0.581,
               "pass": true
             },
             "scored": {
-              "n_no": 140,
-              "n_yes": 126
+              "n_no": 155,
+              "n_yes": 131
             },
             "source_id": {
-              "auroc": 0.613,
-              "ba": 0.575,
+              "auroc": 0.63,
+              "ba": 0.599,
               "constant_prediction": false,
               "pass": true,
               "unseen_source_share": 0.0
@@ -1932,21 +1931,21 @@
           "injection": {
             "bow_logreg": {
               "C": 10.0,
-              "auroc": 0.933,
-              "ba": 0.864,
+              "auroc": 0.937,
+              "ba": 0.869,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
               "C": 10.0,
-              "auroc": 0.908,
-              "ba": 0.843,
+              "auroc": 0.914,
+              "ba": 0.826,
               "constant_prediction": false,
               "pass": false
             },
             "fitted_on": {
               "n_no": 432,
-              "n_yes": 390
+              "n_yes": 388
             },
             "keyword_regex": {
               "auroc": 0.507,
@@ -1955,7 +1954,7 @@
             },
             "length": {
               "auroc": 0.539,
-              "ba": 0.525,
+              "ba": 0.512,
               "pass": true
             },
             "scored": {
@@ -1963,7 +1962,7 @@
               "n_yes": 73
             },
             "source_id": {
-              "auroc": 0.651,
+              "auroc": 0.679,
               "ba": 0.583,
               "constant_prediction": false,
               "pass": true,
@@ -1972,40 +1971,40 @@
           },
           "jailbreak": {
             "bow_logreg": {
-              "C": 100.0,
-              "auroc": 0.982,
-              "ba": 0.939,
+              "C": 10.0,
+              "auroc": 0.984,
+              "ba": 0.936,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
               "C": 100.0,
-              "auroc": 0.971,
-              "ba": 0.889,
+              "auroc": 0.976,
+              "ba": 0.911,
               "constant_prediction": false,
               "pass": false
             },
             "fitted_on": {
-              "n_no": 414,
-              "n_yes": 383
+              "n_no": 422,
+              "n_yes": 391
             },
             "keyword_regex": {
-              "auroc": 0.518,
-              "ba": 0.518,
+              "auroc": 0.514,
+              "ba": 0.514,
               "pass": true
             },
             "length": {
-              "auroc": 0.572,
-              "ba": 0.545,
+              "auroc": 0.624,
+              "ba": 0.585,
               "pass": true
             },
             "scored": {
               "n_no": 94,
-              "n_yes": 86
+              "n_yes": 105
             },
             "source_id": {
-              "auroc": 0.583,
-              "ba": 0.53,
+              "auroc": 0.645,
+              "ba": 0.632,
               "constant_prediction": false,
               "pass": true,
               "unseen_source_share": 0.0
@@ -2014,15 +2013,15 @@
           "leakage": {
             "bow_logreg": {
               "C": 100.0,
-              "auroc": 0.921,
+              "auroc": 0.924,
               "ba": 0.84,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
               "C": 10.0,
-              "auroc": 0.926,
-              "ba": 0.84,
+              "auroc": 0.928,
+              "ba": 0.862,
               "constant_prediction": false,
               "pass": false
             },
@@ -2057,39 +2056,39 @@
           "injection": {
             "bow_logreg": {
               "C": 10.0,
-              "auroc": 0.808,
-              "ba": 0.72,
+              "auroc": 0.757,
+              "ba": 0.657,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
               "C": 100.0,
-              "auroc": 0.765,
-              "ba": 0.69,
+              "auroc": 0.697,
+              "ba": 0.631,
               "constant_prediction": false,
-              "pass": false
+              "pass": true
             },
             "fitted_on": {
               "n_no": 96,
               "n_yes": 73
             },
             "keyword_regex": {
-              "auroc": 0.5,
-              "ba": 0.5,
+              "auroc": 0.504,
+              "ba": 0.504,
               "pass": true
             },
             "length": {
-              "auroc": 0.572,
-              "ba": 0.567,
+              "auroc": 0.587,
+              "ba": 0.618,
               "pass": true
             },
             "scored": {
-              "n_no": 107,
-              "n_yes": 100
+              "n_no": 123,
+              "n_yes": 118
             },
             "source_id": {
-              "auroc": 0.796,
-              "ba": 0.661,
+              "auroc": 0.763,
+              "ba": 0.636,
               "constant_prediction": false,
               "pass": false,
               "unseen_source_share": 0.0
@@ -2098,39 +2097,39 @@
           "jailbreak": {
             "bow_logreg": {
               "C": 10.0,
-              "auroc": 0.91,
-              "ba": 0.848,
+              "auroc": 0.902,
+              "ba": 0.812,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
               "C": 10.0,
-              "auroc": 0.917,
-              "ba": 0.828,
+              "auroc": 0.909,
+              "ba": 0.817,
               "constant_prediction": false,
               "pass": false
             },
             "fitted_on": {
               "n_no": 94,
-              "n_yes": 86
+              "n_yes": 105
             },
             "keyword_regex": {
-              "auroc": 0.52,
-              "ba": 0.52,
+              "auroc": 0.523,
+              "ba": 0.523,
               "pass": true
             },
             "length": {
-              "auroc": 0.586,
-              "ba": 0.58,
+              "auroc": 0.673,
+              "ba": 0.627,
               "pass": true
             },
             "scored": {
-              "n_no": 101,
-              "n_yes": 98
+              "n_no": 121,
+              "n_yes": 109
             },
             "source_id": {
-              "auroc": 0.619,
-              "ba": 0.6,
+              "auroc": 0.689,
+              "ba": 0.649,
               "constant_prediction": false,
               "pass": true,
               "unseen_source_share": 0.0
@@ -2139,15 +2138,15 @@
           "leakage": {
             "bow_logreg": {
               "C": 10.0,
-              "auroc": 0.857,
-              "ba": 0.782,
+              "auroc": 0.865,
+              "ba": 0.787,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
               "C": 100.0,
-              "auroc": 0.887,
-              "ba": 0.801,
+              "auroc": 0.894,
+              "ba": 0.809,
               "constant_prediction": false,
               "pass": false
             },
@@ -2156,22 +2155,22 @@
               "n_yes": 90
             },
             "keyword_regex": {
-              "auroc": 0.568,
-              "ba": 0.568,
+              "auroc": 0.575,
+              "ba": 0.575,
               "pass": true
             },
             "length": {
-              "auroc": 0.586,
-              "ba": 0.538,
+              "auroc": 0.538,
+              "ba": 0.51,
               "pass": true
             },
             "scored": {
-              "n_no": 115,
+              "n_no": 127,
               "n_yes": 103
             },
             "source_id": {
-              "auroc": 0.66,
-              "ba": 0.561,
+              "auroc": 0.692,
+              "ba": 0.602,
               "constant_prediction": false,
               "pass": true,
               "unseen_source_share": 0.0
@@ -2182,15 +2181,15 @@
           "injection": {
             "bow_logreg": {
               "C": 10.0,
-              "auroc": 0.829,
-              "ba": 0.731,
+              "auroc": 0.834,
+              "ba": 0.728,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
               "C": 100.0,
-              "auroc": 0.796,
-              "ba": 0.708,
+              "auroc": 0.82,
+              "ba": 0.707,
               "constant_prediction": false,
               "pass": false
             },
@@ -2204,17 +2203,17 @@
               "pass": true
             },
             "length": {
-              "auroc": 0.535,
-              "ba": 0.526,
+              "auroc": 0.528,
+              "ba": 0.524,
               "pass": true
             },
             "scored": {
-              "n_no": 325,
-              "n_yes": 290
+              "n_no": 309,
+              "n_yes": 270
             },
             "source_id": {
-              "auroc": 0.695,
-              "ba": 0.627,
+              "auroc": 0.713,
+              "ba": 0.637,
               "constant_prediction": false,
               "pass": true,
               "unseen_source_share": 0.0
@@ -2223,39 +2222,39 @@
           "jailbreak": {
             "bow_logreg": {
               "C": 10.0,
-              "auroc": 0.904,
-              "ba": 0.825,
+              "auroc": 0.91,
+              "ba": 0.816,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
               "C": 10.0,
-              "auroc": 0.914,
-              "ba": 0.83,
+              "auroc": 0.919,
+              "ba": 0.827,
               "constant_prediction": false,
               "pass": false
             },
             "fitted_on": {
               "n_no": 94,
-              "n_yes": 86
+              "n_yes": 105
             },
             "keyword_regex": {
-              "auroc": 0.505,
-              "ba": 0.505,
+              "auroc": 0.509,
+              "ba": 0.509,
               "pass": true
             },
             "length": {
-              "auroc": 0.538,
-              "ba": 0.537,
+              "auroc": 0.563,
+              "ba": 0.564,
               "pass": true
             },
             "scored": {
-              "n_no": 313,
-              "n_yes": 285
+              "n_no": 301,
+              "n_yes": 282
             },
             "source_id": {
-              "auroc": 0.583,
-              "ba": 0.559,
+              "auroc": 0.671,
+              "ba": 0.623,
               "constant_prediction": false,
               "pass": true,
               "unseen_source_share": 0.0
@@ -2264,15 +2263,15 @@
           "leakage": {
             "bow_logreg": {
               "C": 10.0,
-              "auroc": 0.81,
-              "ba": 0.737,
+              "auroc": 0.807,
+              "ba": 0.734,
               "constant_prediction": false,
               "pass": false
             },
             "char_ngram_logreg": {
               "C": 100.0,
-              "auroc": 0.846,
-              "ba": 0.769,
+              "auroc": 0.844,
+              "ba": 0.767,
               "constant_prediction": false,
               "pass": false
             },
@@ -2281,22 +2280,22 @@
               "n_yes": 90
             },
             "keyword_regex": {
-              "auroc": 0.538,
-              "ba": 0.538,
+              "auroc": 0.534,
+              "ba": 0.534,
               "pass": true
             },
             "length": {
-              "auroc": 0.535,
-              "ba": 0.516,
+              "auroc": 0.553,
+              "ba": 0.505,
               "pass": true
             },
             "scored": {
-              "n_no": 349,
+              "n_no": 337,
               "n_yes": 313
             },
             "source_id": {
-              "auroc": 0.62,
-              "ba": 0.554,
+              "auroc": 0.607,
+              "ba": 0.538,
               "constant_prediction": false,
               "pass": true,
               "unseen_source_share": 0.0
@@ -2315,8 +2314,8 @@
             10.0,
             10.0
           ],
-          "auroc": 0.898,
-          "ba": 0.828,
+          "auroc": 0.888,
+          "ba": 0.797,
           "constant_prediction": false,
           "meets_target": false
         },
@@ -2324,12 +2323,12 @@
           "C": [
             100.0,
             10.0,
-            100.0,
             10.0,
+            100.0,
             10.0
           ],
-          "auroc": 0.871,
-          "ba": 0.788,
+          "auroc": 0.834,
+          "ba": 0.766,
           "constant_prediction": false,
           "meets_target": false
         },
@@ -2339,15 +2338,15 @@
           "meets_target": true
         },
         "length": {
-          "auroc": 0.567,
-          "ba": 0.573,
+          "auroc": 0.562,
+          "ba": 0.561,
           "meets_target": true
         },
-        "n_no": 331,
-        "n_yes": 340,
+        "n_no": 316,
+        "n_yes": 320,
         "source_id": {
-          "auroc": 0.733,
-          "ba": 0.673,
+          "auroc": 0.734,
+          "ba": 0.684,
           "constant_prediction": false,
           "meets_target": true
         }
@@ -2356,13 +2355,13 @@
         "bow_logreg": {
           "C": [
             100.0,
-            10.0,
+            100.0,
             100.0,
             100.0,
             100.0
           ],
-          "auroc": 0.918,
-          "ba": 0.828,
+          "auroc": 0.935,
+          "ba": 0.846,
           "constant_prediction": false,
           "meets_target": false
         },
@@ -2370,12 +2369,12 @@
           "C": [
             10.0,
             10.0,
-            100.0,
-            100.0,
+            10.0,
+            10.0,
             100.0
           ],
-          "auroc": 0.906,
-          "ba": 0.835,
+          "auroc": 0.92,
+          "ba": 0.864,
           "constant_prediction": false,
           "meets_target": false
         },
@@ -2385,15 +2384,15 @@
           "meets_target": true
         },
         "length": {
-          "auroc": 0.542,
-          "ba": 0.541,
+          "auroc": 0.562,
+          "ba": 0.567,
           "meets_target": true
         },
-        "n_no": 334,
-        "n_yes": 324,
+        "n_no": 318,
+        "n_yes": 309,
         "source_id": {
-          "auroc": 0.564,
-          "ba": 0.532,
+          "auroc": 0.648,
+          "ba": 0.623,
           "constant_prediction": false,
           "meets_target": true
         }
@@ -2401,45 +2400,45 @@
       "leakage": {
         "bow_logreg": {
           "C": [
-            10.0,
-            10.0,
+            100.0,
             100.0,
             10.0,
+            100.0,
             10.0
           ],
-          "auroc": 0.927,
-          "ba": 0.852,
+          "auroc": 0.925,
+          "ba": 0.851,
           "constant_prediction": false,
           "meets_target": false
         },
         "char_ngram_logreg": {
           "C": [
             10.0,
-            100.0,
+            10.0,
             10.0,
             10.0,
             10.0
           ],
-          "auroc": 0.928,
-          "ba": 0.848,
+          "auroc": 0.933,
+          "ba": 0.842,
           "constant_prediction": false,
           "meets_target": false
         },
         "keyword_regex": {
-          "auroc": 0.544,
-          "ba": 0.544,
+          "auroc": 0.539,
+          "ba": 0.539,
           "meets_target": true
         },
         "length": {
-          "auroc": 0.528,
-          "ba": 0.554,
+          "auroc": 0.546,
+          "ba": 0.545,
           "meets_target": true
         },
-        "n_no": 333,
+        "n_no": 321,
         "n_yes": 338,
         "source_id": {
-          "auroc": 0.642,
-          "ba": 0.598,
+          "auroc": 0.617,
+          "ba": 0.588,
           "constant_prediction": false,
           "meets_target": true
         }
@@ -2448,100 +2447,100 @@
   },
   "train_split_flagged": {
     "injection|no": 222,
-    "injection|yes": 190,
-    "jailbreak|no": 243,
-    "jailbreak|yes": 262,
+    "injection|yes": 188,
+    "jailbreak|no": 245,
+    "jailbreak|yes": 323,
     "leakage|no": 82,
     "leakage|yes": 1
   },
   "trivial_baselines_max_auroc": {
     "injection": {
       "best_single_word": {
-        "auroc": 0.599,
+        "auroc": 0.598,
         "word": "ignore"
       },
-      "jailbreak_markers": 0.596,
-      "leak_markers": 0.531,
-      "length": 0.539
+      "jailbreak_markers": 0.605,
+      "leak_markers": 0.571,
+      "length": 0.524
     },
     "jailbreak": {
       "best_single_word": {
-        "auroc": 0.602,
+        "auroc": 0.624,
         "word": "without"
       },
-      "jailbreak_markers": 0.736,
+      "jailbreak_markers": 0.761,
       "leak_markers": 0.58,
-      "length": 0.561
+      "length": 0.598
     },
     "leakage": {
       "best_single_word": {
-        "auroc": 0.644,
+        "auroc": 0.645,
         "word": "the"
       },
       "jailbreak_markers": 0.507,
-      "leak_markers": 0.619,
+      "leak_markers": 0.62,
       "length": 0.522
     }
   },
   "v1_reference": {
     "files_and_pools": {
-      "<main-checkout>/dataset/release/v1.0/build/F1.test.jsonl": 1943,
-      "<main-checkout>/dataset/release/v1.0/build/F1.tune.jsonl": 383,
-      "<main-checkout>/dataset/release/v1.0/build/F2.test.jsonl": 947,
-      "<main-checkout>/dataset/release/v1.0/build/F2.tune.jsonl": 189,
-      "<main-checkout>/dataset/release/v1.0/build/F3.test.jsonl": 76,
-      "<main-checkout>/dataset/release/v1.0/build/F3.tune.jsonl": 42,
-      "<main-checkout>/dataset/release/v1.0/build/F4.test.jsonl": 436,
-      "<main-checkout>/dataset/release/v1.0/build/F4.tune.jsonl": 142,
-      "<main-checkout>/dataset/release/v1.0/build/F5.test.jsonl": 748,
-      "<main-checkout>/dataset/release/v1.0/build/F5.tune.jsonl": 152,
-      "<main-checkout>/dataset/release/v1.0/build/F6.test.jsonl": 741,
-      "<main-checkout>/dataset/release/v1.0/build/F6.tune.jsonl": 159,
-      "<main-checkout>/dataset/release/v1.0/build/F7.test.jsonl": 2274,
-      "<main-checkout>/dataset/release/v1.0/build/F7.tune.jsonl": 426,
-      "<main-checkout>/dataset/release/v1.1-ai/build/F1.test.jsonl": 1943,
-      "<main-checkout>/dataset/release/v1.1-ai/build/F1.tune.jsonl": 383,
-      "<main-checkout>/dataset/release/v1.1-ai/build/F2.test.jsonl": 947,
-      "<main-checkout>/dataset/release/v1.1-ai/build/F2.tune.jsonl": 189,
-      "<main-checkout>/dataset/release/v1.1-ai/build/F3.test.jsonl": 73,
-      "<main-checkout>/dataset/release/v1.1-ai/build/F3.tune.jsonl": 42,
-      "<main-checkout>/dataset/release/v1.1-ai/build/F4.test.jsonl": 673,
-      "<main-checkout>/dataset/release/v1.1-ai/build/F4.tune.jsonl": 199,
-      "<main-checkout>/dataset/release/v1.1-ai/build/F5.test.jsonl": 748,
-      "<main-checkout>/dataset/release/v1.1-ai/build/F5.tune.jsonl": 152,
-      "<main-checkout>/dataset/release/v1.1-ai/build/F6.test.jsonl": 741,
-      "<main-checkout>/dataset/release/v1.1-ai/build/F6.tune.jsonl": 159,
-      "<main-checkout>/dataset/release/v1.1-ai/build/F7.test.jsonl": 2282,
-      "<main-checkout>/dataset/release/v1.1-ai/build/F7.tune.jsonl": 434,
-      "<main-checkout>/dataset/release/v1.2/build/F1.test.jsonl": 1943,
-      "<main-checkout>/dataset/release/v1.2/build/F1.tune.jsonl": 383,
-      "<main-checkout>/dataset/release/v1.2/build/F2.test.jsonl": 947,
-      "<main-checkout>/dataset/release/v1.2/build/F2.tune.jsonl": 189,
-      "<main-checkout>/dataset/release/v1.2/build/F3.test.jsonl": 73,
-      "<main-checkout>/dataset/release/v1.2/build/F3.tune.jsonl": 42,
-      "<main-checkout>/dataset/release/v1.2/build/F4.test.jsonl": 673,
-      "<main-checkout>/dataset/release/v1.2/build/F4.tune.jsonl": 199,
-      "<main-checkout>/dataset/release/v1.2/build/F5.test.jsonl": 404,
-      "<main-checkout>/dataset/release/v1.2/build/F5.tune.jsonl": 96,
-      "<main-checkout>/dataset/release/v1.2/build/F6.test.jsonl": 741,
-      "<main-checkout>/dataset/release/v1.2/build/F6.tune.jsonl": 159,
-      "<main-checkout>/dataset/release/v1.2/build/F7.test.jsonl": 2282,
-      "<main-checkout>/dataset/release/v1.2/build/F7.tune.jsonl": 434,
-      "<main-checkout>/dataset/release/v1.3/build/F1.test.jsonl": 1943,
-      "<main-checkout>/dataset/release/v1.3/build/F1.tune.jsonl": 383,
-      "<main-checkout>/dataset/release/v1.3/build/F2.test.jsonl": 947,
-      "<main-checkout>/dataset/release/v1.3/build/F2.tune.jsonl": 189,
-      "<main-checkout>/dataset/release/v1.3/build/F3.test.jsonl": 73,
-      "<main-checkout>/dataset/release/v1.3/build/F3.tune.jsonl": 42,
-      "<main-checkout>/dataset/release/v1.3/build/F4.test.jsonl": 867,
-      "<main-checkout>/dataset/release/v1.3/build/F4.tune.jsonl": 247,
-      "<main-checkout>/dataset/release/v1.3/build/F5.test.jsonl": 404,
-      "<main-checkout>/dataset/release/v1.3/build/F5.tune.jsonl": 96,
-      "<main-checkout>/dataset/release/v1.3/build/F6.test.jsonl": 741,
-      "<main-checkout>/dataset/release/v1.3/build/F6.tune.jsonl": 159,
-      "<main-checkout>/dataset/release/v1.3/build/F7.test.jsonl": 2282,
-      "<main-checkout>/dataset/release/v1.3/build/F7.tune.jsonl": 434,
-      "benchmark/results ids (new beyond builds and examined list)": 120,
+      "benchmark/results ids (new beyond builds and examined list)": 171,
+      "dataset/release/v1.0/build/F1.test.jsonl": 1943,
+      "dataset/release/v1.0/build/F1.tune.jsonl": 383,
+      "dataset/release/v1.0/build/F2.test.jsonl": 947,
+      "dataset/release/v1.0/build/F2.tune.jsonl": 189,
+      "dataset/release/v1.0/build/F3.test.jsonl": 76,
+      "dataset/release/v1.0/build/F3.tune.jsonl": 42,
+      "dataset/release/v1.0/build/F4.test.jsonl": 436,
+      "dataset/release/v1.0/build/F4.tune.jsonl": 142,
+      "dataset/release/v1.0/build/F5.test.jsonl": 748,
+      "dataset/release/v1.0/build/F5.tune.jsonl": 152,
+      "dataset/release/v1.0/build/F6.test.jsonl": 741,
+      "dataset/release/v1.0/build/F6.tune.jsonl": 159,
+      "dataset/release/v1.0/build/F7.test.jsonl": 2274,
+      "dataset/release/v1.0/build/F7.tune.jsonl": 426,
+      "dataset/release/v1.1-ai/build/F1.test.jsonl": 1943,
+      "dataset/release/v1.1-ai/build/F1.tune.jsonl": 383,
+      "dataset/release/v1.1-ai/build/F2.test.jsonl": 947,
+      "dataset/release/v1.1-ai/build/F2.tune.jsonl": 189,
+      "dataset/release/v1.1-ai/build/F3.test.jsonl": 73,
+      "dataset/release/v1.1-ai/build/F3.tune.jsonl": 42,
+      "dataset/release/v1.1-ai/build/F4.test.jsonl": 673,
+      "dataset/release/v1.1-ai/build/F4.tune.jsonl": 199,
+      "dataset/release/v1.1-ai/build/F5.test.jsonl": 748,
+      "dataset/release/v1.1-ai/build/F5.tune.jsonl": 152,
+      "dataset/release/v1.1-ai/build/F6.test.jsonl": 741,
+      "dataset/release/v1.1-ai/build/F6.tune.jsonl": 159,
+      "dataset/release/v1.1-ai/build/F7.test.jsonl": 2282,
+      "dataset/release/v1.1-ai/build/F7.tune.jsonl": 434,
+      "dataset/release/v1.2/build/F1.test.jsonl": 1943,
+      "dataset/release/v1.2/build/F1.tune.jsonl": 383,
+      "dataset/release/v1.2/build/F2.test.jsonl": 947,
+      "dataset/release/v1.2/build/F2.tune.jsonl": 189,
+      "dataset/release/v1.2/build/F3.test.jsonl": 73,
+      "dataset/release/v1.2/build/F3.tune.jsonl": 42,
+      "dataset/release/v1.2/build/F4.test.jsonl": 673,
+      "dataset/release/v1.2/build/F4.tune.jsonl": 199,
+      "dataset/release/v1.2/build/F5.test.jsonl": 404,
+      "dataset/release/v1.2/build/F5.tune.jsonl": 96,
+      "dataset/release/v1.2/build/F6.test.jsonl": 741,
+      "dataset/release/v1.2/build/F6.tune.jsonl": 159,
+      "dataset/release/v1.2/build/F7.test.jsonl": 2282,
+      "dataset/release/v1.2/build/F7.tune.jsonl": 434,
+      "dataset/release/v1.3/build/F1.test.jsonl": 1943,
+      "dataset/release/v1.3/build/F1.tune.jsonl": 383,
+      "dataset/release/v1.3/build/F2.test.jsonl": 947,
+      "dataset/release/v1.3/build/F2.tune.jsonl": 189,
+      "dataset/release/v1.3/build/F3.test.jsonl": 73,
+      "dataset/release/v1.3/build/F3.tune.jsonl": 42,
+      "dataset/release/v1.3/build/F4.test.jsonl": 867,
+      "dataset/release/v1.3/build/F4.tune.jsonl": 247,
+      "dataset/release/v1.3/build/F5.test.jsonl": 404,
+      "dataset/release/v1.3/build/F5.tune.jsonl": 96,
+      "dataset/release/v1.3/build/F6.test.jsonl": 741,
+      "dataset/release/v1.3/build/F6.tune.jsonl": 159,
+      "dataset/release/v1.3/build/F7.test.jsonl": 2282,
+      "dataset/release/v1.3/build/F7.tune.jsonl": 434,
       "dataset/samples/pilot/F1.test.jsonl": 105,
       "dataset/samples/pilot/F1.tune.jsonl": 20,
       "dataset/samples/pilot/F2.test.jsonl": 105,
@@ -2562,7 +2561,7 @@
       "v1 pool:gandalf": 777,
       "v1 pool:jbb_artifacts": 286
     },
-    "ids": 10744,
+    "ids": 10775,
     "texts": 10486
   }
 }

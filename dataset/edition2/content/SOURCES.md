@@ -19,7 +19,9 @@ First-labeller output for the content suite (docs/benchmark/26-edition-2-plan.md
 | Source (loader) | Licence | Pinned at | Upstream split | Used for | Vendor-owned |
 |---|---|---|---|---|---|
 | Aegis 2.0 test (`aegis2`) | CC-BY-4.0 | HF d86bb8b | test | input yes/no | NVIDIA |
-| Aegis 2.0 validation (`e2_content_aegis2_val`, new) | CC-BY-4.0 | HF d86bb8b | validation | output yes/no | NVIDIA |
+| Aegis 2.0 validation (`e2_content_aegis2_val`) | CC-BY-4.0 | HF d86bb8b | validation | removed 5 October (round 6) | NVIDIA |
+| Aegis 2.0 test, rows v1 left (`e2_content_aegis2_test`, round 6) | CC-BY-4.0 | HF d86bb8b | test | input yes/no | NVIDIA |
+| BeaverTails (`e2_content_beavertails`, round 6) | CC-BY-NC-4.0, ids only | HF 8401fe6 | 330k_test | output yes/no | no |
 | OpenAI moderation eval (`openai_moderation`) | MIT | HF 84e5cf3 | train (only split; it is the eval set) | input yes/no | OpenAI |
 | AILuminate demo (`ailuminate_demo`) | CC-BY-4.0 | git 769cc2b | demo set | input yes | no |
 | OR-Bench hard-1k (`orbench`) | CC-BY-4.0 | HF e36d8b8 | train (only split) | over_refusal | no |
@@ -39,6 +41,53 @@ human-labelled completions. OR-Bench 80k contributes more benign prompts from th
 Rows flagged `upstream_train_split_flag: true` come from OpenAI moderation and OR-Bench (hard-1k and 80k). Both
 publish a single split called "train", and that split is the benchmark itself. No source has a separate test split
 that we passed over.
+
+## Round 6, 5 October 2026
+
+pplx-decider-v1-27b publishes its training recipe (`source/src/autojev/data.py` at 5117a6c). It trains on the Aegis
+2.0 train split and tunes on the validation split, and it only evaluates on the test split. So the 400
+`e2_content_aegis2_val` rows were not fair test rows for that model, and all of them left, tune rows included
+(`uv run python -m goldrails_dataset.sources.e2_content --round6`).
+
+The Aegis test split could not fill their place. v1 already holds every labelled test reply, so
+`e2_content_aegis2_test` adds prompts to `input` only: 80 harmful and 25 benign, all to test (input's tune and
+private cells were already at target). That leaves `output` short of a second source, so round 6 adds BeaverTails
+replies from its 330k_test split. It is in neither Perplexity's nor Strands' recipe. Its licence is CC-BY-NC-4.0, so
+the text stays local and the tracked file holds ids, labels and hashes.
+
+Round 6 changes nothing about the rows that stay. Every kept row keeps its split. New rows pass the first build's
+exclusions, and four more:
+
+- anything already in edition 2, in any suite (id, text, group or near-duplicate);
+- any text in a split a benchmarked model's published recipe trains or tunes on (`model_overlap.seen_by_model`; 36
+  Aegis test prompts and 3,008 BeaverTails pairs failed this, most because BeaverTails and Aegis share Anthropic
+  red-team prompts);
+- an upstream positive with no category in Bedrock's five. Under ruling 8 (C1) personal data alone is not a content
+  violation, and a privacy, politics or "unethical" tag alone does not settle the label, so those rows stay out
+  rather than get a forced label;
+- a BeaverTails pair that appears more than once with different `is_safe` labels.
+
+At most two replies per BeaverTails question, and the question is the group, so its replies share a split. The
+selection and split order are salted like the first build's. The new tune and private rows fill each cell to the
+same targets (45 and 50); the rest is test.
+
+| Subtask | Class | Source | Tune | Test | Private |
+|---|---|---|---|---|---|
+| input | yes | e2_content_aegis2_test | 0 | 80 | 0 |
+| input | no | e2_content_aegis2_test | 0 | 25 | 0 |
+| output | yes | e2_content_beavertails | 13 | 206 | 11 |
+| output | no | e2_content_beavertails | 11 | 212 | 17 |
+
+Labels are the upstream ones: Aegis `prompt_label`, BeaverTails `is_safe` (crowd annotators). The ruling 7 human
+sample was drawn again from the round 6 build, so it covers the new rows.
+
+The same day, every test or unpublished row in any suite whose text is in Perplexity's training or development data
+left edition 2 (`EXCLUDED.jsonl`, reason "text in pplx-decider-v1-27b training or development data";
+`dataset/edition2/MODEL-TRAINING-OVERLAP.json`). In content that is 14 public test `aegis2` input rows and one
+XSTest row, plus 4 unpublished rows. One tune row stays and is listed in the overlap file. One new Aegis test prompt
+shares text with TypeSafe's cookbook and left under ruling 18, so 79 of the 80 harmful prompts remain.
+
+The tables below are the first build's and are kept as a record.
 
 ## Exclusions
 
