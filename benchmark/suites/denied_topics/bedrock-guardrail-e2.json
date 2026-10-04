@@ -1,5 +1,5 @@
 {
- "status": "ready for the owner to create a new guardrail version; not applied. No AWS call was made to write this file.",
+ "status": "applied 5 October 2026 through Terraform (infra/aws aws_bedrock_guardrail.topics_e2, name gold-rails-dev-topics-e2, version 1); the v1 topics guardrail is unchanged",
  "source": "benchmark/suites/denied_topics/topics-e2.json",
  "api": "bedrock CreateGuardrail / UpdateGuardrail then CreateGuardrailVersion; fields use the API's names",
  "how_to_apply": "Owner only. Either point infra/aws var.topics at these topicsConfig entries (name, definition, examples) and apply, or call UpdateGuardrail on the topics guardrail with this body, then CreateGuardrailVersion. Record the new version in the Terraform outputs the adapter reads, so edition 2 Bedrock results name it.",

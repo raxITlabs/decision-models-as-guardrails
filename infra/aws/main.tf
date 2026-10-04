@@ -25,6 +25,25 @@ resource "aws_bedrock_guardrail" "topics" {
   }
 }
 
+resource "aws_bedrock_guardrail" "topics_e2" {
+  name                      = "gold-rails-${var.env}-topics-e2"
+  description               = "Gold Rails denied-topics suite, edition 2 (8 topics)"
+  blocked_input_messaging   = local.blocked_in
+  blocked_outputs_messaging = local.blocked_out
+
+  topic_policy_config {
+    dynamic "topics_config" {
+      for_each = local.topics_e2
+      content {
+        name       = topics_config.value.name
+        definition = topics_config.value.definition
+        examples   = topics_config.value.examples
+        type       = "DENY"
+      }
+    }
+  }
+}
+
 resource "aws_bedrock_guardrail" "words" {
   name                      = "gold-rails-${var.env}-words"
   description               = "Gold Rails word-filters suite"
@@ -82,6 +101,10 @@ resource "aws_bedrock_guardrail" "pii" {
 resource "aws_bedrock_guardrail_version" "topics" {
   guardrail_arn = aws_bedrock_guardrail.topics.guardrail_arn
   description   = "pinned for runs"
+}
+resource "aws_bedrock_guardrail_version" "topics_e2" {
+  guardrail_arn = aws_bedrock_guardrail.topics_e2.guardrail_arn
+  description   = "pinned for edition 2 runs"
 }
 resource "aws_bedrock_guardrail_version" "words" {
   guardrail_arn = aws_bedrock_guardrail.words.guardrail_arn

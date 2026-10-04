@@ -130,8 +130,16 @@ class BedrockAdapter(Adapter):
                 from ..bedrock import BedrockChecksClient
                 self.clients[kind] = BedrockChecksClient(region=self.region)
             else:
-                from ..bedrock_apply import BedrockApplyClient
-                self.clients[kind] = BedrockApplyClient(kind, config=self.config)
+                from ..bedrock_apply import BedrockApplyClient, guardrails
+                cfg = self.config
+                if kind == TOPICS:
+                    # Edition 2 uses the separate 8-topic guardrail (infra/aws "topics_e2"); v1 keeps "topics".
+                    full = cfg or guardrails()
+                    if "topics_e2" not in full:
+                        raise RuntimeError("edition 2 topics guardrail not deployed: no 'topics_e2' in the Terraform "
+                                           "outputs (infra/aws)")
+                    cfg = {**full, "topics": full["topics_e2"]}
+                self.clients[kind] = BedrockApplyClient(kind, config=cfg)
         return self.clients[kind]
 
     def keys(self, suite: str, subtask: str, client) -> tuple[list, list]:

@@ -287,8 +287,8 @@ def bedrock_blocked() -> str | None:
 
 
 def bedrock_offers(suite: str, sub: str) -> bool:
-    # The 8-topic edition 2 guardrail does not exist yet (the owner creates it), so denied topics are not offered.
-    return (suite, sub) != ("denied_topics", "topic")
+    # Denied topics use the 8-topic edition 2 guardrail (infra/aws "topics_e2"), created 5 October 2026.
+    return True
 
 
 def record(system, suite, sub, r, res, ids_only, rerun=False) -> dict:

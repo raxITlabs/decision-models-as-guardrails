@@ -29,8 +29,9 @@ rulings change three things inside the suites:
 - **Denied topics has 8 topics** (ruling 1): InvestmentAdvice, MedicalDiagnosis, LegalAdvice, ElectionPersuasion,
   GamblingTips, EmploymentDecisions, AcademicDishonesty and TaxAdvice. They live in
   `benchmark/suites/denied_topics/topics-e2.json`, which feeds the policy, the Noul question set, the edition 2
-  Bedrock adapter and the Bedrock topic configuration (`bedrock-guardrail-e2.json`). The owner creates that
-  guardrail version; nothing here calls AWS.
+  Bedrock adapter and the Bedrock topic configuration (`bedrock-guardrail-e2.json`). Terraform deploys it as a separate guardrail,
+  `gold-rails-dev-topics-e2` (`infra/aws`, output `topics_e2`, version 1, created 5 October 2026), so the v1 topics
+  guardrail is unchanged.
 - **The custom-words check leaves the score** (ruling 13). The `word` subtask is still run, and each system gets a
   pass or a fail on it beside the leaderboard: pass at balanced accuracy 95 or higher. It adds nothing to the word
   filters suite or the overall mean. Profanity stays scored, so the word filters suite score is the profanity score,

@@ -34,6 +34,8 @@ variable "words" {
 
 locals {
   topics = var.topics != null ? var.topics : jsondecode(file("${path.module}/../../benchmark/suites/denied_topics/topics.json")).topics
+  # Edition 2 (owner ruling 1): all 8 topics, in a separate guardrail so the v1 topics guardrail stays as it was.
+  topics_e2 = jsondecode(file("${path.module}/../../benchmark/suites/denied_topics/topics-e2.json")).topics
   words  = var.words != null ? var.words : jsondecode(file("${path.module}/../../benchmark/suites/word_filters/words.json")).words
 }
 

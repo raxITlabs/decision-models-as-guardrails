@@ -100,8 +100,9 @@ query block as a role-labelled transcript, keeps the source block as the source 
 documented character caps `not_offered` (none of these 20 is over). The rerun sent the 20 grounding rows again: 20
 decided, 0 failed, 0 not offered, 16 of 20 correct. The first run's 20 grounding records are kept in
 `round2/bedrock-guardrails.grounding.jsonl`. Bedrock says conversational QA is not a supported grounding use case, and
-each result records the mapping in `serving.grounding_mapping`. Denied topics stay `not_offered` because the 8-topic
-edition 2 guardrail does not exist yet.
+each result records the mapping in `serving.grounding_mapping`. Denied topics ran on 5 October 2026 against the
+8-topic edition 2 guardrail `gold-rails-dev-topics-e2` (version 1): 20 rows decided, 0 failed, 17 of 20 correct. The
+earlier `not_offered` records are kept in `round3/bedrock-guardrails.denied_topics.not_offered.jsonl`.
 
 **Laya's server on the VM does not report truncation yet.** All 151 Laya rows have `truncation_reported: false` and
 `truncated: null`. The disk still holds the old `laya_server.py`, because `terraform plan` shows the new script only as
@@ -121,6 +122,5 @@ words subtask but only 9/20 on profanity. Jev got 10/11 and 15/20.
 
 1. Apply the pending metadata change so Laya's server reports truncation, and decide whether to raise its `--max-len`.
 2. Done: Bedrock grounding rows that carry `context` now run (see above).
-3. Create the 8-topic edition 2 Bedrock guardrail, or keep denied topics `not_offered` for Bedrock.
-4. Terraform state for this VM lives in the worktree (`infra/gcp/terraform.tfstate`), not in the main checkout.
-   Move it back before anyone runs `make down` from the main checkout, or that command will not see the VM.
+3. Done: the 8-topic edition 2 Bedrock guardrail exists and denied topics run (see above).
+4. Done: the VM's Terraform state now lives in the main checkout (`infra/gcp/terraform.tfstate`).
