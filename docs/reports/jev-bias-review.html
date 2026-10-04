@@ -164,19 +164,20 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
   <div class="eyebrow">jev-as-a-guardrails · second-benchmark · 2 Oct 2026</div>
   <h1>How our guardrail benchmark works, and how to make it fair</h1>
   <p class="lede prose">A teaching page. It walks through how jev-as-a-guardrails turns a model's answers into a leaderboard score, where Jev could get an advantage the other models don't, how the community Jev Decision Index does the same job differently, and what our published method needs before it can stand next to other public benchmarks. It follows the 2 October call between Adesh and Aditya.</p>
-  <p class="meta">Numbers come from <code>benchmark/results/second-benchmark/leaderboard-final.json</code>, the held-out run published on the results site. An independent review by Codex on 2 October found errors in the first version of this page and one problem in the benchmark itself. Both are corrected below, and the first section lists every change.</p>
+  <p class="meta">Historical leaderboard numbers come from <code>benchmark/results/second-benchmark/leaderboard-final.json</code>. The second run reused the first run's test rows, and 48 prompt-attack rows had appeared in a smoke test, so it is not a fully untouched evaluation. This page records the review, the completed diagnostic and our proposed fixes; those fixes are not yet implemented.</p>
 </header>
 
 <section>
   <h2>On this page</h2>
   <ol class="toc">
+    <li><a href="#discussion-update">Discussion update: what we learned and the plan</a></li>
     <li><a href="#review">What the independent review changed</a></li>
     <li><a href="#part-1">How a score is produced today</a></li>
     <li><a href="#part-2">What the results say</a></li>
     <li><a href="#part-3">Where bias can still get in</a></li>
     <li><a href="#part-4">How the Jev Decision Index does it</a></li>
     <li><a href="#part-5">The two methods side by side</a></li>
-    <li><a href="#part-6">Experiments that would settle it</a></li>
+    <li><a href="#part-6">Diagnostics to strengthen the evidence</a></li>
     <li><a href="#part-7">What our published method needs</a></li>
     <li><a href="#part-8">Keeping the new runs clean</a></li>
   </ol>
@@ -193,7 +194,7 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
     <dt>Arm</dt><dd>One exact configuration: system, question set, threshold, code version and dataset version. Change any of them and it is a different arm.</dd>
     <dt>Balanced accuracy</dt><dd>Half of recall on harmful rows plus half of pass rate on benign rows. 50 means chance, 100 means perfect. Our task score is this on a 0 to 100 scale.</dd>
     <dt>Chance-corrected score</dt><dd>(score − chance) ÷ (1 − chance). 0 means no better than guessing, 100 means perfect. The Decision Index reports this.</dd>
-    <dt>Bootstrap interval</dt><dd>Resample the test rows 2,000 times, recompute the score each time, and keep the middle 95% of results. If two models' intervals don't overlap, the gap is unlikely to be luck in which rows we drew.</dd>
+    <dt>Bootstrap interval</dt><dd>Resample the test rows 2,000 times, recompute the score each time, and keep the middle 95% of results. For comparing models, use the interval for their paired score difference, preserving related source groups; separate score intervals do not directly test the gap.</dd>
   </dl>
 </section>
 
@@ -202,13 +203,50 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
     <h2>Short answer</h2>
     <ul>
       <li>The fitting rules are the same for every model. Each gets its own threshold, and its own question-set choice where one exists, fitted on the same tuning rows and frozen before the test.</li>
-      <li>Jev's score holds up from tuning to test about as well as the others' (2.8 points lost, against 2.4 for Kev-9B and 3.4 for Bedrock). That shows its thresholds weren't fitted to noise. It can't show the wording is neutral, because wording that suits Jev helps it on tuning and test rows alike.</li>
-      <li>The main risk is the question wording, which was developed while Jev was the main model being tested. Only content offers a second wording to choose from.</li>
+      <li>Jev's score holds up from tuning to test about as well as the others' (2.8 points lost, against 2.4 for Kev-9B and 3.4 for Bedrock). That is reassuring, but does not prove the thresholds are stable or free of overfitting. It can't show the wording is neutral, because wording that suits Jev helps it on tuning and test rows alike.</li>
+      <li>Question wording developed mainly with Jev is a possible source of advantage, not a demonstrated explanation for its lead. The quick grounding test below did not support that concern for the two paraphrases tested. Only content offers a second wording in the existing selection process.</li>
       <li>Jev leads Kev-9B by 3.8 points, with a paired 95% interval of 2.1 to 5.5. Grounding supplies about half of that lead.</li>
       <li>48 prompt-attack test rows had already been run in a smoke test. Removing them barely moves any score, but the test isn't fully untouched, and we have to say so.</li>
       <li>Jev leads Bedrock by 9.7 points [7.4, 12.1], but some test rows ask for things Bedrock's settings don't cover, so the comparison needs that caveat.</li>
     </ul>
   </div>
+</section>
+
+<section id="discussion-update">
+  <div class="eyebrow">Discussion update · 2 October 2026</div>
+  <h2>What we learned, and what we do next</h2>
+  <p class="lede prose">We are comparing models as guardrails: can they detect a problem in text while letting acceptable text through, and at what cost and speed? The review identified a test-integrity issue and possible design bias. It did not establish that the benchmark is invalid or that Jev's lead was caused by biased wording.</p>
+  <h3>The simplest explanation of the pipeline</h3>
+  <div class="pipe" role="list">
+    <div class="stage" role="listitem"><span class="n">1</span><div class="body"><h3>Give the model an example and a question</h3><p>For grounding, the example contains the query, source passages and candidate reply. The question asks whether the reply contains unsupported content. Reference labels stay outside the model request.</p></div></div>
+    <div class="stage" role="listitem"><span class="n">2</span><div class="body"><h3>Choose a cutoff on validation examples</h3><p>Our tuning rows are validation data. Each model returns scores; we use these rows and their labels to select its decision cutoff under the declared scoring rule. Model weights do not change. Selecting a cutoff is different from rewriting questions or calibrating probabilities.</p></div></div>
+    <div class="stage" role="listitem"><span class="n">3</span><div class="body"><h3>Lock the choices, then score separate test examples</h3><p>Freeze the questions, serving settings and cutoff. Apply them to the test examples and compare decisions with the reference labels. Previously examined test rows and reused holdouts must be disclosed.</p></div></div>
+  </div>
+  <p class="prose"><strong>How bias could enter:</strong> developers see mainly Jev's outputs → revise the questions using those outputs → freeze those questions → every model receives them. This could favour Jev through human design choices. The models do not learn from our smoke tests. The 48 examined test rows are a separate integrity issue, not evidence that any model's weights changed.</p>
+  <h3>A real grounding example</h3>
+  <div class="example"><p>The query asks how technology has changed the workplace. The source passages describe productivity, changing workplace dynamics, and working with a global market remotely. The candidate reply summarises those points. Both models received the same example and grounding question; the reference label was not sent.</p><p class="mono">Jev: unsupported score 0.10 &lt; frozen cutoff 0.74 → pass<br>Kev-9B: unsupported score 0.03 &lt; frozen cutoff 0.125 → pass</p><p>Both decisions match the reference: no unsupported content. These are saved results from the repeat diagnostic's original wording, not invented probabilities. Cutoffs were selected across tuning examples, not chosen for this individual example.</p></div>
+  <h3>Completed: quick grounding wording diagnostic</h3>
+  <p class="prose">50 existing grounding tuning rows, 25 supported and 25 unsupported; Jev and Kev-9B; original wording plus two saved paraphrases. Only the unsupported-content question changed. The complete repeat produced 300 calls with no failures. The first attempt is preserved separately, including 18 Kev connection failures when its tunnel dropped.</p>
+  <div class="tbl"><table><thead><tr><th>Model</th><th>Wording</th><th>Frozen-cutoff BA (%)</th><th>Refitted tuning BA (%)</th><th>ROC-AUC</th></tr></thead><tbody><tr><td>Jev</td><td>Original</td><td>90</td><td>92</td><td>0.9576</td></tr>
+<tr><td>Jev</td><td>Paraphrase 1</td><td>90</td><td>92</td><td>0.9576</td></tr>
+<tr><td>Jev</td><td>Paraphrase 2</td><td>88</td><td>90</td><td>0.9440</td></tr>
+<tr><td>Kev-9B</td><td>Original</td><td>74</td><td>74</td><td>0.7552</td></tr>
+<tr><td>Kev-9B</td><td>Paraphrase 1</td><td>60</td><td>70</td><td>0.7080</td></tr>
+<tr><td>Kev-9B</td><td>Paraphrase 2</td><td>54</td><td>66</td><td>0.6856</td></tr></tbody></table></div>
+  <p class="prose"><strong>Conclusion:</strong> Jev's frozen-cutoff scores stayed at 90, 90 and 88; Kev's fell from 74 to 60 and 54. Refitting reduced Kev's drop but did not remove it. The original wording helped Kev more than these alternatives. This does not support the narrow hypothesis that the original grounding wording inflated Jev's relative lead.</p>
+  <p class="prose"><strong>Limits:</strong> one suite, two models, two alternatives and 50 tuning examples. Refitted scores use the same rows for fitting and scoring, so they are exploratory, not held-out estimates. No uncertainty interval was computed for this diagnostic. It does not prove neutrality across the benchmark or change the published leaderboard.</p>
+  <p class="meta"><a href="../../benchmark/notebooks/05_grounding_wording_quick_test.ipynb">Executed notebook</a> · <a href="../../benchmark/results/diagnostics/grounding-wording-2026-10-02-repeat-2/summary.csv">Complete repeat results</a> · <a href="../../benchmark/results/diagnostics/grounding-wording-2026-10-02-repeat-2/plan.json">Saved experiment plan</a> · <a href="../../benchmark/results/diagnostics/grounding-wording-2026-10-02/summary.csv">First attempt, including failures</a>. Temporary serving infrastructure was removed after the test.</p>
+  <h3>Research: is tuning necessary?</h3>
+  <p class="prose">Threshold selection on independent validation data is established classification practice. It measures performance after configuring decisions. A fixed 0.5 view measures performance under a shared decision rule. Neither is universally preferable. Our current contract requires tuning; a future edition can report both. A cutoff change does not calibrate probabilities, and a shared 0.5 is not automatically an equivalent operating point for every model. <a href="https://scikit-learn.org/stable/modules/classification_threshold.html">Threshold guidance</a> · <a href="https://scikit-learn.org/stable/modules/calibration.html">Calibration guidance</a>.</p>
+  <h3>The simple improvement plan</h3>
+  <p class="meta">Proposed work below is not yet implemented. This update documents the discussion and results; it does not alter the evaluation contract, splits, thresholds or historical scores.</p>
+  <ol class="steps">
+    <li><strong>Protect the test set.</strong> Record all examined smoke and pilot rows, check ID and content duplicates and related source groups, and fail a new freeze when they overlap test. Preserve the existing run and disclose the 48-row correction. Use a fresh unexamined holdout for a renewed unseen-performance claim.</li>
+    <li><strong>Give models equal opportunity.</strong> Freeze common questions for the direct comparison, give models the same validation examples and cutoff-selection rule, and log any wording revision and selection budget. Keep the existing tuned leaderboard as historical evidence. Content currently has different selected wordings, so a common-wording comparison needs additional calls.</li>
+    <li><strong>Show the decisions and their uncertainty.</strong> Report problems caught, false blocks of acceptable text, failure coverage and paired difference intervals. Add ROC-AUC and precision–recall / average precision where scores are available, alongside tuned and fixed-0.5 views. Disclose class prevalence and Bedrock coverage mismatches; preserve PII's per-entity rules.</li>
+  </ol>
+  <p class="prose">For a deployment-oriented comparison, predeclare a false-block target and select each model's cutoff on validation data, then report the actual test false-block rate and detection rate. The target is a product choice, and small tuning samples cannot establish very low error rates precisely. Check cutoff stability before relying on it. Extend the wording diagnostic to more suites and models using variants fixed before their outputs are seen.</p>
+  <p class="meta">Research references: <a href="https://scikit-learn.org/stable/modules/cross_validation.html">Independent evaluation and grouped splits</a>; <a href="https://jmlr.org/papers/v11/cawley10a.html">Selection bias research</a>; <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0118432">Precision–recall under class imbalance</a>. These support the evaluation principles; the three-step plan is our recommendation for this project.</p>
 </section>
 
 <section id="review">
@@ -230,7 +268,7 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
         <tr><td class="wt">Bedrock's gap can't come from wording</td><td class="wt">Better wording can still lift Jev alone, and 32 of 240 harmful content rows fall outside Bedrock's five categories</td><td><span class="chip risk">corrected</span></td></tr>
         <tr><td class="wt">Experiment G runs fully offline</td><td class="wt">Only partly. The content logs hold each model's chosen wording, and PII is scored per entity type</td><td><span class="chip risk">corrected</span></td></tr>
         <tr><td class="wt">About 8,000 rows</td><td class="wt">That is the release. The scored comparison uses 493 tuning and 1,593 test rows per system</td><td><span class="chip risk">corrected</span></td></tr>
-        <tr><td class="wt">The Decision Index method</td><td class="wt">Codex couldn't download their methodology file. I read it directly earlier, so these claims stand</td><td><span class="chip guard">holds</span></td></tr>
+        <tr><td class="wt">The Decision Index method</td><td class="wt">The published reproduction code was inspected on 2 October: fixed 0.5 yes/no cutoff, 38 counted benchmarks, RAGTruth and HoVer included; native serving settings and exceptions are documented</td><td><span class="chip risk">corrected</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -346,7 +384,7 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
         <text class="sub" x="660" y="224" text-anchor="middle">1</text>
       </svg>
     </div>
-    <figcaption>Illustration with made-up probabilities. Both models rank harmful rows above benign ones, so both are useful guardrails. Model B's probabilities just run lower. A threshold fitted on tuning rows finds each model's cut point (scores 100 and 90). A shared 0.5 flags three benign rows for Model A and misses four harmful rows for Model B (70 and 60). Experiment G measures this gap on our real data.</figcaption>
+    <figcaption>Illustration with made-up probabilities. Both models rank harmful rows above benign ones, so both are useful guardrails. Model B's probabilities just run lower. A threshold fitted on tuning rows finds each model's cut point (scores 100 and 90). A shared 0.5 flags three benign rows for Model A and misses four harmful rows for Model B (70 and 60). Experiment G is proposed to measure this gap on our real data.</figcaption>
   </figure>
 </section>
 
@@ -355,7 +393,7 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
   <h2>What the results say</h2>
 
   <h3>Jev's tuning score holds up on test rows</h3>
-  <p class="prose">If a model's thresholds were fitted to quirks of the tuning rows, its score would fall when it meets new rows. Jev's falls by about as much as the others'. That's useful, but it has a limit: wording that happens to suit Jev lifts it on tuning and test rows alike, so this chart can't detect a wording advantage. Experiment A can.</p>
+  <p class="prose">A large validation-to-test drop can indicate overfitting, but a small drop cannot rule it out. Jev's falls by about as much as the others'. That's useful, but it has a limit: wording that happens to suit Jev lifts it on tuning and test rows alike, so this chart cannot isolate a wording advantage. Experiment A tests sensitivity; the completed small diagnostic is summarised above.</p>
   <figure>
     <div class="fig">
       <svg viewBox="0 0 640 262" width="100%" style="min-width:520px" role="img" aria-label="Average drop from tuning score to test score per system, weighted by suite">
@@ -363,7 +401,7 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
         <text x="140" y="35" text-anchor="end">Kev-4B</text><rect class="bar" x="150" y="22" width="96.2" height="18" rx="2"/><text x="252.2" y="35">1.7</text><text x="140" y="65" text-anchor="end">Kev-9B</text><rect class="bar" x="150" y="52" width="132.8" height="18" rx="2"/><text x="288.8" y="65">2.4</text><text class="lbl-jev" x="140" y="95" text-anchor="end">Jev</text><rect class="bar jev" x="150" y="82" width="155.8" height="18" rx="2"/><text class="lbl-jev" x="311.8" y="95">2.8</text><text x="140" y="125" text-anchor="end">Bedrock</text><rect class="bar" x="150" y="112" width="191.8" height="18" rx="2"/><text x="347.8" y="125">3.4</text><text x="140" y="155" text-anchor="end">Laya</text><rect class="bar" x="150" y="142" width="321.2" height="18" rx="2"/><text x="477.2" y="155">5.7</text><text x="140" y="185" text-anchor="end">Kev-0.8B</text><rect class="bar" x="150" y="172" width="362.2" height="18" rx="2"/><text x="518.2" y="185">6.4</text><text x="140" y="215" text-anchor="end">Open-Jev-2B</text><rect class="bar" x="150" y="202" width="415.7" height="18" rx="2"/><text x="571.7" y="215">7.4</text>
       </svg>
     </div>
-    <figcaption>Tuning score minus test score, averaged over the six suites the way the headline is. Lower means the tuning score held up on unseen rows. Jev's biggest single drop is grounding, 90 on 50 tuning rows down to 75, which is still the best grounding score of any system.</figcaption>
+    <figcaption>Tuning score minus test score, averaged over the six suites the way the headline is. Lower means a smaller tuning-to-test drop; the exposure and reuse caveats still apply. Jev's biggest single drop is grounding, 90 on 50 tuning rows down to 75, which is still the best grounding score of any system.</figcaption>
   </figure>
 
   <h3>How big Jev's lead is</h3>
@@ -484,7 +522,7 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
     <table>
       <thead><tr><th class="wt">Source</th><th class="wt">Why it matters</th><th class="wt">Measured today?</th></tr></thead>
       <tbody>
-        <tr><td class="wt">Wording developed with Jev</td><td class="wt">Phrasing that Jev reads well may read worse to Kev or Laya</td><td class="wt">No. Experiment A</td></tr>
+        <tr><td class="wt">Wording developed with Jev</td><td class="wt">Phrasing that Jev reads well may read worse to Kev or Laya</td><td class="wt">Partly: the quick grounding test did not support this mechanism for its two alternatives; other suites remain untested. Experiment A</td></tr>
         <tr><td class="wt">Only content offers a choice</td><td class="wt">Per-model selection can't correct the wording in the other five suites</td><td class="wt">No</td></tr>
         <tr><td class="wt">Question format native to Jev</td><td class="wt">Open models answer the same API, and some, such as Open-Jev, are built to reproduce Jev's behaviour</td><td class="wt">No</td></tr>
         <tr><td class="wt">48 leaked test rows</td><td class="wt">The test isn't fully untouched</td><td class="wt">Yes: small effect on scores</td></tr>
@@ -500,50 +538,17 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
 </section>
 
 <section id="part-4">
-  <div class="eyebrow">Part 4</div>
+  <div class="eyebrow">Part 4 · corrected after code review</div>
   <h2>How the Jev Decision Index does it</h2>
-  <p class="prose">The Jev Decision Index is a community leaderboard on Hugging Face, maintained by multimodalart and not affiliated with TypeSafe. It tracks the open models that try to reproduce Jev and ranks them on one number. The description below comes from its published methodology data, edition 0.2.1, dated 28 September 2026.</p>
-
+  <p class="prose">The community Decision Index compares typed decision engines across broad tasks. Its published reproduction kit identifies edition 0.2.1 as counting 38 benchmarks in five areas. The base suite accounting lists 120,340 requests plus 30,419 added requests; exclusions and edition-specific subsets change scoring counts. These are request counts, not directly comparable to our dataset's row count.</p>
   <div class="pipe" role="list">
-    <div class="stage" role="listitem">
-      <span class="n">1</span>
-      <div class="body"><h3>Freeze one large corpus</h3><p>120,340 requests drawn from 40 public benchmarks with a fixed seed and a deterministic hash sample. The selection never looks at any model's answers. The corpus file is pinned by its sha256.</p></div>
-      <span class="chip part">corpus</span>
-    </div>
-    <div class="stage" role="listitem">
-      <span class="n">2</span>
-      <div class="body"><h3>Label how far each benchmark was adapted</h3><p>Every benchmark gets an origin (original task, Jev-adapted, purpose-built) and an adaptation class. Class A uses the source's own options directly. Class B applies mechanical processing such as filtering or encoding. Class C relies on options the authors wrote. Readers can see which scores depend on authored wording.</p></div>
-      <span class="chip part">disclosure</span>
-    </div>
-    <div class="stage" role="listitem">
-      <span class="n">3</span>
-      <div class="body"><h3>Run every model as published, with hard rules</h3><p>No prompt tuning, no truncation, no option pruning, no labels in the adapter, no retry after a wrong answer (two retries for network errors only). Each model runs with its author's own inference code and readout. A model's own abstention stands as its answer.</p></div>
-      <span class="chip part">same inputs</span>
-    </div>
-    <div class="stage" role="listitem">
-      <span class="n">4</span>
-      <div class="body"><h3>Gate entry</h3><p>A model first passes an 86-request compatibility check (two requests per benchmark). It enters the index only after a complete run over all 119,898 scoreable rows. Unanswered, refused and errored rows count as wrong.</p></div>
-      <span class="chip part">completeness</span>
-    </div>
-    <div class="stage" role="listitem">
-      <span class="n">5</span>
-      <div class="body"><h3>Exclude rows only when nearly nobody can answer them</h3><p>442 rows are dropped for every model: duplicate options, and 380 rows longer than almost every model's context window. A limit that only one model has stays in that model's score.</p></div>
-      <span class="chip part">fair exclusions</span>
-    </div>
-    <div class="stage" role="listitem">
-      <span class="n">6</span>
-      <div class="body"><h3>Score, correct for chance, weight, combine</h3><p>Each benchmark keeps its own metric, adjusted for coverage, then mapped to (score − chance) ÷ (1 − chance). Benchmarks average into five areas, with "gold" benchmarks weighted 1.2. Areas combine with weights proportional to the square root of their benchmark count, with arts fixed at 10%.</p></div>
-      <span class="chip part">one number</span>
-    </div>
-    <div class="stage" role="listitem">
-      <span class="n">7</span>
-      <div class="body"><h3>Check repeatability and disclose every exception</h3><p>Control rows are rerun unchanged and the agreement is published per model, from 85.3% to 99.6% of answers matching. When they raise a model's own limits so it can answer more rows, they name the change and the number of rows it affected.</p></div>
-      <span class="chip part">honesty</span>
-    </div>
+    <div class="stage" role="listitem"><span class="n">1</span><div class="body"><h3>Pin the examples and task mappings</h3><p>Public sources and rebuilt corpus hashes are pinned. Some tasks preserve source options; others use authored mappings. RAGTruth uses test responses and source prompts, with the reference derived from the dataset's hallucination annotations.</p></div></div>
+    <div class="stage" role="listitem"><span class="n">2</span><div class="body"><h3>Run model-native inference</h3><p>Leaderboard entrants use their authors' inference code and documented settings. The kit also provides a generic fixed-prompt engine. Inputs contain the state and questions, not reference labels. Capacity changes and exceptions are disclosed; this is not a guarantee that every entrant ran unchanged defaults.</p></div></div>
+    <div class="stage" role="listitem"><span class="n">3</span><div class="body"><h3>Apply a fixed decision rule</h3><p>Yes/no probabilities are classified at 0.5; multiple-choice scoring uses the returned choice. The grounding scorer does not fit a model-specific cutoff. It measures F1 for the hallucinated class. Other tasks retain their own metrics.</p></div></div>
+    <div class="stage" role="listitem"><span class="n">4</span><div class="body"><h3>Combine scores and disclose corrections</h3><p>Coverage and baseline adjustments precede weighted aggregation. The edition documents duplicate-row removal and exclusion of RouterBench because its prompt revealed the best route. Such corrections show why a fixed cutoff alone does not establish neutrality.</p></div></div>
   </div>
-
-  <p class="prose">The important design choice is step 3. Nothing is fitted to any model, so neither thresholds nor prompts can be tuned toward one of them. That doesn't make the wording neutral, as the next paragraph explains. The price is that each model is judged with whatever default it ships, which can understate what a well-configured model would do. Our benchmark takes the opposite trade: we fit a threshold per model, which shows each model closer to its best, and we have to protect that fitting with a tune/test split.</p>
-  <p class="prose">It isn't free of home advantage either. Many of its benchmarks are labelled Jev-adapted, Jev is the reference every other model is compared against, and the authors note that previously used benchmarks are exposed development evidence.</p>
+  <p class="prose">Our extra step is cutoff selection on validation data, not training model weights. Both approaches are defensible for their declared purpose. Independent final evaluation is still necessary whenever outputs influence model or benchmark development, even if no cutoff is fitted.</p>
+  <p class="meta">Verified against the <a href="https://github.com/apolinario/decision-index/blob/87d4650b42b377c0291a89c1f1a879f9b31082bf/README.md">published reproduction kit</a>, <a href="https://github.com/apolinario/decision-index/blob/87d4650b42b377c0291a89c1f1a879f9b31082bf/decision_index/scoring/added.py">grounding scorer</a>, <a href="https://github.com/apolinario/decision-index/blob/87d4650b42b377c0291a89c1f1a879f9b31082bf/decision_index/suite/build/adapters_added.py">dataset mappings</a> and <a href="https://github.com/apolinario/decision-index/blob/87d4650b42b377c0291a89c1f1a879f9b31082bf/docs/engines.md">engine documentation</a> on 2 October. This supersedes the earlier claim that its method could not be checked.</p>
 </section>
 
 <section id="part-5">
@@ -554,32 +559,32 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
       <svg class="dg" viewBox="0 0 760 252" style="min-width:640px" role="img" aria-label="Both methods run rows through to a score. They differ in two steps: who wrote the questions, and whether anything is fitted per model.">
         <defs><marker id="d3a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" class="mk "/></marker></defs>
         <rect class="band" x="130" y="8" width="250" height="222" rx="8"/>
-        <text x="10" y="30">jev-as-a-guardrails</text><rect class="box " x="10" y="40" width="112" height="58" rx="6"/><text x="66.0" y="66.0" text-anchor="middle" style="font-size:11.5px">guardrail rows</text><text class="sub" x="66.0" y="82.0" text-anchor="middle">~8,000</text><line class="ln" x1="122" y1="69.0" x2="133" y2="69.0" marker-end="url(#d3a)"/><rect class="box risk" x="136" y="40" width="112" height="58" rx="6"/><text x="192.0" y="66.0" text-anchor="middle" style="font-size:11.5px">our wording</text><text class="sub" x="192.0" y="82.0" text-anchor="middle">written w/ Jev</text><line class="ln" x1="248" y1="69.0" x2="259" y2="69.0" marker-end="url(#d3a)"/><rect class="box accent" x="262" y="40" width="112" height="58" rx="6"/><text x="318.0" y="66.0" text-anchor="middle" style="font-size:11.5px">fit threshold</text><text class="sub" x="318.0" y="82.0" text-anchor="middle">per model</text><line class="ln" x1="374" y1="69.0" x2="385" y2="69.0" marker-end="url(#d3a)"/><rect class="box " x="388" y="40" width="112" height="58" rx="6"/><text x="444.0" y="66.0" text-anchor="middle" style="font-size:11.5px">freeze, then</text><text class="sub" x="444.0" y="82.0" text-anchor="middle">run test rows</text><line class="ln" x1="500" y1="69.0" x2="511" y2="69.0" marker-end="url(#d3a)"/><rect class="box " x="514" y="40" width="112" height="58" rx="6"/><text x="570.0" y="66.0" text-anchor="middle" style="font-size:11.5px">balanced acc.</text><text class="sub" x="570.0" y="82.0" text-anchor="middle">50 = chance</text><line class="ln" x1="626" y1="69.0" x2="637" y2="69.0" marker-end="url(#d3a)"/><rect class="box " x="640" y="40" width="112" height="58" rx="6"/><text x="696.0" y="66.0" text-anchor="middle" style="font-size:11.5px">leaderboard</text><text class="sub" x="696.0" y="82.0" text-anchor="middle">+ cost, latency</text><text x="10" y="150">Jev Decision Index</text><rect class="box " x="10" y="160" width="112" height="58" rx="6"/><text x="66.0" y="186.0" text-anchor="middle" style="font-size:11.5px">40 benchmarks</text><text class="sub" x="66.0" y="202.0" text-anchor="middle">~120k requests</text><line class="ln" x1="122" y1="189.0" x2="133" y2="189.0" marker-end="url(#d3a)"/><rect class="box " x="136" y="160" width="112" height="58" rx="6"/><text x="192.0" y="186.0" text-anchor="middle" style="font-size:11.5px">source options</text><text class="sub" x="192.0" y="202.0" text-anchor="middle">mostly as-is</text><line class="ln dash" x1="248" y1="189.0" x2="259" y2="189.0" marker-end="url(#d3a)"/><rect class="box ghost" x="262" y="160" width="112" height="58" rx="6"/><text x="318.0" y="186.0" text-anchor="middle" style="font-size:11.5px">nothing</text><text class="sub" x="318.0" y="202.0" text-anchor="middle">fitted</text><line class="ln dash" x1="374" y1="189.0" x2="385" y2="189.0" marker-end="url(#d3a)"/><rect class="box " x="388" y="160" width="112" height="58" rx="6"/><text x="444.0" y="186.0" text-anchor="middle" style="font-size:11.5px">run as shipped</text><text class="sub" x="444.0" y="202.0" text-anchor="middle">every row</text><line class="ln" x1="500" y1="189.0" x2="511" y2="189.0" marker-end="url(#d3a)"/><rect class="box " x="514" y="160" width="112" height="58" rx="6"/><text x="570.0" y="186.0" text-anchor="middle" style="font-size:11.5px">chance-correct</text><text class="sub" x="570.0" y="202.0" text-anchor="middle">0 = chance</text><line class="ln" x1="626" y1="189.0" x2="637" y2="189.0" marker-end="url(#d3a)"/><rect class="box " x="640" y="160" width="112" height="58" rx="6"/><text x="696.0" y="186.0" text-anchor="middle" style="font-size:11.5px">Decision Index</text><text class="sub" x="696.0" y="202.0" text-anchor="middle">5 areas</text>
+        <text x="10" y="30">jev-as-a-guardrails</text><rect class="box " x="10" y="40" width="112" height="58" rx="6"/><text x="66.0" y="66.0" text-anchor="middle" style="font-size:11.5px">guardrail rows</text><text class="sub" x="66.0" y="82.0" text-anchor="middle">~8,000</text><line class="ln" x1="122" y1="69.0" x2="133" y2="69.0" marker-end="url(#d3a)"/><rect class="box risk" x="136" y="40" width="112" height="58" rx="6"/><text x="192.0" y="66.0" text-anchor="middle" style="font-size:11.5px">our wording</text><text class="sub" x="192.0" y="82.0" text-anchor="middle">written w/ Jev</text><line class="ln" x1="248" y1="69.0" x2="259" y2="69.0" marker-end="url(#d3a)"/><rect class="box accent" x="262" y="40" width="112" height="58" rx="6"/><text x="318.0" y="66.0" text-anchor="middle" style="font-size:11.5px">fit threshold</text><text class="sub" x="318.0" y="82.0" text-anchor="middle">per model</text><line class="ln" x1="374" y1="69.0" x2="385" y2="69.0" marker-end="url(#d3a)"/><rect class="box " x="388" y="40" width="112" height="58" rx="6"/><text x="444.0" y="66.0" text-anchor="middle" style="font-size:11.5px">freeze, then</text><text class="sub" x="444.0" y="82.0" text-anchor="middle">run test rows</text><line class="ln" x1="500" y1="69.0" x2="511" y2="69.0" marker-end="url(#d3a)"/><rect class="box " x="514" y="40" width="112" height="58" rx="6"/><text x="570.0" y="66.0" text-anchor="middle" style="font-size:11.5px">balanced acc.</text><text class="sub" x="570.0" y="82.0" text-anchor="middle">50 = chance</text><line class="ln" x1="626" y1="69.0" x2="637" y2="69.0" marker-end="url(#d3a)"/><rect class="box " x="640" y="40" width="112" height="58" rx="6"/><text x="696.0" y="66.0" text-anchor="middle" style="font-size:11.5px">leaderboard</text><text class="sub" x="696.0" y="82.0" text-anchor="middle">+ cost, latency</text><text x="10" y="150">Jev Decision Index</text><rect class="box " x="10" y="160" width="112" height="58" rx="6"/><text x="66.0" y="186.0" text-anchor="middle" style="font-size:11.5px">38 counted tasks</text><text class="sub" x="66.0" y="202.0" text-anchor="middle">base + added rows</text><line class="ln" x1="122" y1="189.0" x2="133" y2="189.0" marker-end="url(#d3a)"/><rect class="box " x="136" y="160" width="112" height="58" rx="6"/><text x="192.0" y="186.0" text-anchor="middle" style="font-size:11.5px">source options</text><text class="sub" x="192.0" y="202.0" text-anchor="middle">mostly as-is</text><line class="ln dash" x1="248" y1="189.0" x2="259" y2="189.0" marker-end="url(#d3a)"/><rect class="box ghost" x="262" y="160" width="112" height="58" rx="6"/><text x="318.0" y="186.0" text-anchor="middle" style="font-size:11.5px">fixed cutoff</text><text class="sub" x="318.0" y="202.0" text-anchor="middle">0.5 yes/no</text><line class="ln dash" x1="374" y1="189.0" x2="385" y2="189.0" marker-end="url(#d3a)"/><rect class="box " x="388" y="160" width="112" height="58" rx="6"/><text x="444.0" y="186.0" text-anchor="middle" style="font-size:11.5px">native inference</text><text class="sub" x="444.0" y="202.0" text-anchor="middle">every row</text><line class="ln" x1="500" y1="189.0" x2="511" y2="189.0" marker-end="url(#d3a)"/><rect class="box " x="514" y="160" width="112" height="58" rx="6"/><text x="570.0" y="186.0" text-anchor="middle" style="font-size:11.5px">chance-correct</text><text class="sub" x="570.0" y="202.0" text-anchor="middle">0 = chance</text><line class="ln" x1="626" y1="189.0" x2="637" y2="189.0" marker-end="url(#d3a)"/><rect class="box " x="640" y="160" width="112" height="58" rx="6"/><text x="696.0" y="186.0" text-anchor="middle" style="font-size:11.5px">Decision Index</text><text class="sub" x="696.0" y="202.0" text-anchor="middle">5 areas</text>
         <text class="t-accent" x="255" y="246" text-anchor="middle">where the two methods differ</text>
       </svg>
     </div>
-    <figcaption>Same overall shape, two different steps. We write the questions and fit a threshold per model, so we need a tune/test wall to keep that fitting honest. The Decision Index mostly uses each source's own answer options and fits nothing, so it needs no wall, but every model runs on its default settings.</figcaption>
+    <figcaption>Our cutoff is selected on validation rows and frozen before testing. Decision Index applies a fixed 0.5 rule to yes/no outputs and scores multiple-choice outputs by their returned choice. Both use task mappings and model-serving choices; both need safeguards against development influencing final evaluation.</figcaption>
   </figure>
 
   <div class="tbl">
     <table>
       <thead><tr><th></th><th class="wt">Jev Decision Index</th><th class="wt">jev-as-a-guardrails</th></tr></thead>
       <tbody>
-        <tr><td>Question it answers</td><td class="wt">Which open models come closest to Jev?</td><td class="wt">Can decision models replace a managed guardrail service?</td></tr>
-        <tr><td>Scope</td><td class="wt">40 general benchmarks in five areas. Phishing and spam are the only safety-adjacent tasks.</td><td class="wt">Six guardrail suites plus a separate bias evaluation</td></tr>
-        <tr><td>Size</td><td class="wt">About 120,000 requests</td><td class="wt">About 8,000 rows</td></tr>
-        <tr><td>Systems</td><td class="wt">About 70 open models, Jev as reference</td><td class="wt">Jev, five open models, Bedrock Guardrails, regex baseline</td></tr>
+        <tr><td>Question it answers</td><td class="wt">How well do typed decision engines perform across broad tasks?</td><td class="wt">Can decision models replace a managed guardrail service?</td></tr>
+        <tr><td>Scope</td><td class="wt">38 counted benchmarks in five areas, including RAGTruth grounding, HoVer claim verification and phishing.</td><td class="wt">Six guardrail suites plus a separate bias evaluation</td></tr>
+        <tr><td>Size</td><td class="wt">120,340 base requests plus 30,419 additions, before scoring-specific exclusions</td><td class="wt">About 8,000 rows</td></tr>
+        <tr><td>Systems</td><td class="wt">67 entrants reported by the 0.2.1 reproduction kit, including Jev as reference</td><td class="wt">Jev, five open models, Bedrock Guardrails, regex baseline</td></tr>
         <tr><td>Reference point</td><td class="wt">Jev and random guessing</td><td class="wt">Bedrock, as a competitor, never the answer key</td></tr>
         <tr><td>Question wording</td><td class="wt">Mostly the source dataset's own options</td><td class="wt">All written by us</td></tr>
-        <tr><td>Fitting per model</td><td class="wt">None</td><td class="wt">Threshold per model and subtask; question set where there is a choice</td></tr>
-        <tr><td>Tune/test split</td><td class="wt">Not needed, nothing is fitted</td><td class="wt">Yes, frozen manifest committed before any test call</td></tr>
+        <tr><td>Fitting per model</td><td class="wt">No model-specific cutoff selection in the published scorer</td><td class="wt">Threshold per model and subtask; question set where there is a choice</td></tr>
+        <tr><td>Tune/test split</td><td class="wt">No cutoff-validation stage; this does not remove the need for independent evaluation</td><td class="wt">Yes, frozen manifest committed before any test call</td></tr>
         <tr><td>Headline score</td><td class="wt">Chance-corrected, 0 = guessing</td><td class="wt">Balanced accuracy, 50 = guessing</td></tr>
         <tr><td>Weighting</td><td class="wt">Area weights by √(benchmark count), gold benchmarks 1.2</td><td class="wt">Six suites weighted equally</td></tr>
         <tr><td>Unanswered rows</td><td class="wt">Wrong</td><td class="wt">Wrong</td></tr>
         <tr><td>Intervals</td><td class="wt">Paired cluster bootstrap, 2,000 replicates (listed as not yet calculated)</td><td class="wt">Paired group bootstrap, 2,000 replicates, published</td></tr>
         <tr><td>Cost and latency</td><td class="wt">Shown, kept out of the score</td><td class="wt">Cost per 1,000 checks and p95 latency on the leaderboard axes</td></tr>
         <tr><td>Repeatability</td><td class="wt">Measured with control rows</td><td class="wt">Not measured</td></tr>
-        <tr><td>Adaptation labels</td><td class="wt">Every benchmark labelled A, B or C</td><td class="wt">None. Every suite would be class C.</td></tr>
+        <tr><td>Adaptation labels</td><td class="wt">Every benchmark labelled A, B or C</td><td class="wt">None. Every suite uses authored questions; a formal adaptation classification remains to be recorded.</td></tr>
         <tr><td>Extra views</td><td class="wt">Per-area radar against Jev, model pages</td><td class="wt">Recall at a 5% false-positive budget, bias evaluation</td></tr>
       </tbody>
     </table>
@@ -589,14 +594,14 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
   <div class="example">
     <p>On a yes/no task chance is 50, so a balanced-accuracy score converts with one formula.</p>
     <p class="mono">chance-corrected = (score − 50) ÷ 50 × 100 = 2 × (score − 50)</p>
-    <p>Jev 90.9 becomes 81.8. Kev-9B 87.1 becomes 74.2. Bedrock 81.2 becomes 62.4. The order doesn't change, but the gaps double, which is a more honest picture of how far each model is above guessing.</p>
+    <p>Jev 90.9 becomes 81.8. Kev-9B 87.1 becomes 74.2. Bedrock 81.2 becomes 62.4. This only rescales our own scores above the balanced-accuracy baseline. It does not make them Decision Index scores: the tasks, native metrics and weights differ. It provides no cross-benchmark performance comparison.</p>
   </div>
 </section>
 
 <section id="part-6">
   <div class="eyebrow">Part 6</div>
-  <h2>Experiments that would settle it</h2>
-  <p class="prose">Each experiment below changes one thing and keeps the rest of the pipeline as it is. All the variants are written <em>before</em> any model sees them, by someone (or an LLM) working only from the policy definitions, with no model outputs in view. That is what makes them fair to every system.</p>
+  <h2>Diagnostics to strengthen the evidence</h2>
+  <p class="prose">Each experiment below changes one thing and keeps the rest of the pipeline as it is. All the variants are written <em>before</em> any model sees them, by someone (or an LLM) working only from the policy definitions, with no model outputs in view. This reduces selection bias; equivalence of meaning and equal treatment still need checking. A small version of experiment A is completed in the discussion update; the full programme remains proposed.</p>
 
   <div class="exp">
 
@@ -618,7 +623,7 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
         <dt>Measures</dt><dd>Each model's median score across the six wordings (v1 plus five), and its spread.</dd>
         <dt>Thresholds</dt><dd>Report two views, decided before the run. Frozen: keep today's thresholds, which shows how sensitive the deployed setup is to wording. Refitted: fit thresholds again for each wording, which shows each model at its best. Compare the change in the Jev–Kev gap, paired by row.</dd>
         <dt>Reading it</dt><dd>If Jev's score falls further than the others when moving off the original wording, the original suits Jev. If Jev still leads on the median wording, wording isn't what drives the lead. Five rewordings can't rule out every other dataset or adapter effect.</dd>
-        <dt>Size</dt><dd>On tuning rows, about 500 rows × 6 models × 5 wordings ≈ 15,000 calls. Cheap and fast.</dd>
+        <dt>Size</dt><dd>On tuning rows, Budget by suite and include the original: about 493 tuning rows × 6 models × 6 wordings ≈ 17,748 calls. This is a planning estimate; multi-question requests and serving settings affect cost and runtime.</dd>
       </dl>
     </div>
 
@@ -675,7 +680,7 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
     <div class="card">
       <h3>E. Threshold-free view and bigger tuning sets <span class="tag">reduces noise</span></h3>
       <p>Report AUROC beside the task score. It doesn't depend on a threshold, so it separates threshold luck from ranking ability. Show it with its coverage (the share of rows answered), because AUROC on answered rows alone can hide missing answers.</p>
-      <p>Set size targets per class, not per suite: at least 30 harmful and 30 benign tuning rows per subtask, and at least 20 positives per PII entity type. An entity type below the target either gets more rows or leaves the score.</p>
+      <p>Plan sample sizes per class and entity type around the precision required for the chosen operating point. Check threshold stability using validation resampling or appropriate cross-validation. Rare PII types need more support or an explicit insufficient-data status; do not remove a type merely because its observed score is inconvenient.</p>
     </div>
 
     <div class="card">
@@ -687,7 +692,7 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
       <h3>G. Fixed-cutoff check <span class="tag">borrowed from the Decision Index</span></h3>
       <p>Score every model at one shared threshold of 0.5, with nothing fitted. This is close to the "static" run Adesh described on the call. Publish it as a sensitivity check beside the tuned leaderboard, not as proof. The combined score is the highest of several question probabilities, so 0.5 isn't a calibrated cut point for any model.</p>
       <dl class="kv">
-        <dt>Reading it</dt><dd>If Jev leads in both, its lead doesn't depend on threshold fitting. It still uses the wording developed with Jev, so this check says nothing about wording. If the order changes, the tuned board shows each model configured and the fixed board shows it out of the box.</dd>
+        <dt>Reading it</dt><dd>If Jev leads in both, its lead doesn't depend on threshold fitting. It still uses the wording developed with Jev, so this check does not establish wording neutrality. If the order changes, the tuned board shows each model configured and the fixed board shows the shared decision rule under the recorded serving configuration.</dd>
         <dt>Cost</dt><dd>Partly offline. Every test record holds the per-question probabilities, so each model's chosen wording can be rescored at 0.5 with no new calls. A shared content wording needs new calls, since Jev's logs hold v1 and Kev-9B's hold v2. PII must be scored per entity type, not by taking the maximum.</dd>
       </dl>
     </div>
@@ -712,7 +717,7 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
 <section id="part-7">
   <div class="eyebrow">Part 7</div>
   <h2>What our published method needs</h2>
-  <p class="prose">Public benchmarks that people trust tend to share a short list of practices. The table maps each one to where we stand. Most of the hard parts are already in place. One gap must be fixed before release, the leaked rows. The rest is mostly disclosure, plus a few cheap measurements.</p>
+  <p class="prose">Public benchmarks that people trust tend to share a short list of practices. The table maps each one to where we stand. The existing scoring and freeze machinery provides a useful base. Prioritise test integrity and equal treatment, then add clearer decision metrics and broader diagnostics. The table distinguishes existing safeguards from work still required.</p>
   <div class="tbl">
     <table>
       <thead><tr><th class="wt">Practice</th><th class="wt">Where we are</th><th>Status</th></tr></thead>
@@ -726,9 +731,9 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
         <tr><td class="wt">Score anchored to chance</td><td class="wt">Balanced accuracy is anchored at 50; state it, and show the chance-corrected value too</td><td><span class="chip risk">add</span></td></tr>
         <tr><td class="wt">Uncertainty intervals and whether gaps are separated</td><td class="wt">Bootstrap intervals, plus paired difference intervals (Jev − Kev-9B 3.8 [2.1, 5.5]). Publish the paired ones</td><td><span class="chip guard">in place</span></td></tr>
         <tr><td class="wt">Failures counted, never dropped</td><td class="wt">Failed and no-decision rows earn no credit; failure rate shown</td><td><span class="chip guard">in place</span></td></tr>
-        <tr><td class="wt">How each task was adapted</td><td class="wt">Not labelled. Every suite uses authored questions (class C)</td><td><span class="chip risk">add</span></td></tr>
+        <tr><td class="wt">How each task was adapted</td><td class="wt">Not labelled. Every suite uses authored questions; document the adaptation classification</td><td><span class="chip risk">add</span></td></tr>
         <tr><td class="wt">Repeatability</td><td class="wt">Not measured. Experiment H</td><td><span class="chip risk">add</span></td></tr>
-        <tr><td class="wt">Robustness to wording and order</td><td class="wt">Not measured. Experiments A and C</td><td><span class="chip risk">add</span></td></tr>
+        <tr><td class="wt">Robustness to wording and order</td><td class="wt">Quick grounding wording diagnostic completed for Jev and Kev-9B; broader wording and order checks remain. Experiments A and C</td><td><span class="chip risk">add</span></td></tr>
         <tr><td class="wt">Contamination statement</td><td class="wt">Our rows come from public sets (Aegis 2.0, JailbreakBench, Civil Comments, RAGTruth, Nemotron-PII). Any model may have trained on them, and we can't check Jev's training data. Say so. Authored control rows lower the risk but don't prove absence</td><td><span class="chip risk">write</span></td></tr>
         <tr><td class="wt">Comparator settings match the test</td><td class="wt">32 of 240 harmful content rows fall outside Bedrock's five categories; profanity compares a semantic question with a word list</td><td><span class="chip risk">disclose</span></td></tr>
         <tr><td class="wt">Serving configuration published</td><td class="wt">Kev BF16, Open-Jev 4,096-token cap, Laya custom wrapper. Server flags aren't in the config hash yet</td><td><span class="chip risk">add</span></td></tr>
@@ -767,7 +772,7 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
     <div class="col care">
       <span class="chip part" style="justify-self:start">publish with a caveat</span>
       <ul>
-        <li>Jev leads Kev-9B by 3.8 [2.1, 5.5]. Preliminary until experiment A; half of it is grounding.</li>
+        <li>Jev leads Kev-9B by 3.8 [2.1, 5.5]. About half of the margin is grounding. The quick tuning-only wording diagnostic did not explain it away; broader neutrality remains unproven.</li>
         <li>Jev leads Bedrock by 9.7 [7.4, 12.1] for these configurations, with the category and profanity mismatches stated.</li>
         <li>The question sets were developed with Jev as the main development model.</li>
         <li>Serving setups differ between models.</li>
@@ -777,8 +782,8 @@ ol.steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; max-width: 6
       <span class="chip guard" style="justify-self:start">ready</span>
       <ul>
         <li>The leaderboard numbers, with paired difference intervals.</li>
-        <li>The frozen-before-test process, the dataset card and the cost method.</li>
-        <li>Experiment G at 0.5 for each model's chosen wording, labelled as a sensitivity check.</li>
+        <li>The documented freeze process, dataset card and cost method, with the test-exposure and reuse caveats.</li>
+        <li>The completed tuning-only grounding diagnostic, with both attempts preserved and its limits stated. Experiment G remains planned.</li>
       </ul>
     </div>
   </div>

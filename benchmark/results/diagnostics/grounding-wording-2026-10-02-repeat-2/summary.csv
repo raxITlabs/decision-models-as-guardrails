@@ -1,0 +1,7 @@
+system,wording,status,n,frozen_threshold,frozen_score,refitted_threshold,refitted_tuning_score,auroc_answered,coverage,failed_or_no_decision
+jev-1.13.0,original,evaluated,50,0.74,90.0,0.71,92.0,0.9576,1.0,0
+jev-1.13.0,paraphrase_1,evaluated,50,0.74,90.0,0.64,92.0,0.9576,1.0,0
+jev-1.13.0,paraphrase_2,evaluated,50,0.74,88.0,0.66,90.0,0.944,1.0,0
+kev-9b,original,evaluated,50,0.125,74.0,0.125,74.0,0.7552,1.0,0
+kev-9b,paraphrase_1,evaluated,50,0.125,60.00000000000001,0.155,70.0,0.708,1.0,0
+kev-9b,paraphrase_2,evaluated,50,0.125,54.0,0.07500000000000001,66.0,0.6856,1.0,0
