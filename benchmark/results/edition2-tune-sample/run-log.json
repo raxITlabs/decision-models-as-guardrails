@@ -1,0 +1,142 @@
+{
+ "systems": {
+  "bedrock-guardrails": [
+   {
+    "seconds": 0.0,
+    "sent": 0,
+    "failed": 0,
+    "started": "2026-10-04T19:33:32Z",
+    "finished": "2026-10-04T19:33:32Z",
+    "blocked": "TokenRetrievalError: Error when retrieving token from sso: Token has expired and refresh failed"
+   }
+  ],
+  "jev-1.13.0": [
+   {
+    "seconds": 42.0,
+    "sent": 1422,
+    "failed": 0,
+    "started": "2026-10-04T19:33:31Z",
+    "finished": "2026-10-04T19:34:13Z",
+    "blocked": null
+   }
+  ],
+  "clef-flash": [
+   {
+    "seconds": 139.7,
+    "sent": 1422,
+    "failed": 0,
+    "started": "2026-10-04T19:33:31Z",
+    "finished": "2026-10-04T19:35:51Z",
+    "blocked": null
+   }
+  ],
+  "clef": [
+   {
+    "seconds": 219.4,
+    "sent": 1422,
+    "failed": 0,
+    "started": "2026-10-04T19:33:31Z",
+    "finished": "2026-10-04T19:37:11Z",
+    "blocked": null
+   }
+  ],
+  "pplx-decider-v1-27b": [
+   {
+    "seconds": 315.3,
+    "sent": 1422,
+    "failed": 0,
+    "started": "2026-10-04T19:33:31Z",
+    "finished": "2026-10-04T19:38:47Z",
+    "blocked": null
+   }
+  ],
+  "kev-0-8b": [
+   {
+    "seconds": 899.9,
+    "sent": 1422,
+    "failed": 0,
+    "started": "2026-10-04T19:38:33Z",
+    "finished": "2026-10-04T19:53:33Z",
+    "blocked": null
+   }
+  ],
+  "kev-9b": [
+   {
+    "seconds": 1037.8,
+    "sent": 1422,
+    "failed": 0,
+    "started": "2026-10-04T19:38:33Z",
+    "finished": "2026-10-04T19:55:51Z",
+    "blocked": null
+   }
+  ],
+  "laya": [
+   {
+    "seconds": 1040.0,
+    "sent": 1422,
+    "failed": 0,
+    "started": "2026-10-04T19:38:33Z",
+    "finished": "2026-10-04T19:55:53Z",
+    "blocked": null
+   }
+  ],
+  "strands-decider-2b": [
+   {
+    "seconds": 1297.4,
+    "sent": 1422,
+    "failed": 0,
+    "started": "2026-10-04T19:38:33Z",
+    "finished": "2026-10-04T20:00:11Z",
+    "blocked": null
+   }
+  ],
+  "kev-4b": [
+   {
+    "seconds": 1899.0,
+    "sent": 1422,
+    "failed": 9,
+    "started": "2026-10-04T19:38:33Z",
+    "finished": "2026-10-04T20:10:12Z",
+    "blocked": null
+   },
+   {
+    "seconds": 13.9,
+    "sent": 9,
+    "failed": 0,
+    "started": "2026-10-04T20:16:55Z",
+    "finished": "2026-10-04T20:17:09Z",
+    "blocked": null,
+    "retry_failed_only": true
+   }
+  ],
+  "open-jev-2b": [
+   {
+    "seconds": 1944.4,
+    "sent": 1422,
+    "failed": 7,
+    "started": "2026-10-04T19:38:33Z",
+    "finished": "2026-10-04T20:10:58Z",
+    "blocked": null
+   },
+   {
+    "seconds": 10.6,
+    "sent": 7,
+    "failed": 0,
+    "started": "2026-10-04T20:17:13Z",
+    "finished": "2026-10-04T20:17:24Z",
+    "blocked": null,
+    "retry_failed_only": true
+   }
+  ]
+ },
+ "vm": [
+  {
+   "up": "2026-10-04T19:33:57Z",
+   "paused": "2026-10-04T20:10:58Z"
+  },
+  {
+   "up": "2026-10-04T20:12:28Z",
+   "paused": "2026-10-04T20:17:24Z"
+  }
+ ]
+}

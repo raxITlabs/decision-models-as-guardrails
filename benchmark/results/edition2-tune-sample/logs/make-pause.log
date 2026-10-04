@@ -1,0 +1,8 @@
+infra/ctl.sh pause
+Stopping instance(s) gold-rails-serve...
+..........................................................................................................................................................................................................................................................done.
+Updated [https://compute.googleapis.com/compute/v1/projects/raxit-ai/zones/us-east4-a/instances/gold-rails-serve].
+paused: VM stopped, disk kept (~$20/month at list for 200 GB); 'make up' resumes in ~4 min
+pause exit 0
+infra/ctl.sh status
+vm: TERMINATED us-east4-a (project raxit-ai)

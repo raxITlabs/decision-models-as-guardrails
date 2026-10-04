@@ -1,0 +1,9 @@
+bedrock-guardrails   content/request            BLOCKED, nothing sent: TokenRetrievalError: Error when retrieving token from sso: Token has expired and refresh failed
+bedrock-guardrails   content/reply              BLOCKED, nothing sent: TokenRetrievalError: Error when retrieving token from sso: Token has expired and refresh failed
+bedrock-guardrails   prompt_attacks/direct             BLOCKED, nothing sent: TokenRetrievalError: Error when retrieving token from sso: Token has expired and refresh failed
+bedrock-guardrails   denied_topics/topic              BLOCKED, nothing sent: TokenRetrievalError: Error when retrieving token from sso: Token has expired and refresh failed
+bedrock-guardrails   sensitive_info/entity_detection   BLOCKED, nothing sent: TokenRetrievalError: Error when retrieving token from sso: Token has expired and refresh failed
+bedrock-guardrails   grounding/grounding          BLOCKED, nothing sent: TokenRetrievalError: Error when retrieving token from sso: Token has expired and refresh failed
+bedrock-guardrails   word_filters/word               BLOCKED, nothing sent: TokenRetrievalError: Error when retrieving token from sso: Token has expired and refresh failed
+bedrock-guardrails   word_filters/profanity          BLOCKED, nothing sent: TokenRetrievalError: Error when retrieving token from sso: Token has expired and refresh failed
+bedrock-guardrails: 0s

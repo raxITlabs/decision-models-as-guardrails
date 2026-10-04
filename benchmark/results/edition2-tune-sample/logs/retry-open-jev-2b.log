@@ -1,0 +1,9 @@
+open-jev-2b          content/request              0 sent, 0 failed
+open-jev-2b          content/reply                0 sent, 0 failed
+open-jev-2b          prompt_attacks/direct               0 sent, 0 failed
+open-jev-2b          denied_topics/topic                0 sent, 0 failed
+open-jev-2b          sensitive_info/entity_detection     5 sent, 0 failed
+open-jev-2b          grounding/grounding            2 sent, 0 failed
+open-jev-2b          word_filters/word                 0 sent, 0 failed
+open-jev-2b          word_filters/profanity            0 sent, 0 failed
+open-jev-2b: 11s

@@ -399,7 +399,7 @@ def load_frozen_rows(paths) -> dict:
     from goldrails_dataset.records import dataset_hash, read_jsonl
     out = {}
     for f in _dataset_files(paths):
-        raw = [json.loads(line) for line in f.read_text(encoding="utf-8").splitlines() if line.strip()]
+        raw = [json.loads(line) for line in f.read_text(encoding="utf-8").split("\n") if line.strip()]
         rows = {x["id"]: row_summary(x) for x in raw}
         out[dataset_hash(read_jsonl(f))] = rows
         out[_sha256_file(f)] = rows

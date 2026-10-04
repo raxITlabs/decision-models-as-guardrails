@@ -364,50 +364,77 @@ def recompute(path: Path, rows: dict) -> None:
 
 
 def run(kinds: set, only: set | None = None) -> None:
+    run_selection(kinds, select(), OUT, only)
+
+
+def run_selection(kinds: set, sel: dict, out: Path, only: set | None = None, reruns: bool = True,
+                  guard=None, retry_failed: bool = False) -> dict:
+    """Send ``sel`` ({(suite, subtask): [row dicts]}) to every configured system of ``kinds`` and append one record
+    per row to ``out/<system>.jsonl`` as each answer arrives, so an interrupted run resumes where it stopped (rows
+    already in the ledger are not sent again). ``guard(row)`` is called before a row is sent and must raise to refuse
+    it. ``reruns`` re-sends the first 5 rows of the first offered subtask (determinism check). ``retry_failed``
+    sends again only the rows whose latest record failed and appends the new record marked ``retry_of_failure``
+    (the failed record stays in the ledger; a scorer takes the latest record per row). Returns
+    {system: {seconds, sent, failed, started, finished}}; a Bedrock run with no credentials writes
+    ``<system>.blocked.json`` and sends nothing."""
     unknown = kinds - set(KINDS)
     if unknown:
         raise SystemExit(f"unknown --systems {sorted(unknown)}; known: {', '.join(KINDS)}")
+    if guard is not None:   # refuse before any system is built or any call is made
+        for rows in sel.values():
+            for r in rows:
+                guard(r)
     systems, skipped = build_systems(kinds)
     for kind, why in skipped.items():
         print(f"{kind:20s} NOT_CONFIGURED, nothing sent: {why}", flush=True)
+    timing = {}
     if not systems:
         print("no configured system: nothing to run", flush=True)
-        return
-    OUT.mkdir(parents=True, exist_ok=True)
-    sel = select()
+        return timing
+    out.mkdir(parents=True, exist_ok=True)
     is_ids_only = ids_only_flags()
+    now = lambda: time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())  # noqa: E731
     for name, (adapter, workers) in systems.items():
         if only and name not in only:
             continue
-        ledger = OUT / f"{name}.jsonl"
-        done = set()
+        ledger = out / f"{name}.jsonl"
+        done, last = set(), {}
         if ledger.exists():
             for x in ledger.open(encoding="utf-8"):
                 d = json.loads(x)
                 done.add((d["suite"], d["subtask"], d["row_id"], d["rerun"]))
-        t0 = time.time()
+                last[(d["suite"], d["subtask"], d["row_id"], d["rerun"])] = d["outcome"]
+        if retry_failed:
+            done = {k for k in done if last[k] != "failed"}
+        t0, started, sent, failed = time.time(), now(), 0, 0
+        blocked = getattr(adapter, "blocked", None)
         for (suite, sub), rows in sel.items():
             todo = [r for r in rows if (suite, sub, r["id"], False) not in done]
-            blocked = getattr(adapter, "blocked", None)
             if blocked and (name != "bedrock-guardrails" or bedrock_offers(suite, sub)):
                 print(f"{name:20s} {suite}/{sub:18s} BLOCKED, nothing sent: {blocked}", flush=True)
-                (OUT / f"{name}.blocked.json").write_text(json.dumps({"system": name, "reason": blocked,
-                    "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}, indent=1) + "\n")
+                (out / f"{name}.blocked.json").write_text(json.dumps({"system": name, "reason": blocked,
+                                                                      "at": now()}, indent=1) + "\n")
                 continue
             if name == "bedrock-guardrails" and not bedrock_offers(suite, sub):
                 res_of = lambda r, s=suite, t=sub: adapter.not_offered(s, t)  # noqa: E731
             else:
-                res_of = lambda r, s=suite, t=sub: adapter.evaluate(s, t, {"state": r["state"]})  # noqa: E731
-            with ThreadPoolExecutor(max_workers=workers) as ex:
-                results = list(ex.map(res_of, todo))
-            with ledger.open("a", encoding="utf-8") as f:
-                for r, res in zip(todo, results):
-                    f.write(json.dumps(record(name, suite, sub, r, res, is_ids_only(r["provenance"]["source"])),
-                                       ensure_ascii=False) + "\n")
-            fails = sum(res.outcome == "failed" for res in results)
+                def res_of(r, s=suite, t=sub):
+                    if guard is not None:
+                        guard(r)
+                    return adapter.evaluate(s, t, {"state": r["state"]})
+            fails = 0
+            with ThreadPoolExecutor(max_workers=workers) as ex, ledger.open("a", encoding="utf-8") as f:
+                for r, res in zip(todo, ex.map(res_of, todo)):
+                    rec = record(name, suite, sub, r, res, is_ids_only(r["provenance"]["source"]))
+                    if retry_failed:
+                        rec["retry_of_failure"] = True
+                    f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+                    f.flush()
+                    fails += res.outcome == "failed"
+            sent, failed = sent + len(todo), failed + fails
             print(f"{name:20s} {suite}/{sub:18s} {len(todo):3d} sent, {fails} failed", flush=True)
         # determinism: rerun the first 5 rows of the first offered subtask
-        first = None if getattr(adapter, "blocked", None) else \
+        first = None if (blocked or not reruns) else \
             next(((s, t) for (s, t) in sel if name != "bedrock-guardrails" or bedrock_offers(s, t)), None)
         if first:
             rr = [r for r in sel[first][:5] if (first[0], first[1], r["id"], True) not in done]
@@ -417,7 +444,10 @@ def run(kinds: set, only: set | None = None) -> None:
                 for r, res in zip(rr, results):
                     f.write(json.dumps(record(name, *first, r, res, is_ids_only(r["provenance"]["source"]), rerun=True),
                                        ensure_ascii=False) + "\n")
+        timing[name] = {"seconds": round(time.time() - t0, 1), "sent": sent, "failed": failed,
+                        "started": started, "finished": now(), "blocked": blocked}
         print(f"{name}: {time.time() - t0:.0f}s", flush=True)
+    return timing
 
 
 # --- report ----------------------------------------------------------------------------------------------------

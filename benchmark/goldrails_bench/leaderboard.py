@@ -101,7 +101,7 @@ DEFAULT_CONTRACT = {
 }
 
 FEATURE_SUITE = {v["feature"]: k for k, v in DEFAULT_CONTRACT["suites"].items()}
-SELF_HOSTED_KINDS = ("kev", "laya", "openjev", "open-jev")
+SELF_HOSTED_KINDS = ("kev", "laya", "openjev", "open-jev", "strands")
 
 
 # --- small helpers ---------------------------------------------------------------------------------------------------
@@ -246,7 +246,7 @@ class DatasetIndex:
             if d.is_dir():
                 for f in sorted(d.glob("*.jsonl")):
                     sha = _sha256_file(f)
-                    for line in f.read_text(encoding="utf-8").splitlines():
+                    for line in f.read_text(encoding="utf-8").split("\n"):
                         if line.strip():
                             x = json.loads(line)
                             out[x["id"]] = {"group": x.get("group"), "split": x.get("split"), "file_sha": sha}

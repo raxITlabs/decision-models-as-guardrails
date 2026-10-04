@@ -26,7 +26,8 @@ def test_no_row_repeats_an_id_text_or_group_v1_used():
     refs = E.reference_index(use_hf_cache=False)          # repo files only: ledgers, subsets, examined list, reviews
     assert len(refs["ids"]) > 1000
     # the edition 2 smoke test (benchmark/results/edition2-smoke) sent 20 public tune rows per subtask through the
-    # adapters after the rows were selected; those tune rows may be named in its ledgers, no test or private row may
+    # adapters after the rows were selected, and the tune-split sample (edition2-tune-sample) sent every public tune
+    # row; those tune rows may be named in their ledgers, no test or private row may
     smoke = _smoke_row_ids()
     assert all(c["proposed_split"] == "tune" for c in ROWS if c["id"] in smoke)
     hits = [c["id"] for c in ROWS if (c["id"] in refs["ids"] or c["group"] in refs["groups"]
@@ -35,11 +36,17 @@ def test_no_row_repeats_an_id_text_or_group_v1_used():
 
 
 def _smoke_row_ids() -> set:
-    p = Path(__file__).resolve().parents[2] / "benchmark" / "results" / "edition2-smoke" / "summary.json"
-    if not p.exists():
-        return set()
-    ids = json.loads(p.read_text(encoding="utf-8"))["row_ids"]
-    return {i for v in ids.values() for i in v} if isinstance(ids, dict) else set(ids)
+    """Rows the edition 2 smoke run and the tune-split sample (benchmark/runs/e2_sample.py, every public tune row)
+    sent through the adapters. Both send tune rows only."""
+    res = Path(__file__).resolve().parents[2] / "benchmark" / "results"
+    out = set()
+    p = res / "edition2-smoke" / "summary.json"
+    if p.exists():
+        ids = json.loads(p.read_text(encoding="utf-8"))["row_ids"]
+        out |= {i for v in ids.values() for i in v} if isinstance(ids, dict) else set(ids)
+    for f in (res / "edition2-tune-sample").glob("*.jsonl"):
+        out |= {json.loads(x)["row_id"] for x in f.open(encoding="utf-8") if x.strip()}
+    return out
 
 
 @needs_file

@@ -308,10 +308,10 @@ def test_no_overlap_with_v1_ids_texts_samples_or_ledgers(cands):
                 r = json.loads(line)
                 ids.add(r["id"])
                 texts.add(normalise(r["state"]["text"]))
-    smoke = set()        # edition 2's own smoke run draws its rows from the tune split by design (e2_smoke.py)
+    smoke = set()        # edition 2's smoke run and tune-split sample send tune rows only, by design (e2_smoke.py, e2_sample.py)
     for f in glob.glob(str(REPO / "benchmark/results/**/*.jsonl"), recursive=True):
         found = set(ID_PATTERN.findall(Path(f).read_text(encoding="utf-8", errors="ignore")))
-        if Path(f).relative_to(REPO / "benchmark/results").parts[0] == "edition2-smoke":
+        if Path(f).relative_to(REPO / "benchmark/results").parts[0] in ("edition2-smoke", "edition2-tune-sample"):
             smoke |= found
         else:
             ids |= found

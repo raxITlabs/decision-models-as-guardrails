@@ -23,6 +23,48 @@
       "status": "vendor list price, repository copy; not reconciled against a billing statement"
     },
     {
+      "id": "cloudflare/workers-ai/clef",
+      "provider": "Cloudflare Workers AI",
+      "kind": "per_token",
+      "match": {"models": ["@cf/cloudflare/clef"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.24},
+        "output_tokens": {"usd_per_million": 0.0, "note": "provider lists no output charge"}
+      },
+      "checked_on": "2026-10-02",
+      "source": "https://developers.cloudflare.com/workers-ai/platform/pricing/ (repository copy: docs/benchmark/28-new-decision-models-research.md, 2 October 2026)",
+      "status": "vendor list price, repository copy; not reconciled against a billing statement"
+    },
+    {
+      "id": "cloudflare/workers-ai/clef-flash",
+      "provider": "Cloudflare Workers AI",
+      "kind": "per_token",
+      "match": {"models": ["@cf/cloudflare/clef-flash"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.09},
+        "output_tokens": {"usd_per_million": 0.0, "note": "provider lists no output charge"}
+      },
+      "checked_on": "2026-10-02",
+      "source": "https://developers.cloudflare.com/workers-ai/platform/pricing/ (repository copy: docs/benchmark/28-new-decision-models-research.md, 2 October 2026)",
+      "status": "vendor list price, repository copy; not reconciled against a billing statement"
+    },
+    {
+      "id": "perplexity/decisions/pplx-decider-v1-27b",
+      "provider": "Perplexity Decisions API",
+      "kind": "per_token",
+      "match": {"models": ["pplx-decider-v1-27b"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.04},
+        "output_tokens": {"usd_per_million": 0.0, "note": "provider lists output tokens as free"}
+      },
+      "checked_on": "2026-10-02",
+      "source": "https://docs.perplexity.ai/docs/getting-started/pricing (repository copy: docs/benchmark/28-new-decision-models-research.md, 2 October 2026)",
+      "status": "vendor list price, repository copy; not reconciled against a billing statement"
+    },
+    {
       "id": "aws/bedrock/invoke-guardrail-checks",
       "provider": "Amazon Bedrock Guardrails, InvokeGuardrailChecks",
       "kind": "per_text_unit",

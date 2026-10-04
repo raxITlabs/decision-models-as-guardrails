@@ -1,0 +1,9 @@
+clef-flash           content/request            261 sent, 0 failed
+clef-flash           content/reply               87 sent, 0 failed
+clef-flash           prompt_attacks/direct             544 sent, 0 failed
+clef-flash           denied_topics/topic              131 sent, 0 failed
+clef-flash           sensitive_info/entity_detection   118 sent, 0 failed
+clef-flash           grounding/grounding          119 sent, 0 failed
+clef-flash           word_filters/word                11 sent, 0 failed
+clef-flash           word_filters/profanity          151 sent, 0 failed
+clef-flash: 140s
