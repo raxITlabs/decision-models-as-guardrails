@@ -2,7 +2,7 @@
   "schema_version": 1,
   "diagram_type": "dataflow",
   "meta": {
-    "title": "jev-as-a-guardrails: how a benchmark run flows",
+    "title": "decision-models-as-guardrails: how a benchmark run flows",
     "subtitle": "From pinned source rows to a published result. Arrows name the artifact that moves. Coral steps are committed evidence gates.",
     "output": "docs/teach/benchmark-pipeline.html",
     "viewBox": [

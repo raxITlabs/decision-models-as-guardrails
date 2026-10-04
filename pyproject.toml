@@ -1,7 +1,7 @@
 [project]
 name = "gold-rails"
 version = "0.0.1"
-description = "jev-as-a-guardrails: a guardrail benchmark for decision models (workspace root)"
+description = "decision-models-as-guardrails: a guardrail benchmark for decision models (workspace root)"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "Apache-2.0" }

@@ -323,7 +323,8 @@ def join_on_values(items: list) -> dict:
 ID_PATTERN = re.compile(r"\bf\d+-[a-z0-9_]+-[0-9a-f]{10}\b")
 SCAN_DIRS = ("benchmark", "dataset")
 SKIP_PARTS = ("edition2", ".venv", "__pycache__", "node_modules", ".git")
-HF_REPOS = ("raxITLabs/gold-rails", "raxITLabs/goldrails", "raxITLabs/goldrail", "raxITLabs/jev-as-a-guardrails")
+HF_REPOS = ("raxITLabs/gold-rails", "raxITLabs/goldrails", "raxITLabs/goldrail", "raxITLabs/jev-as-a-guardrails",
+            "raxITLabs/decision-models-as-guardrails")
 
 
 def _hf_snapshot_files() -> list:

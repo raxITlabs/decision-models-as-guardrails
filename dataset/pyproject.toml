@@ -1,7 +1,7 @@
 [project]
 name = "goldrails-dataset"
 version = "0.0.1"
-description = "jev-as-a-guardrails dataset: record schema, taxonomy, source loaders, build"
+description = "decision-models-as-guardrails dataset: record schema, taxonomy, source loaders, build"
 requires-python = ">=3.12"
 license = { text = "Apache-2.0" }
 dependencies = ["datasets>=3.0", "pandas>=2.2", "pyarrow>=17", "httpx>=0.27"]

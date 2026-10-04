@@ -34,8 +34,8 @@ import run_context as RC  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[2]
 CURRENT_RUN = "second-benchmark"   # the run site/leaderboard/results.json shows
-HF_DATASET = "https://huggingface.co/datasets/raxITLabs/jev-as-a-guardrails"   # renamed from raxITLabs/goldrails, 30 Sep 2026
-BRAND = "jev-as-a-guardrails"            # the benchmark's display name in every generated string; change it here only
+HF_DATASET = "https://huggingface.co/datasets/raxITLabs/decision-models-as-guardrails"   # was raxITLabs/jev-as-a-guardrails until 5 Oct 2026, raxITLabs/goldrails until 30 Sep
+BRAND = "decision-models-as-guardrails"            # the benchmark's display name in every generated string; change it here only
 RUN_LABEL = {"first-benchmark": "first benchmark", "second-benchmark": "second benchmark"}   # "<BRAND>, <label>"
 SITE_DIR = REPO / "site" / "leaderboard"
 

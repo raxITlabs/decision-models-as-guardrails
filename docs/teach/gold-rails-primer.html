@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>jev-as-a-guardrails primer</title>
-<meta name="description" content="A plain-language guide to how the jev-as-a-guardrails guardrail benchmark works: who is compared, how one message is judged, how scores are made, and what the results can and cannot show.">
+<title>decision-models-as-guardrails primer</title>
+<meta name="description" content="A plain-language guide to how the decision-models-as-guardrails guardrail benchmark works: who is compared, how one message is judged, how scores are made, and what the results can and cannot show.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -197,8 +197,8 @@ footer { max-width: 1120px; margin: 48px auto 0; font-size: 0.9rem; color: var(-
 <body>
 
 <header class="top">
-  <span class="eyebrow">raxIT Labs · <span class="wm">jev-as-a-guardrails</span> v0.0.1</span>
-  <h1>How the jev-as-a-guardrails benchmark works</h1>
+  <span class="eyebrow">raxIT Labs · <span class="wm">decision-models-as-guardrails</span> v0.0.1</span>
+  <h1>How the decision-models-as-guardrails benchmark works</h1>
   <p class="lede">A plain-language guide for newcomers. No background needed.</p>
   <p class="meta">About 10 minutes · three parts · open "More detail" only if you want it</p>
   <p class="meta">Engineer? Jump to <a href="#pipeline">the full pipeline diagram</a>.</p>
@@ -207,7 +207,7 @@ footer { max-width: 1120px; margin: 48px auto 0; font-size: 0.9rem; color: var(-
 <aside class="short" aria-labelledby="short-h">
   <span class="eyebrow" id="short-h">The short version</span>
   <ol>
-    <li>jev-as-a-guardrails tests seven AI guardrails on the same messages they have never seen, across six kinds of risk.</li>
+    <li>decision-models-as-guardrails tests seven AI guardrails on the same messages they have never seen, across six kinds of risk.</li>
     <li>Every message has an answer key: a good guardrail should either flag it or let it through.</li>
     <li>The score gives equal credit for catching bad messages and for letting good ones pass.</li>
     <li>Overall, Jev scores 90.9 and Amazon Bedrock Guardrails 81.2. Jev also costs about a third as much per check.</li>
@@ -1172,7 +1172,7 @@ footer { max-width: 1120px; margin: 48px auto 0; font-size: 0.9rem; color: var(-
             <dt>Frozen settings</dt><dd>Each run's thresholds and questions, saved before its test calls.</dd>
             <dt>The rules</dt><dd>Contract v1.1 sets the scoring rules and weights. The project owner signed it on 28 September 2026.</dd>
             <dt>Corrections log</dt><dd>Every change after a run, with the reason. Earlier results stay on file.</dd>
-            <dt>The dataset</dt><dd>Public on <a href="https://huggingface.co/datasets/raxITLabs/jev-as-a-guardrails">Hugging Face</a> as v0.0.1.</dd>
+            <dt>The dataset</dt><dd>Public on <a href="https://huggingface.co/datasets/raxITLabs/decision-models-as-guardrails">Hugging Face</a> as v0.0.1.</dd>
             <dt>Label review</dt><dd>The project owner reviewed every answer key. That is one reviewer, not two independent ones.</dd>
             <dt>The first run</dt><dd>Its results stay on file beside the second run's, with the reason its leaderboard was not valid for publication.</dd>
           </dl>
@@ -1261,7 +1261,7 @@ footer { max-width: 1120px; margin: 48px auto 0; font-size: 0.9rem; color: var(-
 #pipeline-diagram .c-region         { fill: rgba(251, 191, 36, 0.05); stroke: var(--cloud-stroke); stroke-dasharray: 8,4; }
 #pipeline-diagram .c-lane           { fill: var(--lane-fill); stroke: var(--lane-stroke); stroke-dasharray: 6,6; }
 </style>
-<div id="pipeline-diagram" class="frame scroll wide-svg"><svg class="pipeline-svg" viewBox="0 0 1080 800" role="img" aria-label="jev-as-a-guardrails: how a benchmark run flows. From pinned source rows to a published result. Arrows name the artifact that moves. Coral steps are committed evidence gates. (data-flow diagram)">
+<div id="pipeline-diagram" class="frame scroll wide-svg"><svg class="pipeline-svg" viewBox="0 0 1080 800" role="img" aria-label="decision-models-as-guardrails: how a benchmark run flows. From pinned source rows to a published result. Arrows name the artifact that moves. Coral steps are committed evidence gates. (data-flow diagram)">
         <!-- Definitions -->
         <defs>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -1495,7 +1495,7 @@ footer { max-width: 1120px; margin: 48px auto 0; font-size: 0.9rem; color: var(-
 </div>
 
 <footer>
-  Code and records: <a href="https://github.com/raxITlabs/jev-as-a-guardrails">github.com/raxITlabs/jev-as-a-guardrails</a>. Dataset: <a href="https://huggingface.co/datasets/raxITLabs/jev-as-a-guardrails">huggingface.co/datasets/raxITLabs/jev-as-a-guardrails</a>. Numbers come from the second run, <code>benchmark/results/second-benchmark/leaderboard-final.json</code>. The first run's results are in <code>benchmark/results/first-benchmark/</code>.
+  Code and records: <a href="https://github.com/raxITlabs/decision-models-as-guardrails">github.com/raxITlabs/decision-models-as-guardrails</a>. Dataset: <a href="https://huggingface.co/datasets/raxITLabs/decision-models-as-guardrails">huggingface.co/datasets/raxITLabs/decision-models-as-guardrails</a>. Numbers come from the second run, <code>benchmark/results/second-benchmark/leaderboard-final.json</code>. The first run's results are in <code>benchmark/results/first-benchmark/</code>.
 </footer>
 
 <script>

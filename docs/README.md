@@ -1,15 +1,17 @@
-# jev-as-a-guardrails docs
+# decision-models-as-guardrails docs
 
-jev-as-a-guardrails compares configured guardrail detectors (decision models with written questions, and Amazon Bedrock Guardrails) across six task suites, on quality, cost and latency. Public version v0.0.1: dataset at https://huggingface.co/datasets/raxITLabs/jev-as-a-guardrails. Results: the second run in `benchmark/results/second-benchmark/`, which the results site shows, and the first run in `benchmark/results/first-benchmark/`.
+decision-models-as-guardrails compares configured guardrail detectors (decision models with written questions, and Amazon Bedrock Guardrails) across six task suites, on quality, cost and latency. Public version v0.0.1: dataset at https://huggingface.co/datasets/raxITLabs/decision-models-as-guardrails. Results: the second run in `benchmark/results/second-benchmark/`, which the results site shows, and the first run in `benchmark/results/first-benchmark/`.
 
-The benchmark was called [gold]rails, and before that Gold Rails, until 30 September 2026. Dated notes and records below keep the name they were written under, and code identifiers keep `goldrails`. The Hugging Face dataset moved from `raxITLabs/goldrails` to `raxITLabs/jev-as-a-guardrails` the same day.
+Renamed on 5 October 2026: the benchmark was called jev-as-a-guardrails (and [gold]rails before that). Code identifiers keep the old names.
+
+Before that, the benchmark was called [gold]rails, and before that Gold Rails, until 30 September 2026. Dated notes and records below keep the name they were written under, and code identifiers keep `goldrails`. The Hugging Face dataset moved from `raxITLabs/goldrails` to `raxITLabs/jev-as-a-guardrails` the same day.
 
 ## Layout
 
 | Folder | What it holds |
 |---|---|
 | `teach/` | Material for learning how the benchmark works |
-| `benchmark/` | Design, contract, audits, budget and release runbook for jev-as-a-guardrails (14 to 25) |
+| `benchmark/` | Design, contract, audits, budget and release runbook for decision-models-as-guardrails (14 to 25) |
 | `research/` | The early research notes (18 September 2026), raw research dumps, video transcripts, prior art and the data-quality review |
 | `reference/` | Copies of the TypeSafe docs, the first API spec and the TypeScript spikes |
 | `reports/`, `release/`, `archive/` | Published HTML reports, the v0.0.1 sign-off packet, and superseded pages |
@@ -41,7 +43,7 @@ The six-suite score covers the guardrail tasks. The fairness diagnostics say whe
 
 | File | What it holds |
 |---|---|
-| [benchmark/14-gold-rails-v1-spec.md](benchmark/14-gold-rails-v1-spec.md) | jev-as-a-guardrails v1: 10k rows, composition per feature, HF layout, harness adapters, landing page, under $100 in API and GPU spend, eight weeks |
+| [benchmark/14-gold-rails-v1-spec.md](benchmark/14-gold-rails-v1-spec.md) | decision-models-as-guardrails v1: 10k rows, composition per feature, HF layout, harness adapters, landing page, under $100 in API and GPU spend, eight weeks |
 | [benchmark/16-evaluation-contract.md](benchmark/16-evaluation-contract.md) | After the pilot review: what a run may claim, claims withdrawn, fixes made, and the contract before the next run |
 | [benchmark/17-guardrail-policy-v0.md](benchmark/17-guardrail-policy-v0.md) | Policy v0.1 for review: two comparisons kept apart, separate labels for topic, harmful assistance, actionable and harmful detail, unsafe replies and instruction overrides; request routing vs reply enforcement; twelve rows proposed with full text in dataset/frozen |
 | [benchmark/18-benchmark-structure.md](benchmark/18-benchmark-structure.md) | Six suites (content, prompt attacks, denied topics, word filters, sensitive information, grounding), Automated Reasoning excluded; one harness, one results format, the leaderboard plot, sources per suite, current coverage, order of work |

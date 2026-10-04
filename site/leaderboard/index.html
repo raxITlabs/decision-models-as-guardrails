@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>jev-as-a-guardrails results</title>
-<meta name="description" content="jev-as-a-guardrails: decision-model guardrails measured against Amazon Bedrock Guardrails on quality, cost and latency.">
+<title>decision-models-as-guardrails results</title>
+<meta name="description" content="decision-models-as-guardrails: decision-model guardrails measured against Amazon Bedrock Guardrails on quality, cost and latency.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -353,7 +353,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 -->
 <div class="wrap">
   <header class="open">
-    <div class="masthead"><strong>raxIT Labs · jev-as-a-guardrails</strong><span id="meta">Loading results</span></div>
+    <div class="masthead"><strong>raxIT Labs · decision-models-as-guardrails</strong><span id="meta">Loading results</span></div>
     <h1>Can <span class="dm">decision models</span> stand in for <span class="br">Amazon Bedrock Guardrails</span>?</h1>
     <p class="answer" id="answer"></p>
     <ul class="status" id="status"></ul>
@@ -365,7 +365,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   </main>
 
   <footer>
-    <span id="foot-left">jev-as-a-guardrails is an open benchmark. Every number traces to a freeze manifest and a raw ledger.</span>
+    <span id="foot-left">decision-models-as-guardrails is an open benchmark. Every number traces to a freeze manifest and a raw ledger.</span>
     <span id="foot-right"></span>
   </footer>
 </div>
@@ -381,7 +381,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 <script>
 "use strict";
 const G = window.GoldRails;
-const BRAND = "jev-as-a-guardrails";   // display name; the static title, masthead and footer above repeat it
+const BRAND = "decision-models-as-guardrails";   // display name; the static title, masthead and footer above repeat it
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const isNum = G.isNum;

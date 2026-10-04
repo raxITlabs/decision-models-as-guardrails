@@ -1,5 +1,5 @@
 ---
-name: jev-as-a-guardrails
+name: decision-models-as-guardrails
 description: A research datasheet that measures decision-model guardrails against Amazon Bedrock Guardrails on quality, cost and latency.
 colors:
   paper: "#f5f6f4"
@@ -150,13 +150,13 @@ components:
     padding: "1px 5px"
 ---
 
-# Design System: jev-as-a-guardrails
+# Design System: decision-models-as-guardrails
 
 ## Overview
 
 **Creative North Star: "The Research Datasheet"**
 
-jev-as-a-guardrails reads like a printed datasheet from a measurement lab. It has a near-white paper ground, near-black ink, and one sans family set with tabular figures everywhere. Structure comes from hairline rules, never from boxes. The page asks one question and answers it in three passes of rising detail: a verdict ledger, a grid of same-scale small multiples, and a table of every number. Each pass uses the same two hues for the same two parties.
+decision-models-as-guardrails reads like a printed datasheet from a measurement lab. It has a near-white paper ground, near-black ink, and one sans family set with tabular figures everywhere. Structure comes from hairline rules, never from boxes. The page asks one question and answers it in three passes of rising detail: a verdict ledger, a grid of same-scale small multiples, and a table of every number. Each pass uses the same two hues for the same two parties.
 
 Color is information here and nothing else. Cobalt means a decision model. Ochre means Amazon Bedrock Guardrails. Grey means a baseline, or something unscored. A reader who learns that in the headline can read every later chart, dot, swatch and label without a legend. Uncertainty gets drawn as a first-class mark: interval bars sit behind every main score, and anything missing is written out in words in the tertiary ink, never plotted at zero.
 

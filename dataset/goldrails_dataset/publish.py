@@ -32,9 +32,9 @@ from .sources import SOURCES
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parent
-BRAND = "jev-as-a-guardrails"   # display name; called [gold]rails until 30 September 2026
-PUBLIC_REPO = "https://github.com/raxITlabs/jev-as-a-guardrails"
-HF_DATASET = "https://huggingface.co/datasets/raxITLabs/jev-as-a-guardrails"   # renamed from raxITLabs/goldrails
+BRAND = "decision-models-as-guardrails"   # display name; jev-as-a-guardrails until 5 October 2026, [gold]rails until 30 September
+PUBLIC_REPO = "https://github.com/raxITlabs/decision-models-as-guardrails"
+HF_DATASET = "https://huggingface.co/datasets/raxITLabs/decision-models-as-guardrails"   # was raxITLabs/jev-as-a-guardrails, and raxITLabs/goldrails before that
 INTENDED_USE = (f"{BRAND} is a non-commercial research benchmark by raxIT Labs. It compares guardrail systems and "
                 "publishes the results for research, with credit to every upstream source. It is not a commercial product "
                 "or deployment. Publishing it changes no source's licence: each row stays under its source's own terms, "

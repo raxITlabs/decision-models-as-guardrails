@@ -1,7 +1,7 @@
 ---
-# Dataset card for Gold Rails v1.0 (release sha 0fc729dd2b3e). Not uploaded; publication needs the owner's approval.
+# Dataset card for decision-models-as-guardrails v1.0, built as Gold Rails (release sha 0fc729dd2b3e). Not uploaded; publication needs the owner's approval.
 # Counts, hashes and revisions come from dataset/release/v1.0/manifest.json and its audit report, never by hand.
-pretty_name: Gold Rails v1
+pretty_name: decision-models-as-guardrails v1
 license: other
 license_name: mixed-per-source
 license_details: "Each row carries its source licence in provenance.licence. See the Licences section. Some rows are published as ids only."
@@ -69,13 +69,15 @@ configs:
         path: data/bias/test.jsonl
 ---
 
-# Gold Rails v1
+# decision-models-as-guardrails v1
 
 > **Status: v1.0 built and audited, not uploaded.** Counts, hashes and revisions come from
 > `dataset/release/v1.0/manifest.json` and `counts.md`, both produced by code. The audit passes on the release build.
 > Uploading needs the project owner's publication approval.
 
-Gold Rails is a test set for guardrails. It asks whether a guardrail implementation catches the violations a task
+Renamed on 5 October 2026: the benchmark was called jev-as-a-guardrails (and [gold]rails, and Gold Rails, before that). Code identifiers keep the old names. The Hugging Face dataset id is `raxITLabs/decision-models-as-guardrails`.
+
+decision-models-as-guardrails is a test set for guardrails. It asks whether a guardrail implementation catches the violations a task
 defines while letting legitimate text through. An implementation here means the whole thing: a model or managed
 service, the questions or configuration it gets, its decision rule and its threshold. The first use is comparing
 decision models such as Jev and Kev with Amazon Bedrock Guardrails. Bedrock is a competitor in that comparison, never
@@ -226,7 +228,7 @@ The release manifest lists every excluded id with its reason.
 
 - JailbreakBench artifacts quote or paraphrase JailbreakBench goals. A goal and its attacks share a group.
 - Every public source here was on the open web before the models under test were trained. Assume any of them may be
-  in a model's training data. Gold Rails does not claim a clean held-out set in that sense. It claims only that no
+  in a model's training data. The benchmark does not claim a clean held-out set in that sense. It claims only that no
   tuning decision saw the test split.
 - The audit checks exact duplicates after whitespace and case normalisation. It does not catch paraphrases.
 - Authored controls were written by Claude on 22 and 23 September 2026. They sit in tune only.

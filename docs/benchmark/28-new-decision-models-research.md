@@ -62,7 +62,7 @@ Not in scope for this round, by owner decision: OpenAI Moderation API and gpt-os
 
 Draft access note for the owner (not sent):
 
-> Hi, we run jev-as-a-guardrails, an open benchmark of guardrail and decision models across six suites (content, prompt attacks, denied topics, word filters, PII, grounding). We'd like to add the Decisions API in limited preview. We'd call gpt-6-luna with yes/no questions and report per-question probabilities against a fixed 0.5 threshold. Results are published with the serving config and date. Our test rows are private, so before sending any we need to know three things: can the endpoint run under Zero Data Retention, what is retained by default, and can we get preview pricing. Volume is about N thousand calls per run. Can you enable our org (ID: ...)?
+> Hi, we run decision-models-as-guardrails, an open benchmark of guardrail and decision models across six suites (content, prompt attacks, denied topics, word filters, PII, grounding). We'd like to add the Decisions API in limited preview. We'd call gpt-6-luna with yes/no questions and report per-question probabilities against a fixed 0.5 threshold. Results are published with the serving config and date. Our test rows are private, so before sending any we need to know three things: can the endpoint run under Zero Data Retention, what is retained by default, and can we get preview pricing. Volume is about N thousand calls per run. Can you enable our org (ID: ...)?
 
 ## Smoke test for every new model
 

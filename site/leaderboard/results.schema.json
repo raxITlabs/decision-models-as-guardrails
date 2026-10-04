@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raxit.ai/goldrails/leaderboard/results.schema.json",
-  "title": "jev-as-a-guardrails leaderboard results",
+  "title": "decision-models-as-guardrails leaderboard results",
   "description": "What site/leaderboard/index.html renders. One entry per (implementation, view). The page also accepts the evaluator's native document (benchmark/goldrails_bench/leaderboard.py, schema goldrails-leaderboard/0.1) and converts it with leaderboard.js fromEvaluator, so a published run needs no hand conversion. Scoring follows the completion plan: task score = 100 x 0.5 x (violation recall + benign pass rate), suites averaged equally, overall ranked only when all six suites are evaluated.",
   "type": "object",
   "required": [

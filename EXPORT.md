@@ -28,4 +28,4 @@ Most files the export left out came over on 2 October, masked the same way: the 
 
 The AWS account number and local file paths stay masked. From 2 October the Bedrock clients replace the account id in every ARN with `<account>` before a response reaches a ledger.
 
-jev-as-a-guardrails is a non-commercial research benchmark. Each source's rows stay under that source's licence, listed in `dataset/publish/v1.3-full/SOURCES.md`.
+decision-models-as-guardrails is a non-commercial research benchmark. Each source's rows stay under that source's licence, listed in `dataset/publish/v1.3-full/SOURCES.md`.
