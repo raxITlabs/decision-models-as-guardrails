@@ -1,6 +1,6 @@
 """Stage edition 2 for Hugging Face and rebuild its canonical rows locally. Nothing here uploads.
 
-    uv run python -m goldrails_dataset.publish_e2 stage                 # dataset/publish/release-1.0.0/, gates, load check
+    uv run python -m goldrails_dataset.publish_e2 stage                 # dataset/publish/release-<VERSION>/, gates, load check
     uv run python -m goldrails_dataset.publish_e2 gates [--data DIR]    # the privacy gates on a staged folder
     uv run python -m goldrails_dataset.publish_e2 parity [--data DIR]   # staged rows + local parts == the build
     uv run python -m goldrails_dataset.publish_e2 materialize --data DIR --out DIR
@@ -49,8 +49,8 @@ ROOT = Path(__file__).resolve().parents[1]          # dataset/
 REPO = ROOT.parent
 E2 = ROOT / "edition2"
 BUILD = E2 / "build"
-STAGE = ROOT / "publish" / "release-1.0.0"
-VERSION = "1.0.0"                                    # the first public release
+VERSION = "1.0.1"
+STAGE = ROOT / "publish" / f"release-{VERSION}"
 HUB_REPO = "raxITLabs/decision-models-as-guardrails"
 CONFIGS = {"F1": "content", "F2": "prompt_attacks", "F3": "denied_topics", "F4": "word_filters",
            "F5": "sensitive_information", "F6": "grounding"}
@@ -523,6 +523,13 @@ def _write_docs(out: Path, man: dict, files: list, pol: dict, code_ref: str, roo
     (out / "RECONSTRUCT.md").write_text(reconstruct_md(files, code_ref), encoding="utf-8")
     (out / "CHANGELOG.md").write_text(changelog_md(files, code_ref, build), encoding="utf-8")
     shutil.copyfile(root / "EXCLUDED.jsonl", out / "EXCLUDED.jsonl")
+    agr = root / "content" / "agreement.json"
+    if agr.exists() and json.loads(agr.read_text(encoding="utf-8")).get("status") == "complete":
+        doc = json.loads(agr.read_text(encoding="utf-8").replace(
+            "the owner-ruling final label of a resolved dispute", "the final label of a resolved dispute"))
+        (out / "content-label-agreement.json").write_text(
+            json.dumps({"labeller": "project lead with an AI assistant (Codex)", "design": doc.get("design"),
+                        "result": doc.get("result")}, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     ann = out / "annotations"
     ann.mkdir(exist_ok=True)
     if (root / "MODEL-TRAINING-OVERLAP.json").exists():
@@ -629,10 +636,12 @@ def changelog_md(files: list, code_ref: str, build: Path = BUILD) -> str:
     return "\n".join([
         "# Changelog", "",
         f"## {VERSION}, {_today()}", "",
-        f"- First public release: {total} rows in six configs, each with `dev` and `test` splits.",
+        f"- {total} rows in six configs, each with `dev` and `test` splits.",
+        "- Every disputed label is now decided, and those rows have joined their splits.",
+        "- Adds the content second-label sample result (README, `content-label-agreement.json`).",
         f"- Code: {PUBLIC_REPO} at `{code_ref}`. Manifest sha256 `{_sha(Path(build) / 'manifest.json')}`.",
-        "- Replaces every earlier file on the main branch. Load this version by its Hub commit, not by `main`, if you "
-        "need results to stay reproducible.", ""])
+        "- Load a version by its Hub commit, not by `main`, if you need results to stay reproducible.", "",
+        "## 1.0.0, 5 October 2026", "", "- First public release.", ""])
 
 
 def _today() -> str:
@@ -659,6 +668,31 @@ def public_text_problems(out: Path) -> list:
     return found
 
 
+def _label_notes(review: dict, root: Path) -> list:
+    """What a reader needs to know about label quality: disputes left out, and the content second-label sample."""
+    notes = []
+    if review.get("public", 0):
+        notes.append(f"- **Some labels may still change.** {review['public']} rows with a disputed label are left out "
+                     "until they are resolved. A later version may add rows or correct labels, and each version has "
+                     "its own Hub commit.")
+    agr = root / "content" / "agreement.json"
+    doc = json.loads(agr.read_text(encoding="utf-8")) if agr.exists() else {}
+    o = ((doc.get("result") or {}).get("overall") or {}) if doc.get("status") == "complete" else {}
+    if o:
+        n = (doc.get("design") or {}).get("n", 400)
+        notes.append(f"- **How the labels were checked.** Every row has a first label from its source or our "
+                     "labelling rules. Rows outside the content suite also have a blind second label. The project lead "
+                     "decided every disagreement, working with an AI assistant (Codex). For the content suite, the "
+                     f"project lead, with the same assistant, labelled a stratified sample of {n} rows blind, without seeing the first "
+                     f"label or the source. They agreed with the first label on {o['agreement_population_weighted']:.1%} "
+                     f"of rows (Cohen's kappa {o['kappa_population_weighted']:.2f}, weighted to the population). "
+                     "`content-label-agreement.json` breaks this down by subtask and source.")
+    else:
+        notes.append("- **Content labels are being checked.** A 400-row blind second-label sample of the content suite "
+                     "is in progress.")
+    return notes
+
+
 def card(files: list, man: dict, reg: list, subtasks: dict, code_ref: str, root: Path) -> str:
     by_cfg = defaultdict(list)
     for f in files:
@@ -682,9 +716,7 @@ def card(files: list, man: dict, reg: list, subtasks: dict, code_ref: str, root:
              "label and its provenance.", "",
              "## Intended use", "", INTENDED_USE, "",
              "## Before you use it", "",
-             f"- **Some labels may still change.** {review.get('public', 0)} rows with a disputed label are left out "
-             "until they are resolved, and a person is second-labelling a 400-row sample of the content suite. A later "
-             "version may add rows or correct labels, and each version has its own Hub commit.",
+             *_label_notes(review, root),
              "- **One scoring rule.** The benchmark scores every system with a fixed 0.5 rule and fits nothing on "
              "`dev`. Use `dev` for smoke tests and dry runs, and report scores on `test`.",
              "- **Prompt-attack scores are provisional.** On held-back rows, a simple text classifier can still tell "

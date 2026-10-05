@@ -2,8 +2,8 @@
  "suite": "content",
  "ruling": "7 (docs/benchmark/29-owner-rulings-2026-10-03.md)",
  "guide": "docs/benchmark/30-content-sample-labelling.md",
- "status": "awaiting labels",
- "updated": "2026-10-04T20:53:37+00:00",
+ "status": "complete",
+ "updated": "2026-10-05T03:44:25+00:00",
  "design": {
   "seed": 20261003,
   "n": 400,
@@ -89,5 +89,510 @@
   "reference": "the label the build holds: the first label, or the owner-ruling final label of a resolved dispute",
   "command": "uv run python -m goldrails_dataset.content_sample draw"
  },
- "result": null
+ "result": {
+  "labeller": "Codex",
+  "coverage": "400/400",
+  "complete": true,
+  "overall": {
+   "labelled": 400,
+   "unsure": 0,
+   "decided": 400,
+   "agree": 345,
+   "agreement": 0.8625,
+   "agreement_unsure_as_disagree": 0.8625,
+   "confusion_first_to_human": {
+    "no->no": 195,
+    "no->yes": 22,
+    "yes->no": 33,
+    "yes->yes": 150
+   },
+   "kappa": 0.7217,
+   "agreement_population_weighted": 0.8635,
+   "kappa_population_weighted": 0.7224,
+   "method": "stratified bootstrap, 2000 reps, seed 20261003",
+   "agreement_95": [
+    0.83,
+    0.8925
+   ],
+   "kappa_95": [
+    0.6563,
+    0.7832
+   ]
+  },
+  "by_stratum": {
+   "harmful_goal|no|e2_content_orbench80k": {
+    "labelled": 23,
+    "unsure": 0,
+    "decided": 23,
+    "agree": 22,
+    "agreement": 0.9565,
+    "agreement_unsure_as_disagree": 0.9565,
+    "confusion_first_to_human": {
+     "no->no": 22,
+     "no->yes": 1
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "harmful_goal|no|e2_content_xstest": {
+    "labelled": 29,
+    "unsure": 0,
+    "decided": 29,
+    "agree": 29,
+    "agreement": 1.0,
+    "agreement_unsure_as_disagree": 1.0,
+    "confusion_first_to_human": {
+     "no->no": 29
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "harmful_goal|yes|e2_content_harmbench": {
+    "labelled": 29,
+    "unsure": 0,
+    "decided": 29,
+    "agree": 27,
+    "agreement": 0.931,
+    "agreement_unsure_as_disagree": 0.931,
+    "confusion_first_to_human": {
+     "yes->no": 2,
+     "yes->yes": 27
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "harmful_goal|yes|e2_content_xstest": {
+    "labelled": 25,
+    "unsure": 0,
+    "decided": 25,
+    "agree": 21,
+    "agreement": 0.84,
+    "agreement_unsure_as_disagree": 0.84,
+    "confusion_first_to_human": {
+     "yes->no": 4,
+     "yes->yes": 21
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "input|no|aegis2": {
+    "labelled": 23,
+    "unsure": 0,
+    "decided": 23,
+    "agree": 23,
+    "agreement": 1.0,
+    "agreement_unsure_as_disagree": 1.0,
+    "confusion_first_to_human": {
+     "no->no": 23
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "input|no|e2_content_aegis2_test": {
+    "labelled": 11,
+    "unsure": 0,
+    "decided": 11,
+    "agree": 11,
+    "agreement": 1.0,
+    "agreement_unsure_as_disagree": 1.0,
+    "confusion_first_to_human": {
+     "no->no": 11
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "input|no|openai_moderation": {
+    "labelled": 25,
+    "unsure": 0,
+    "decided": 25,
+    "agree": 17,
+    "agreement": 0.68,
+    "agreement_unsure_as_disagree": 0.68,
+    "confusion_first_to_human": {
+     "no->no": 17,
+     "no->yes": 8
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "input|yes|aegis2": {
+    "labelled": 17,
+    "unsure": 0,
+    "decided": 17,
+    "agree": 11,
+    "agreement": 0.6471,
+    "agreement_unsure_as_disagree": 0.6471,
+    "confusion_first_to_human": {
+     "yes->no": 6,
+     "yes->yes": 11
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "input|yes|ailuminate_demo": {
+    "labelled": 20,
+    "unsure": 0,
+    "decided": 20,
+    "agree": 14,
+    "agreement": 0.7,
+    "agreement_unsure_as_disagree": 0.7,
+    "confusion_first_to_human": {
+     "yes->no": 6,
+     "yes->yes": 14
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "input|yes|e2_content_aegis2_test": {
+    "labelled": 17,
+    "unsure": 0,
+    "decided": 17,
+    "agree": 13,
+    "agreement": 0.7647,
+    "agreement_unsure_as_disagree": 0.7647,
+    "confusion_first_to_human": {
+     "yes->no": 4,
+     "yes->yes": 13
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "input|yes|openai_moderation": {
+    "labelled": 18,
+    "unsure": 0,
+    "decided": 18,
+    "agree": 16,
+    "agreement": 0.8889,
+    "agreement_unsure_as_disagree": 0.8889,
+    "confusion_first_to_human": {
+     "yes->no": 2,
+     "yes->yes": 16
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "output|no|e2_content_beavertails": {
+    "labelled": 32,
+    "unsure": 0,
+    "decided": 32,
+    "agree": 32,
+    "agreement": 1.0,
+    "agreement_unsure_as_disagree": 1.0,
+    "confusion_first_to_human": {
+     "no->no": 32
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "output|no|e2_content_harmbench_cls": {
+    "labelled": 23,
+    "unsure": 0,
+    "decided": 23,
+    "agree": 19,
+    "agreement": 0.8261,
+    "agreement_unsure_as_disagree": 0.8261,
+    "confusion_first_to_human": {
+     "no->no": 19,
+     "no->yes": 4
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "output|yes|e2_content_beavertails": {
+    "labelled": 32,
+    "unsure": 0,
+    "decided": 32,
+    "agree": 26,
+    "agreement": 0.8125,
+    "agreement_unsure_as_disagree": 0.8125,
+    "confusion_first_to_human": {
+     "yes->no": 6,
+     "yes->yes": 26
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "output|yes|e2_content_harmbench_cls": {
+    "labelled": 25,
+    "unsure": 0,
+    "decided": 25,
+    "agree": 22,
+    "agreement": 0.88,
+    "agreement_unsure_as_disagree": 0.88,
+    "confusion_first_to_human": {
+     "yes->no": 3,
+     "yes->yes": 22
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "over_refusal|no|e2_content_orbench80k": {
+    "labelled": 18,
+    "unsure": 0,
+    "decided": 18,
+    "agree": 18,
+    "agreement": 1.0,
+    "agreement_unsure_as_disagree": 1.0,
+    "confusion_first_to_human": {
+     "no->no": 18
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "over_refusal|no|orbench": {
+    "labelled": 33,
+    "unsure": 0,
+    "decided": 33,
+    "agree": 24,
+    "agreement": 0.7273,
+    "agreement_unsure_as_disagree": 0.7273,
+    "confusion_first_to_human": {
+     "no->no": 24,
+     "no->yes": 9
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   }
+  },
+  "by_subtask": {
+   "harmful_goal": {
+    "labelled": 106,
+    "unsure": 0,
+    "decided": 106,
+    "agree": 99,
+    "agreement": 0.934,
+    "agreement_unsure_as_disagree": 0.934,
+    "confusion_first_to_human": {
+     "no->no": 51,
+     "no->yes": 1,
+     "yes->no": 6,
+     "yes->yes": 48
+    },
+    "kappa": 0.8681
+   },
+   "input": {
+    "labelled": 131,
+    "unsure": 0,
+    "decided": 131,
+    "agree": 105,
+    "agreement": 0.8015,
+    "agreement_unsure_as_disagree": 0.8015,
+    "confusion_first_to_human": {
+     "no->no": 51,
+     "no->yes": 8,
+     "yes->no": 18,
+     "yes->yes": 54
+    },
+    "kappa": 0.6051
+   },
+   "output": {
+    "labelled": 112,
+    "unsure": 0,
+    "decided": 112,
+    "agree": 99,
+    "agreement": 0.8839,
+    "agreement_unsure_as_disagree": 0.8839,
+    "confusion_first_to_human": {
+     "no->no": 51,
+     "no->yes": 4,
+     "yes->no": 9,
+     "yes->yes": 48
+    },
+    "kappa": 0.7682
+   },
+   "over_refusal": {
+    "labelled": 51,
+    "unsure": 0,
+    "decided": 51,
+    "agree": 42,
+    "agreement": 0.8235,
+    "agreement_unsure_as_disagree": 0.8235,
+    "confusion_first_to_human": {
+     "no->no": 42,
+     "no->yes": 9
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   }
+  },
+  "by_source": {
+   "aegis2": {
+    "labelled": 40,
+    "unsure": 0,
+    "decided": 40,
+    "agree": 34,
+    "agreement": 0.85,
+    "agreement_unsure_as_disagree": 0.85,
+    "confusion_first_to_human": {
+     "no->no": 23,
+     "yes->no": 6,
+     "yes->yes": 11
+    },
+    "kappa": 0.6783
+   },
+   "ailuminate_demo": {
+    "labelled": 20,
+    "unsure": 0,
+    "decided": 20,
+    "agree": 14,
+    "agreement": 0.7,
+    "agreement_unsure_as_disagree": 0.7,
+    "confusion_first_to_human": {
+     "yes->no": 6,
+     "yes->yes": 14
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "e2_content_aegis2_test": {
+    "labelled": 28,
+    "unsure": 0,
+    "decided": 28,
+    "agree": 24,
+    "agreement": 0.8571,
+    "agreement_unsure_as_disagree": 0.8571,
+    "confusion_first_to_human": {
+     "no->no": 11,
+     "yes->no": 4,
+     "yes->yes": 13
+    },
+    "kappa": 0.7186
+   },
+   "e2_content_beavertails": {
+    "labelled": 64,
+    "unsure": 0,
+    "decided": 64,
+    "agree": 58,
+    "agreement": 0.9062,
+    "agreement_unsure_as_disagree": 0.9062,
+    "confusion_first_to_human": {
+     "no->no": 32,
+     "yes->no": 6,
+     "yes->yes": 26
+    },
+    "kappa": 0.8125
+   },
+   "e2_content_harmbench": {
+    "labelled": 29,
+    "unsure": 0,
+    "decided": 29,
+    "agree": 27,
+    "agreement": 0.931,
+    "agreement_unsure_as_disagree": 0.931,
+    "confusion_first_to_human": {
+     "yes->no": 2,
+     "yes->yes": 27
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "e2_content_harmbench_cls": {
+    "labelled": 48,
+    "unsure": 0,
+    "decided": 48,
+    "agree": 41,
+    "agreement": 0.8542,
+    "agreement_unsure_as_disagree": 0.8542,
+    "confusion_first_to_human": {
+     "no->no": 19,
+     "no->yes": 4,
+     "yes->no": 3,
+     "yes->yes": 22
+    },
+    "kappa": 0.7073
+   },
+   "e2_content_orbench80k": {
+    "labelled": 41,
+    "unsure": 0,
+    "decided": 41,
+    "agree": 40,
+    "agreement": 0.9756,
+    "agreement_unsure_as_disagree": 0.9756,
+    "confusion_first_to_human": {
+     "no->no": 40,
+     "no->yes": 1
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   },
+   "e2_content_xstest": {
+    "labelled": 54,
+    "unsure": 0,
+    "decided": 54,
+    "agree": 50,
+    "agreement": 0.9259,
+    "agreement_unsure_as_disagree": 0.9259,
+    "confusion_first_to_human": {
+     "no->no": 29,
+     "yes->no": 4,
+     "yes->yes": 21
+    },
+    "kappa": 0.8494
+   },
+   "openai_moderation": {
+    "labelled": 43,
+    "unsure": 0,
+    "decided": 43,
+    "agree": 33,
+    "agreement": 0.7674,
+    "agreement_unsure_as_disagree": 0.7674,
+    "confusion_first_to_human": {
+     "no->no": 17,
+     "no->yes": 8,
+     "yes->no": 2,
+     "yes->yes": 16
+    },
+    "kappa": 0.5435
+   },
+   "orbench": {
+    "labelled": 33,
+    "unsure": 0,
+    "decided": 33,
+    "agree": 24,
+    "agreement": 0.7273,
+    "agreement_unsure_as_disagree": 0.7273,
+    "confusion_first_to_human": {
+     "no->no": 24,
+     "no->yes": 9
+    },
+    "kappa": null,
+    "kappa_note": "first label takes one value in this group, so kappa is undefined; read agreement"
+   }
+  },
+  "by_split": {
+   "dev": {
+    "labelled": 56,
+    "unsure": 0,
+    "decided": 56,
+    "agree": 49,
+    "agreement": 0.875,
+    "agreement_unsure_as_disagree": 0.875,
+    "confusion_first_to_human": {
+     "no->no": 30,
+     "no->yes": 3,
+     "yes->no": 4,
+     "yes->yes": 19
+    },
+    "kappa": 0.7401
+   },
+   "test": {
+    "labelled": 344,
+    "unsure": 0,
+    "decided": 344,
+    "agree": 296,
+    "agreement": 0.8605,
+    "agreement_unsure_as_disagree": 0.8605,
+    "confusion_first_to_human": {
+     "no->no": 165,
+     "no->yes": 19,
+     "yes->no": 29,
+     "yes->yes": 131
+    },
+    "kappa": 0.7184
+   }
+  },
+  "label_files_sha256": [
+   "6bdeee80d6edce9a033b14ae4017a0eb08a671a53123a958f84b36faae7e52a1"
+  ]
+ }
 }

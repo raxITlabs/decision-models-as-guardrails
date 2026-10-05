@@ -594,7 +594,7 @@ def test_publication_needs_every_dispute_ruled_and_the_sample_labelled():
     assert not e2.publication({**rep, "status": "fail", "failed": ["floors"]}, {})["ready"]
 
 
-def test_committed_audit_report_passes_and_blocks_publication():
+def test_committed_audit_report_passes_and_is_ready_to_publish():
     rep = json.loads((e2.BUILD / "audit-report.json").read_text(encoding="utf-8"))
     assert rep["status"] == "pass" and not rep["failed"]
     assert rep["floors"]["pass"] and rep["pii_entity_floors"]["pass"]
@@ -604,7 +604,7 @@ def test_committed_audit_report_passes_and_blocks_publication():
                           and rep["suite_status"]["prompt_attacks"] == "provisional")
     assert rep["overlap"]["pass"] is True
     assert rep["second_label"]["content_human_sample"]["fresh"]
-    assert rep["publication"]["ready"] is False
+    assert rep["publication"]["ready"] is True       # every dispute decided and the content sample labelled (5 Oct)
 
 
 @needs_rows
@@ -660,14 +660,14 @@ def test_every_waiting_dispute_has_an_owner_question(parts):
             assert r.attribute["e2"].get("owner_question"), r.id
 
 
-def test_ruling8_resolutions_wait_for_the_owners_confirmation():
-    """Ruling 9 applies rulings 2 to 5 automatically; a ruling 8 resolution waits for the owner (question C-R8)."""
+def test_ruling8_resolutions_were_confirmed_by_the_owner():
+    """Ruling 9 applies rulings 2 to 5 automatically; a ruling 8 resolution waited for the owner (question C-R8), who
+    decided all 13 on 5 October 2026. None is left waiting, and none was resolved by ruling 8 without the owner."""
     content = _suite("content")
     lines = [d for d in e2._jsonl(e2_local.suite_dir("content") / "resolutions.jsonl")]
-    assert not [d["id"] for d in lines if d.get("status") == e2.RESOLVED and d.get("ruling") == 8]
     confirm = [d for d in lines if d.get("question") == "C-R8"]
-    # 14 until 5 October; one of those rows left with the pplx-decider-v1-27b exclusion (round 6)
-    assert len(confirm) == 13 and all(d["status"] == e2.OWNER_REVIEW and d["proposed"]["ruling"] == 8 for d in confirm)
+    assert len(confirm) == 13 and all(d["status"] == e2.RESOLVED for d in confirm)
+    assert not [d["id"] for d in lines if d.get("status") == e2.OWNER_REVIEW]
     assert content.name == "content"
 
 

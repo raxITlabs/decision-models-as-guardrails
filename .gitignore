@@ -39,7 +39,7 @@ dataset/edition2/content/sample/
 # (uv run python -m goldrails_dataset.edition2); manifest.json and audit-report.json are committed to check them
 dataset/edition2/build/F*.jsonl
 # edition 2 Hugging Face staging (goldrails_dataset.publish_e2): the whole folder, until the owner uploads it
-dataset/publish/release-1.0.0/
+dataset/publish/release-*/
 dataset/publish/v2.*/
 # edition 2 rows rebuilt for the runners from the Hub copy plus local text and the unpublished slice (goldrails_bench.e2_source)
 dataset/edition2/.materialized/

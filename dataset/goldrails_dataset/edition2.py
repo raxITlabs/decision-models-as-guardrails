@@ -737,6 +737,24 @@ SAMPLE_SUITE = "content"        # owner ruling 7: a person second-labels a 400-r
 SAMPLE_N = 400
 
 
+def sample_rows_unchanged(out: Path = BUILD, manifest: Path | None = None) -> bool:
+    """True when every row of the drawn sample is still in ``out`` with the split and reference label it was drawn
+    with. The manifest lives in the git-ignored ``content/sample/``; without it this is False."""
+    manifest = Path(manifest) if manifest else E2 / "content" / "sample" / "manifest.json"
+    if not manifest.exists():
+        return False
+    rows = json.loads(manifest.read_text(encoding="utf-8")).get("rows") or []
+    cur = {}
+    for split in ("dev", "test"):
+        p = Path(out) / f"F1.{split}.jsonl"
+        if p.exists():
+            for line in p.read_text(encoding="utf-8").split("\n"):    # not splitlines: rows hold U+2028
+                if line.strip():
+                    r = json.loads(line)
+                    cur[r["id"]] = (split, r.get("expected"))
+    return bool(rows) and all(cur.get(r["id"]) == (r["split"], r["reference"]) for r in rows)
+
+
 def content_sample_status(out: Path = BUILD, agreement: Path | None = None) -> dict:
     """The ruling 7 human sample as the audit sees it: drawn (``content/agreement.json`` exists with a 400-row design),
     drawn from this build (its F1 dev/test digests match the files in ``out``), and labelled (status complete)."""
@@ -751,8 +769,13 @@ def content_sample_status(out: Path = BUILD, agreement: Path | None = None) -> d
         p = Path(out) / name
         digests[name] = hashlib.sha256(p.read_bytes()).hexdigest() if p.exists() else None
     fresh = bool(digests) and digests == des.get("build_files")
+    unchanged = None if fresh else sample_rows_unchanged(out, agreement.parent / "sample" / "manifest.json")
+    if unchanged:     # the build changed only outside the sample: every sampled row keeps its split and label
+        fresh = True
     labelled = doc.get("status") == "complete" and bool(doc.get("result"))
     status = ("labelled" if labelled else "pending human labels") if fresh else "stale: drawn from an earlier build"
+    if unchanged:
+        status += " (build changed outside the sample; all sampled rows unchanged)"
     rep = {"drawn": des.get("n") == SAMPLE_N, "fresh": fresh, "labelled": labelled, "status": status,
            "agreement_file": "dataset/edition2/content/agreement.json", "n": des.get("n"),
            "population_rows": des.get("population_rows"), "agreement_status": doc.get("status")}

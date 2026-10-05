@@ -3,23 +3,22 @@
   "command": "uv run python -m goldrails_dataset.edition2",
   "manifest": {
     "private_slice": {
-      "rows": 1585,
+      "rows": 1633,
       "where": "build/private/ (git-ignored, never published)"
     },
     "needs_owner_review": {
-      "public": 194,
-      "private": 48,
+      "public": 0,
+      "private": 0,
       "file": "needs-owner-review.jsonl"
     }
   },
   "split_rows": {
-    "dev": 1422,
+    "dev": 1460,
     "dropped": 18,
     "dropped_private": 8,
-    "private": 1585,
-    "review": 194,
-    "review_private": 48,
-    "test": 6319
+    "private": 1633,
+    "review": 0,
+    "test": 6475
   },
   "gates": {
     "status": "pass",
@@ -122,12 +121,12 @@
           "no": 250
         },
         "public_test": {
-          "no": 283,
-          "yes": 325
+          "no": 298,
+          "yes": 327
         },
         "with_private": {
-          "no": 331,
-          "yes": 372
+          "no": 346,
+          "yes": 374
         },
         "public_test_second_label_agreed": {
           "no": 40,
@@ -143,6 +142,7 @@
           ],
           "no": [
             "aegis2",
+            "ailuminate_demo",
             "e2_content_aegis2_test",
             "openai_moderation"
           ]
@@ -210,24 +210,26 @@
           "no": 250
         },
         "public_test": {
-          "no": 309,
-          "yes": 272
+          "no": 350,
+          "yes": 280
         },
         "with_private": {
-          "no": 432,
-          "yes": 384
+          "no": 488,
+          "yes": 394
         },
         "public_test_second_label_agreed": {
           "no": 308,
           "yes": 270
         },
-        "sources": 6,
+        "sources": 7,
         "sources_by_class": {
           "yes": [
             "deepset_injections_test",
             "e2_attack_controls",
             "itw_jailbreak_prompts",
+            "lakera_mosscap",
             "neuralchemy_injection",
+            "notinject",
             "yanis_prompt_injections"
           ],
           "no": [
@@ -235,7 +237,8 @@
             "e2_attack_controls",
             "itw_jailbreak_prompts",
             "neuralchemy_injection",
-            "notinject"
+            "notinject",
+            "yanis_prompt_injections"
           ]
         },
         "pass": true
@@ -248,12 +251,12 @@
           "no": 250
         },
         "public_test": {
-          "no": 301,
-          "yes": 280
+          "no": 330,
+          "yes": 303
         },
         "with_private": {
-          "no": 421,
-          "yes": 386
+          "no": 459,
+          "yes": 420
         },
         "public_test_second_label_agreed": {
           "no": 296,
@@ -272,7 +275,8 @@
             "e2_attack_controls",
             "itw_jailbreak_prompts",
             "jackhhao_jailbreak",
-            "neuralchemy_injection"
+            "neuralchemy_injection",
+            "yanis_prompt_injections"
           ]
         },
         "pass": true
@@ -285,12 +289,12 @@
           "no": 250
         },
         "public_test": {
-          "no": 337,
-          "yes": 316
+          "no": 342,
+          "yes": 319
         },
         "with_private": {
-          "no": 463,
-          "yes": 417
+          "no": 473,
+          "yes": 421
         },
         "public_test_second_label_agreed": {
           "no": 317,
@@ -309,7 +313,8 @@
           "no": [
             "e2_attack_controls",
             "itw_jailbreak_prompts",
-            "lakera_mosscap"
+            "lakera_mosscap",
+            "yanis_prompt_injections"
           ]
         },
         "pass": true
@@ -322,12 +327,12 @@
           "no": 250
         },
         "public_test": {
-          "no": 332,
-          "yes": 265
+          "no": 333,
+          "yes": 268
         },
         "with_private": {
-          "no": 397,
-          "yes": 317
+          "no": 398,
+          "yes": 320
         },
         "public_test_second_label_agreed": {
           "no": 332,
@@ -355,11 +360,11 @@
         },
         "public_test": {
           "no": 293,
-          "yes": 288
+          "yes": 292
         },
         "with_private": {
           "no": 354,
-          "yes": 346
+          "yes": 350
         },
         "public_test_second_label_agreed": {
           "no": 293,
@@ -389,11 +394,11 @@
         },
         "public_test": {
           "no": 303,
-          "yes": 291
+          "yes": 297
         },
         "with_private": {
           "no": 363,
-          "yes": 349
+          "yes": 357
         },
         "public_test_second_label_agreed": {
           "no": 301,
@@ -423,12 +428,12 @@
           "no": 250
         },
         "public_test": {
-          "no": 273,
-          "yes": 270
+          "no": 277,
+          "yes": 279
         },
         "with_private": {
-          "no": 352,
-          "yes": 356
+          "no": 358,
+          "yes": 366
         },
         "public_test_second_label_agreed": {
           "no": 271,
@@ -468,38 +473,38 @@
     "positives_by_type": {
       "NAME": {
         "dev": 31,
-        "private": 28,
-        "test": 151
+        "private": 29,
+        "test": 153
       },
       "EMAIL": {
         "dev": 15,
-        "private": 17,
-        "test": 91
+        "private": 19,
+        "test": 92
       },
       "PHONE": {
         "dev": 12,
-        "private": 12,
-        "test": 57
+        "private": 13,
+        "test": 59
       },
       "ADDRESS": {
         "dev": 20,
         "private": 15,
-        "test": 76
+        "test": 78
       },
       "USERNAME": {
-        "dev": 11,
-        "private": 12,
-        "test": 57
+        "dev": 13,
+        "private": 13,
+        "test": 60
       },
       "PASSWORD": {
-        "dev": 12,
-        "private": 14,
-        "test": 53
+        "dev": 13,
+        "private": 15,
+        "test": 54
       },
       "IP_ADDRESS": {
-        "dev": 11,
-        "private": 13,
-        "test": 65
+        "dev": 12,
+        "private": 14,
+        "test": 66
       },
       "US_SOCIAL_SECURITY_NUMBER": {
         "dev": 12,
@@ -520,13 +525,13 @@
       "NAME": 30
     },
     "test_positives_sourced": {
-      "NAME": 121,
-      "EMAIL": 90,
-      "PHONE": 57,
-      "ADDRESS": 76,
-      "USERNAME": 57,
-      "PASSWORD": 53,
-      "IP_ADDRESS": 65,
+      "NAME": 123,
+      "EMAIL": 91,
+      "PHONE": 59,
+      "ADDRESS": 78,
+      "USERNAME": 60,
+      "PASSWORD": 54,
+      "IP_ADDRESS": 66,
       "US_SOCIAL_SECURITY_NUMBER": 58
     },
     "sourced_only_below_floor": [],
@@ -538,53 +543,53 @@
       "content": {
         "rows": 2841,
         "agree": 84,
-        "disagree": 23,
-        "resolved_by_ruling": 0,
+        "disagree": 0,
+        "resolved_by_ruling": 23,
         "missing": 2734,
         "agreement": 0.785,
         "missing_covered_by": {
           "ruling": 7,
-          "human_sample": "pending human labels",
+          "human_sample": "labelled (build changed outside the sample; all sampled rows unchanged)",
           "pass": true
         }
       },
       "denied_topics": {
         "rows": 849,
         "agree": 845,
-        "disagree": 4,
-        "resolved_by_ruling": 0,
+        "disagree": 0,
+        "resolved_by_ruling": 4,
         "missing": 0,
         "agreement": 0.9953
       },
       "grounding": {
         "rows": 848,
         "agree": 809,
-        "disagree": 21,
-        "resolved_by_ruling": 18,
+        "disagree": 0,
+        "resolved_by_ruling": 39,
         "missing": 0,
         "agreement": 0.954
       },
       "pii": {
         "rows": 840,
         "agree": 819,
-        "disagree": 10,
-        "resolved_by_ruling": 11,
+        "disagree": 0,
+        "resolved_by_ruling": 21,
         "missing": 0,
         "agreement": 0.975
       },
       "prompt_attacks": {
         "rows": 3222,
         "agree": 3005,
-        "disagree": 175,
-        "resolved_by_ruling": 42,
+        "disagree": 0,
+        "resolved_by_ruling": 217,
         "missing": 0,
         "agreement": 0.9327
       },
       "word_filters": {
         "rows": 968,
         "agree": 959,
-        "disagree": 9,
-        "resolved_by_ruling": 0,
+        "disagree": 0,
+        "resolved_by_ruling": 9,
         "missing": 0,
         "agreement": 0.9907
       }
@@ -593,12 +598,13 @@
     "content_human_sample": {
       "drawn": true,
       "fresh": true,
-      "labelled": false,
-      "status": "pending human labels",
+      "labelled": true,
+      "status": "labelled (build changed outside the sample; all sampled rows unchanged)",
       "agreement_file": "dataset/edition2/content/agreement.json",
       "n": 400,
       "population_rows": 2436,
-      "agreement_status": "awaiting labels"
+      "agreement_status": "complete",
+      "agreement": 0.8635
     },
     "rule": "every row needs a blind second label before the owner review; disputed rows leave the splits until an owner ruling resolves them; content is covered by the ruling 7 human sample, drawn from this build (its labels block publication, not the build)"
   },
@@ -629,28 +635,28 @@
         "public_test": {
           "injection": {
             "scored": {
-              "n_yes": 272,
-              "n_no": 309
+              "n_yes": 280,
+              "n_no": 350
             },
             "source_id": {
-              "auroc": 0.723,
-              "ba": 0.65,
+              "auroc": 0.657,
+              "ba": 0.588,
               "constant_prediction": false,
               "pass": true
             },
             "keyword_regex": {
-              "auroc": 0.506,
-              "ba": 0.506,
+              "auroc": 0.509,
+              "ba": 0.509,
               "pass": true
             },
             "length": {
-              "auroc": 0.525,
-              "ba": 0.546,
+              "auroc": 0.52,
+              "ba": 0.541,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.866,
-              "ba": 0.804,
+              "auroc": 0.864,
+              "ba": 0.792,
               "constant_prediction": false,
               "C": [
                 10.0,
@@ -662,43 +668,43 @@
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.888,
-              "ba": 0.797,
+              "auroc": 0.897,
+              "ba": 0.818,
               "constant_prediction": false,
               "C": [
                 10.0,
-                100.0,
                 10.0,
                 10.0,
-                100.0
+                10.0,
+                10.0
               ],
               "pass": false
             }
           },
           "jailbreak": {
             "scored": {
-              "n_yes": 280,
-              "n_no": 301
+              "n_yes": 303,
+              "n_no": 330
             },
             "source_id": {
-              "auroc": 0.647,
-              "ba": 0.622,
+              "auroc": 0.635,
+              "ba": 0.609,
               "constant_prediction": false,
               "pass": true
             },
             "keyword_regex": {
-              "auroc": 0.509,
-              "ba": 0.509,
+              "auroc": 0.505,
+              "ba": 0.505,
               "pass": true
             },
             "length": {
-              "auroc": 0.559,
-              "ba": 0.57,
+              "auroc": 0.56,
+              "ba": 0.577,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.94,
-              "ba": 0.873,
+              "auroc": 0.921,
+              "ba": 0.859,
               "constant_prediction": false,
               "C": [
                 100.0,
@@ -710,8 +716,8 @@
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.945,
-              "ba": 0.856,
+              "auroc": 0.931,
+              "ba": 0.85,
               "constant_prediction": false,
               "C": [
                 100.0,
@@ -725,78 +731,28 @@
           },
           "leakage": {
             "scored": {
-              "n_yes": 316,
-              "n_no": 337
+              "n_yes": 319,
+              "n_no": 342
             },
             "source_id": {
-              "auroc": 0.593,
-              "ba": 0.581,
+              "auroc": 0.598,
+              "ba": 0.576,
               "constant_prediction": false,
               "pass": true
             },
             "keyword_regex": {
-              "auroc": 0.531,
-              "ba": 0.531,
+              "auroc": 0.53,
+              "ba": 0.53,
               "pass": true
             },
             "length": {
-              "auroc": 0.557,
-              "ba": 0.557,
+              "auroc": 0.558,
+              "ba": 0.565,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.903,
-              "ba": 0.829,
-              "constant_prediction": false,
-              "C": [
-                100.0,
-                10.0,
-                10.0,
-                10.0,
-                100.0
-              ],
-              "pass": false
-            },
-            "bow_logreg": {
-              "auroc": 0.92,
-              "ba": 0.843,
-              "constant_prediction": false,
-              "C": [
-                100.0,
-                100.0,
-                100.0,
-                100.0,
-                100.0
-              ],
-              "pass": false
-            }
-          }
-        },
-        "test_with_private": {
-          "injection": {
-            "scored": {
-              "n_yes": 384,
-              "n_no": 432
-            },
-            "source_id": {
-              "auroc": 0.7,
-              "ba": 0.632,
-              "constant_prediction": false,
-              "pass": true
-            },
-            "keyword_regex": {
-              "auroc": 0.503,
-              "ba": 0.503,
-              "pass": true
-            },
-            "length": {
-              "auroc": 0.511,
-              "ba": 0.52,
-              "pass": true
-            },
-            "char_ngram_logreg": {
-              "auroc": 0.893,
-              "ba": 0.83,
+              "auroc": 0.899,
+              "ba": 0.811,
               "constant_prediction": false,
               "C": [
                 10.0,
@@ -809,10 +765,60 @@
             },
             "bow_logreg": {
               "auroc": 0.912,
-              "ba": 0.842,
+              "ba": 0.831,
+              "constant_prediction": false,
+              "C": [
+                100.0,
+                100.0,
+                100.0,
+                100.0,
+                10.0
+              ],
+              "pass": false
+            }
+          }
+        },
+        "test_with_private": {
+          "injection": {
+            "scored": {
+              "n_yes": 394,
+              "n_no": 488
+            },
+            "source_id": {
+              "auroc": 0.642,
+              "ba": 0.578,
+              "constant_prediction": false,
+              "pass": true
+            },
+            "keyword_regex": {
+              "auroc": 0.506,
+              "ba": 0.506,
+              "pass": true
+            },
+            "length": {
+              "auroc": 0.545,
+              "ba": 0.563,
+              "pass": true
+            },
+            "char_ngram_logreg": {
+              "auroc": 0.884,
+              "ba": 0.795,
               "constant_prediction": false,
               "C": [
                 10.0,
+                10.0,
+                10.0,
+                10.0,
+                10.0
+              ],
+              "pass": false
+            },
+            "bow_logreg": {
+              "auroc": 0.898,
+              "ba": 0.824,
+              "constant_prediction": false,
+              "C": [
+                100.0,
                 10.0,
                 10.0,
                 10.0,
@@ -823,80 +829,80 @@
           },
           "jailbreak": {
             "scored": {
-              "n_yes": 386,
-              "n_no": 421
+              "n_yes": 420,
+              "n_no": 459
             },
             "source_id": {
-              "auroc": 0.665,
-              "ba": 0.628,
+              "auroc": 0.637,
+              "ba": 0.617,
               "constant_prediction": false,
               "pass": true
             },
             "keyword_regex": {
-              "auroc": 0.513,
-              "ba": 0.513,
+              "auroc": 0.509,
+              "ba": 0.509,
               "pass": true
             },
             "length": {
-              "auroc": 0.593,
-              "ba": 0.589,
+              "auroc": 0.594,
+              "ba": 0.582,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.949,
-              "ba": 0.885,
+              "auroc": 0.937,
+              "ba": 0.867,
               "constant_prediction": false,
               "C": [
                 100.0,
                 100.0,
                 100.0,
-                10.0,
+                100.0,
                 100.0
               ],
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.946,
+              "auroc": 0.939,
               "ba": 0.87,
               "constant_prediction": false,
               "C": [
                 100.0,
                 100.0,
                 100.0,
-                10.0,
-                100.0
+                100.0,
+                10.0
               ],
               "pass": false
             }
           },
           "leakage": {
             "scored": {
-              "n_yes": 417,
-              "n_no": 463
+              "n_yes": 421,
+              "n_no": 473
             },
             "source_id": {
-              "auroc": 0.615,
-              "ba": 0.591,
+              "auroc": 0.614,
+              "ba": 0.584,
               "constant_prediction": false,
               "pass": true
             },
             "keyword_regex": {
-              "auroc": 0.544,
-              "ba": 0.544,
+              "auroc": 0.543,
+              "ba": 0.543,
               "pass": true
             },
             "length": {
               "auroc": 0.551,
-              "ba": 0.564,
+              "ba": 0.554,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.919,
-              "ba": 0.848,
+              "auroc": 0.925,
+              "ba": 0.852,
               "constant_prediction": false,
               "C": [
-                100.0,
-                100.0,
+                10.0,
+                10.0,
                 10.0,
                 10.0,
                 10.0
@@ -904,15 +910,15 @@
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.938,
-              "ba": 0.866,
+              "auroc": 0.926,
+              "ba": 0.859,
               "constant_prediction": false,
               "C": [
+                10.0,
                 100.0,
                 100.0,
                 100.0,
-                100.0,
-                100.0
+                10.0
               ],
               "pass": false
             }
@@ -924,76 +930,14 @@
           "subtask": "injection",
           "baseline": "source_id",
           "view": "public_test",
-          "ba": 0.65,
-          "auroc": 0.723,
+          "ba": 0.588,
+          "auroc": 0.657,
           "constant_prediction": false,
           "C": null,
           "pass": true
         },
         {
           "subtask": "injection",
-          "baseline": "keyword_regex",
-          "view": "public_test",
-          "ba": 0.506,
-          "auroc": 0.506,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "injection",
-          "baseline": "length",
-          "view": "public_test",
-          "ba": 0.546,
-          "auroc": 0.525,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "injection",
-          "baseline": "char_ngram_logreg",
-          "view": "public_test",
-          "ba": 0.804,
-          "auroc": 0.866,
-          "constant_prediction": false,
-          "C": [
-            10.0,
-            10.0,
-            10.0,
-            10.0,
-            10.0
-          ],
-          "pass": false
-        },
-        {
-          "subtask": "injection",
-          "baseline": "bow_logreg",
-          "view": "public_test",
-          "ba": 0.797,
-          "auroc": 0.888,
-          "constant_prediction": false,
-          "C": [
-            10.0,
-            100.0,
-            10.0,
-            10.0,
-            100.0
-          ],
-          "pass": false
-        },
-        {
-          "subtask": "jailbreak",
-          "baseline": "source_id",
-          "view": "public_test",
-          "ba": 0.622,
-          "auroc": 0.647,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "jailbreak",
           "baseline": "keyword_regex",
           "view": "public_test",
           "ba": 0.509,
@@ -1003,135 +947,11 @@
           "pass": true
         },
         {
-          "subtask": "jailbreak",
-          "baseline": "length",
-          "view": "public_test",
-          "ba": 0.57,
-          "auroc": 0.559,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "jailbreak",
-          "baseline": "char_ngram_logreg",
-          "view": "public_test",
-          "ba": 0.873,
-          "auroc": 0.94,
-          "constant_prediction": false,
-          "C": [
-            100.0,
-            100.0,
-            100.0,
-            100.0,
-            100.0
-          ],
-          "pass": false
-        },
-        {
-          "subtask": "jailbreak",
-          "baseline": "bow_logreg",
-          "view": "public_test",
-          "ba": 0.856,
-          "auroc": 0.945,
-          "constant_prediction": false,
-          "C": [
-            100.0,
-            100.0,
-            100.0,
-            100.0,
-            100.0
-          ],
-          "pass": false
-        },
-        {
-          "subtask": "leakage",
-          "baseline": "source_id",
-          "view": "public_test",
-          "ba": 0.581,
-          "auroc": 0.593,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "leakage",
-          "baseline": "keyword_regex",
-          "view": "public_test",
-          "ba": 0.531,
-          "auroc": 0.531,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "leakage",
-          "baseline": "length",
-          "view": "public_test",
-          "ba": 0.557,
-          "auroc": 0.557,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "leakage",
-          "baseline": "char_ngram_logreg",
-          "view": "public_test",
-          "ba": 0.829,
-          "auroc": 0.903,
-          "constant_prediction": false,
-          "C": [
-            100.0,
-            10.0,
-            10.0,
-            10.0,
-            100.0
-          ],
-          "pass": false
-        },
-        {
-          "subtask": "leakage",
-          "baseline": "bow_logreg",
-          "view": "public_test",
-          "ba": 0.843,
-          "auroc": 0.92,
-          "constant_prediction": false,
-          "C": [
-            100.0,
-            100.0,
-            100.0,
-            100.0,
-            100.0
-          ],
-          "pass": false
-        },
-        {
-          "subtask": "injection",
-          "baseline": "source_id",
-          "view": "test_with_private",
-          "ba": 0.632,
-          "auroc": 0.7,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "injection",
-          "baseline": "keyword_regex",
-          "view": "test_with_private",
-          "ba": 0.503,
-          "auroc": 0.503,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
           "subtask": "injection",
           "baseline": "length",
-          "view": "test_with_private",
-          "ba": 0.52,
-          "auroc": 0.511,
+          "view": "public_test",
+          "ba": 0.541,
+          "auroc": 0.52,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -1139,9 +959,9 @@
         {
           "subtask": "injection",
           "baseline": "char_ngram_logreg",
-          "view": "test_with_private",
-          "ba": 0.83,
-          "auroc": 0.893,
+          "view": "public_test",
+          "ba": 0.792,
+          "auroc": 0.864,
           "constant_prediction": false,
           "C": [
             10.0,
@@ -1155,12 +975,198 @@
         {
           "subtask": "injection",
           "baseline": "bow_logreg",
-          "view": "test_with_private",
-          "ba": 0.842,
+          "view": "public_test",
+          "ba": 0.818,
+          "auroc": 0.897,
+          "constant_prediction": false,
+          "C": [
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0
+          ],
+          "pass": false
+        },
+        {
+          "subtask": "jailbreak",
+          "baseline": "source_id",
+          "view": "public_test",
+          "ba": 0.609,
+          "auroc": 0.635,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "jailbreak",
+          "baseline": "keyword_regex",
+          "view": "public_test",
+          "ba": 0.505,
+          "auroc": 0.505,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "jailbreak",
+          "baseline": "length",
+          "view": "public_test",
+          "ba": 0.577,
+          "auroc": 0.56,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "jailbreak",
+          "baseline": "char_ngram_logreg",
+          "view": "public_test",
+          "ba": 0.859,
+          "auroc": 0.921,
+          "constant_prediction": false,
+          "C": [
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0
+          ],
+          "pass": false
+        },
+        {
+          "subtask": "jailbreak",
+          "baseline": "bow_logreg",
+          "view": "public_test",
+          "ba": 0.85,
+          "auroc": 0.931,
+          "constant_prediction": false,
+          "C": [
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            100.0
+          ],
+          "pass": false
+        },
+        {
+          "subtask": "leakage",
+          "baseline": "source_id",
+          "view": "public_test",
+          "ba": 0.576,
+          "auroc": 0.598,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "leakage",
+          "baseline": "keyword_regex",
+          "view": "public_test",
+          "ba": 0.53,
+          "auroc": 0.53,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "leakage",
+          "baseline": "length",
+          "view": "public_test",
+          "ba": 0.565,
+          "auroc": 0.558,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "leakage",
+          "baseline": "char_ngram_logreg",
+          "view": "public_test",
+          "ba": 0.811,
+          "auroc": 0.899,
+          "constant_prediction": false,
+          "C": [
+            10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0
+          ],
+          "pass": false
+        },
+        {
+          "subtask": "leakage",
+          "baseline": "bow_logreg",
+          "view": "public_test",
+          "ba": 0.831,
           "auroc": 0.912,
           "constant_prediction": false,
           "C": [
+            100.0,
+            100.0,
+            100.0,
+            100.0,
+            10.0
+          ],
+          "pass": false
+        },
+        {
+          "subtask": "injection",
+          "baseline": "source_id",
+          "view": "test_with_private",
+          "ba": 0.578,
+          "auroc": 0.642,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "injection",
+          "baseline": "keyword_regex",
+          "view": "test_with_private",
+          "ba": 0.506,
+          "auroc": 0.506,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "injection",
+          "baseline": "length",
+          "view": "test_with_private",
+          "ba": 0.563,
+          "auroc": 0.545,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "injection",
+          "baseline": "char_ngram_logreg",
+          "view": "test_with_private",
+          "ba": 0.795,
+          "auroc": 0.884,
+          "constant_prediction": false,
+          "C": [
             10.0,
+            10.0,
+            10.0,
+            10.0,
+            10.0
+          ],
+          "pass": false
+        },
+        {
+          "subtask": "injection",
+          "baseline": "bow_logreg",
+          "view": "test_with_private",
+          "ba": 0.824,
+          "auroc": 0.898,
+          "constant_prediction": false,
+          "C": [
+            100.0,
             10.0,
             10.0,
             10.0,
@@ -1172,8 +1178,8 @@
           "subtask": "jailbreak",
           "baseline": "source_id",
           "view": "test_with_private",
-          "ba": 0.628,
-          "auroc": 0.665,
+          "ba": 0.617,
+          "auroc": 0.637,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -1182,8 +1188,8 @@
           "subtask": "jailbreak",
           "baseline": "keyword_regex",
           "view": "test_with_private",
-          "ba": 0.513,
-          "auroc": 0.513,
+          "ba": 0.509,
+          "auroc": 0.509,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -1192,8 +1198,8 @@
           "subtask": "jailbreak",
           "baseline": "length",
           "view": "test_with_private",
-          "ba": 0.589,
-          "auroc": 0.593,
+          "ba": 0.582,
+          "auroc": 0.594,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -1202,14 +1208,14 @@
           "subtask": "jailbreak",
           "baseline": "char_ngram_logreg",
           "view": "test_with_private",
-          "ba": 0.885,
-          "auroc": 0.949,
+          "ba": 0.867,
+          "auroc": 0.937,
           "constant_prediction": false,
           "C": [
             100.0,
             100.0,
             100.0,
-            10.0,
+            100.0,
             100.0
           ],
           "pass": false
@@ -1219,14 +1225,14 @@
           "baseline": "bow_logreg",
           "view": "test_with_private",
           "ba": 0.87,
-          "auroc": 0.946,
+          "auroc": 0.939,
           "constant_prediction": false,
           "C": [
             100.0,
             100.0,
             100.0,
-            10.0,
-            100.0
+            100.0,
+            10.0
           ],
           "pass": false
         },
@@ -1234,8 +1240,8 @@
           "subtask": "leakage",
           "baseline": "source_id",
           "view": "test_with_private",
-          "ba": 0.591,
-          "auroc": 0.615,
+          "ba": 0.584,
+          "auroc": 0.614,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -1244,8 +1250,8 @@
           "subtask": "leakage",
           "baseline": "keyword_regex",
           "view": "test_with_private",
-          "ba": 0.544,
-          "auroc": 0.544,
+          "ba": 0.543,
+          "auroc": 0.543,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -1254,7 +1260,7 @@
           "subtask": "leakage",
           "baseline": "length",
           "view": "test_with_private",
-          "ba": 0.564,
+          "ba": 0.554,
           "auroc": 0.551,
           "constant_prediction": false,
           "C": null,
@@ -1264,12 +1270,12 @@
           "subtask": "leakage",
           "baseline": "char_ngram_logreg",
           "view": "test_with_private",
-          "ba": 0.848,
-          "auroc": 0.919,
+          "ba": 0.852,
+          "auroc": 0.925,
           "constant_prediction": false,
           "C": [
-            100.0,
-            100.0,
+            10.0,
+            10.0,
             10.0,
             10.0,
             10.0
@@ -1280,32 +1286,32 @@
           "subtask": "leakage",
           "baseline": "bow_logreg",
           "view": "test_with_private",
-          "ba": 0.866,
-          "auroc": 0.938,
+          "ba": 0.859,
+          "auroc": 0.926,
           "constant_prediction": false,
           "C": [
+            10.0,
             100.0,
             100.0,
             100.0,
-            100.0,
-            100.0
+            10.0
           ],
           "pass": false
         }
       ],
       "failures": [
-        "public_test/injection/char_ngram_logreg: BA 0.804, AUROC 0.866",
-        "public_test/injection/bow_logreg: BA 0.797, AUROC 0.888",
-        "public_test/jailbreak/char_ngram_logreg: BA 0.873, AUROC 0.94",
-        "public_test/jailbreak/bow_logreg: BA 0.856, AUROC 0.945",
-        "public_test/leakage/char_ngram_logreg: BA 0.829, AUROC 0.903",
-        "public_test/leakage/bow_logreg: BA 0.843, AUROC 0.92",
-        "test_with_private/injection/char_ngram_logreg: BA 0.83, AUROC 0.893",
-        "test_with_private/injection/bow_logreg: BA 0.842, AUROC 0.912",
-        "test_with_private/jailbreak/char_ngram_logreg: BA 0.885, AUROC 0.949",
-        "test_with_private/jailbreak/bow_logreg: BA 0.87, AUROC 0.946",
-        "test_with_private/leakage/char_ngram_logreg: BA 0.848, AUROC 0.919",
-        "test_with_private/leakage/bow_logreg: BA 0.866, AUROC 0.938"
+        "public_test/injection/char_ngram_logreg: BA 0.792, AUROC 0.864",
+        "public_test/injection/bow_logreg: BA 0.818, AUROC 0.897",
+        "public_test/jailbreak/char_ngram_logreg: BA 0.859, AUROC 0.921",
+        "public_test/jailbreak/bow_logreg: BA 0.85, AUROC 0.931",
+        "public_test/leakage/char_ngram_logreg: BA 0.811, AUROC 0.899",
+        "public_test/leakage/bow_logreg: BA 0.831, AUROC 0.912",
+        "test_with_private/injection/char_ngram_logreg: BA 0.795, AUROC 0.884",
+        "test_with_private/injection/bow_logreg: BA 0.824, AUROC 0.898",
+        "test_with_private/jailbreak/char_ngram_logreg: BA 0.867, AUROC 0.937",
+        "test_with_private/jailbreak/bow_logreg: BA 0.87, AUROC 0.939",
+        "test_with_private/leakage/char_ngram_logreg: BA 0.852, AUROC 0.925",
+        "test_with_private/leakage/bow_logreg: BA 0.859, AUROC 0.926"
       ],
       "pass": false
     },
@@ -1329,18 +1335,18 @@
         "heldback_half_a_to_half_b": {
           "injection": {
             "scored": {
-              "n_yes": 195,
-              "n_no": 225
+              "n_yes": 217,
+              "n_no": 233
             },
             "fitted_on": {
-              "n_yes": 189,
-              "n_no": 207
+              "n_yes": 177,
+              "n_no": 255
             },
             "source_id": {
-              "auroc": 0.68,
-              "ba": 0.602,
+              "auroc": 0.644,
+              "ba": 0.578,
               "constant_prediction": false,
-              "unseen_source_share": 0.0,
+              "unseen_source_share": 0.002,
               "pass": true
             },
             "keyword_regex": {
@@ -1349,20 +1355,20 @@
               "pass": true
             },
             "length": {
-              "auroc": 0.528,
-              "ba": 0.51,
+              "auroc": 0.543,
+              "ba": 0.554,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.861,
-              "ba": 0.794,
+              "auroc": 0.844,
+              "ba": 0.763,
               "constant_prediction": false,
               "C": 10.0,
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.876,
-              "ba": 0.808,
+              "auroc": 0.835,
+              "ba": 0.76,
               "constant_prediction": false,
               "C": 100.0,
               "pass": false
@@ -1370,182 +1376,57 @@
           },
           "jailbreak": {
             "scored": {
-              "n_yes": 191,
-              "n_no": 203
-            },
-            "fitted_on": {
-              "n_yes": 195,
-              "n_no": 218
-            },
-            "source_id": {
-              "auroc": 0.694,
-              "ba": 0.651,
-              "constant_prediction": false,
-              "unseen_source_share": 0.0,
-              "pass": true
-            },
-            "keyword_regex": {
-              "auroc": 0.513,
-              "ba": 0.513,
-              "pass": true
-            },
-            "length": {
-              "auroc": 0.643,
-              "ba": 0.6,
-              "pass": true
-            },
-            "char_ngram_logreg": {
-              "auroc": 0.951,
-              "ba": 0.88,
-              "constant_prediction": false,
-              "C": 100.0,
-              "pass": false
-            },
-            "bow_logreg": {
-              "auroc": 0.95,
-              "ba": 0.877,
-              "constant_prediction": false,
-              "C": 100.0,
-              "pass": false
-            }
-          },
-          "leakage": {
-            "scored": {
-              "n_yes": 197,
-              "n_no": 235
-            },
-            "fitted_on": {
-              "n_yes": 220,
-              "n_no": 228
-            },
-            "source_id": {
-              "auroc": 0.65,
-              "ba": 0.594,
-              "constant_prediction": false,
-              "unseen_source_share": 0.0,
-              "pass": true
-            },
-            "keyword_regex": {
-              "auroc": 0.535,
-              "ba": 0.535,
-              "pass": true
-            },
-            "length": {
-              "auroc": 0.544,
-              "ba": 0.562,
-              "pass": true
-            },
-            "char_ngram_logreg": {
-              "auroc": 0.918,
-              "ba": 0.841,
-              "constant_prediction": false,
-              "C": 10.0,
-              "pass": false
-            },
-            "bow_logreg": {
-              "auroc": 0.923,
-              "ba": 0.837,
-              "constant_prediction": false,
-              "C": 100.0,
-              "pass": false
-            }
-          }
-        },
-        "heldback_half_b_to_half_a": {
-          "injection": {
-            "scored": {
-              "n_yes": 189,
-              "n_no": 207
-            },
-            "fitted_on": {
-              "n_yes": 195,
+              "n_yes": 213,
               "n_no": 225
             },
+            "fitted_on": {
+              "n_yes": 207,
+              "n_no": 234
+            },
             "source_id": {
-              "auroc": 0.76,
-              "ba": 0.669,
+              "auroc": 0.678,
+              "ba": 0.645,
               "constant_prediction": false,
               "unseen_source_share": 0.0,
-              "pass": false
+              "pass": true
             },
             "keyword_regex": {
-              "auroc": 0.502,
-              "ba": 0.502,
+              "auroc": 0.512,
+              "ba": 0.512,
               "pass": true
             },
             "length": {
-              "auroc": 0.506,
-              "ba": 0.506,
+              "auroc": 0.647,
+              "ba": 0.621,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.898,
-              "ba": 0.82,
+              "auroc": 0.935,
+              "ba": 0.853,
               "constant_prediction": false,
               "C": 10.0,
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.901,
-              "ba": 0.821,
+              "auroc": 0.925,
+              "ba": 0.846,
               "constant_prediction": false,
-              "C": 100.0,
-              "pass": false
-            }
-          },
-          "jailbreak": {
-            "scored": {
-              "n_yes": 195,
-              "n_no": 218
-            },
-            "fitted_on": {
-              "n_yes": 191,
-              "n_no": 203
-            },
-            "source_id": {
-              "auroc": 0.654,
-              "ba": 0.606,
-              "constant_prediction": false,
-              "unseen_source_share": 0.0,
-              "pass": true
-            },
-            "keyword_regex": {
-              "auroc": 0.513,
-              "ba": 0.513,
-              "pass": true
-            },
-            "length": {
-              "auroc": 0.539,
-              "ba": 0.568,
-              "pass": true
-            },
-            "char_ngram_logreg": {
-              "auroc": 0.953,
-              "ba": 0.882,
-              "constant_prediction": false,
-              "C": 100.0,
-              "pass": false
-            },
-            "bow_logreg": {
-              "auroc": 0.957,
-              "ba": 0.869,
-              "constant_prediction": false,
-              "C": 100.0,
+              "C": 10.0,
               "pass": false
             }
           },
           "leakage": {
             "scored": {
-              "n_yes": 220,
-              "n_no": 228
+              "n_yes": 190,
+              "n_no": 236
             },
             "fitted_on": {
-              "n_yes": 197,
-              "n_no": 235
+              "n_yes": 231,
+              "n_no": 237
             },
             "source_id": {
-              "auroc": 0.637,
-              "ba": 0.589,
+              "auroc": 0.638,
+              "ba": 0.596,
               "constant_prediction": false,
               "unseen_source_share": 0.0,
               "pass": true
@@ -1556,39 +1437,80 @@
               "pass": true
             },
             "length": {
-              "auroc": 0.56,
+              "auroc": 0.569,
               "ba": 0.564,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.935,
-              "ba": 0.877,
+              "auroc": 0.914,
+              "ba": 0.842,
               "constant_prediction": false,
               "C": 10.0,
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.935,
-              "ba": 0.875,
+              "auroc": 0.907,
+              "ba": 0.818,
               "constant_prediction": false,
-              "C": 100.0,
+              "C": 10.0,
               "pass": false
             }
           }
         },
-        "heldback_dev_to_public_test": {
+        "heldback_half_b_to_half_a": {
           "injection": {
             "scored": {
-              "n_yes": 272,
-              "n_no": 309
+              "n_yes": 177,
+              "n_no": 255
             },
             "fitted_on": {
-              "n_yes": 71,
-              "n_no": 96
+              "n_yes": 217,
+              "n_no": 233
             },
             "source_id": {
-              "auroc": 0.704,
-              "ba": 0.636,
+              "auroc": 0.631,
+              "ba": 0.555,
+              "constant_prediction": false,
+              "unseen_source_share": 0.0,
+              "pass": true
+            },
+            "keyword_regex": {
+              "auroc": 0.51,
+              "ba": 0.51,
+              "pass": true
+            },
+            "length": {
+              "auroc": 0.547,
+              "ba": 0.567,
+              "pass": true
+            },
+            "char_ngram_logreg": {
+              "auroc": 0.893,
+              "ba": 0.827,
+              "constant_prediction": false,
+              "C": 10.0,
+              "pass": false
+            },
+            "bow_logreg": {
+              "auroc": 0.905,
+              "ba": 0.816,
+              "constant_prediction": false,
+              "C": 10.0,
+              "pass": false
+            }
+          },
+          "jailbreak": {
+            "scored": {
+              "n_yes": 207,
+              "n_no": 234
+            },
+            "fitted_on": {
+              "n_yes": 213,
+              "n_no": 225
+            },
+            "source_id": {
+              "auroc": 0.633,
+              "ba": 0.589,
               "constant_prediction": false,
               "unseen_source_share": 0.0,
               "pass": true
@@ -1599,39 +1521,82 @@
               "pass": true
             },
             "length": {
-              "auroc": 0.525,
-              "ba": 0.522,
+              "auroc": 0.536,
+              "ba": 0.556,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.82,
-              "ba": 0.716,
+              "auroc": 0.918,
+              "ba": 0.824,
               "constant_prediction": false,
-              "C": 10.0,
+              "C": 100.0,
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.821,
-              "ba": 0.72,
+              "auroc": 0.922,
+              "ba": 0.839,
               "constant_prediction": false,
               "C": 100.0,
               "pass": false
             }
           },
-          "jailbreak": {
+          "leakage": {
             "scored": {
-              "n_yes": 280,
-              "n_no": 301
+              "n_yes": 231,
+              "n_no": 237
             },
             "fitted_on": {
-              "n_yes": 103,
-              "n_no": 94
+              "n_yes": 190,
+              "n_no": 236
             },
             "source_id": {
-              "auroc": 0.67,
-              "ba": 0.622,
+              "auroc": 0.622,
+              "ba": 0.574,
               "constant_prediction": false,
               "unseen_source_share": 0.0,
+              "pass": true
+            },
+            "keyword_regex": {
+              "auroc": 0.535,
+              "ba": 0.535,
+              "pass": true
+            },
+            "length": {
+              "auroc": 0.534,
+              "ba": 0.566,
+              "pass": true
+            },
+            "char_ngram_logreg": {
+              "auroc": 0.907,
+              "ba": 0.828,
+              "constant_prediction": false,
+              "C": 10.0,
+              "pass": false
+            },
+            "bow_logreg": {
+              "auroc": 0.915,
+              "ba": 0.839,
+              "constant_prediction": false,
+              "C": 10.0,
+              "pass": false
+            }
+          }
+        },
+        "heldback_dev_to_public_test": {
+          "injection": {
+            "scored": {
+              "n_yes": 280,
+              "n_no": 350
+            },
+            "fitted_on": {
+              "n_yes": 71,
+              "n_no": 109
+            },
+            "source_id": {
+              "auroc": 0.647,
+              "ba": 0.583,
+              "constant_prediction": false,
+              "unseen_source_share": 0.002,
               "pass": true
             },
             "keyword_regex": {
@@ -1640,20 +1605,61 @@
               "pass": true
             },
             "length": {
-              "auroc": 0.559,
-              "ba": 0.562,
+              "auroc": 0.52,
+              "ba": 0.501,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.918,
-              "ba": 0.829,
+              "auroc": 0.826,
+              "ba": 0.729,
               "constant_prediction": false,
               "C": 10.0,
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.908,
-              "ba": 0.809,
+              "auroc": 0.833,
+              "ba": 0.727,
+              "constant_prediction": false,
+              "C": 10.0,
+              "pass": false
+            }
+          },
+          "jailbreak": {
+            "scored": {
+              "n_yes": 303,
+              "n_no": 330
+            },
+            "fitted_on": {
+              "n_yes": 106,
+              "n_no": 99
+            },
+            "source_id": {
+              "auroc": 0.652,
+              "ba": 0.609,
+              "constant_prediction": false,
+              "unseen_source_share": 0.0,
+              "pass": true
+            },
+            "keyword_regex": {
+              "auroc": 0.505,
+              "ba": 0.505,
+              "pass": true
+            },
+            "length": {
+              "auroc": 0.56,
+              "ba": 0.58,
+              "pass": true
+            },
+            "char_ngram_logreg": {
+              "auroc": 0.892,
+              "ba": 0.804,
+              "constant_prediction": false,
+              "C": 10.0,
+              "pass": false
+            },
+            "bow_logreg": {
+              "auroc": 0.885,
+              "ba": 0.786,
               "constant_prediction": false,
               "C": 10.0,
               "pass": false
@@ -1661,40 +1667,40 @@
           },
           "leakage": {
             "scored": {
-              "n_yes": 316,
-              "n_no": 337
+              "n_yes": 319,
+              "n_no": 342
             },
             "fitted_on": {
-              "n_yes": 89,
-              "n_no": 91
+              "n_yes": 90,
+              "n_no": 92
             },
             "source_id": {
-              "auroc": 0.604,
-              "ba": 0.538,
+              "auroc": 0.595,
+              "ba": 0.533,
               "constant_prediction": false,
               "unseen_source_share": 0.0,
               "pass": true
             },
             "keyword_regex": {
-              "auroc": 0.531,
-              "ba": 0.531,
+              "auroc": 0.53,
+              "ba": 0.53,
               "pass": true
             },
             "length": {
-              "auroc": 0.557,
-              "ba": 0.502,
+              "auroc": 0.558,
+              "ba": 0.501,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.84,
-              "ba": 0.763,
+              "auroc": 0.832,
+              "ba": 0.756,
               "constant_prediction": false,
               "C": 100.0,
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.801,
-              "ba": 0.72,
+              "auroc": 0.794,
+              "ba": 0.716,
               "constant_prediction": false,
               "C": 10.0,
               "pass": false
@@ -1704,81 +1710,81 @@
         "heldback_dev_to_private": {
           "injection": {
             "scored": {
-              "n_yes": 112,
-              "n_no": 123
+              "n_yes": 114,
+              "n_no": 138
             },
             "fitted_on": {
               "n_yes": 71,
-              "n_no": 96
+              "n_no": 109
             },
             "source_id": {
-              "auroc": 0.763,
-              "ba": 0.644,
+              "auroc": 0.718,
+              "ba": 0.588,
               "constant_prediction": false,
               "unseen_source_share": 0.0,
-              "pass": false
+              "pass": true
             },
             "keyword_regex": {
-              "auroc": 0.504,
-              "ba": 0.504,
+              "auroc": 0.501,
+              "ba": 0.501,
               "pass": true
             },
             "length": {
-              "auroc": 0.577,
-              "ba": 0.611,
+              "auroc": 0.592,
+              "ba": 0.616,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.722,
+              "auroc": 0.731,
               "ba": 0.663,
               "constant_prediction": false,
               "C": 10.0,
               "pass": true
             },
             "bow_logreg": {
-              "auroc": 0.739,
-              "ba": 0.644,
+              "auroc": 0.752,
+              "ba": 0.678,
               "constant_prediction": false,
-              "C": 100.0,
-              "pass": true
+              "C": 10.0,
+              "pass": false
             }
           },
           "jailbreak": {
             "scored": {
-              "n_yes": 106,
-              "n_no": 120
+              "n_yes": 117,
+              "n_no": 129
             },
             "fitted_on": {
-              "n_yes": 103,
-              "n_no": 94
+              "n_yes": 106,
+              "n_no": 99
             },
             "source_id": {
-              "auroc": 0.685,
-              "ba": 0.649,
+              "auroc": 0.665,
+              "ba": 0.64,
               "constant_prediction": false,
               "unseen_source_share": 0.0,
               "pass": true
             },
             "keyword_regex": {
-              "auroc": 0.524,
-              "ba": 0.524,
+              "auroc": 0.518,
+              "ba": 0.518,
               "pass": true
             },
             "length": {
               "auroc": 0.671,
-              "ba": 0.626,
+              "ba": 0.643,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.907,
-              "ba": 0.808,
+              "auroc": 0.889,
+              "ba": 0.782,
               "constant_prediction": false,
               "C": 10.0,
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.903,
-              "ba": 0.812,
+              "auroc": 0.884,
+              "ba": 0.811,
               "constant_prediction": false,
               "C": 10.0,
               "pass": false
@@ -1786,40 +1792,40 @@
           },
           "leakage": {
             "scored": {
-              "n_yes": 101,
-              "n_no": 126
+              "n_yes": 102,
+              "n_no": 131
             },
             "fitted_on": {
-              "n_yes": 89,
-              "n_no": 91
+              "n_yes": 90,
+              "n_no": 92
             },
             "source_id": {
-              "auroc": 0.693,
-              "ba": 0.599,
+              "auroc": 0.676,
+              "ba": 0.591,
               "constant_prediction": false,
               "unseen_source_share": 0.0,
               "pass": true
             },
             "keyword_regex": {
-              "auroc": 0.581,
-              "ba": 0.581,
+              "auroc": 0.578,
+              "ba": 0.578,
               "pass": true
             },
             "length": {
-              "auroc": 0.535,
+              "auroc": 0.532,
               "ba": 0.507,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.891,
-              "ba": 0.802,
+              "auroc": 0.877,
+              "ba": 0.79,
               "constant_prediction": false,
               "C": 100.0,
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.864,
-              "ba": 0.784,
+              "auroc": 0.847,
+              "ba": 0.771,
               "constant_prediction": false,
               "C": 10.0,
               "pass": false
@@ -1830,15 +1836,15 @@
           "injection": {
             "scored": {
               "n_yes": 71,
-              "n_no": 96
+              "n_no": 109
             },
             "fitted_on": {
-              "n_yes": 384,
-              "n_no": 432
+              "n_yes": 394,
+              "n_no": 488
             },
             "source_id": {
-              "auroc": 0.672,
-              "ba": 0.599,
+              "auroc": 0.636,
+              "ba": 0.568,
               "constant_prediction": false,
               "unseen_source_share": 0.0,
               "pass": true
@@ -1849,20 +1855,20 @@
               "pass": true
             },
             "length": {
-              "auroc": 0.531,
-              "ba": 0.505,
+              "auroc": 0.503,
+              "ba": 0.522,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.923,
-              "ba": 0.837,
+              "auroc": 0.931,
+              "ba": 0.842,
               "constant_prediction": false,
               "C": 10.0,
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.943,
-              "ba": 0.862,
+              "auroc": 0.949,
+              "ba": 0.898,
               "constant_prediction": false,
               "C": 10.0,
               "pass": false
@@ -1870,81 +1876,81 @@
           },
           "jailbreak": {
             "scored": {
-              "n_yes": 103,
-              "n_no": 94
+              "n_yes": 106,
+              "n_no": 99
             },
             "fitted_on": {
-              "n_yes": 386,
-              "n_no": 421
+              "n_yes": 420,
+              "n_no": 459
             },
             "source_id": {
-              "auroc": 0.641,
-              "ba": 0.628,
+              "auroc": 0.643,
+              "ba": 0.626,
               "constant_prediction": false,
               "unseen_source_share": 0.0,
               "pass": true
             },
             "keyword_regex": {
-              "auroc": 0.514,
-              "ba": 0.514,
+              "auroc": 0.509,
+              "ba": 0.509,
               "pass": true
             },
             "length": {
-              "auroc": 0.621,
-              "ba": 0.583,
+              "auroc": 0.614,
+              "ba": 0.614,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.976,
-              "ba": 0.909,
+              "auroc": 0.965,
+              "ba": 0.888,
               "constant_prediction": false,
-              "C": 10.0,
+              "C": 100.0,
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.984,
-              "ba": 0.94,
+              "auroc": 0.969,
+              "ba": 0.918,
               "constant_prediction": false,
-              "C": 10.0,
+              "C": 100.0,
               "pass": false
             }
           },
           "leakage": {
             "scored": {
-              "n_yes": 89,
-              "n_no": 91
+              "n_yes": 90,
+              "n_no": 92
             },
             "fitted_on": {
-              "n_yes": 417,
-              "n_no": 463
+              "n_yes": 421,
+              "n_no": 473
             },
             "source_id": {
-              "auroc": 0.669,
-              "ba": 0.573,
+              "auroc": 0.657,
+              "ba": 0.567,
               "constant_prediction": false,
               "unseen_source_share": 0.0,
               "pass": true
             },
             "keyword_regex": {
-              "auroc": 0.514,
-              "ba": 0.514,
+              "auroc": 0.508,
+              "ba": 0.508,
               "pass": true
             },
             "length": {
-              "auroc": 0.581,
+              "auroc": 0.575,
               "ba": 0.513,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.927,
-              "ba": 0.862,
+              "auroc": 0.921,
+              "ba": 0.852,
               "constant_prediction": false,
               "C": 10.0,
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.924,
-              "ba": 0.845,
+              "auroc": 0.917,
+              "ba": 0.841,
               "constant_prediction": false,
               "C": 100.0,
               "pass": false
@@ -1954,40 +1960,40 @@
         "heldback_seeded_groups": {
           "injection": {
             "scored": {
-              "n_yes": 111,
-              "n_no": 125
+              "n_yes": 131,
+              "n_no": 139
             },
             "fitted_on": {
-              "n_yes": 344,
-              "n_no": 403
+              "n_yes": 334,
+              "n_no": 458
             },
             "source_id": {
-              "auroc": 0.743,
-              "ba": 0.664,
+              "auroc": 0.618,
+              "ba": 0.569,
               "constant_prediction": false,
               "unseen_source_share": 0.0,
               "pass": true
             },
             "keyword_regex": {
-              "auroc": 0.503,
-              "ba": 0.503,
+              "auroc": 0.507,
+              "ba": 0.507,
               "pass": true
             },
             "length": {
-              "auroc": 0.545,
-              "ba": 0.512,
+              "auroc": 0.56,
+              "ba": 0.561,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.909,
-              "ba": 0.809,
+              "auroc": 0.919,
+              "ba": 0.839,
               "constant_prediction": false,
-              "C": 10.0,
+              "C": 100.0,
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.923,
-              "ba": 0.841,
+              "auroc": 0.929,
+              "ba": 0.872,
               "constant_prediction": false,
               "C": 10.0,
               "pass": false
@@ -1995,83 +2001,83 @@
           },
           "jailbreak": {
             "scored": {
-              "n_yes": 104,
-              "n_no": 124
+              "n_yes": 117,
+              "n_no": 138
             },
             "fitted_on": {
-              "n_yes": 385,
-              "n_no": 391
+              "n_yes": 409,
+              "n_no": 420
             },
             "source_id": {
-              "auroc": 0.634,
-              "ba": 0.592,
+              "auroc": 0.642,
+              "ba": 0.615,
               "constant_prediction": false,
               "unseen_source_share": 0.0,
               "pass": true
             },
             "keyword_regex": {
-              "auroc": 0.515,
-              "ba": 0.515,
+              "auroc": 0.505,
+              "ba": 0.505,
               "pass": true
             },
             "length": {
-              "auroc": 0.566,
-              "ba": 0.542,
+              "auroc": 0.636,
+              "ba": 0.603,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.95,
-              "ba": 0.853,
+              "auroc": 0.954,
+              "ba": 0.862,
               "constant_prediction": false,
-              "C": 100.0,
+              "C": 10.0,
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.966,
-              "ba": 0.902,
+              "auroc": 0.952,
+              "ba": 0.872,
               "constant_prediction": false,
-              "C": 10.0,
+              "C": 100.0,
               "pass": false
             }
           },
           "leakage": {
             "scored": {
-              "n_yes": 130,
-              "n_no": 139
+              "n_yes": 120,
+              "n_no": 152
             },
             "fitted_on": {
-              "n_yes": 376,
-              "n_no": 415
+              "n_yes": 391,
+              "n_no": 413
             },
             "source_id": {
-              "auroc": 0.621,
-              "ba": 0.588,
+              "auroc": 0.596,
+              "ba": 0.573,
               "constant_prediction": false,
               "unseen_source_share": 0.0,
               "pass": true
             },
             "keyword_regex": {
-              "auroc": 0.548,
-              "ba": 0.548,
+              "auroc": 0.546,
+              "ba": 0.546,
               "pass": true
             },
             "length": {
-              "auroc": 0.554,
-              "ba": 0.565,
+              "auroc": 0.55,
+              "ba": 0.581,
               "pass": true
             },
             "char_ngram_logreg": {
-              "auroc": 0.931,
-              "ba": 0.845,
+              "auroc": 0.922,
+              "ba": 0.848,
               "constant_prediction": false,
               "C": 10.0,
               "pass": false
             },
             "bow_logreg": {
-              "auroc": 0.939,
-              "ba": 0.875,
+              "auroc": 0.917,
+              "ba": 0.852,
               "constant_prediction": false,
-              "C": 10.0,
+              "C": 100.0,
               "pass": false
             }
           }
@@ -2082,8 +2088,8 @@
           "subtask": "injection",
           "baseline": "source_id",
           "view": "heldback_half_a_to_half_b",
-          "ba": 0.602,
-          "auroc": 0.68,
+          "ba": 0.578,
+          "auroc": 0.644,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2102,8 +2108,8 @@
           "subtask": "injection",
           "baseline": "length",
           "view": "heldback_half_a_to_half_b",
-          "ba": 0.51,
-          "auroc": 0.528,
+          "ba": 0.554,
+          "auroc": 0.543,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2112,8 +2118,8 @@
           "subtask": "injection",
           "baseline": "char_ngram_logreg",
           "view": "heldback_half_a_to_half_b",
-          "ba": 0.794,
-          "auroc": 0.861,
+          "ba": 0.763,
+          "auroc": 0.844,
           "constant_prediction": false,
           "C": 10.0,
           "pass": false
@@ -2122,8 +2128,8 @@
           "subtask": "injection",
           "baseline": "bow_logreg",
           "view": "heldback_half_a_to_half_b",
-          "ba": 0.808,
-          "auroc": 0.876,
+          "ba": 0.76,
+          "auroc": 0.835,
           "constant_prediction": false,
           "C": 100.0,
           "pass": false
@@ -2132,8 +2138,8 @@
           "subtask": "jailbreak",
           "baseline": "source_id",
           "view": "heldback_half_a_to_half_b",
-          "ba": 0.651,
-          "auroc": 0.694,
+          "ba": 0.645,
+          "auroc": 0.678,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2142,8 +2148,8 @@
           "subtask": "jailbreak",
           "baseline": "keyword_regex",
           "view": "heldback_half_a_to_half_b",
-          "ba": 0.513,
-          "auroc": 0.513,
+          "ba": 0.512,
+          "auroc": 0.512,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2152,8 +2158,8 @@
           "subtask": "jailbreak",
           "baseline": "length",
           "view": "heldback_half_a_to_half_b",
-          "ba": 0.6,
-          "auroc": 0.643,
+          "ba": 0.621,
+          "auroc": 0.647,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2162,178 +2168,28 @@
           "subtask": "jailbreak",
           "baseline": "char_ngram_logreg",
           "view": "heldback_half_a_to_half_b",
-          "ba": 0.88,
-          "auroc": 0.951,
+          "ba": 0.853,
+          "auroc": 0.935,
           "constant_prediction": false,
-          "C": 100.0,
+          "C": 10.0,
           "pass": false
         },
         {
           "subtask": "jailbreak",
           "baseline": "bow_logreg",
           "view": "heldback_half_a_to_half_b",
-          "ba": 0.877,
-          "auroc": 0.95,
-          "constant_prediction": false,
-          "C": 100.0,
-          "pass": false
-        },
-        {
-          "subtask": "leakage",
-          "baseline": "source_id",
-          "view": "heldback_half_a_to_half_b",
-          "ba": 0.594,
-          "auroc": 0.65,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "leakage",
-          "baseline": "keyword_regex",
-          "view": "heldback_half_a_to_half_b",
-          "ba": 0.535,
-          "auroc": 0.535,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "leakage",
-          "baseline": "length",
-          "view": "heldback_half_a_to_half_b",
-          "ba": 0.562,
-          "auroc": 0.544,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "leakage",
-          "baseline": "char_ngram_logreg",
-          "view": "heldback_half_a_to_half_b",
-          "ba": 0.841,
-          "auroc": 0.918,
+          "ba": 0.846,
+          "auroc": 0.925,
           "constant_prediction": false,
           "C": 10.0,
           "pass": false
         },
         {
           "subtask": "leakage",
-          "baseline": "bow_logreg",
+          "baseline": "source_id",
           "view": "heldback_half_a_to_half_b",
-          "ba": 0.837,
-          "auroc": 0.923,
-          "constant_prediction": false,
-          "C": 100.0,
-          "pass": false
-        },
-        {
-          "subtask": "injection",
-          "baseline": "source_id",
-          "view": "heldback_half_b_to_half_a",
-          "ba": 0.669,
-          "auroc": 0.76,
-          "constant_prediction": false,
-          "C": null,
-          "pass": false
-        },
-        {
-          "subtask": "injection",
-          "baseline": "keyword_regex",
-          "view": "heldback_half_b_to_half_a",
-          "ba": 0.502,
-          "auroc": 0.502,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "injection",
-          "baseline": "length",
-          "view": "heldback_half_b_to_half_a",
-          "ba": 0.506,
-          "auroc": 0.506,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "injection",
-          "baseline": "char_ngram_logreg",
-          "view": "heldback_half_b_to_half_a",
-          "ba": 0.82,
-          "auroc": 0.898,
-          "constant_prediction": false,
-          "C": 10.0,
-          "pass": false
-        },
-        {
-          "subtask": "injection",
-          "baseline": "bow_logreg",
-          "view": "heldback_half_b_to_half_a",
-          "ba": 0.821,
-          "auroc": 0.901,
-          "constant_prediction": false,
-          "C": 100.0,
-          "pass": false
-        },
-        {
-          "subtask": "jailbreak",
-          "baseline": "source_id",
-          "view": "heldback_half_b_to_half_a",
-          "ba": 0.606,
-          "auroc": 0.654,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "jailbreak",
-          "baseline": "keyword_regex",
-          "view": "heldback_half_b_to_half_a",
-          "ba": 0.513,
-          "auroc": 0.513,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "jailbreak",
-          "baseline": "length",
-          "view": "heldback_half_b_to_half_a",
-          "ba": 0.568,
-          "auroc": 0.539,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "jailbreak",
-          "baseline": "char_ngram_logreg",
-          "view": "heldback_half_b_to_half_a",
-          "ba": 0.882,
-          "auroc": 0.953,
-          "constant_prediction": false,
-          "C": 100.0,
-          "pass": false
-        },
-        {
-          "subtask": "jailbreak",
-          "baseline": "bow_logreg",
-          "view": "heldback_half_b_to_half_a",
-          "ba": 0.869,
-          "auroc": 0.957,
-          "constant_prediction": false,
-          "C": 100.0,
-          "pass": false
-        },
-        {
-          "subtask": "leakage",
-          "baseline": "source_id",
-          "view": "heldback_half_b_to_half_a",
-          "ba": 0.589,
-          "auroc": 0.637,
+          "ba": 0.596,
+          "auroc": 0.638,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2341,7 +2197,7 @@
         {
           "subtask": "leakage",
           "baseline": "keyword_regex",
-          "view": "heldback_half_b_to_half_a",
+          "view": "heldback_half_a_to_half_b",
           "ba": 0.552,
           "auroc": 0.552,
           "constant_prediction": false,
@@ -2351,9 +2207,9 @@
         {
           "subtask": "leakage",
           "baseline": "length",
-          "view": "heldback_half_b_to_half_a",
+          "view": "heldback_half_a_to_half_b",
           "ba": 0.564,
-          "auroc": 0.56,
+          "auroc": 0.569,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2361,9 +2217,9 @@
         {
           "subtask": "leakage",
           "baseline": "char_ngram_logreg",
-          "view": "heldback_half_b_to_half_a",
-          "ba": 0.877,
-          "auroc": 0.935,
+          "view": "heldback_half_a_to_half_b",
+          "ba": 0.842,
+          "auroc": 0.914,
           "constant_prediction": false,
           "C": 10.0,
           "pass": false
@@ -2371,19 +2227,19 @@
         {
           "subtask": "leakage",
           "baseline": "bow_logreg",
-          "view": "heldback_half_b_to_half_a",
-          "ba": 0.875,
-          "auroc": 0.935,
+          "view": "heldback_half_a_to_half_b",
+          "ba": 0.818,
+          "auroc": 0.907,
           "constant_prediction": false,
-          "C": 100.0,
+          "C": 10.0,
           "pass": false
         },
         {
           "subtask": "injection",
           "baseline": "source_id",
-          "view": "heldback_dev_to_public_test",
-          "ba": 0.636,
-          "auroc": 0.704,
+          "view": "heldback_half_b_to_half_a",
+          "ba": 0.555,
+          "auroc": 0.631,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2391,9 +2247,9 @@
         {
           "subtask": "injection",
           "baseline": "keyword_regex",
-          "view": "heldback_dev_to_public_test",
-          "ba": 0.506,
-          "auroc": 0.506,
+          "view": "heldback_half_b_to_half_a",
+          "ba": 0.51,
+          "auroc": 0.51,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2401,9 +2257,9 @@
         {
           "subtask": "injection",
           "baseline": "length",
-          "view": "heldback_dev_to_public_test",
-          "ba": 0.522,
-          "auroc": 0.525,
+          "view": "heldback_half_b_to_half_a",
+          "ba": 0.567,
+          "auroc": 0.547,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2411,9 +2267,9 @@
         {
           "subtask": "injection",
           "baseline": "char_ngram_logreg",
-          "view": "heldback_dev_to_public_test",
-          "ba": 0.716,
-          "auroc": 0.82,
+          "view": "heldback_half_b_to_half_a",
+          "ba": 0.827,
+          "auroc": 0.893,
           "constant_prediction": false,
           "C": 10.0,
           "pass": false
@@ -2421,25 +2277,125 @@
         {
           "subtask": "injection",
           "baseline": "bow_logreg",
-          "view": "heldback_dev_to_public_test",
-          "ba": 0.72,
-          "auroc": 0.821,
+          "view": "heldback_half_b_to_half_a",
+          "ba": 0.816,
+          "auroc": 0.905,
           "constant_prediction": false,
-          "C": 100.0,
+          "C": 10.0,
           "pass": false
         },
         {
           "subtask": "jailbreak",
           "baseline": "source_id",
-          "view": "heldback_dev_to_public_test",
-          "ba": 0.622,
-          "auroc": 0.67,
+          "view": "heldback_half_b_to_half_a",
+          "ba": 0.589,
+          "auroc": 0.633,
           "constant_prediction": false,
           "C": null,
           "pass": true
         },
         {
           "subtask": "jailbreak",
+          "baseline": "keyword_regex",
+          "view": "heldback_half_b_to_half_a",
+          "ba": 0.506,
+          "auroc": 0.506,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "jailbreak",
+          "baseline": "length",
+          "view": "heldback_half_b_to_half_a",
+          "ba": 0.556,
+          "auroc": 0.536,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "jailbreak",
+          "baseline": "char_ngram_logreg",
+          "view": "heldback_half_b_to_half_a",
+          "ba": 0.824,
+          "auroc": 0.918,
+          "constant_prediction": false,
+          "C": 100.0,
+          "pass": false
+        },
+        {
+          "subtask": "jailbreak",
+          "baseline": "bow_logreg",
+          "view": "heldback_half_b_to_half_a",
+          "ba": 0.839,
+          "auroc": 0.922,
+          "constant_prediction": false,
+          "C": 100.0,
+          "pass": false
+        },
+        {
+          "subtask": "leakage",
+          "baseline": "source_id",
+          "view": "heldback_half_b_to_half_a",
+          "ba": 0.574,
+          "auroc": 0.622,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "leakage",
+          "baseline": "keyword_regex",
+          "view": "heldback_half_b_to_half_a",
+          "ba": 0.535,
+          "auroc": 0.535,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "leakage",
+          "baseline": "length",
+          "view": "heldback_half_b_to_half_a",
+          "ba": 0.566,
+          "auroc": 0.534,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "leakage",
+          "baseline": "char_ngram_logreg",
+          "view": "heldback_half_b_to_half_a",
+          "ba": 0.828,
+          "auroc": 0.907,
+          "constant_prediction": false,
+          "C": 10.0,
+          "pass": false
+        },
+        {
+          "subtask": "leakage",
+          "baseline": "bow_logreg",
+          "view": "heldback_half_b_to_half_a",
+          "ba": 0.839,
+          "auroc": 0.915,
+          "constant_prediction": false,
+          "C": 10.0,
+          "pass": false
+        },
+        {
+          "subtask": "injection",
+          "baseline": "source_id",
+          "view": "heldback_dev_to_public_test",
+          "ba": 0.583,
+          "auroc": 0.647,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "injection",
           "baseline": "keyword_regex",
           "view": "heldback_dev_to_public_test",
           "ba": 0.509,
@@ -2449,11 +2405,61 @@
           "pass": true
         },
         {
+          "subtask": "injection",
+          "baseline": "length",
+          "view": "heldback_dev_to_public_test",
+          "ba": 0.501,
+          "auroc": 0.52,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "injection",
+          "baseline": "char_ngram_logreg",
+          "view": "heldback_dev_to_public_test",
+          "ba": 0.729,
+          "auroc": 0.826,
+          "constant_prediction": false,
+          "C": 10.0,
+          "pass": false
+        },
+        {
+          "subtask": "injection",
+          "baseline": "bow_logreg",
+          "view": "heldback_dev_to_public_test",
+          "ba": 0.727,
+          "auroc": 0.833,
+          "constant_prediction": false,
+          "C": 10.0,
+          "pass": false
+        },
+        {
+          "subtask": "jailbreak",
+          "baseline": "source_id",
+          "view": "heldback_dev_to_public_test",
+          "ba": 0.609,
+          "auroc": 0.652,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "jailbreak",
+          "baseline": "keyword_regex",
+          "view": "heldback_dev_to_public_test",
+          "ba": 0.505,
+          "auroc": 0.505,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
           "subtask": "jailbreak",
           "baseline": "length",
           "view": "heldback_dev_to_public_test",
-          "ba": 0.562,
-          "auroc": 0.559,
+          "ba": 0.58,
+          "auroc": 0.56,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2462,8 +2468,8 @@
           "subtask": "jailbreak",
           "baseline": "char_ngram_logreg",
           "view": "heldback_dev_to_public_test",
-          "ba": 0.829,
-          "auroc": 0.918,
+          "ba": 0.804,
+          "auroc": 0.892,
           "constant_prediction": false,
           "C": 10.0,
           "pass": false
@@ -2472,8 +2478,8 @@
           "subtask": "jailbreak",
           "baseline": "bow_logreg",
           "view": "heldback_dev_to_public_test",
-          "ba": 0.809,
-          "auroc": 0.908,
+          "ba": 0.786,
+          "auroc": 0.885,
           "constant_prediction": false,
           "C": 10.0,
           "pass": false
@@ -2482,8 +2488,8 @@
           "subtask": "leakage",
           "baseline": "source_id",
           "view": "heldback_dev_to_public_test",
-          "ba": 0.538,
-          "auroc": 0.604,
+          "ba": 0.533,
+          "auroc": 0.595,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2492,8 +2498,8 @@
           "subtask": "leakage",
           "baseline": "keyword_regex",
           "view": "heldback_dev_to_public_test",
-          "ba": 0.531,
-          "auroc": 0.531,
+          "ba": 0.53,
+          "auroc": 0.53,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2502,8 +2508,8 @@
           "subtask": "leakage",
           "baseline": "length",
           "view": "heldback_dev_to_public_test",
-          "ba": 0.502,
-          "auroc": 0.557,
+          "ba": 0.501,
+          "auroc": 0.558,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2512,8 +2518,8 @@
           "subtask": "leakage",
           "baseline": "char_ngram_logreg",
           "view": "heldback_dev_to_public_test",
-          "ba": 0.763,
-          "auroc": 0.84,
+          "ba": 0.756,
+          "auroc": 0.832,
           "constant_prediction": false,
           "C": 100.0,
           "pass": false
@@ -2522,8 +2528,8 @@
           "subtask": "leakage",
           "baseline": "bow_logreg",
           "view": "heldback_dev_to_public_test",
-          "ba": 0.72,
-          "auroc": 0.801,
+          "ba": 0.716,
+          "auroc": 0.794,
           "constant_prediction": false,
           "C": 10.0,
           "pass": false
@@ -2532,18 +2538,18 @@
           "subtask": "injection",
           "baseline": "source_id",
           "view": "heldback_dev_to_private",
-          "ba": 0.644,
-          "auroc": 0.763,
+          "ba": 0.588,
+          "auroc": 0.718,
           "constant_prediction": false,
           "C": null,
-          "pass": false
+          "pass": true
         },
         {
           "subtask": "injection",
           "baseline": "keyword_regex",
           "view": "heldback_dev_to_private",
-          "ba": 0.504,
-          "auroc": 0.504,
+          "ba": 0.501,
+          "auroc": 0.501,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2552,8 +2558,8 @@
           "subtask": "injection",
           "baseline": "length",
           "view": "heldback_dev_to_private",
-          "ba": 0.611,
-          "auroc": 0.577,
+          "ba": 0.616,
+          "auroc": 0.592,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2563,7 +2569,7 @@
           "baseline": "char_ngram_logreg",
           "view": "heldback_dev_to_private",
           "ba": 0.663,
-          "auroc": 0.722,
+          "auroc": 0.731,
           "constant_prediction": false,
           "C": 10.0,
           "pass": true
@@ -2572,18 +2578,18 @@
           "subtask": "injection",
           "baseline": "bow_logreg",
           "view": "heldback_dev_to_private",
-          "ba": 0.644,
-          "auroc": 0.739,
+          "ba": 0.678,
+          "auroc": 0.752,
           "constant_prediction": false,
-          "C": 100.0,
-          "pass": true
+          "C": 10.0,
+          "pass": false
         },
         {
           "subtask": "jailbreak",
           "baseline": "source_id",
           "view": "heldback_dev_to_private",
-          "ba": 0.649,
-          "auroc": 0.685,
+          "ba": 0.64,
+          "auroc": 0.665,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2592,8 +2598,8 @@
           "subtask": "jailbreak",
           "baseline": "keyword_regex",
           "view": "heldback_dev_to_private",
-          "ba": 0.524,
-          "auroc": 0.524,
+          "ba": 0.518,
+          "auroc": 0.518,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2602,7 +2608,7 @@
           "subtask": "jailbreak",
           "baseline": "length",
           "view": "heldback_dev_to_private",
-          "ba": 0.626,
+          "ba": 0.643,
           "auroc": 0.671,
           "constant_prediction": false,
           "C": null,
@@ -2612,8 +2618,8 @@
           "subtask": "jailbreak",
           "baseline": "char_ngram_logreg",
           "view": "heldback_dev_to_private",
-          "ba": 0.808,
-          "auroc": 0.907,
+          "ba": 0.782,
+          "auroc": 0.889,
           "constant_prediction": false,
           "C": 10.0,
           "pass": false
@@ -2622,8 +2628,8 @@
           "subtask": "jailbreak",
           "baseline": "bow_logreg",
           "view": "heldback_dev_to_private",
-          "ba": 0.812,
-          "auroc": 0.903,
+          "ba": 0.811,
+          "auroc": 0.884,
           "constant_prediction": false,
           "C": 10.0,
           "pass": false
@@ -2632,8 +2638,8 @@
           "subtask": "leakage",
           "baseline": "source_id",
           "view": "heldback_dev_to_private",
-          "ba": 0.599,
-          "auroc": 0.693,
+          "ba": 0.591,
+          "auroc": 0.676,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2642,8 +2648,8 @@
           "subtask": "leakage",
           "baseline": "keyword_regex",
           "view": "heldback_dev_to_private",
-          "ba": 0.581,
-          "auroc": 0.581,
+          "ba": 0.578,
+          "auroc": 0.578,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2653,7 +2659,7 @@
           "baseline": "length",
           "view": "heldback_dev_to_private",
           "ba": 0.507,
-          "auroc": 0.535,
+          "auroc": 0.532,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2662,8 +2668,8 @@
           "subtask": "leakage",
           "baseline": "char_ngram_logreg",
           "view": "heldback_dev_to_private",
-          "ba": 0.802,
-          "auroc": 0.891,
+          "ba": 0.79,
+          "auroc": 0.877,
           "constant_prediction": false,
           "C": 100.0,
           "pass": false
@@ -2672,8 +2678,8 @@
           "subtask": "leakage",
           "baseline": "bow_logreg",
           "view": "heldback_dev_to_private",
-          "ba": 0.784,
-          "auroc": 0.864,
+          "ba": 0.771,
+          "auroc": 0.847,
           "constant_prediction": false,
           "C": 10.0,
           "pass": false
@@ -2682,8 +2688,8 @@
           "subtask": "injection",
           "baseline": "source_id",
           "view": "heldback_test_and_private_to_dev",
-          "ba": 0.599,
-          "auroc": 0.672,
+          "ba": 0.568,
+          "auroc": 0.636,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2702,8 +2708,8 @@
           "subtask": "injection",
           "baseline": "length",
           "view": "heldback_test_and_private_to_dev",
-          "ba": 0.505,
-          "auroc": 0.531,
+          "ba": 0.522,
+          "auroc": 0.503,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2712,8 +2718,8 @@
           "subtask": "injection",
           "baseline": "char_ngram_logreg",
           "view": "heldback_test_and_private_to_dev",
-          "ba": 0.837,
-          "auroc": 0.923,
+          "ba": 0.842,
+          "auroc": 0.931,
           "constant_prediction": false,
           "C": 10.0,
           "pass": false
@@ -2722,8 +2728,8 @@
           "subtask": "injection",
           "baseline": "bow_logreg",
           "view": "heldback_test_and_private_to_dev",
-          "ba": 0.862,
-          "auroc": 0.943,
+          "ba": 0.898,
+          "auroc": 0.949,
           "constant_prediction": false,
           "C": 10.0,
           "pass": false
@@ -2732,8 +2738,8 @@
           "subtask": "jailbreak",
           "baseline": "source_id",
           "view": "heldback_test_and_private_to_dev",
-          "ba": 0.628,
-          "auroc": 0.641,
+          "ba": 0.626,
+          "auroc": 0.643,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2742,8 +2748,8 @@
           "subtask": "jailbreak",
           "baseline": "keyword_regex",
           "view": "heldback_test_and_private_to_dev",
-          "ba": 0.514,
-          "auroc": 0.514,
+          "ba": 0.509,
+          "auroc": 0.509,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2752,8 +2758,8 @@
           "subtask": "jailbreak",
           "baseline": "length",
           "view": "heldback_test_and_private_to_dev",
-          "ba": 0.583,
-          "auroc": 0.621,
+          "ba": 0.614,
+          "auroc": 0.614,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2762,28 +2768,28 @@
           "subtask": "jailbreak",
           "baseline": "char_ngram_logreg",
           "view": "heldback_test_and_private_to_dev",
-          "ba": 0.909,
-          "auroc": 0.976,
+          "ba": 0.888,
+          "auroc": 0.965,
           "constant_prediction": false,
-          "C": 10.0,
+          "C": 100.0,
           "pass": false
         },
         {
           "subtask": "jailbreak",
           "baseline": "bow_logreg",
           "view": "heldback_test_and_private_to_dev",
-          "ba": 0.94,
-          "auroc": 0.984,
+          "ba": 0.918,
+          "auroc": 0.969,
           "constant_prediction": false,
-          "C": 10.0,
+          "C": 100.0,
           "pass": false
         },
         {
           "subtask": "leakage",
           "baseline": "source_id",
           "view": "heldback_test_and_private_to_dev",
-          "ba": 0.573,
-          "auroc": 0.669,
+          "ba": 0.567,
+          "auroc": 0.657,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2792,8 +2798,8 @@
           "subtask": "leakage",
           "baseline": "keyword_regex",
           "view": "heldback_test_and_private_to_dev",
-          "ba": 0.514,
-          "auroc": 0.514,
+          "ba": 0.508,
+          "auroc": 0.508,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2803,7 +2809,7 @@
           "baseline": "length",
           "view": "heldback_test_and_private_to_dev",
           "ba": 0.513,
-          "auroc": 0.581,
+          "auroc": 0.575,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2812,8 +2818,8 @@
           "subtask": "leakage",
           "baseline": "char_ngram_logreg",
           "view": "heldback_test_and_private_to_dev",
-          "ba": 0.862,
-          "auroc": 0.927,
+          "ba": 0.852,
+          "auroc": 0.921,
           "constant_prediction": false,
           "C": 10.0,
           "pass": false
@@ -2822,118 +2828,118 @@
           "subtask": "leakage",
           "baseline": "bow_logreg",
           "view": "heldback_test_and_private_to_dev",
-          "ba": 0.845,
-          "auroc": 0.924,
-          "constant_prediction": false,
-          "C": 100.0,
-          "pass": false
-        },
-        {
-          "subtask": "injection",
-          "baseline": "source_id",
-          "view": "heldback_seeded_groups",
-          "ba": 0.664,
-          "auroc": 0.743,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "injection",
-          "baseline": "keyword_regex",
-          "view": "heldback_seeded_groups",
-          "ba": 0.503,
-          "auroc": 0.503,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "injection",
-          "baseline": "length",
-          "view": "heldback_seeded_groups",
-          "ba": 0.512,
-          "auroc": 0.545,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "injection",
-          "baseline": "char_ngram_logreg",
-          "view": "heldback_seeded_groups",
-          "ba": 0.809,
-          "auroc": 0.909,
-          "constant_prediction": false,
-          "C": 10.0,
-          "pass": false
-        },
-        {
-          "subtask": "injection",
-          "baseline": "bow_logreg",
-          "view": "heldback_seeded_groups",
           "ba": 0.841,
-          "auroc": 0.923,
-          "constant_prediction": false,
-          "C": 10.0,
-          "pass": false
-        },
-        {
-          "subtask": "jailbreak",
-          "baseline": "source_id",
-          "view": "heldback_seeded_groups",
-          "ba": 0.592,
-          "auroc": 0.634,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "jailbreak",
-          "baseline": "keyword_regex",
-          "view": "heldback_seeded_groups",
-          "ba": 0.515,
-          "auroc": 0.515,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "jailbreak",
-          "baseline": "length",
-          "view": "heldback_seeded_groups",
-          "ba": 0.542,
-          "auroc": 0.566,
-          "constant_prediction": false,
-          "C": null,
-          "pass": true
-        },
-        {
-          "subtask": "jailbreak",
-          "baseline": "char_ngram_logreg",
-          "view": "heldback_seeded_groups",
-          "ba": 0.853,
-          "auroc": 0.95,
+          "auroc": 0.917,
           "constant_prediction": false,
           "C": 100.0,
           "pass": false
         },
         {
+          "subtask": "injection",
+          "baseline": "source_id",
+          "view": "heldback_seeded_groups",
+          "ba": 0.569,
+          "auroc": 0.618,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "injection",
+          "baseline": "keyword_regex",
+          "view": "heldback_seeded_groups",
+          "ba": 0.507,
+          "auroc": 0.507,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "injection",
+          "baseline": "length",
+          "view": "heldback_seeded_groups",
+          "ba": 0.561,
+          "auroc": 0.56,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "injection",
+          "baseline": "char_ngram_logreg",
+          "view": "heldback_seeded_groups",
+          "ba": 0.839,
+          "auroc": 0.919,
+          "constant_prediction": false,
+          "C": 100.0,
+          "pass": false
+        },
+        {
+          "subtask": "injection",
+          "baseline": "bow_logreg",
+          "view": "heldback_seeded_groups",
+          "ba": 0.872,
+          "auroc": 0.929,
+          "constant_prediction": false,
+          "C": 10.0,
+          "pass": false
+        },
+        {
+          "subtask": "jailbreak",
+          "baseline": "source_id",
+          "view": "heldback_seeded_groups",
+          "ba": 0.615,
+          "auroc": 0.642,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "jailbreak",
+          "baseline": "keyword_regex",
+          "view": "heldback_seeded_groups",
+          "ba": 0.505,
+          "auroc": 0.505,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "jailbreak",
+          "baseline": "length",
+          "view": "heldback_seeded_groups",
+          "ba": 0.603,
+          "auroc": 0.636,
+          "constant_prediction": false,
+          "C": null,
+          "pass": true
+        },
+        {
+          "subtask": "jailbreak",
+          "baseline": "char_ngram_logreg",
+          "view": "heldback_seeded_groups",
+          "ba": 0.862,
+          "auroc": 0.954,
+          "constant_prediction": false,
+          "C": 10.0,
+          "pass": false
+        },
+        {
           "subtask": "jailbreak",
           "baseline": "bow_logreg",
           "view": "heldback_seeded_groups",
-          "ba": 0.902,
-          "auroc": 0.966,
+          "ba": 0.872,
+          "auroc": 0.952,
           "constant_prediction": false,
-          "C": 10.0,
+          "C": 100.0,
           "pass": false
         },
         {
           "subtask": "leakage",
           "baseline": "source_id",
           "view": "heldback_seeded_groups",
-          "ba": 0.588,
-          "auroc": 0.621,
+          "ba": 0.573,
+          "auroc": 0.596,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2942,8 +2948,8 @@
           "subtask": "leakage",
           "baseline": "keyword_regex",
           "view": "heldback_seeded_groups",
-          "ba": 0.548,
-          "auroc": 0.548,
+          "ba": 0.546,
+          "auroc": 0.546,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2952,8 +2958,8 @@
           "subtask": "leakage",
           "baseline": "length",
           "view": "heldback_seeded_groups",
-          "ba": 0.565,
-          "auroc": 0.554,
+          "ba": 0.581,
+          "auroc": 0.55,
           "constant_prediction": false,
           "C": null,
           "pass": true
@@ -2962,8 +2968,8 @@
           "subtask": "leakage",
           "baseline": "char_ngram_logreg",
           "view": "heldback_seeded_groups",
-          "ba": 0.845,
-          "auroc": 0.931,
+          "ba": 0.848,
+          "auroc": 0.922,
           "constant_prediction": false,
           "C": 10.0,
           "pass": false
@@ -2972,51 +2978,50 @@
           "subtask": "leakage",
           "baseline": "bow_logreg",
           "view": "heldback_seeded_groups",
-          "ba": 0.875,
-          "auroc": 0.939,
+          "ba": 0.852,
+          "auroc": 0.917,
           "constant_prediction": false,
-          "C": 10.0,
+          "C": 100.0,
           "pass": false
         }
       ],
       "constant_prediction": [],
       "failures": [
-        "heldback_half_a_to_half_b/injection/char_ngram_logreg: BA 0.794, AUROC 0.861",
-        "heldback_half_a_to_half_b/injection/bow_logreg: BA 0.808, AUROC 0.876",
-        "heldback_half_a_to_half_b/jailbreak/char_ngram_logreg: BA 0.88, AUROC 0.951",
-        "heldback_half_a_to_half_b/jailbreak/bow_logreg: BA 0.877, AUROC 0.95",
-        "heldback_half_a_to_half_b/leakage/char_ngram_logreg: BA 0.841, AUROC 0.918",
-        "heldback_half_a_to_half_b/leakage/bow_logreg: BA 0.837, AUROC 0.923",
-        "heldback_half_b_to_half_a/injection/source_id: BA 0.669, AUROC 0.76",
-        "heldback_half_b_to_half_a/injection/char_ngram_logreg: BA 0.82, AUROC 0.898",
-        "heldback_half_b_to_half_a/injection/bow_logreg: BA 0.821, AUROC 0.901",
-        "heldback_half_b_to_half_a/jailbreak/char_ngram_logreg: BA 0.882, AUROC 0.953",
-        "heldback_half_b_to_half_a/jailbreak/bow_logreg: BA 0.869, AUROC 0.957",
-        "heldback_half_b_to_half_a/leakage/char_ngram_logreg: BA 0.877, AUROC 0.935",
-        "heldback_half_b_to_half_a/leakage/bow_logreg: BA 0.875, AUROC 0.935",
-        "heldback_dev_to_public_test/injection/char_ngram_logreg: BA 0.716, AUROC 0.82",
-        "heldback_dev_to_public_test/injection/bow_logreg: BA 0.72, AUROC 0.821",
-        "heldback_dev_to_public_test/jailbreak/char_ngram_logreg: BA 0.829, AUROC 0.918",
-        "heldback_dev_to_public_test/jailbreak/bow_logreg: BA 0.809, AUROC 0.908",
-        "heldback_dev_to_public_test/leakage/char_ngram_logreg: BA 0.763, AUROC 0.84",
-        "heldback_dev_to_public_test/leakage/bow_logreg: BA 0.72, AUROC 0.801",
-        "heldback_dev_to_private/injection/source_id: BA 0.644, AUROC 0.763",
-        "heldback_dev_to_private/jailbreak/char_ngram_logreg: BA 0.808, AUROC 0.907",
-        "heldback_dev_to_private/jailbreak/bow_logreg: BA 0.812, AUROC 0.903",
-        "heldback_dev_to_private/leakage/char_ngram_logreg: BA 0.802, AUROC 0.891",
-        "heldback_dev_to_private/leakage/bow_logreg: BA 0.784, AUROC 0.864",
-        "heldback_test_and_private_to_dev/injection/char_ngram_logreg: BA 0.837, AUROC 0.923",
-        "heldback_test_and_private_to_dev/injection/bow_logreg: BA 0.862, AUROC 0.943",
-        "heldback_test_and_private_to_dev/jailbreak/char_ngram_logreg: BA 0.909, AUROC 0.976",
-        "heldback_test_and_private_to_dev/jailbreak/bow_logreg: BA 0.94, AUROC 0.984",
-        "heldback_test_and_private_to_dev/leakage/char_ngram_logreg: BA 0.862, AUROC 0.927",
-        "heldback_test_and_private_to_dev/leakage/bow_logreg: BA 0.845, AUROC 0.924",
-        "heldback_seeded_groups/injection/char_ngram_logreg: BA 0.809, AUROC 0.909",
-        "heldback_seeded_groups/injection/bow_logreg: BA 0.841, AUROC 0.923",
-        "heldback_seeded_groups/jailbreak/char_ngram_logreg: BA 0.853, AUROC 0.95",
-        "heldback_seeded_groups/jailbreak/bow_logreg: BA 0.902, AUROC 0.966",
-        "heldback_seeded_groups/leakage/char_ngram_logreg: BA 0.845, AUROC 0.931",
-        "heldback_seeded_groups/leakage/bow_logreg: BA 0.875, AUROC 0.939"
+        "heldback_half_a_to_half_b/injection/char_ngram_logreg: BA 0.763, AUROC 0.844",
+        "heldback_half_a_to_half_b/injection/bow_logreg: BA 0.76, AUROC 0.835",
+        "heldback_half_a_to_half_b/jailbreak/char_ngram_logreg: BA 0.853, AUROC 0.935",
+        "heldback_half_a_to_half_b/jailbreak/bow_logreg: BA 0.846, AUROC 0.925",
+        "heldback_half_a_to_half_b/leakage/char_ngram_logreg: BA 0.842, AUROC 0.914",
+        "heldback_half_a_to_half_b/leakage/bow_logreg: BA 0.818, AUROC 0.907",
+        "heldback_half_b_to_half_a/injection/char_ngram_logreg: BA 0.827, AUROC 0.893",
+        "heldback_half_b_to_half_a/injection/bow_logreg: BA 0.816, AUROC 0.905",
+        "heldback_half_b_to_half_a/jailbreak/char_ngram_logreg: BA 0.824, AUROC 0.918",
+        "heldback_half_b_to_half_a/jailbreak/bow_logreg: BA 0.839, AUROC 0.922",
+        "heldback_half_b_to_half_a/leakage/char_ngram_logreg: BA 0.828, AUROC 0.907",
+        "heldback_half_b_to_half_a/leakage/bow_logreg: BA 0.839, AUROC 0.915",
+        "heldback_dev_to_public_test/injection/char_ngram_logreg: BA 0.729, AUROC 0.826",
+        "heldback_dev_to_public_test/injection/bow_logreg: BA 0.727, AUROC 0.833",
+        "heldback_dev_to_public_test/jailbreak/char_ngram_logreg: BA 0.804, AUROC 0.892",
+        "heldback_dev_to_public_test/jailbreak/bow_logreg: BA 0.786, AUROC 0.885",
+        "heldback_dev_to_public_test/leakage/char_ngram_logreg: BA 0.756, AUROC 0.832",
+        "heldback_dev_to_public_test/leakage/bow_logreg: BA 0.716, AUROC 0.794",
+        "heldback_dev_to_private/injection/bow_logreg: BA 0.678, AUROC 0.752",
+        "heldback_dev_to_private/jailbreak/char_ngram_logreg: BA 0.782, AUROC 0.889",
+        "heldback_dev_to_private/jailbreak/bow_logreg: BA 0.811, AUROC 0.884",
+        "heldback_dev_to_private/leakage/char_ngram_logreg: BA 0.79, AUROC 0.877",
+        "heldback_dev_to_private/leakage/bow_logreg: BA 0.771, AUROC 0.847",
+        "heldback_test_and_private_to_dev/injection/char_ngram_logreg: BA 0.842, AUROC 0.931",
+        "heldback_test_and_private_to_dev/injection/bow_logreg: BA 0.898, AUROC 0.949",
+        "heldback_test_and_private_to_dev/jailbreak/char_ngram_logreg: BA 0.888, AUROC 0.965",
+        "heldback_test_and_private_to_dev/jailbreak/bow_logreg: BA 0.918, AUROC 0.969",
+        "heldback_test_and_private_to_dev/leakage/char_ngram_logreg: BA 0.852, AUROC 0.921",
+        "heldback_test_and_private_to_dev/leakage/bow_logreg: BA 0.841, AUROC 0.917",
+        "heldback_seeded_groups/injection/char_ngram_logreg: BA 0.839, AUROC 0.919",
+        "heldback_seeded_groups/injection/bow_logreg: BA 0.872, AUROC 0.929",
+        "heldback_seeded_groups/jailbreak/char_ngram_logreg: BA 0.862, AUROC 0.954",
+        "heldback_seeded_groups/jailbreak/bow_logreg: BA 0.872, AUROC 0.952",
+        "heldback_seeded_groups/leakage/char_ngram_logreg: BA 0.848, AUROC 0.922",
+        "heldback_seeded_groups/leakage/bow_logreg: BA 0.852, AUROC 0.917"
       ],
       "pass": false
     },
@@ -3025,8 +3030,8 @@
         "subtask": "injection",
         "baseline": "source_id",
         "view": "public_test",
-        "ba": 0.65,
-        "auroc": 0.723,
+        "ba": 0.588,
+        "auroc": 0.657,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3034,73 +3039,6 @@
       },
       {
         "subtask": "injection",
-        "baseline": "keyword_regex",
-        "view": "public_test",
-        "ba": 0.506,
-        "auroc": 0.506,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "in_sample"
-      },
-      {
-        "subtask": "injection",
-        "baseline": "length",
-        "view": "public_test",
-        "ba": 0.546,
-        "auroc": 0.525,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "in_sample"
-      },
-      {
-        "subtask": "injection",
-        "baseline": "char_ngram_logreg",
-        "view": "public_test",
-        "ba": 0.804,
-        "auroc": 0.866,
-        "constant_prediction": false,
-        "C": [
-          10.0,
-          10.0,
-          10.0,
-          10.0,
-          10.0
-        ],
-        "pass": false,
-        "half": "in_sample"
-      },
-      {
-        "subtask": "injection",
-        "baseline": "bow_logreg",
-        "view": "public_test",
-        "ba": 0.797,
-        "auroc": 0.888,
-        "constant_prediction": false,
-        "C": [
-          10.0,
-          100.0,
-          10.0,
-          10.0,
-          100.0
-        ],
-        "pass": false,
-        "half": "in_sample"
-      },
-      {
-        "subtask": "jailbreak",
-        "baseline": "source_id",
-        "view": "public_test",
-        "ba": 0.622,
-        "auroc": 0.647,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "in_sample"
-      },
-      {
-        "subtask": "jailbreak",
         "baseline": "keyword_regex",
         "view": "public_test",
         "ba": 0.509,
@@ -3111,145 +3049,11 @@
         "half": "in_sample"
       },
       {
-        "subtask": "jailbreak",
-        "baseline": "length",
-        "view": "public_test",
-        "ba": 0.57,
-        "auroc": 0.559,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "in_sample"
-      },
-      {
-        "subtask": "jailbreak",
-        "baseline": "char_ngram_logreg",
-        "view": "public_test",
-        "ba": 0.873,
-        "auroc": 0.94,
-        "constant_prediction": false,
-        "C": [
-          100.0,
-          100.0,
-          100.0,
-          100.0,
-          100.0
-        ],
-        "pass": false,
-        "half": "in_sample"
-      },
-      {
-        "subtask": "jailbreak",
-        "baseline": "bow_logreg",
-        "view": "public_test",
-        "ba": 0.856,
-        "auroc": 0.945,
-        "constant_prediction": false,
-        "C": [
-          100.0,
-          100.0,
-          100.0,
-          100.0,
-          100.0
-        ],
-        "pass": false,
-        "half": "in_sample"
-      },
-      {
-        "subtask": "leakage",
-        "baseline": "source_id",
-        "view": "public_test",
-        "ba": 0.581,
-        "auroc": 0.593,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "in_sample"
-      },
-      {
-        "subtask": "leakage",
-        "baseline": "keyword_regex",
-        "view": "public_test",
-        "ba": 0.531,
-        "auroc": 0.531,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "in_sample"
-      },
-      {
-        "subtask": "leakage",
-        "baseline": "length",
-        "view": "public_test",
-        "ba": 0.557,
-        "auroc": 0.557,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "in_sample"
-      },
-      {
-        "subtask": "leakage",
-        "baseline": "char_ngram_logreg",
-        "view": "public_test",
-        "ba": 0.829,
-        "auroc": 0.903,
-        "constant_prediction": false,
-        "C": [
-          100.0,
-          10.0,
-          10.0,
-          10.0,
-          100.0
-        ],
-        "pass": false,
-        "half": "in_sample"
-      },
-      {
-        "subtask": "leakage",
-        "baseline": "bow_logreg",
-        "view": "public_test",
-        "ba": 0.843,
-        "auroc": 0.92,
-        "constant_prediction": false,
-        "C": [
-          100.0,
-          100.0,
-          100.0,
-          100.0,
-          100.0
-        ],
-        "pass": false,
-        "half": "in_sample"
-      },
-      {
-        "subtask": "injection",
-        "baseline": "source_id",
-        "view": "test_with_private",
-        "ba": 0.632,
-        "auroc": 0.7,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "in_sample"
-      },
-      {
-        "subtask": "injection",
-        "baseline": "keyword_regex",
-        "view": "test_with_private",
-        "ba": 0.503,
-        "auroc": 0.503,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "in_sample"
-      },
-      {
         "subtask": "injection",
         "baseline": "length",
-        "view": "test_with_private",
-        "ba": 0.52,
-        "auroc": 0.511,
+        "view": "public_test",
+        "ba": 0.541,
+        "auroc": 0.52,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3258,9 +3062,9 @@
       {
         "subtask": "injection",
         "baseline": "char_ngram_logreg",
-        "view": "test_with_private",
-        "ba": 0.83,
-        "auroc": 0.893,
+        "view": "public_test",
+        "ba": 0.792,
+        "auroc": 0.864,
         "constant_prediction": false,
         "C": [
           10.0,
@@ -3275,12 +3079,213 @@
       {
         "subtask": "injection",
         "baseline": "bow_logreg",
-        "view": "test_with_private",
-        "ba": 0.842,
+        "view": "public_test",
+        "ba": 0.818,
+        "auroc": 0.897,
+        "constant_prediction": false,
+        "C": [
+          10.0,
+          10.0,
+          10.0,
+          10.0,
+          10.0
+        ],
+        "pass": false,
+        "half": "in_sample"
+      },
+      {
+        "subtask": "jailbreak",
+        "baseline": "source_id",
+        "view": "public_test",
+        "ba": 0.609,
+        "auroc": 0.635,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "in_sample"
+      },
+      {
+        "subtask": "jailbreak",
+        "baseline": "keyword_regex",
+        "view": "public_test",
+        "ba": 0.505,
+        "auroc": 0.505,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "in_sample"
+      },
+      {
+        "subtask": "jailbreak",
+        "baseline": "length",
+        "view": "public_test",
+        "ba": 0.577,
+        "auroc": 0.56,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "in_sample"
+      },
+      {
+        "subtask": "jailbreak",
+        "baseline": "char_ngram_logreg",
+        "view": "public_test",
+        "ba": 0.859,
+        "auroc": 0.921,
+        "constant_prediction": false,
+        "C": [
+          100.0,
+          100.0,
+          100.0,
+          100.0,
+          100.0
+        ],
+        "pass": false,
+        "half": "in_sample"
+      },
+      {
+        "subtask": "jailbreak",
+        "baseline": "bow_logreg",
+        "view": "public_test",
+        "ba": 0.85,
+        "auroc": 0.931,
+        "constant_prediction": false,
+        "C": [
+          100.0,
+          100.0,
+          100.0,
+          100.0,
+          100.0
+        ],
+        "pass": false,
+        "half": "in_sample"
+      },
+      {
+        "subtask": "leakage",
+        "baseline": "source_id",
+        "view": "public_test",
+        "ba": 0.576,
+        "auroc": 0.598,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "in_sample"
+      },
+      {
+        "subtask": "leakage",
+        "baseline": "keyword_regex",
+        "view": "public_test",
+        "ba": 0.53,
+        "auroc": 0.53,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "in_sample"
+      },
+      {
+        "subtask": "leakage",
+        "baseline": "length",
+        "view": "public_test",
+        "ba": 0.565,
+        "auroc": 0.558,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "in_sample"
+      },
+      {
+        "subtask": "leakage",
+        "baseline": "char_ngram_logreg",
+        "view": "public_test",
+        "ba": 0.811,
+        "auroc": 0.899,
+        "constant_prediction": false,
+        "C": [
+          10.0,
+          10.0,
+          10.0,
+          10.0,
+          10.0
+        ],
+        "pass": false,
+        "half": "in_sample"
+      },
+      {
+        "subtask": "leakage",
+        "baseline": "bow_logreg",
+        "view": "public_test",
+        "ba": 0.831,
         "auroc": 0.912,
         "constant_prediction": false,
         "C": [
+          100.0,
+          100.0,
+          100.0,
+          100.0,
+          10.0
+        ],
+        "pass": false,
+        "half": "in_sample"
+      },
+      {
+        "subtask": "injection",
+        "baseline": "source_id",
+        "view": "test_with_private",
+        "ba": 0.578,
+        "auroc": 0.642,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "in_sample"
+      },
+      {
+        "subtask": "injection",
+        "baseline": "keyword_regex",
+        "view": "test_with_private",
+        "ba": 0.506,
+        "auroc": 0.506,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "in_sample"
+      },
+      {
+        "subtask": "injection",
+        "baseline": "length",
+        "view": "test_with_private",
+        "ba": 0.563,
+        "auroc": 0.545,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "in_sample"
+      },
+      {
+        "subtask": "injection",
+        "baseline": "char_ngram_logreg",
+        "view": "test_with_private",
+        "ba": 0.795,
+        "auroc": 0.884,
+        "constant_prediction": false,
+        "C": [
           10.0,
+          10.0,
+          10.0,
+          10.0,
+          10.0
+        ],
+        "pass": false,
+        "half": "in_sample"
+      },
+      {
+        "subtask": "injection",
+        "baseline": "bow_logreg",
+        "view": "test_with_private",
+        "ba": 0.824,
+        "auroc": 0.898,
+        "constant_prediction": false,
+        "C": [
+          100.0,
           10.0,
           10.0,
           10.0,
@@ -3293,8 +3298,8 @@
         "subtask": "jailbreak",
         "baseline": "source_id",
         "view": "test_with_private",
-        "ba": 0.628,
-        "auroc": 0.665,
+        "ba": 0.617,
+        "auroc": 0.637,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3304,8 +3309,8 @@
         "subtask": "jailbreak",
         "baseline": "keyword_regex",
         "view": "test_with_private",
-        "ba": 0.513,
-        "auroc": 0.513,
+        "ba": 0.509,
+        "auroc": 0.509,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3315,8 +3320,8 @@
         "subtask": "jailbreak",
         "baseline": "length",
         "view": "test_with_private",
-        "ba": 0.589,
-        "auroc": 0.593,
+        "ba": 0.582,
+        "auroc": 0.594,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3326,14 +3331,14 @@
         "subtask": "jailbreak",
         "baseline": "char_ngram_logreg",
         "view": "test_with_private",
-        "ba": 0.885,
-        "auroc": 0.949,
+        "ba": 0.867,
+        "auroc": 0.937,
         "constant_prediction": false,
         "C": [
           100.0,
           100.0,
           100.0,
-          10.0,
+          100.0,
           100.0
         ],
         "pass": false,
@@ -3344,14 +3349,14 @@
         "baseline": "bow_logreg",
         "view": "test_with_private",
         "ba": 0.87,
-        "auroc": 0.946,
+        "auroc": 0.939,
         "constant_prediction": false,
         "C": [
           100.0,
           100.0,
           100.0,
-          10.0,
-          100.0
+          100.0,
+          10.0
         ],
         "pass": false,
         "half": "in_sample"
@@ -3360,8 +3365,8 @@
         "subtask": "leakage",
         "baseline": "source_id",
         "view": "test_with_private",
-        "ba": 0.591,
-        "auroc": 0.615,
+        "ba": 0.584,
+        "auroc": 0.614,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3371,8 +3376,8 @@
         "subtask": "leakage",
         "baseline": "keyword_regex",
         "view": "test_with_private",
-        "ba": 0.544,
-        "auroc": 0.544,
+        "ba": 0.543,
+        "auroc": 0.543,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3382,7 +3387,7 @@
         "subtask": "leakage",
         "baseline": "length",
         "view": "test_with_private",
-        "ba": 0.564,
+        "ba": 0.554,
         "auroc": 0.551,
         "constant_prediction": false,
         "C": null,
@@ -3393,12 +3398,12 @@
         "subtask": "leakage",
         "baseline": "char_ngram_logreg",
         "view": "test_with_private",
-        "ba": 0.848,
-        "auroc": 0.919,
+        "ba": 0.852,
+        "auroc": 0.925,
         "constant_prediction": false,
         "C": [
-          100.0,
-          100.0,
+          10.0,
+          10.0,
           10.0,
           10.0,
           10.0
@@ -3410,15 +3415,15 @@
         "subtask": "leakage",
         "baseline": "bow_logreg",
         "view": "test_with_private",
-        "ba": 0.866,
-        "auroc": 0.938,
+        "ba": 0.859,
+        "auroc": 0.926,
         "constant_prediction": false,
         "C": [
+          10.0,
           100.0,
           100.0,
           100.0,
-          100.0,
-          100.0
+          10.0
         ],
         "pass": false,
         "half": "in_sample"
@@ -3427,8 +3432,8 @@
         "subtask": "injection",
         "baseline": "source_id",
         "view": "heldback_half_a_to_half_b",
-        "ba": 0.602,
-        "auroc": 0.68,
+        "ba": 0.578,
+        "auroc": 0.644,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3449,8 +3454,8 @@
         "subtask": "injection",
         "baseline": "length",
         "view": "heldback_half_a_to_half_b",
-        "ba": 0.51,
-        "auroc": 0.528,
+        "ba": 0.554,
+        "auroc": 0.543,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3460,8 +3465,8 @@
         "subtask": "injection",
         "baseline": "char_ngram_logreg",
         "view": "heldback_half_a_to_half_b",
-        "ba": 0.794,
-        "auroc": 0.861,
+        "ba": 0.763,
+        "auroc": 0.844,
         "constant_prediction": false,
         "C": 10.0,
         "pass": false,
@@ -3471,8 +3476,8 @@
         "subtask": "injection",
         "baseline": "bow_logreg",
         "view": "heldback_half_a_to_half_b",
-        "ba": 0.808,
-        "auroc": 0.876,
+        "ba": 0.76,
+        "auroc": 0.835,
         "constant_prediction": false,
         "C": 100.0,
         "pass": false,
@@ -3482,8 +3487,8 @@
         "subtask": "jailbreak",
         "baseline": "source_id",
         "view": "heldback_half_a_to_half_b",
-        "ba": 0.651,
-        "auroc": 0.694,
+        "ba": 0.645,
+        "auroc": 0.678,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3493,8 +3498,8 @@
         "subtask": "jailbreak",
         "baseline": "keyword_regex",
         "view": "heldback_half_a_to_half_b",
-        "ba": 0.513,
-        "auroc": 0.513,
+        "ba": 0.512,
+        "auroc": 0.512,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3504,8 +3509,8 @@
         "subtask": "jailbreak",
         "baseline": "length",
         "view": "heldback_half_a_to_half_b",
-        "ba": 0.6,
-        "auroc": 0.643,
+        "ba": 0.621,
+        "auroc": 0.647,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3515,10 +3520,10 @@
         "subtask": "jailbreak",
         "baseline": "char_ngram_logreg",
         "view": "heldback_half_a_to_half_b",
-        "ba": 0.88,
-        "auroc": 0.951,
+        "ba": 0.853,
+        "auroc": 0.935,
         "constant_prediction": false,
-        "C": 100.0,
+        "C": 10.0,
         "pass": false,
         "half": "heldback"
       },
@@ -3526,52 +3531,8 @@
         "subtask": "jailbreak",
         "baseline": "bow_logreg",
         "view": "heldback_half_a_to_half_b",
-        "ba": 0.877,
-        "auroc": 0.95,
-        "constant_prediction": false,
-        "C": 100.0,
-        "pass": false,
-        "half": "heldback"
-      },
-      {
-        "subtask": "leakage",
-        "baseline": "source_id",
-        "view": "heldback_half_a_to_half_b",
-        "ba": 0.594,
-        "auroc": 0.65,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "heldback"
-      },
-      {
-        "subtask": "leakage",
-        "baseline": "keyword_regex",
-        "view": "heldback_half_a_to_half_b",
-        "ba": 0.535,
-        "auroc": 0.535,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "heldback"
-      },
-      {
-        "subtask": "leakage",
-        "baseline": "length",
-        "view": "heldback_half_a_to_half_b",
-        "ba": 0.562,
-        "auroc": 0.544,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "heldback"
-      },
-      {
-        "subtask": "leakage",
-        "baseline": "char_ngram_logreg",
-        "view": "heldback_half_a_to_half_b",
-        "ba": 0.841,
-        "auroc": 0.918,
+        "ba": 0.846,
+        "auroc": 0.925,
         "constant_prediction": false,
         "C": 10.0,
         "pass": false,
@@ -3579,131 +3540,10 @@
       },
       {
         "subtask": "leakage",
-        "baseline": "bow_logreg",
+        "baseline": "source_id",
         "view": "heldback_half_a_to_half_b",
-        "ba": 0.837,
-        "auroc": 0.923,
-        "constant_prediction": false,
-        "C": 100.0,
-        "pass": false,
-        "half": "heldback"
-      },
-      {
-        "subtask": "injection",
-        "baseline": "source_id",
-        "view": "heldback_half_b_to_half_a",
-        "ba": 0.669,
-        "auroc": 0.76,
-        "constant_prediction": false,
-        "C": null,
-        "pass": false,
-        "half": "heldback"
-      },
-      {
-        "subtask": "injection",
-        "baseline": "keyword_regex",
-        "view": "heldback_half_b_to_half_a",
-        "ba": 0.502,
-        "auroc": 0.502,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "heldback"
-      },
-      {
-        "subtask": "injection",
-        "baseline": "length",
-        "view": "heldback_half_b_to_half_a",
-        "ba": 0.506,
-        "auroc": 0.506,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "heldback"
-      },
-      {
-        "subtask": "injection",
-        "baseline": "char_ngram_logreg",
-        "view": "heldback_half_b_to_half_a",
-        "ba": 0.82,
-        "auroc": 0.898,
-        "constant_prediction": false,
-        "C": 10.0,
-        "pass": false,
-        "half": "heldback"
-      },
-      {
-        "subtask": "injection",
-        "baseline": "bow_logreg",
-        "view": "heldback_half_b_to_half_a",
-        "ba": 0.821,
-        "auroc": 0.901,
-        "constant_prediction": false,
-        "C": 100.0,
-        "pass": false,
-        "half": "heldback"
-      },
-      {
-        "subtask": "jailbreak",
-        "baseline": "source_id",
-        "view": "heldback_half_b_to_half_a",
-        "ba": 0.606,
-        "auroc": 0.654,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "heldback"
-      },
-      {
-        "subtask": "jailbreak",
-        "baseline": "keyword_regex",
-        "view": "heldback_half_b_to_half_a",
-        "ba": 0.513,
-        "auroc": 0.513,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "heldback"
-      },
-      {
-        "subtask": "jailbreak",
-        "baseline": "length",
-        "view": "heldback_half_b_to_half_a",
-        "ba": 0.568,
-        "auroc": 0.539,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "heldback"
-      },
-      {
-        "subtask": "jailbreak",
-        "baseline": "char_ngram_logreg",
-        "view": "heldback_half_b_to_half_a",
-        "ba": 0.882,
-        "auroc": 0.953,
-        "constant_prediction": false,
-        "C": 100.0,
-        "pass": false,
-        "half": "heldback"
-      },
-      {
-        "subtask": "jailbreak",
-        "baseline": "bow_logreg",
-        "view": "heldback_half_b_to_half_a",
-        "ba": 0.869,
-        "auroc": 0.957,
-        "constant_prediction": false,
-        "C": 100.0,
-        "pass": false,
-        "half": "heldback"
-      },
-      {
-        "subtask": "leakage",
-        "baseline": "source_id",
-        "view": "heldback_half_b_to_half_a",
-        "ba": 0.589,
-        "auroc": 0.637,
+        "ba": 0.596,
+        "auroc": 0.638,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3712,7 +3552,7 @@
       {
         "subtask": "leakage",
         "baseline": "keyword_regex",
-        "view": "heldback_half_b_to_half_a",
+        "view": "heldback_half_a_to_half_b",
         "ba": 0.552,
         "auroc": 0.552,
         "constant_prediction": false,
@@ -3723,9 +3563,9 @@
       {
         "subtask": "leakage",
         "baseline": "length",
-        "view": "heldback_half_b_to_half_a",
+        "view": "heldback_half_a_to_half_b",
         "ba": 0.564,
-        "auroc": 0.56,
+        "auroc": 0.569,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3734,9 +3574,9 @@
       {
         "subtask": "leakage",
         "baseline": "char_ngram_logreg",
-        "view": "heldback_half_b_to_half_a",
-        "ba": 0.877,
-        "auroc": 0.935,
+        "view": "heldback_half_a_to_half_b",
+        "ba": 0.842,
+        "auroc": 0.914,
         "constant_prediction": false,
         "C": 10.0,
         "pass": false,
@@ -3745,20 +3585,20 @@
       {
         "subtask": "leakage",
         "baseline": "bow_logreg",
-        "view": "heldback_half_b_to_half_a",
-        "ba": 0.875,
-        "auroc": 0.935,
+        "view": "heldback_half_a_to_half_b",
+        "ba": 0.818,
+        "auroc": 0.907,
         "constant_prediction": false,
-        "C": 100.0,
+        "C": 10.0,
         "pass": false,
         "half": "heldback"
       },
       {
         "subtask": "injection",
         "baseline": "source_id",
-        "view": "heldback_dev_to_public_test",
-        "ba": 0.636,
-        "auroc": 0.704,
+        "view": "heldback_half_b_to_half_a",
+        "ba": 0.555,
+        "auroc": 0.631,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3767,9 +3607,9 @@
       {
         "subtask": "injection",
         "baseline": "keyword_regex",
-        "view": "heldback_dev_to_public_test",
-        "ba": 0.506,
-        "auroc": 0.506,
+        "view": "heldback_half_b_to_half_a",
+        "ba": 0.51,
+        "auroc": 0.51,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3778,9 +3618,9 @@
       {
         "subtask": "injection",
         "baseline": "length",
-        "view": "heldback_dev_to_public_test",
-        "ba": 0.522,
-        "auroc": 0.525,
+        "view": "heldback_half_b_to_half_a",
+        "ba": 0.567,
+        "auroc": 0.547,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3789,9 +3629,9 @@
       {
         "subtask": "injection",
         "baseline": "char_ngram_logreg",
-        "view": "heldback_dev_to_public_test",
-        "ba": 0.716,
-        "auroc": 0.82,
+        "view": "heldback_half_b_to_half_a",
+        "ba": 0.827,
+        "auroc": 0.893,
         "constant_prediction": false,
         "C": 10.0,
         "pass": false,
@@ -3800,20 +3640,20 @@
       {
         "subtask": "injection",
         "baseline": "bow_logreg",
-        "view": "heldback_dev_to_public_test",
-        "ba": 0.72,
-        "auroc": 0.821,
+        "view": "heldback_half_b_to_half_a",
+        "ba": 0.816,
+        "auroc": 0.905,
         "constant_prediction": false,
-        "C": 100.0,
+        "C": 10.0,
         "pass": false,
         "half": "heldback"
       },
       {
         "subtask": "jailbreak",
         "baseline": "source_id",
-        "view": "heldback_dev_to_public_test",
-        "ba": 0.622,
-        "auroc": 0.67,
+        "view": "heldback_half_b_to_half_a",
+        "ba": 0.589,
+        "auroc": 0.633,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3821,6 +3661,116 @@
       },
       {
         "subtask": "jailbreak",
+        "baseline": "keyword_regex",
+        "view": "heldback_half_b_to_half_a",
+        "ba": 0.506,
+        "auroc": 0.506,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "heldback"
+      },
+      {
+        "subtask": "jailbreak",
+        "baseline": "length",
+        "view": "heldback_half_b_to_half_a",
+        "ba": 0.556,
+        "auroc": 0.536,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "heldback"
+      },
+      {
+        "subtask": "jailbreak",
+        "baseline": "char_ngram_logreg",
+        "view": "heldback_half_b_to_half_a",
+        "ba": 0.824,
+        "auroc": 0.918,
+        "constant_prediction": false,
+        "C": 100.0,
+        "pass": false,
+        "half": "heldback"
+      },
+      {
+        "subtask": "jailbreak",
+        "baseline": "bow_logreg",
+        "view": "heldback_half_b_to_half_a",
+        "ba": 0.839,
+        "auroc": 0.922,
+        "constant_prediction": false,
+        "C": 100.0,
+        "pass": false,
+        "half": "heldback"
+      },
+      {
+        "subtask": "leakage",
+        "baseline": "source_id",
+        "view": "heldback_half_b_to_half_a",
+        "ba": 0.574,
+        "auroc": 0.622,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "heldback"
+      },
+      {
+        "subtask": "leakage",
+        "baseline": "keyword_regex",
+        "view": "heldback_half_b_to_half_a",
+        "ba": 0.535,
+        "auroc": 0.535,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "heldback"
+      },
+      {
+        "subtask": "leakage",
+        "baseline": "length",
+        "view": "heldback_half_b_to_half_a",
+        "ba": 0.566,
+        "auroc": 0.534,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "heldback"
+      },
+      {
+        "subtask": "leakage",
+        "baseline": "char_ngram_logreg",
+        "view": "heldback_half_b_to_half_a",
+        "ba": 0.828,
+        "auroc": 0.907,
+        "constant_prediction": false,
+        "C": 10.0,
+        "pass": false,
+        "half": "heldback"
+      },
+      {
+        "subtask": "leakage",
+        "baseline": "bow_logreg",
+        "view": "heldback_half_b_to_half_a",
+        "ba": 0.839,
+        "auroc": 0.915,
+        "constant_prediction": false,
+        "C": 10.0,
+        "pass": false,
+        "half": "heldback"
+      },
+      {
+        "subtask": "injection",
+        "baseline": "source_id",
+        "view": "heldback_dev_to_public_test",
+        "ba": 0.583,
+        "auroc": 0.647,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "heldback"
+      },
+      {
+        "subtask": "injection",
         "baseline": "keyword_regex",
         "view": "heldback_dev_to_public_test",
         "ba": 0.509,
@@ -3831,11 +3781,66 @@
         "half": "heldback"
       },
       {
+        "subtask": "injection",
+        "baseline": "length",
+        "view": "heldback_dev_to_public_test",
+        "ba": 0.501,
+        "auroc": 0.52,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "heldback"
+      },
+      {
+        "subtask": "injection",
+        "baseline": "char_ngram_logreg",
+        "view": "heldback_dev_to_public_test",
+        "ba": 0.729,
+        "auroc": 0.826,
+        "constant_prediction": false,
+        "C": 10.0,
+        "pass": false,
+        "half": "heldback"
+      },
+      {
+        "subtask": "injection",
+        "baseline": "bow_logreg",
+        "view": "heldback_dev_to_public_test",
+        "ba": 0.727,
+        "auroc": 0.833,
+        "constant_prediction": false,
+        "C": 10.0,
+        "pass": false,
+        "half": "heldback"
+      },
+      {
+        "subtask": "jailbreak",
+        "baseline": "source_id",
+        "view": "heldback_dev_to_public_test",
+        "ba": 0.609,
+        "auroc": 0.652,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "heldback"
+      },
+      {
+        "subtask": "jailbreak",
+        "baseline": "keyword_regex",
+        "view": "heldback_dev_to_public_test",
+        "ba": 0.505,
+        "auroc": 0.505,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "heldback"
+      },
+      {
         "subtask": "jailbreak",
         "baseline": "length",
         "view": "heldback_dev_to_public_test",
-        "ba": 0.562,
-        "auroc": 0.559,
+        "ba": 0.58,
+        "auroc": 0.56,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3845,8 +3850,8 @@
         "subtask": "jailbreak",
         "baseline": "char_ngram_logreg",
         "view": "heldback_dev_to_public_test",
-        "ba": 0.829,
-        "auroc": 0.918,
+        "ba": 0.804,
+        "auroc": 0.892,
         "constant_prediction": false,
         "C": 10.0,
         "pass": false,
@@ -3856,8 +3861,8 @@
         "subtask": "jailbreak",
         "baseline": "bow_logreg",
         "view": "heldback_dev_to_public_test",
-        "ba": 0.809,
-        "auroc": 0.908,
+        "ba": 0.786,
+        "auroc": 0.885,
         "constant_prediction": false,
         "C": 10.0,
         "pass": false,
@@ -3867,8 +3872,8 @@
         "subtask": "leakage",
         "baseline": "source_id",
         "view": "heldback_dev_to_public_test",
-        "ba": 0.538,
-        "auroc": 0.604,
+        "ba": 0.533,
+        "auroc": 0.595,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3878,8 +3883,8 @@
         "subtask": "leakage",
         "baseline": "keyword_regex",
         "view": "heldback_dev_to_public_test",
-        "ba": 0.531,
-        "auroc": 0.531,
+        "ba": 0.53,
+        "auroc": 0.53,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3889,8 +3894,8 @@
         "subtask": "leakage",
         "baseline": "length",
         "view": "heldback_dev_to_public_test",
-        "ba": 0.502,
-        "auroc": 0.557,
+        "ba": 0.501,
+        "auroc": 0.558,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3900,8 +3905,8 @@
         "subtask": "leakage",
         "baseline": "char_ngram_logreg",
         "view": "heldback_dev_to_public_test",
-        "ba": 0.763,
-        "auroc": 0.84,
+        "ba": 0.756,
+        "auroc": 0.832,
         "constant_prediction": false,
         "C": 100.0,
         "pass": false,
@@ -3911,8 +3916,8 @@
         "subtask": "leakage",
         "baseline": "bow_logreg",
         "view": "heldback_dev_to_public_test",
-        "ba": 0.72,
-        "auroc": 0.801,
+        "ba": 0.716,
+        "auroc": 0.794,
         "constant_prediction": false,
         "C": 10.0,
         "pass": false,
@@ -3922,19 +3927,19 @@
         "subtask": "injection",
         "baseline": "source_id",
         "view": "heldback_dev_to_private",
-        "ba": 0.644,
-        "auroc": 0.763,
+        "ba": 0.588,
+        "auroc": 0.718,
         "constant_prediction": false,
         "C": null,
-        "pass": false,
+        "pass": true,
         "half": "heldback"
       },
       {
         "subtask": "injection",
         "baseline": "keyword_regex",
         "view": "heldback_dev_to_private",
-        "ba": 0.504,
-        "auroc": 0.504,
+        "ba": 0.501,
+        "auroc": 0.501,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3944,8 +3949,8 @@
         "subtask": "injection",
         "baseline": "length",
         "view": "heldback_dev_to_private",
-        "ba": 0.611,
-        "auroc": 0.577,
+        "ba": 0.616,
+        "auroc": 0.592,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3956,7 +3961,7 @@
         "baseline": "char_ngram_logreg",
         "view": "heldback_dev_to_private",
         "ba": 0.663,
-        "auroc": 0.722,
+        "auroc": 0.731,
         "constant_prediction": false,
         "C": 10.0,
         "pass": true,
@@ -3966,19 +3971,19 @@
         "subtask": "injection",
         "baseline": "bow_logreg",
         "view": "heldback_dev_to_private",
-        "ba": 0.644,
-        "auroc": 0.739,
+        "ba": 0.678,
+        "auroc": 0.752,
         "constant_prediction": false,
-        "C": 100.0,
-        "pass": true,
+        "C": 10.0,
+        "pass": false,
         "half": "heldback"
       },
       {
         "subtask": "jailbreak",
         "baseline": "source_id",
         "view": "heldback_dev_to_private",
-        "ba": 0.649,
-        "auroc": 0.685,
+        "ba": 0.64,
+        "auroc": 0.665,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3988,8 +3993,8 @@
         "subtask": "jailbreak",
         "baseline": "keyword_regex",
         "view": "heldback_dev_to_private",
-        "ba": 0.524,
-        "auroc": 0.524,
+        "ba": 0.518,
+        "auroc": 0.518,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -3999,7 +4004,7 @@
         "subtask": "jailbreak",
         "baseline": "length",
         "view": "heldback_dev_to_private",
-        "ba": 0.626,
+        "ba": 0.643,
         "auroc": 0.671,
         "constant_prediction": false,
         "C": null,
@@ -4010,8 +4015,8 @@
         "subtask": "jailbreak",
         "baseline": "char_ngram_logreg",
         "view": "heldback_dev_to_private",
-        "ba": 0.808,
-        "auroc": 0.907,
+        "ba": 0.782,
+        "auroc": 0.889,
         "constant_prediction": false,
         "C": 10.0,
         "pass": false,
@@ -4021,8 +4026,8 @@
         "subtask": "jailbreak",
         "baseline": "bow_logreg",
         "view": "heldback_dev_to_private",
-        "ba": 0.812,
-        "auroc": 0.903,
+        "ba": 0.811,
+        "auroc": 0.884,
         "constant_prediction": false,
         "C": 10.0,
         "pass": false,
@@ -4032,8 +4037,8 @@
         "subtask": "leakage",
         "baseline": "source_id",
         "view": "heldback_dev_to_private",
-        "ba": 0.599,
-        "auroc": 0.693,
+        "ba": 0.591,
+        "auroc": 0.676,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -4043,8 +4048,8 @@
         "subtask": "leakage",
         "baseline": "keyword_regex",
         "view": "heldback_dev_to_private",
-        "ba": 0.581,
-        "auroc": 0.581,
+        "ba": 0.578,
+        "auroc": 0.578,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -4055,7 +4060,7 @@
         "baseline": "length",
         "view": "heldback_dev_to_private",
         "ba": 0.507,
-        "auroc": 0.535,
+        "auroc": 0.532,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -4065,8 +4070,8 @@
         "subtask": "leakage",
         "baseline": "char_ngram_logreg",
         "view": "heldback_dev_to_private",
-        "ba": 0.802,
-        "auroc": 0.891,
+        "ba": 0.79,
+        "auroc": 0.877,
         "constant_prediction": false,
         "C": 100.0,
         "pass": false,
@@ -4076,8 +4081,8 @@
         "subtask": "leakage",
         "baseline": "bow_logreg",
         "view": "heldback_dev_to_private",
-        "ba": 0.784,
-        "auroc": 0.864,
+        "ba": 0.771,
+        "auroc": 0.847,
         "constant_prediction": false,
         "C": 10.0,
         "pass": false,
@@ -4087,8 +4092,8 @@
         "subtask": "injection",
         "baseline": "source_id",
         "view": "heldback_test_and_private_to_dev",
-        "ba": 0.599,
-        "auroc": 0.672,
+        "ba": 0.568,
+        "auroc": 0.636,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -4109,8 +4114,8 @@
         "subtask": "injection",
         "baseline": "length",
         "view": "heldback_test_and_private_to_dev",
-        "ba": 0.505,
-        "auroc": 0.531,
+        "ba": 0.522,
+        "auroc": 0.503,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -4120,8 +4125,8 @@
         "subtask": "injection",
         "baseline": "char_ngram_logreg",
         "view": "heldback_test_and_private_to_dev",
-        "ba": 0.837,
-        "auroc": 0.923,
+        "ba": 0.842,
+        "auroc": 0.931,
         "constant_prediction": false,
         "C": 10.0,
         "pass": false,
@@ -4131,8 +4136,8 @@
         "subtask": "injection",
         "baseline": "bow_logreg",
         "view": "heldback_test_and_private_to_dev",
-        "ba": 0.862,
-        "auroc": 0.943,
+        "ba": 0.898,
+        "auroc": 0.949,
         "constant_prediction": false,
         "C": 10.0,
         "pass": false,
@@ -4142,8 +4147,8 @@
         "subtask": "jailbreak",
         "baseline": "source_id",
         "view": "heldback_test_and_private_to_dev",
-        "ba": 0.628,
-        "auroc": 0.641,
+        "ba": 0.626,
+        "auroc": 0.643,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -4153,8 +4158,8 @@
         "subtask": "jailbreak",
         "baseline": "keyword_regex",
         "view": "heldback_test_and_private_to_dev",
-        "ba": 0.514,
-        "auroc": 0.514,
+        "ba": 0.509,
+        "auroc": 0.509,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -4164,8 +4169,8 @@
         "subtask": "jailbreak",
         "baseline": "length",
         "view": "heldback_test_and_private_to_dev",
-        "ba": 0.583,
-        "auroc": 0.621,
+        "ba": 0.614,
+        "auroc": 0.614,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -4175,10 +4180,10 @@
         "subtask": "jailbreak",
         "baseline": "char_ngram_logreg",
         "view": "heldback_test_and_private_to_dev",
-        "ba": 0.909,
-        "auroc": 0.976,
+        "ba": 0.888,
+        "auroc": 0.965,
         "constant_prediction": false,
-        "C": 10.0,
+        "C": 100.0,
         "pass": false,
         "half": "heldback"
       },
@@ -4186,10 +4191,10 @@
         "subtask": "jailbreak",
         "baseline": "bow_logreg",
         "view": "heldback_test_and_private_to_dev",
-        "ba": 0.94,
-        "auroc": 0.984,
+        "ba": 0.918,
+        "auroc": 0.969,
         "constant_prediction": false,
-        "C": 10.0,
+        "C": 100.0,
         "pass": false,
         "half": "heldback"
       },
@@ -4197,8 +4202,8 @@
         "subtask": "leakage",
         "baseline": "source_id",
         "view": "heldback_test_and_private_to_dev",
-        "ba": 0.573,
-        "auroc": 0.669,
+        "ba": 0.567,
+        "auroc": 0.657,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -4208,8 +4213,8 @@
         "subtask": "leakage",
         "baseline": "keyword_regex",
         "view": "heldback_test_and_private_to_dev",
-        "ba": 0.514,
-        "auroc": 0.514,
+        "ba": 0.508,
+        "auroc": 0.508,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -4220,7 +4225,7 @@
         "baseline": "length",
         "view": "heldback_test_and_private_to_dev",
         "ba": 0.513,
-        "auroc": 0.581,
+        "auroc": 0.575,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -4230,8 +4235,8 @@
         "subtask": "leakage",
         "baseline": "char_ngram_logreg",
         "view": "heldback_test_and_private_to_dev",
-        "ba": 0.862,
-        "auroc": 0.927,
+        "ba": 0.852,
+        "auroc": 0.921,
         "constant_prediction": false,
         "C": 10.0,
         "pass": false,
@@ -4241,120 +4246,120 @@
         "subtask": "leakage",
         "baseline": "bow_logreg",
         "view": "heldback_test_and_private_to_dev",
-        "ba": 0.845,
-        "auroc": 0.924,
-        "constant_prediction": false,
-        "C": 100.0,
-        "pass": false,
-        "half": "heldback"
-      },
-      {
-        "subtask": "injection",
-        "baseline": "source_id",
-        "view": "heldback_seeded_groups",
-        "ba": 0.664,
-        "auroc": 0.743,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "heldback"
-      },
-      {
-        "subtask": "injection",
-        "baseline": "keyword_regex",
-        "view": "heldback_seeded_groups",
-        "ba": 0.503,
-        "auroc": 0.503,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "heldback"
-      },
-      {
-        "subtask": "injection",
-        "baseline": "length",
-        "view": "heldback_seeded_groups",
-        "ba": 0.512,
-        "auroc": 0.545,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "heldback"
-      },
-      {
-        "subtask": "injection",
-        "baseline": "char_ngram_logreg",
-        "view": "heldback_seeded_groups",
-        "ba": 0.809,
-        "auroc": 0.909,
-        "constant_prediction": false,
-        "C": 10.0,
-        "pass": false,
-        "half": "heldback"
-      },
-      {
-        "subtask": "injection",
-        "baseline": "bow_logreg",
-        "view": "heldback_seeded_groups",
         "ba": 0.841,
-        "auroc": 0.923,
-        "constant_prediction": false,
-        "C": 10.0,
-        "pass": false,
-        "half": "heldback"
-      },
-      {
-        "subtask": "jailbreak",
-        "baseline": "source_id",
-        "view": "heldback_seeded_groups",
-        "ba": 0.592,
-        "auroc": 0.634,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "heldback"
-      },
-      {
-        "subtask": "jailbreak",
-        "baseline": "keyword_regex",
-        "view": "heldback_seeded_groups",
-        "ba": 0.515,
-        "auroc": 0.515,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "heldback"
-      },
-      {
-        "subtask": "jailbreak",
-        "baseline": "length",
-        "view": "heldback_seeded_groups",
-        "ba": 0.542,
-        "auroc": 0.566,
-        "constant_prediction": false,
-        "C": null,
-        "pass": true,
-        "half": "heldback"
-      },
-      {
-        "subtask": "jailbreak",
-        "baseline": "char_ngram_logreg",
-        "view": "heldback_seeded_groups",
-        "ba": 0.853,
-        "auroc": 0.95,
+        "auroc": 0.917,
         "constant_prediction": false,
         "C": 100.0,
         "pass": false,
         "half": "heldback"
       },
       {
+        "subtask": "injection",
+        "baseline": "source_id",
+        "view": "heldback_seeded_groups",
+        "ba": 0.569,
+        "auroc": 0.618,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "heldback"
+      },
+      {
+        "subtask": "injection",
+        "baseline": "keyword_regex",
+        "view": "heldback_seeded_groups",
+        "ba": 0.507,
+        "auroc": 0.507,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "heldback"
+      },
+      {
+        "subtask": "injection",
+        "baseline": "length",
+        "view": "heldback_seeded_groups",
+        "ba": 0.561,
+        "auroc": 0.56,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "heldback"
+      },
+      {
+        "subtask": "injection",
+        "baseline": "char_ngram_logreg",
+        "view": "heldback_seeded_groups",
+        "ba": 0.839,
+        "auroc": 0.919,
+        "constant_prediction": false,
+        "C": 100.0,
+        "pass": false,
+        "half": "heldback"
+      },
+      {
+        "subtask": "injection",
+        "baseline": "bow_logreg",
+        "view": "heldback_seeded_groups",
+        "ba": 0.872,
+        "auroc": 0.929,
+        "constant_prediction": false,
+        "C": 10.0,
+        "pass": false,
+        "half": "heldback"
+      },
+      {
+        "subtask": "jailbreak",
+        "baseline": "source_id",
+        "view": "heldback_seeded_groups",
+        "ba": 0.615,
+        "auroc": 0.642,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "heldback"
+      },
+      {
+        "subtask": "jailbreak",
+        "baseline": "keyword_regex",
+        "view": "heldback_seeded_groups",
+        "ba": 0.505,
+        "auroc": 0.505,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "heldback"
+      },
+      {
+        "subtask": "jailbreak",
+        "baseline": "length",
+        "view": "heldback_seeded_groups",
+        "ba": 0.603,
+        "auroc": 0.636,
+        "constant_prediction": false,
+        "C": null,
+        "pass": true,
+        "half": "heldback"
+      },
+      {
+        "subtask": "jailbreak",
+        "baseline": "char_ngram_logreg",
+        "view": "heldback_seeded_groups",
+        "ba": 0.862,
+        "auroc": 0.954,
+        "constant_prediction": false,
+        "C": 10.0,
+        "pass": false,
+        "half": "heldback"
+      },
+      {
         "subtask": "jailbreak",
         "baseline": "bow_logreg",
         "view": "heldback_seeded_groups",
-        "ba": 0.902,
-        "auroc": 0.966,
+        "ba": 0.872,
+        "auroc": 0.952,
         "constant_prediction": false,
-        "C": 10.0,
+        "C": 100.0,
         "pass": false,
         "half": "heldback"
       },
@@ -4362,8 +4367,8 @@
         "subtask": "leakage",
         "baseline": "source_id",
         "view": "heldback_seeded_groups",
-        "ba": 0.588,
-        "auroc": 0.621,
+        "ba": 0.573,
+        "auroc": 0.596,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -4373,8 +4378,8 @@
         "subtask": "leakage",
         "baseline": "keyword_regex",
         "view": "heldback_seeded_groups",
-        "ba": 0.548,
-        "auroc": 0.548,
+        "ba": 0.546,
+        "auroc": 0.546,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -4384,8 +4389,8 @@
         "subtask": "leakage",
         "baseline": "length",
         "view": "heldback_seeded_groups",
-        "ba": 0.565,
-        "auroc": 0.554,
+        "ba": 0.581,
+        "auroc": 0.55,
         "constant_prediction": false,
         "C": null,
         "pass": true,
@@ -4395,8 +4400,8 @@
         "subtask": "leakage",
         "baseline": "char_ngram_logreg",
         "view": "heldback_seeded_groups",
-        "ba": 0.845,
-        "auroc": 0.931,
+        "ba": 0.848,
+        "auroc": 0.922,
         "constant_prediction": false,
         "C": 10.0,
         "pass": false,
@@ -4406,63 +4411,62 @@
         "subtask": "leakage",
         "baseline": "bow_logreg",
         "view": "heldback_seeded_groups",
-        "ba": 0.875,
-        "auroc": 0.939,
+        "ba": 0.852,
+        "auroc": 0.917,
         "constant_prediction": false,
-        "C": 10.0,
+        "C": 100.0,
         "pass": false,
         "half": "heldback"
       }
     ],
     "failures": [
-      "in_sample/public_test/injection/char_ngram_logreg: BA 0.804, AUROC 0.866",
-      "in_sample/public_test/injection/bow_logreg: BA 0.797, AUROC 0.888",
-      "in_sample/public_test/jailbreak/char_ngram_logreg: BA 0.873, AUROC 0.94",
-      "in_sample/public_test/jailbreak/bow_logreg: BA 0.856, AUROC 0.945",
-      "in_sample/public_test/leakage/char_ngram_logreg: BA 0.829, AUROC 0.903",
-      "in_sample/public_test/leakage/bow_logreg: BA 0.843, AUROC 0.92",
-      "in_sample/test_with_private/injection/char_ngram_logreg: BA 0.83, AUROC 0.893",
-      "in_sample/test_with_private/injection/bow_logreg: BA 0.842, AUROC 0.912",
-      "in_sample/test_with_private/jailbreak/char_ngram_logreg: BA 0.885, AUROC 0.949",
-      "in_sample/test_with_private/jailbreak/bow_logreg: BA 0.87, AUROC 0.946",
-      "in_sample/test_with_private/leakage/char_ngram_logreg: BA 0.848, AUROC 0.919",
-      "in_sample/test_with_private/leakage/bow_logreg: BA 0.866, AUROC 0.938",
-      "heldback/heldback_half_a_to_half_b/injection/char_ngram_logreg: BA 0.794, AUROC 0.861",
-      "heldback/heldback_half_a_to_half_b/injection/bow_logreg: BA 0.808, AUROC 0.876",
-      "heldback/heldback_half_a_to_half_b/jailbreak/char_ngram_logreg: BA 0.88, AUROC 0.951",
-      "heldback/heldback_half_a_to_half_b/jailbreak/bow_logreg: BA 0.877, AUROC 0.95",
-      "heldback/heldback_half_a_to_half_b/leakage/char_ngram_logreg: BA 0.841, AUROC 0.918",
-      "heldback/heldback_half_a_to_half_b/leakage/bow_logreg: BA 0.837, AUROC 0.923",
-      "heldback/heldback_half_b_to_half_a/injection/source_id: BA 0.669, AUROC 0.76",
-      "heldback/heldback_half_b_to_half_a/injection/char_ngram_logreg: BA 0.82, AUROC 0.898",
-      "heldback/heldback_half_b_to_half_a/injection/bow_logreg: BA 0.821, AUROC 0.901",
-      "heldback/heldback_half_b_to_half_a/jailbreak/char_ngram_logreg: BA 0.882, AUROC 0.953",
-      "heldback/heldback_half_b_to_half_a/jailbreak/bow_logreg: BA 0.869, AUROC 0.957",
-      "heldback/heldback_half_b_to_half_a/leakage/char_ngram_logreg: BA 0.877, AUROC 0.935",
-      "heldback/heldback_half_b_to_half_a/leakage/bow_logreg: BA 0.875, AUROC 0.935",
-      "heldback/heldback_dev_to_public_test/injection/char_ngram_logreg: BA 0.716, AUROC 0.82",
-      "heldback/heldback_dev_to_public_test/injection/bow_logreg: BA 0.72, AUROC 0.821",
-      "heldback/heldback_dev_to_public_test/jailbreak/char_ngram_logreg: BA 0.829, AUROC 0.918",
-      "heldback/heldback_dev_to_public_test/jailbreak/bow_logreg: BA 0.809, AUROC 0.908",
-      "heldback/heldback_dev_to_public_test/leakage/char_ngram_logreg: BA 0.763, AUROC 0.84",
-      "heldback/heldback_dev_to_public_test/leakage/bow_logreg: BA 0.72, AUROC 0.801",
-      "heldback/heldback_dev_to_private/injection/source_id: BA 0.644, AUROC 0.763",
-      "heldback/heldback_dev_to_private/jailbreak/char_ngram_logreg: BA 0.808, AUROC 0.907",
-      "heldback/heldback_dev_to_private/jailbreak/bow_logreg: BA 0.812, AUROC 0.903",
-      "heldback/heldback_dev_to_private/leakage/char_ngram_logreg: BA 0.802, AUROC 0.891",
-      "heldback/heldback_dev_to_private/leakage/bow_logreg: BA 0.784, AUROC 0.864",
-      "heldback/heldback_test_and_private_to_dev/injection/char_ngram_logreg: BA 0.837, AUROC 0.923",
-      "heldback/heldback_test_and_private_to_dev/injection/bow_logreg: BA 0.862, AUROC 0.943",
-      "heldback/heldback_test_and_private_to_dev/jailbreak/char_ngram_logreg: BA 0.909, AUROC 0.976",
-      "heldback/heldback_test_and_private_to_dev/jailbreak/bow_logreg: BA 0.94, AUROC 0.984",
-      "heldback/heldback_test_and_private_to_dev/leakage/char_ngram_logreg: BA 0.862, AUROC 0.927",
-      "heldback/heldback_test_and_private_to_dev/leakage/bow_logreg: BA 0.845, AUROC 0.924",
-      "heldback/heldback_seeded_groups/injection/char_ngram_logreg: BA 0.809, AUROC 0.909",
-      "heldback/heldback_seeded_groups/injection/bow_logreg: BA 0.841, AUROC 0.923",
-      "heldback/heldback_seeded_groups/jailbreak/char_ngram_logreg: BA 0.853, AUROC 0.95",
-      "heldback/heldback_seeded_groups/jailbreak/bow_logreg: BA 0.902, AUROC 0.966",
-      "heldback/heldback_seeded_groups/leakage/char_ngram_logreg: BA 0.845, AUROC 0.931",
-      "heldback/heldback_seeded_groups/leakage/bow_logreg: BA 0.875, AUROC 0.939"
+      "in_sample/public_test/injection/char_ngram_logreg: BA 0.792, AUROC 0.864",
+      "in_sample/public_test/injection/bow_logreg: BA 0.818, AUROC 0.897",
+      "in_sample/public_test/jailbreak/char_ngram_logreg: BA 0.859, AUROC 0.921",
+      "in_sample/public_test/jailbreak/bow_logreg: BA 0.85, AUROC 0.931",
+      "in_sample/public_test/leakage/char_ngram_logreg: BA 0.811, AUROC 0.899",
+      "in_sample/public_test/leakage/bow_logreg: BA 0.831, AUROC 0.912",
+      "in_sample/test_with_private/injection/char_ngram_logreg: BA 0.795, AUROC 0.884",
+      "in_sample/test_with_private/injection/bow_logreg: BA 0.824, AUROC 0.898",
+      "in_sample/test_with_private/jailbreak/char_ngram_logreg: BA 0.867, AUROC 0.937",
+      "in_sample/test_with_private/jailbreak/bow_logreg: BA 0.87, AUROC 0.939",
+      "in_sample/test_with_private/leakage/char_ngram_logreg: BA 0.852, AUROC 0.925",
+      "in_sample/test_with_private/leakage/bow_logreg: BA 0.859, AUROC 0.926",
+      "heldback/heldback_half_a_to_half_b/injection/char_ngram_logreg: BA 0.763, AUROC 0.844",
+      "heldback/heldback_half_a_to_half_b/injection/bow_logreg: BA 0.76, AUROC 0.835",
+      "heldback/heldback_half_a_to_half_b/jailbreak/char_ngram_logreg: BA 0.853, AUROC 0.935",
+      "heldback/heldback_half_a_to_half_b/jailbreak/bow_logreg: BA 0.846, AUROC 0.925",
+      "heldback/heldback_half_a_to_half_b/leakage/char_ngram_logreg: BA 0.842, AUROC 0.914",
+      "heldback/heldback_half_a_to_half_b/leakage/bow_logreg: BA 0.818, AUROC 0.907",
+      "heldback/heldback_half_b_to_half_a/injection/char_ngram_logreg: BA 0.827, AUROC 0.893",
+      "heldback/heldback_half_b_to_half_a/injection/bow_logreg: BA 0.816, AUROC 0.905",
+      "heldback/heldback_half_b_to_half_a/jailbreak/char_ngram_logreg: BA 0.824, AUROC 0.918",
+      "heldback/heldback_half_b_to_half_a/jailbreak/bow_logreg: BA 0.839, AUROC 0.922",
+      "heldback/heldback_half_b_to_half_a/leakage/char_ngram_logreg: BA 0.828, AUROC 0.907",
+      "heldback/heldback_half_b_to_half_a/leakage/bow_logreg: BA 0.839, AUROC 0.915",
+      "heldback/heldback_dev_to_public_test/injection/char_ngram_logreg: BA 0.729, AUROC 0.826",
+      "heldback/heldback_dev_to_public_test/injection/bow_logreg: BA 0.727, AUROC 0.833",
+      "heldback/heldback_dev_to_public_test/jailbreak/char_ngram_logreg: BA 0.804, AUROC 0.892",
+      "heldback/heldback_dev_to_public_test/jailbreak/bow_logreg: BA 0.786, AUROC 0.885",
+      "heldback/heldback_dev_to_public_test/leakage/char_ngram_logreg: BA 0.756, AUROC 0.832",
+      "heldback/heldback_dev_to_public_test/leakage/bow_logreg: BA 0.716, AUROC 0.794",
+      "heldback/heldback_dev_to_private/injection/bow_logreg: BA 0.678, AUROC 0.752",
+      "heldback/heldback_dev_to_private/jailbreak/char_ngram_logreg: BA 0.782, AUROC 0.889",
+      "heldback/heldback_dev_to_private/jailbreak/bow_logreg: BA 0.811, AUROC 0.884",
+      "heldback/heldback_dev_to_private/leakage/char_ngram_logreg: BA 0.79, AUROC 0.877",
+      "heldback/heldback_dev_to_private/leakage/bow_logreg: BA 0.771, AUROC 0.847",
+      "heldback/heldback_test_and_private_to_dev/injection/char_ngram_logreg: BA 0.842, AUROC 0.931",
+      "heldback/heldback_test_and_private_to_dev/injection/bow_logreg: BA 0.898, AUROC 0.949",
+      "heldback/heldback_test_and_private_to_dev/jailbreak/char_ngram_logreg: BA 0.888, AUROC 0.965",
+      "heldback/heldback_test_and_private_to_dev/jailbreak/bow_logreg: BA 0.918, AUROC 0.969",
+      "heldback/heldback_test_and_private_to_dev/leakage/char_ngram_logreg: BA 0.852, AUROC 0.921",
+      "heldback/heldback_test_and_private_to_dev/leakage/bow_logreg: BA 0.841, AUROC 0.917",
+      "heldback/heldback_seeded_groups/injection/char_ngram_logreg: BA 0.839, AUROC 0.919",
+      "heldback/heldback_seeded_groups/injection/bow_logreg: BA 0.872, AUROC 0.929",
+      "heldback/heldback_seeded_groups/jailbreak/char_ngram_logreg: BA 0.862, AUROC 0.954",
+      "heldback/heldback_seeded_groups/jailbreak/bow_logreg: BA 0.872, AUROC 0.952",
+      "heldback/heldback_seeded_groups/leakage/char_ngram_logreg: BA 0.848, AUROC 0.922",
+      "heldback/heldback_seeded_groups/leakage/bow_logreg: BA 0.852, AUROC 0.917"
     ],
     "pass": false,
     "provisional": {
@@ -4474,47 +4478,47 @@
         "in_sample_pass": false,
         "heldback_pass": false,
         "cells": 120,
-        "failing_cells": 48,
+        "failing_cells": 47,
         "max": {
           "injection": {
             "heldback": {
-              "ba": 0.862,
+              "ba": 0.898,
               "ba_at": "heldback_test_and_private_to_dev/bow_logreg",
-              "auroc": 0.943,
+              "auroc": 0.949,
               "auroc_at": "heldback_test_and_private_to_dev/bow_logreg"
             },
             "in_sample": {
-              "ba": 0.842,
+              "ba": 0.824,
               "ba_at": "test_with_private/bow_logreg",
-              "auroc": 0.912,
+              "auroc": 0.898,
               "auroc_at": "test_with_private/bow_logreg"
             }
           },
           "jailbreak": {
             "heldback": {
-              "ba": 0.94,
+              "ba": 0.918,
               "ba_at": "heldback_test_and_private_to_dev/bow_logreg",
-              "auroc": 0.984,
+              "auroc": 0.969,
               "auroc_at": "heldback_test_and_private_to_dev/bow_logreg"
             },
             "in_sample": {
-              "ba": 0.885,
-              "ba_at": "test_with_private/char_ngram_logreg",
-              "auroc": 0.949,
-              "auroc_at": "test_with_private/char_ngram_logreg"
+              "ba": 0.87,
+              "ba_at": "test_with_private/bow_logreg",
+              "auroc": 0.939,
+              "auroc_at": "test_with_private/bow_logreg"
             }
           },
           "leakage": {
             "heldback": {
-              "ba": 0.877,
-              "ba_at": "heldback_half_b_to_half_a/char_ngram_logreg",
-              "auroc": 0.939,
-              "auroc_at": "heldback_seeded_groups/bow_logreg"
+              "ba": 0.852,
+              "ba_at": "heldback_test_and_private_to_dev/char_ngram_logreg",
+              "auroc": 0.922,
+              "auroc_at": "heldback_seeded_groups/char_ngram_logreg"
             },
             "in_sample": {
-              "ba": 0.866,
+              "ba": 0.859,
               "ba_at": "test_with_private/bow_logreg",
-              "auroc": 0.938,
+              "auroc": 0.926,
               "auroc_at": "test_with_private/bow_logreg"
             }
           }
@@ -4607,12 +4611,12 @@
     "v1_build_files_found": 56,
     "public_test": {
       "ok": true,
-      "test_rows": 6319,
+      "test_rows": 6475,
       "reference_rows": {
         "examined_smoke_pilot": 479,
         "results_ledgers": 2975,
         "v1_builds_and_samples": 37369,
-        "e2_dev": 1422
+        "e2_dev": 1460
       },
       "overlapping_test_rows": 0,
       "counts": {
@@ -4625,13 +4629,13 @@
     },
     "private": {
       "ok": true,
-      "test_rows": 1585,
+      "test_rows": 1633,
       "reference_rows": {
         "examined_smoke_pilot": 479,
         "results_ledgers": 2975,
         "v1_builds_and_samples": 37369,
-        "e2_dev": 1422,
-        "e2_public_test": 6319
+        "e2_dev": 1460,
+        "e2_public_test": 6475
       },
       "overlapping_test_rows": 0,
       "counts": {
@@ -4647,14 +4651,11 @@
   "status": "pass",
   "failed": [],
   "publication": {
-    "ready": false,
-    "blockers": [
-      "194 public and 48 private disputed rows await the owner (needs-owner-review.jsonl)",
-      "content human second-label sample (ruling 7): pending human labels; publish the agreement rate first"
-    ],
+    "ready": true,
+    "blockers": [],
     "awaiting_owner": {
-      "public": 194,
-      "private": 48
+      "public": 0,
+      "private": 0
     }
   }
 }
