@@ -27,3 +27,9 @@ Decided by the project owner on 3 October 2026, through the edition 2 decisions 
 | 16 | Laya's 512-token limit | Keep 512 (the checkpoint's own limit). Every truncated row is flagged in Laya's results and disclosed. |
 | 17 | Prompt-attack shortcut check | Keep fixing the data. If the check still fails on held-back rows after this round, prompt-attack scores are published as provisional with the source-style caveat. |
 | 18 | Rows sharing text with a benchmarked vendor's published docs | Excluded from test and the unpublished slice under the strict 8-word rule, including the 9 rows that share only the stock DAN preamble with TypeSafe's cookbook. Prompt-attack scores are published as provisional (ruling 17), since the held-back shortcut check still fails. |
+
+## Additional rulings, 5 October 2026
+
+| # | Question | Ruling |
+|---|---|---|
+| 19 | How are edition 2 results published? | Two pieces. A blog post written like Cloudflare's Clef launch post (https://blog.cloudflare.com/clef-decision-models/): what a decision model is, how we tested, a headline chart and per-suite tables, then our observations, limits and disclosures, and links. A separate leaderboard page holds the full results; the post links to it. Edition 1 results are not shown anywhere. The post quotes full-run numbers only; it can be drafted now with placeholders. Open: the leaderboard's home. Recommended: the raxIT site page `/labs/decision-models-as-guardrails` (branch `feat/guardrails-leaderboard`), with the benchmark repo's `site/leaderboard` removed once that page is approved. |
