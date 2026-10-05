@@ -1,6 +1,6 @@
 """Stage edition 2 for Hugging Face and rebuild its canonical rows locally. Nothing here uploads.
 
-    uv run python -m goldrails_dataset.publish_e2 stage                 # dataset/publish/v2.0-rc1/, gates, load check
+    uv run python -m goldrails_dataset.publish_e2 stage                 # dataset/publish/release-1.0.0/, gates, load check
     uv run python -m goldrails_dataset.publish_e2 gates [--data DIR]    # the privacy gates on a staged folder
     uv run python -m goldrails_dataset.publish_e2 parity [--data DIR]   # staged rows + local parts == the build
     uv run python -m goldrails_dataset.publish_e2 materialize --data DIR --out DIR
@@ -37,6 +37,7 @@ import json
 import shutil
 import subprocess
 import sys
+import re
 import tempfile
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -48,12 +49,9 @@ ROOT = Path(__file__).resolve().parents[1]          # dataset/
 REPO = ROOT.parent
 E2 = ROOT / "edition2"
 BUILD = E2 / "build"
-STAGE = ROOT / "publish" / "v2.0-rc1"
-VERSION = "2.0.0-rc.1"                               # pre-release: labels still under owner review
-HUB_TAG = "v2.0.0-rc.1"
+STAGE = ROOT / "publish" / "release-1.0.0"
+VERSION = "1.0.0"                                    # the first public release
 HUB_REPO = "raxITLabs/decision-models-as-guardrails"
-EDITION1_REVISION = "33f381985bddfc25f0de779e56883d795f11e8e2"   # Hub main before edition 2 (v1.3, complete text)
-EDITION1_TAG = "v1"
 CONFIGS = {"F1": "content", "F2": "prompt_attacks", "F3": "denied_topics", "F4": "word_filters",
            "F5": "sensitive_information", "F6": "grounding"}
 SUITE_OF = {"F1": "content", "F2": "prompt_attacks", "F3": "denied_topics", "F4": "word_filters", "F5": "pii",
@@ -61,9 +59,13 @@ SUITE_OF = {"F1": "content", "F2": "prompt_attacks", "F3": "denied_topics", "F4"
 SPLITS = ("dev", "test")
 CANONICAL = "canonical.json"
 PUBLISHED_ONLY = ("redistribution", "canonical_row_hash", "withheld")
-WITHHELD_REASON = ("licence: the source's text is not cleared in dataset/release/redistribution.json (owner ruling "
-                   "10); rebuild it locally, see RECONSTRUCT.md")
-DISCLOSURE_PLACEHOLDERS = 4
+WITHHELD_REASON = ("licence: the source's licence review is not finished, so its text does not ship here; rebuild it "
+                   "locally, see RECONSTRUCT.md")
+DISCLOSURES = E2 / "card-disclosures.md"
+# Public files describe this dataset as a first release: no internal history, owner process or open placeholders.
+PUBLIC_TEXT_BANNED = re.compile(r"\bedition\b|release candidate|\bTODO\b|\bruling\b|\bowner\b|\btune split\b|"
+                                r"\bv1\.\d\b", re.I)
+PLACEHOLDER = re.compile(r"\[[^\]\n]*\](?!\()")   # an unfilled [bracket] in Markdown, not a [link](url)
 
 
 class PublishError(RuntimeError):
@@ -229,7 +231,7 @@ def stage(out: Path = STAGE, build: Path = BUILD, root: Path = E2, check_load: b
 
     commit = _git("rev-parse", "HEAD")
     code_ref = code_ref or commit
-    canonical = {"version": VERSION, "hub_tag": HUB_TAG, "code": {"repository": PUBLIC_REPO, "ref": code_ref},
+    canonical = {"version": VERSION, "code": {"repository": PUBLIC_REPO, "ref": code_ref},
                  "build_manifest_sha256": _sha(build / "manifest.json"),
                  "rule": "rows ship in build order; a row's canonical_row_hash is sha256 of the full row "
                          "(records.canonical); build_dataset_sha256 is records.dataset_hash of the full build file "
@@ -243,12 +245,15 @@ def stage(out: Path = STAGE, build: Path = BUILD, root: Path = E2, check_load: b
     problems = [f"{g}: {p}" for g, ps in gate.items() for p in ps]
     load = load_check(out, files) if check_load else []
     problems += load
-    report = {"version": VERSION, "hub_tag": HUB_TAG, "code_commit": commit,
+    wording = public_text_problems(out)
+    problems += [f"public_text: {w}" for w in wording]
+    report = {"version": VERSION, "code_commit": commit,
               "staged": str(out.relative_to(REPO)) if out.is_relative_to(REPO) else str(out), "counts": counts,
               "totals": {k: sum(c.get(k, 0) for c in counts.values()) for k in ("build", "text", "ids_only", "local_only")},
               "unpublished_slice_rows": canonical["unpublished_slice_rows"],
               "gates": {g: ("pass" if not ps else ps[:20]) for g, ps in gate.items()},
               "load_check": "skipped" if not check_load else ("pass" if not load else load),
+              "public_text": "pass" if not wording else wording[:40],
               "problems": problems}
     (out / "staging-report.json").write_text(json.dumps(report, indent=1) + "\n", encoding="utf-8")
     return report
@@ -480,10 +485,22 @@ def parity(data: Path = STAGE, root: Path = E2, build: Path = BUILD) -> dict:
 
 # --- side files ------------------------------------------------------------------------------------------------------
 
+def _public_note(note):
+    """Registry notes record who reviewed what; the public files only say whether the review is finished."""
+    if note and re.search(r"\bowner\b|\bClaude\b", note):
+        return "licence review not finished: ids, labels and hashes ship here, the text does not"
+    return note
+
+
+def _public_evidence(ev):
+    return re.sub(r"\s*\([^)]*\bv1\.\d[^)]*\)", "", ev) if ev else ev
+
+
 def _sources_table(per_source: dict, pol: dict) -> list:
     out = []
     for s in sorted(per_source):
-        e = pol["sources"].get(s) or {}
+        e = dict(pol["sources"].get(s) or {})
+        e["note"], e["evidence"] = _public_note(e.get("note")), _public_evidence(e.get("evidence"))
         out.append({"source": s, "rows": dict(sorted(per_source[s].items())),
                     "here": "text" if e2_local.text_cleared(s, pol) else "ids_only",
                     "basis": e.get("basis") or "no entry in dataset/release/redistribution.json (default ids_only)",
@@ -508,10 +525,10 @@ def _write_docs(out: Path, man: dict, files: list, pol: dict, code_ref: str, roo
     shutil.copyfile(root / "EXCLUDED.jsonl", out / "EXCLUDED.jsonl")
     ann = out / "annotations"
     ann.mkdir(exist_ok=True)
-    for src, dst in (("MODEL-TRAINING-OVERLAP.json", "model-training-overlap.json"),
-                     ("VENDOR-OVERLAP.md", "vendor-overlap.md")):
-        if (root / src).exists():
-            shutil.copyfile(root / src, ann / dst)
+    if (root / "MODEL-TRAINING-OVERLAP.json").exists():
+        txt = (root / "MODEL-TRAINING-OVERLAP.json").read_text(encoding="utf-8")
+        txt = txt.replace("each edition 2 row", "each row").replace("from edition 2", "from this dataset")
+        (ann / "model-training-overlap.json").write_text(txt, encoding="utf-8")
     (out / "README.md").write_text(card(files, man, reg, subtasks, code_ref, root), encoding="utf-8")
 
 
@@ -521,7 +538,7 @@ SUITE_DOCS = (("content", "content"), ("prompt_attacks", "prompt_attacks"), ("de
 
 def sources_md(reg: list, code_ref: str) -> str:
     lines = ["# Sources", "",
-             "Each source in edition 2, with its licence basis and the evidence recorded in "
+             "Each source in this dataset, with its licence basis and the evidence recorded in "
              "`dataset/release/redistribution.json` in the code repository. A source marked `ids_only` ships without "
              "text; RECONSTRUCT.md shows how to rebuild it. The upstream repository, pinned revision and split of "
              "each source are in the suite's own SOURCES.md:", ""]
@@ -532,9 +549,10 @@ def sources_md(reg: list, code_ref: str) -> str:
                      f"{', '.join(f'{k} {v}' for k, v in e['rows'].items())} |")
     lines += [""]
     for e in reg:
+        note = e["note"]
         bits = [f"Evidence: {e['evidence']}" if e["evidence"] else None,
                 f"Attribution: {e['attribution']}" if e["attribution"] else None,
-                f"Note: {e['note']}" if e["note"] else None]
+                f"Note: {note}" if note else None]
         bits = [b for b in bits if b]
         if bits:
             lines += [f"## {e['source']}", ""] + [f"- {b}" for b in bits] + [""]
@@ -555,9 +573,11 @@ def notice_md(reg: list) -> str:
             lines += [f"## {u['key']} ({u.get('licence_id')})", "", "```", u["copyright_notice"].strip(), "```", ""]
         elif not e["basis"].startswith("authored") and not (u and u.get("notice_required") is False):
             missing.append(e["source"])
-    lines += ["## Still to check", "",
-              "TODO (owner): no verbatim notice is on record for these sources that ship text: "
-              + (", ".join(missing) if missing else "none") + ". Sources that ship ids only carry no text here.", ""]
+    if missing:
+        lines += ["## Sources without a notice file", "",
+                  "We found no notice text to copy for " + ", ".join(missing) + ". Their licence and attribution are in "
+                  "SOURCES.md.", ""]
+    lines += ["Sources that ship ids only carry no text here.", ""]
     return "\n".join(lines) + "\n"
 
 
@@ -565,16 +585,17 @@ def rights_md(reg: list) -> str:
     text = [e for e in reg if e["here"] == "text"]
     ids = [e for e in reg if e["here"] != "text"]
     lines = ["# Rights", "",
-             "Owner ruling 10 (3 October 2026): while a source's licence review is not finished, publish its ids, "
-             "labels and hashes only, and rebuild the text locally from the original source. A source ships text "
-             "only when `dataset/release/redistribution.json` lists it with `mode: text` and `reviewed: true`.", "",
+             "While a source's licence review is not finished, this dataset ships its ids, labels and hashes only, "
+             "and you rebuild the text locally from the original source. A source ships text only when "
+             "`dataset/release/redistribution.json` in the code repository lists it with `mode: text` and "
+             "`reviewed: true`.", "",
              f"## Text ships ({len(text)} sources)", "", "| Source | Basis |", "|---|---|"]
     lines += [f"| {e['source']} | {e['basis']} |" for e in text]
     lines += ["", f"## Ids, labels and hashes only ({len(ids)} sources)", "", "| Source | Basis | Why no text yet |",
               "|---|---|---|"]
     lines += [f"| {e['source']} | {e['basis']} | "
               f"{'licence review not recorded as done' if not e['reviewed'] else 'mode is ids_only'} |" for e in ids]
-    lines += ["", "This is not legal advice. Uploading still needs the owner's approval.", ""]
+    lines += ["", "This is not legal advice.", ""]
     return "\n".join(lines) + "\n"
 
 
@@ -596,34 +617,46 @@ def reconstruct_md(files: list, code_ref: str) -> str:
         "rows may not rebuild outside the project. You need access to each source under its own licence. Rebuilding "
         "grants no rights that licence withholds.", "",
         "## Not in this dataset", "",
-        "- The unpublished slice of the test split (owner ruling 15). Every row in it comes from public upstream data, "
-        "so anyone can rebuild it. It is held back for contamination checks, not as a secret test.",
-        f"- {n_local} rows of the public build that this release candidate keeps local while the owner reviews them. "
-        "`canonical.json` counts them per file (`rows_local_only`). Their ids are not published.",
-        "- Rows whose label is disputed and waits for an owner ruling. They return to their split once ruled on.", ""])
+        "- A held-back slice of the test split. Every row in it comes from public upstream data, so anyone can "
+        "rebuild it. We keep it for contamination checks, not as a secret test.",
+        f"- {n_local} rows held back while their labels are checked. `canonical.json` counts them per file "
+        "(`rows_local_only`). Their ids are not published.",
+        "- Rows whose label is still disputed. They join their split once resolved.", ""])
 
 
 def changelog_md(files: list, code_ref: str, build: Path = BUILD) -> str:
     total = sum(f["n"] for f in files)
     return "\n".join([
         "# Changelog", "",
-        f"## {HUB_TAG}, staged {_today()}", "",
-        f"- Edition 2, release candidate {VERSION}: {total} rows in six configs, each with `dev` and `test` splits.",
-        f"- Built from the edition 2 build with manifest sha256 `{_sha(Path(build) / 'manifest.json')}`. Code: "
-        f"{PUBLIC_REPO} at `{code_ref}`.",
-        "- Labels are still under owner review, so this is a pre-release. The final edition 2 gets its own tag.",
-        "- Replaces the edition 1 files on the main branch. Edition 1's `tune` splits, its `bias` and `candidates` "
-        "configs, KNOWN_ISSUES.md and LABEL_REVIEW.json are not part of edition 2.", "",
-        "## Edition 1", "",
-        f"- Edition 1 stays at Hub revision `{EDITION1_REVISION}` (tag `{EDITION1_TAG}`), and its first upload at tag "
-        "`v0.0.1`. Results computed on edition 1 stay traceable through those revisions:", "",
-        "```python", "from datasets import load_dataset",
-        f"load_dataset(\"{HUB_REPO}\", \"content\", revision=\"{EDITION1_TAG}\")", "```", ""])
+        f"## {VERSION}, {_today()}", "",
+        f"- First public release: {total} rows in six configs, each with `dev` and `test` splits.",
+        f"- Code: {PUBLIC_REPO} at `{code_ref}`. Manifest sha256 `{_sha(Path(build) / 'manifest.json')}`.",
+        "- Replaces every earlier file on the main branch. Load this version by its Hub commit, not by `main`, if you "
+        "need results to stay reproducible.", ""])
 
 
 def _today() -> str:
     from datetime import datetime, timezone
     return datetime.now(timezone.utc).strftime("%-d %B %Y")
+
+
+def disclosures(path: Path = DISCLOSURES) -> str:
+    """The card's disclosures, from the owner-edited file without its leading HTML comment."""
+    return re.sub(r"^\s*<!--.*?-->\s*", "", path.read_text(encoding="utf-8"), flags=re.S).strip()
+
+
+def public_text_problems(out: Path) -> list:
+    """Wording that must not reach the public files: internal history, owner process, open placeholders. Row data is
+    not scanned; its provenance fields are the build's own record."""
+    found = []
+    for f in sorted(out.rglob("*")):
+        if f.is_file() and f.suffix in (".md", ".json") and f.name != CANONICAL and "data" not in f.relative_to(out).parts:
+            txt = f.read_text(encoding="utf-8")
+            hits = list(PUBLIC_TEXT_BANNED.finditer(txt))
+            if f.suffix == ".md":
+                hits += list(PLACEHOLDER.finditer(txt))
+            found += [f"{f.relative_to(out)}: {m.group()!r}" for m in hits]
+    return found
 
 
 def card(files: list, man: dict, reg: list, subtasks: dict, code_ref: str, root: Path) -> str:
@@ -642,27 +675,23 @@ def card(files: list, man: dict, reg: list, subtasks: dict, code_ref: str, root:
              f"license_link: {HF_DATASET}/blob/main/SOURCES.md", "language:", "  - en", "task_categories:",
              "  - text-classification", "tags:", "  - guardrails", "  - content-moderation", "  - prompt-injection",
              "  - pii-detection", "  - hallucination-detection", *yaml, "---", "",
-             f"# {BRAND}, edition 2 ({VERSION})", "",
-             f"**Release candidate. Labels are still under owner review.** Code: {PUBLIC_REPO} at `{code_ref}`. "
-             f"Edition 1 is unchanged at Hub revision `{EDITION1_REVISION[:12]}` (tag `{EDITION1_TAG}`). CHANGELOG.md "
-             "shows how to load it.", "",
+             f"# {BRAND}", "",
+             f"Version {VERSION}. Code: {PUBLIC_REPO} at `{code_ref}`.", "",
              f"{BRAND} tests guardrail systems on six suites: harmful content, prompt attacks, denied topics, word "
              "filters, sensitive information (PII) and grounding. Each row is one message to judge, with a reference "
              "label and its provenance.", "",
              "## Intended use", "", INTENDED_USE, "",
              "## Before you use it", "",
-             f"- **Labels can still change.** {review.get('public', 0)} public rows have a disputed label and wait for "
-             "an owner ruling, so they are in no split yet. A person is second-labelling a 400-row content sample "
-             "(ruling 7), and its agreement rate is not out yet. Scores computed on this candidate may move at the "
-             "final tag.",
-             "- **One scoring rule.** Edition 2 scores every system at a fixed 0.5 rule and fits nothing on `dev`. Use "
-             "`dev` for smoke tests and dry runs. Edition 1 called the same split `tune`, because thresholds were "
-             "fitted on it.",
-             "- **Prompt-attack scores are provisional** (rulings 17 and 18). On held-back rows, a simple text "
-             "classifier can still tell attacks from benign rows by the style of their source, so part of a "
-             "prompt-attack score may come from that.",
+             f"- **Some labels may still change.** {review.get('public', 0)} rows with a disputed label are left out "
+             "until they are resolved, and a person is second-labelling a 400-row sample of the content suite. A later "
+             "version may add rows or correct labels, and each version has its own Hub commit.",
+             "- **One scoring rule.** The benchmark scores every system with a fixed 0.5 rule and fits nothing on "
+             "`dev`. Use `dev` for smoke tests and dry runs, and report scores on `test`.",
+             "- **Prompt-attack scores are provisional.** On held-back rows, a simple text classifier can still tell "
+             "attacks from benign rows by the style of their source, so part of a prompt-attack score may come from "
+             "that.",
              f"- **{tot('rows_ids_only')} rows ship without text**, because their sources' licence review is not "
-             "finished (ruling 10). RECONSTRUCT.md shows how to rebuild the text from the original publishers.", "",
+             "finished. RECONSTRUCT.md shows how to rebuild the text from the original publishers.", "",
              "## Configs and splits", "",
              "| Config | Split | Rows | With text | Ids only | File |", "|---|---|---|---|---|---|"]
     lines += [f"| {f['config']} | {f['split']} | {f['n']} | {f['rows_text']} | {f['rows_ids_only']} | `{f['path']}` |"
@@ -670,22 +699,19 @@ def card(files: list, man: dict, reg: list, subtasks: dict, code_ref: str, root:
     lines += ["", "Rows by subtask:", "", "| Config | Subtask | dev | test |", "|---|---|---|---|"]
     lines += [f"| {c} | {s} | {n.get('dev', 0)} | {n.get('test', 0)} |" for (c, s), n in sorted(subtasks.items())]
     lines += ["", "## Not in this dataset", "",
-              f"- **The unpublished slice** of the test split ({man.get('private_slice', {}).get('rows', 'n')} rows, "
-              "ruling 15). Every row in it comes from public upstream data, so anyone can rebuild it. We hold it back "
-              "for contamination checks. A system that scores much higher on the public test rows than on these may "
+              f"- **A held-back slice** of the test split ({man.get('private_slice', {}).get('rows', 'n')} rows). "
+              "Every row in it comes from public upstream data, so anyone can rebuild it. We keep it for "
+              "contamination checks. A system that scores much higher on the public test rows than on these may "
               "have seen the public rows. It is not a secret test set.",
-              f"- **{tot('rows_local_only')} rows of the public build** that this candidate keeps local while the "
-              "owner reviews them.",
+              f"- **{tot('rows_local_only')} rows** held back while their labels are checked.",
               f"- **{n_excl} excluded rows**, listed with reasons in EXCLUDED.jsonl: text in a benchmarked model's "
-              "training or development data, text a benchmarked vendor published, and one row the owner dropped.", "",
-              "## Disclosures", "",
-              *[f"{i}. TODO (owner): disclosure {i}, to be added by the owner." for i in range(1, DISCLOSURE_PLACEHOLDERS + 1)],
-              "",
+              "training or development data, text a benchmarked vendor published, and one row we dropped.", "",
+              "## Disclosures", "", disclosures(), "",
               "## Record schema", "",
               "`id`, `feature`, `subtask`, `split`, `visibility`, `group` (rows sharing a group share a split), `state` "
               "(`text`, `role`, `context`, `source`, `query`, `tool_call`), `labels`, `expected`, "
               "`expected_distribution`, `spans`, `category`, `attribute` (`attribute.e2` holds the second label, how a "
-              "dispute was resolved and the content harm tags), `review_status`, `provenance`, `canonical_row_hash` "
+              "disputed label was resolved and the content harm tags), `review_status`, `provenance`, `canonical_row_hash` "
               "(sha256 of the full row), `redistribution` (`text` or `ids_only`) and, on ids-only rows, `withheld` "
               "(which fields are null and why). `canonical.json` records each file's hashes, so a rebuilt copy can be "
               "checked byte for byte.", "",

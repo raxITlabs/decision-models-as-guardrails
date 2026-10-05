@@ -1,7 +1,7 @@
 """Where the edition 2 runners take their rows from: the Hugging Face copy by default, rebuilt locally.
 
     GOLDRAILS_E2_SOURCE=hf:raxITLabs/decision-models-as-guardrails@<commit>   # the published copy, pinned
-    GOLDRAILS_E2_SOURCE=dataset/publish/v2.0-rc1                             # a staged folder in the Hub layout
+    GOLDRAILS_E2_SOURCE=dataset/publish/release-1.0.0                             # a staged folder in the Hub layout
     GOLDRAILS_E2_SOURCE=local                                                # dataset/edition2/build as it is
 
 A published copy has no text for licence-withheld rows and no unpublished slice. ``dataset_dir`` downloads (or
@@ -24,12 +24,12 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 BUILD = REPO / "dataset" / "edition2" / "build"
-STAGED = REPO / "dataset" / "publish" / "v2.0-rc1"
+STAGED = REPO / "dataset" / "publish" / "release-1.0.0"
 CACHE = REPO / "dataset" / "edition2" / ".materialized"
 HF_REPO = "raxITLabs/decision-models-as-guardrails"
 ENV = "GOLDRAILS_E2_SOURCE"
 
-# OWNER: after uploading tag v2.0.0-rc.1, set this to the Hub commit sha that tag points to (40 hex characters,
+# OWNER: after uploading, set this to the Hub commit sha of the upload (40 hex characters,
 # `hf repo tag list raxITLabs/decision-models-as-guardrails --repo-type dataset` or the Hub's "Files and versions").
 # None keeps the runners on the local staged folder.
 E2_HF_REVISION: str | None = None
