@@ -32,7 +32,7 @@ ENV = "GOLDRAILS_E2_SOURCE"
 # OWNER: after uploading, set this to the Hub commit sha of the upload (40 hex characters,
 # `hf repo tag list raxITLabs/decision-models-as-guardrails --repo-type dataset` or the Hub's "Files and versions").
 # None keeps the runners on the local staged folder.
-E2_HF_REVISION: str | None = "bc1849efe9d854a9aeb4d0b37f1cc782151f73f1"   # 1.0.0, first public release
+E2_HF_REVISION: str | None = "f88403efb827ba0c2771dd069ec545d35849ff8d"   # 1.0.1
 
 
 class E2SourceMissing(FileNotFoundError):

@@ -77,12 +77,12 @@ Each phase ends with a gate. A gate failure stops the workflow and reports back.
 
 ### Before the full run (status 5 October 2026)
 
-- [ ] Owner reviews the 242 disputed rows (`dataset/edition2/build/needs-owner-review.jsonl`).
-- [ ] Owner second-labels the 400-row content sample (ruling 7).
-- [ ] Owner checks the custom-words row label.
+- [x] (5 Oct, with Codex as assistant) Owner reviews the 242 disputed rows (`dataset/edition2/build/needs-owner-review.jsonl`).
+- [x] (5 Oct, with Codex as assistant; agreement 86.4%, kappa 0.72) Owner second-labels the 400-row content sample (ruling 7).
+- [x] (5 Oct, in the disputed-row review) Owner checks the custom-words row label.
 - [ ] Licence review of the new edition 2 sources (ids-only until cleared, ruling 10).
 - [ ] Perplexity confirms its data-retention terms.
-- [x] (5 Oct, Hub commit bc1849e, version 1.0.0) Publish edition 2 to the Hugging Face dataset (`raxITLabs/decision-models-as-guardrails`) and point the runners at that copy, so published scores come from the same rows anyone can download. Withheld text and the unpublished slice stay local.
+- [x] (5 Oct: 1.0.0 at Hub commit bc1849e; 1.0.1 with the review at f88403e, runners pinned) Publish edition 2 to the Hugging Face dataset (`raxITLabs/decision-models-as-guardrails`) and point the runners at that copy, so published scores come from the same rows anyone can download. Withheld text and the unpublished slice stay local.
 - [ ] Owner signs contract v2.0 and approves the run budget.
 
 Owner-only steps, never automated: signing the contract, approving spend, reviewing authored labels, publishing.
