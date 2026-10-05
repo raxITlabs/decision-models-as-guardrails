@@ -483,9 +483,9 @@ def test_owner_rulings_are_written_into_the_policies():
     assert "outside the score" in policy_text("word_filters", "word")
 
 
-def test_contract_records_the_rulings_and_stays_unsigned():
+def test_contract_records_the_rulings_and_is_signed():
     c = json.loads((ROOT / "contracts/v2.0.json").read_text())
-    assert c["status"] == "draft, not signed" and "pending_owner_rulings" not in c
+    assert c["status"] == "signed" and "pending_owner_rulings" not in c   # owner ruling 21, 5 October 2026
     assert "pending" not in json.dumps(c["secondary"]) + json.dumps(c["statistics"]) + json.dumps(c["suites"])
     where = set(c["owner_rulings"]["where"])   # rulings 1-13, plus 14-18 as each is written into the contract
     assert {str(i) for i in range(1, 14)} | {"15", "16", "17", "18"} <= where <= {str(i) for i in range(1, 19)}
