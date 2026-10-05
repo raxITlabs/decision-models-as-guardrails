@@ -584,12 +584,16 @@ def default_references(repo=None, dev_files=None) -> dict:
     """The edition-2 reference rows as this repository records them, by role: ``examined`` (examined-ids.txt less
     documented clearances, plus every id in a ledger, output or notebook: ``overlap.repo_examined_ids``), ``smoke`` and
     ``pilot`` (the ids in those ledgers), ``diagnostic`` (when any diagnostic ledger exists) and ``dev`` (the edition 2
-    dev rows, ``dataset/edition2/build/F*.dev.jsonl`` unless ``dev_files`` names them). A required role with no
+    dev rows: ``F*.dev.jsonl`` of the edition 2 source, ``e2_source.dev_files()``, when ``repo`` is this repository,
+    else ``<repo>/dataset/edition2/build/F*.dev.jsonl``, unless ``dev_files`` names them). A required role with no
     rows is left in, so the check that uses it fails rather than passing on less."""
     from . import overlap
     from goldrails_dataset.records import read_jsonl
     repo = Path(repo) if repo is not None else Path(__file__).resolve().parents[2]
     results = repo / "benchmark" / "results"
+    if dev_files is None and repo.resolve() == Path(__file__).resolve().parents[2]:
+        from . import e2_source
+        dev_files = e2_source.dev_files()
     dev_files = sorted((repo / "dataset" / "edition2" / "build").glob("F*.dev.jsonl")) if dev_files is None \
         else [Path(f) for f in dev_files]
     refs = {"examined": sorted(overlap.repo_examined_ids(repo)),

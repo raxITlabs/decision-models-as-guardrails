@@ -7,7 +7,9 @@
     uv run python benchmark/runs/e2_sample.py report                       # offline: run summary and leak check
     uv run python benchmark/runs/e2_sample.py score                        # offline: leaderboard.json (diagnostic)
 
-What is sent: every row of ``dataset/edition2/build/F*.dev.jsonl`` (public dev split, 1,422 rows) for every adapter
+What is sent: every row of the public dev split, ``F*.dev.jsonl`` of the edition 2 source (``goldrails_bench.e2_source``:
+the Hugging Face copy at a pinned revision by default, withheld text rebuilt locally and checked byte for byte against
+the build; ``--source local`` reads ``dataset/edition2/build``), 1,422 rows, for every adapter
 subtask of ``e2_smoke.TASKS``, the custom-words sanity rows included. Nothing else. ``PublicDev.guard`` refuses any
 row that is not a row of a public dev file (same id, same state), any row whose split is not ``dev`` or whose
 visibility is not ``public``, and any id in the git-ignored private slice; it runs over the whole selection before a
@@ -69,13 +71,18 @@ def _state_hash(r: dict) -> str:
     return hashlib.sha256(json.dumps(r["state"], sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
 
+def _source_label() -> str:
+    from goldrails_bench import e2_source
+    return e2_source.describe()
+
+
 class PublicDev:
     """The public dev rows, read from the build files, and the guard that refuses everything else."""
 
     def __init__(self):
         self.rows, self.feature, self.file_sha = {}, {}, {}
         for f in FEATURES:
-            p = BUILD / f"{f}.dev.jsonl"
+            p = smoke.data_dir() / f"{f}.dev.jsonl"
             self.file_sha[f] = hashlib.sha256(p.read_bytes()).hexdigest()
             for x in p.open(encoding="utf-8"):
                 r = json.loads(x)
@@ -202,7 +209,7 @@ def scorer_record(d: dict, pt: PublicDev) -> dict | None:
     return {"id": d["row_id"], "system": d["system"], "model": srv.get("model_id"), "question_set": qs,
             "config_hash": cfg, "decision_keys": keys,
             "dataset": {"sha256": pt.file_sha[feat], "feature": feat, "split": "dev",
-                        "source": "dataset/edition2/build"},
+                        "source": _source_label()},
             "subtask": r["subtask"], "expected": r["expected"],
             "expected_types": sorted({s["label"] for s in r["spans"]}) if r.get("spans") is not None else None,
             "group": r.get("group") or r["id"], "split": "dev",
@@ -359,7 +366,7 @@ def implementations(records: list) -> dict:
 def evaluate(records: list, drop: set = frozenset(), serving=None, tariffs=None, arms_meta=None,
              replicates=None) -> dict:
     from goldrails_bench import leaderboard_v2 as lv2
-    frozen_all = lv2.load_frozen_rows([BUILD / f"{f}.dev.jsonl" for f in FEATURES])
+    frozen_all = lv2.load_frozen_rows([smoke.data_dir() / f"{f}.dev.jsonl" for f in FEATURES])
     frozen = {k: {i: v for i, v in rows.items() if i not in drop} for k, rows in frozen_all.items()}
     recs = [dict(r) for r in records if r["id"] not in drop]
     return lv2.evaluate(recs, lv2.load_contract(), implementations(recs), None, "dev", None, replicates, None,
@@ -406,7 +413,7 @@ def score(replicates: int | None = None) -> Path:
     doc["label"] = f"{LABEL.upper()}: " + doc["label"]
     doc["sample"] = {
         "label": LABEL,
-        "what": "every public dev row of edition 2 (dataset/edition2/build/F*.dev.jsonl) sent to every system, "
+        "what": f"every public dev row of edition 2 ({_source_label()}, F*.dev.jsonl) sent to every system, "
                 "scored at the contract v2.0 fixed 0.5 rule with the dev split as the report split",
         "caveats": [
             "dev split: these rows were used to build, label and check the dataset (shortcut gate, smoke tests), so "
@@ -488,7 +495,10 @@ def main(argv=None) -> int:
     ap.add_argument("--only", default=None, help="comma-separated system names to run")
     ap.add_argument("--replicates", type=int, default=None)
     ap.add_argument("--retry-failed", action="store_true", help="send again only rows whose latest record failed")
+    ap.add_argument("--source", help="edition 2 source: hf:<repo>@<rev>, a staged or build directory, or local "
+                                     "(default: $GOLDRAILS_E2_SOURCE, else goldrails_bench.e2_source.default_source())")
     a = ap.parse_args(argv)
+    smoke.use_source(a.source)
     if a.stage == "plan":
         plan()
     elif a.stage == "vm":

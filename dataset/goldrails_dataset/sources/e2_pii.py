@@ -323,6 +323,8 @@ def join_on_values(items: list) -> dict:
 ID_PATTERN = re.compile(r"\bf\d+-[a-z0-9_]+-[0-9a-f]{10}\b")
 SCAN_DIRS = ("benchmark", "dataset")
 SKIP_PARTS = ("edition2", ".venv", "__pycache__", "node_modules", ".git")
+# edition 2's own Hugging Face staging (goldrails_dataset.publish_e2) holds edition 2 rows, not v1 references
+SKIP_PREFIXES = ("dataset/publish/v2",)
 HF_REPOS = ("raxITLabs/gold-rails", "raxITLabs/goldrails", "raxITLabs/goldrail", "raxITLabs/jev-as-a-guardrails",
             "raxITLabs/decision-models-as-guardrails")
 
@@ -350,7 +352,8 @@ def reference_index(repo: Path = REPO, use_hf_cache: bool = True) -> dict:
     ids, texts, groups, files = set(), set(), set(), []
     for top in SCAN_DIRS:
         for p in sorted((repo / top).rglob("*")):
-            if not p.is_file() or any(s in p.parts for s in SKIP_PARTS):
+            if not p.is_file() or any(s in p.parts for s in SKIP_PARTS) or \
+                    str(p.relative_to(repo)).startswith(SKIP_PREFIXES):
                 continue
             if p.suffix not in (".jsonl", ".json", ".txt", ".md", ".csv", ".ipynb"):
                 continue

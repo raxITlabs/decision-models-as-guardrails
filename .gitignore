@@ -38,3 +38,8 @@ dataset/edition2/content/sample/
 # edition 2 build split files are rebuilt offline and byte-identically from the committed candidates
 # (uv run python -m goldrails_dataset.edition2); manifest.json and audit-report.json are committed to check them
 dataset/edition2/build/F*.jsonl
+# edition 2 Hugging Face staging (goldrails_dataset.publish_e2): the whole folder, until the owner uploads it
+dataset/publish/v2.0-rc1/
+dataset/publish/v2.*/
+# edition 2 rows rebuilt for the runners from the Hub copy plus local text and the unpublished slice (goldrails_bench.e2_source)
+dataset/edition2/.materialized/

@@ -48,6 +48,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import re
 import sys
 import tempfile
@@ -1102,7 +1103,8 @@ def build(paths, out=None, contract_path=None, implementations_path=None, append
           manifest_path=None, dataset_paths=None, diagnostic=False) -> dict:
     """Score ledgers. A test run needs ``manifest_path`` (a committed edition-2 freeze manifest) unless
     ``diagnostic``; ``dataset_paths`` are the frozen dataset files or directories the row lists come from (default
-    dataset/edition2/build, which holds the public and, locally, the private test rows)."""
+    the edition 2 source's canonical files, ``e2_source.dataset_dir()``: the Hugging Face copy at a pinned revision,
+    rebuilt locally with the withheld text and the private test rows, byte-identical to dataset/edition2/build)."""
     t0 = time.time()
     m, ident = (None, None)
     if manifest_path:
@@ -1111,7 +1113,8 @@ def build(paths, out=None, contract_path=None, implementations_path=None, append
         raise FreezeError("a test run is scored only against a committed edition-2 freeze manifest (--manifest); "
                           "use --diagnostic for a result labelled not valid for publication")
     if dataset_paths is None and report_split == "test" and not diagnostic:
-        dataset_paths = [EDITION2_BUILD]
+        from . import e2_source
+        dataset_paths = [e2_source.dataset_dir()]
     frozen = load_frozen_rows(dataset_paths) if dataset_paths else None
     records, ledgers, arms_meta = lb.load_inputs(paths)
     contract = load_contract(contract_path)
@@ -1190,12 +1193,18 @@ def main(argv=None) -> int:
     ap.add_argument("--serving", help="allocated serving time records for self-hosted arms")
     ap.add_argument("--manifest", help="committed edition-2 freeze manifest (required to score a test run)")
     ap.add_argument("--dataset", action="append", help="frozen dataset file or directory holding the row lists "
-                                                        "(repeatable; default dataset/edition2/build)")
+                                                        "(repeatable; default: the edition 2 source's files)")
+    ap.add_argument("--source", help="edition 2 source for the default row lists: hf:<repo>@<rev>, a staged or "
+                                     "build directory, or local (default: $GOLDRAILS_E2_SOURCE, else "
+                                     "e2_source.default_source())")
     ap.add_argument("--diagnostic", action="store_true",
                     help="score without a freeze manifest or row list; labelled not valid for publication")
     ap.add_argument("--replicates", type=int)
     ap.add_argument("--seed", type=int)
     a = ap.parse_args(argv)
+    if a.source:
+        from . import e2_source
+        os.environ[e2_source.ENV] = a.source
     if a.rescore_v1:
         doc = rescore_v1(a.out or DEFAULT_RESCORE_OUT, a.replicates, a.seed)
         print(f"wrote {a.out or DEFAULT_RESCORE_OUT.relative_to(REPO)}")

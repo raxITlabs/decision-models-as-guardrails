@@ -4,9 +4,11 @@
     uv run python benchmark/runs/e2_smoke.py run --systems jev,open,bedrock
     uv run python benchmark/runs/e2_smoke.py run --systems clef,clef-flash,perplexity,strands   # new models (docs/28)
     uv run python benchmark/runs/e2_smoke.py report                    # offline: summary from the ledgers
+    uv run python benchmark/runs/e2_smoke.py plan --source local       # read dataset/edition2/build, not the Hub copy
 
-Rows come only from ``dataset/edition2/build/F*.dev.jsonl`` (public dev split; the private slice is test-only and
-is checked to be disjoint). Rows the owner excluded (``dataset/edition2/EXCLUDED.jsonl`` and the git-ignored
+Rows come only from the public dev split, ``F*.dev.jsonl`` of the edition 2 source (``goldrails_bench.e2_source``:
+the Hugging Face copy at a pinned revision by default, with withheld text rebuilt locally; ``--source local`` reads
+``dataset/edition2/build`` directly). The private slice is test-only and is checked to be disjoint. Rows the owner excluded (``dataset/edition2/EXCLUDED.jsonl`` and the git-ignored
 ``*/private/EXCLUDED.jsonl``) are never picked. Nothing from the test split is read. Ledgers in ``benchmark/results/edition2-smoke/`` keep
 row ids, labels and system outputs, never the row text, because many dev rows come from ids-only sources
 (owner ruling 10). Error strings are cut to 300 characters and checked for row text before they are written.
@@ -24,6 +26,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import sys
 import time
@@ -73,11 +76,18 @@ NEAR = 0.8   # a row is near the limit at >= 80% of it
 CHARS_PER_TOKEN = 3.5   # conservative (over-)estimate for English with a BPE tokenizer
 
 
+def data_dir() -> Path:
+    """The canonical edition 2 files of the source in force (goldrails_bench.e2_source; $GOLDRAILS_E2_SOURCE)."""
+    from goldrails_bench import e2_source
+    return e2_source.dataset_dir()
+
+
 def rows_of(feature: str) -> list:
-    return [json.loads(x) for x in (BUILD / f"{feature}.dev.jsonl").open(encoding="utf-8")]
+    return [json.loads(x) for x in (data_dir() / f"{feature}.dev.jsonl").open(encoding="utf-8")]
 
 
 def private_ids() -> set:
+    """Ids of the unpublished slice and its disputed and dropped rows, from the local build (never published)."""
     ids = set()
     for p in (BUILD / "private").glob("*.jsonl"):
         for x in p.open(encoding="utf-8"):
@@ -86,6 +96,13 @@ def private_ids() -> set:
             except (ValueError, KeyError):
                 pass
     return ids
+
+
+def use_source(src: str | None) -> None:
+    """Make ``src`` the edition 2 source for this process (``--source``)."""
+    if src:
+        from goldrails_bench import e2_source
+        os.environ[e2_source.ENV] = src
 
 
 def excluded_ids() -> set:
@@ -553,7 +570,10 @@ def main(argv=None) -> int:
     ap.add_argument("stage", choices=["plan", "run", "report"])
     ap.add_argument("--systems", default="jev,open,bedrock")
     ap.add_argument("--only", default=None, help="comma-separated system names to run")
+    ap.add_argument("--source", help="edition 2 source: hf:<repo>@<rev>, a staged or build directory, or local "
+                                     "(default: $GOLDRAILS_E2_SOURCE, else goldrails_bench.e2_source.default_source())")
     a = ap.parse_args(argv)
+    use_source(a.source)
     if a.stage == "plan":
         plan()
     elif a.stage == "run":
