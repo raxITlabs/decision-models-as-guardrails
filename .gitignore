@@ -43,3 +43,6 @@ dataset/publish/release-*/
 dataset/publish/v2.*/
 # edition 2 rows rebuilt for the runners from the Hub copy plus local text and the unpublished slice (goldrails_bench.e2_source)
 dataset/edition2/.materialized/
+# edition 2 full run: raw ledgers hold unpublished-slice ids (benchmark/runs/e2_full.py writes public-only copies)
+benchmark/results/edition2-full/private/
+benchmark/results/edition2-full/.run-log.lock

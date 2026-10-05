@@ -385,13 +385,14 @@ def run(kinds: set, only: set | None = None) -> None:
 
 
 def run_selection(kinds: set, sel: dict, out: Path, only: set | None = None, reruns: bool = True,
-                  guard=None, retry_failed: bool = False) -> dict:
+                  guard=None, retry_failed: bool = False, stamp: dict | None = None) -> dict:
     """Send ``sel`` ({(suite, subtask): [row dicts]}) to every configured system of ``kinds`` and append one record
     per row to ``out/<system>.jsonl`` as each answer arrives, so an interrupted run resumes where it stopped (rows
     already in the ledger are not sent again). ``guard(row)`` is called before a row is sent and must raise to refuse
     it. ``reruns`` re-sends the first 5 rows of the first offered subtask (determinism check). ``retry_failed``
     sends again only the rows whose latest record failed and appends the new record marked ``retry_of_failure``
-    (the failed record stays in the ledger; a scorer takes the latest record per row). Returns
+    (the failed record stays in the ledger; a scorer takes the latest record per row). ``stamp`` (a frozen test run)
+    is merged into every record, and each record then also carries its adapter's retry policy identity. Returns
     {system: {seconds, sent, failed, started, finished}}; a Bedrock run with no credentials writes
     ``<system>.blocked.json`` and sends nothing."""
     unknown = kinds - set(KINDS)
@@ -445,6 +446,10 @@ def run_selection(kinds: set, sel: dict, out: Path, only: set | None = None, rer
                     rec = record(name, suite, sub, r, res, is_ids_only(r["provenance"]["source"]))
                     if retry_failed:
                         rec["retry_of_failure"] = True
+                    if stamp is not None:
+                        rec.update(stamp)
+                        pol = getattr(adapter, "policy", None)
+                        rec["retry_policy"] = pol.identity() if hasattr(pol, "identity") else None
                     f.write(json.dumps(rec, ensure_ascii=False) + "\n")
                     f.flush()
                     fails += res.outcome == "failed"
