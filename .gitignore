@@ -46,3 +46,6 @@ dataset/edition2/.materialized/
 # edition 2 full run: raw ledgers hold unpublished-slice ids (benchmark/runs/e2_full.py writes public-only copies)
 benchmark/results/edition2-full/private/
 benchmark/results/edition2-full/.run-log.lock
+# ruling 23 prompt-attack candidate (goldrails_dataset.sources.e2_prompt_attacks_r23_build): same layout as the suites above
+dataset/edition2/r23/*/private/
+dataset/edition2/r23/*/local/
