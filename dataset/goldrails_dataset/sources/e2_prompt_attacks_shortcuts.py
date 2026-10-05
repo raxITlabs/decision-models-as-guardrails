@@ -1,7 +1,7 @@
 """Shortcut baselines for the edition 2 prompt-attack rows: can something that never reads the attack, or that only
 counts surface strings, tell the classes apart?
 
-Five baselines per subtask, each reported as AUROC and balanced accuracy (BA), direction-free (max(x, 1 - x)):
+Nine baselines per subtask, each reported as AUROC and balanced accuracy (BA), direction-free (max(x, 1 - x)):
 
 - ``source_id``: the attack rate of the row's source in the training rows (fitted). BA predicts yes when that rate is
   above one half.
@@ -12,6 +12,16 @@ Five baselines per subtask, each reported as AUROC and balanced accuracy (BA), d
   with C chosen from ``C_GRID`` by grouped inner cross-validation on the training rows only (mean inner-fold AUROC).
   BA at probability 0.5.
 - ``bow_logreg``: the same L2 logistic regression and inner-CV choice of C on TF-IDF word 1-2-grams.
+- ``char_cross_logreg``, ``word13_logreg``, ``word14_logreg`` (owner ruling 25, 6 October 2026): the same model on
+  character 3-6-grams that cross word boundaries (``analyzer="char"``), on word 1-3-grams and on word 1-4-grams. The
+  ruling 23 candidate passed the first five baselines because its authored pairs were built against exactly those
+  features; word 1-3 and 1-4-grams reached AUROC 0.81 and 0.89 on its public pairs.
+- ``context_logreg``: the same model on word 1-2-grams of what the system sees besides the judged text: the
+  ``state.context`` turns and ``state.tool_call`` (an indirect row's system prompt and user query). A label that the
+  trust context gives away fails here. Rows without context score alike, so a constant is not a failed fit for this
+  baseline; it is the expected result for direct rows.
+
+Every text model reads ``gate_text``: the judged text (``state.text``). ``context_logreg`` reads ``context_text``.
 
 The two text models need scikit-learn, which is not a project dependency:
 ``uv run --with scikit-learn python -m goldrails_dataset.sources.e2_prompt_attacks_shortcuts``.
@@ -32,6 +42,17 @@ Views (``gate_report``), every baseline in every view, rows as the build holds t
 A cell passes when the baseline was computed, did not predict a constant, and has BA <= ``BA_TARGET`` and AUROC <=
 ``AUROC_TARGET``. The gate (``goldrails_dataset.edition2.shortcut_gate``) passes only when every cell passes.
 
+Strata and sources (``strata_report``, owner ruling 25). The whole-subtask views can pass while one part of the suite
+carries the pass (the ruling 23 candidate: authored pairs passed, its real rows alone reached AUROC 0.92 to 0.95). So
+the same baselines also run, per subtask, on each stratum (``authored``: rows a project author wrote, ``external``:
+rows from a public source) and on each source with at least ``MIN_SUBSET_PER_CLASS`` rows of each class in the test
+split with the unpublished slice (and on each value of a row's ``facets``, such as the carrier source of an
+indirect row or how a row was constructed), in the views of ``subset_views`` (grouped five-fold CV on that pool, its seeded
+halves both ways, and dev to the pool when dev holds enough of both classes). Every cell must pass, under the same
+bounds. On top of that, per subtask: the external stratum must be large enough to check (a suite whose real rows
+cannot be shown to pass on their own fails), authored rows are at most ``AUTHORED_MAX_SHARE`` of each class, and no
+source gives only one class.
+
     uv run --with scikit-learn python -m goldrails_dataset.sources.e2_prompt_attacks_shortcuts [--split test]
     uv run --with scikit-learn python -m goldrails_dataset.sources.e2_prompt_attacks_shortcuts --gate [--markdown]
 """
@@ -49,11 +70,25 @@ from ..separability import auroc, folds_of, sklearn_available
 KEYWORDS = re.compile(r"password|secret|pwd|mosscap|gandalf", re.I)
 BA_TARGET = 0.70
 AUROC_TARGET = 0.75
-SUBTASKS = ("injection", "jailbreak", "leakage")
-BASELINES = ("source_id", "keyword_regex", "length", "char_ngram_logreg", "bow_logreg")
-TEXT_MODELS = ("char_ngram_logreg", "bow_logreg")          # need scikit-learn
-FITTED = ("source_id", "length", "char_ngram_logreg", "bow_logreg")
-CONSTANT_CHECKED = ("source_id", "char_ngram_logreg", "bow_logreg")   # length's AUROC reads the raw length
+SUBTASKS = ("injection", "jailbreak", "leakage")     # always in the gate; other F2 subtasks join when rows hold them
+BASELINES = ("source_id", "keyword_regex", "length", "char_ngram_logreg", "char_cross_logreg", "bow_logreg",
+             "word13_logreg", "word14_logreg", "context_logreg")
+TEXT_MODELS = ("char_ngram_logreg", "char_cross_logreg", "bow_logreg", "word13_logreg", "word14_logreg",
+               "context_logreg")          # need scikit-learn
+FITTED = ("source_id", "length") + TEXT_MODELS
+# length's AUROC reads the raw length; context_logreg on rows without context is constant by construction
+CONSTANT_CHECKED = ("source_id", "char_ngram_logreg", "char_cross_logreg", "bow_logreg", "word13_logreg",
+                    "word14_logreg")
+# the function each text model calls, looked up at call time so tests can replace one
+TEXT_HOOKS = {"char_ngram_logreg": "_logreg_fit_predict", "char_cross_logreg": "_charx_fit_predict",
+              "bow_logreg": "_bow_fit_predict", "word13_logreg": "_word13_fit_predict",
+              "word14_logreg": "_word14_fit_predict", "context_logreg": "_context_fit_predict"}
+WORD_RANGES = {"bow_logreg": (1, 2), "word13_logreg": (1, 3), "word14_logreg": (1, 4), "context_logreg": (1, 2)}
+# strata and sources (owner ruling 25)
+MIN_SUBSET_PER_CLASS = 40        # a source with fewer rows of either class in test + unpublished is listed, not fitted
+AUTHORED_MAX_SHARE = 0.5         # authored rows stay a minority of each class of each subtask
+AUTHORED_SOURCES = frozenset({"e2_attack_controls", "f2_controls", "f2_indirect_controls"})
+AUTHORED_PREFIX = "e2_authored_"   # any source named e2_authored_* is authored
 C_GRID = (0.01, 0.1, 1.0, 10.0, 100.0)
 INNER_FOLDS = 5
 HELDBACK_SEED = 20261004          # the seeded halves
@@ -80,6 +115,28 @@ def _constant(scores) -> bool:
 
 def _labels(rows):
     return [1 if r["label"] == "yes" else 0 for r in rows]
+
+
+def gate_text(state: dict) -> str:
+    """The judged text of a row's state."""
+    return str((state or {}).get("text") or "")
+
+
+def context_text(state: dict) -> str:
+    """What the system sees besides the judged text: the context turns, oldest first, and the tool call as JSON."""
+    state = state or {}
+    parts = [str(t.get("text") or "") if isinstance(t, dict) else str(t) for t in state.get("context") or []]
+    if state.get("tool_call"):
+        parts.append(json.dumps(state["tool_call"], sort_keys=True, ensure_ascii=False))
+    return "\n".join(p for p in parts if p)
+
+
+def stratum_of(r: dict) -> str:
+    """``authored`` for rows a project author wrote, else ``external``. A row may carry its own ``stratum``."""
+    if r.get("stratum"):
+        return r["stratum"]
+    s = r.get("source") or ""
+    return "authored" if s in AUTHORED_SOURCES or s.startswith(AUTHORED_PREFIX) else "external"
 
 
 def _group(r):
@@ -125,8 +182,10 @@ def _vectorizer(kind: str):
     from sklearn.feature_extraction.text import TfidfVectorizer
     if kind == "char_ngram_logreg":
         return TfidfVectorizer(analyzer="char_wb", ngram_range=(2, 5), min_df=2, sublinear_tf=True, max_features=200000)
-    return TfidfVectorizer(analyzer="word", ngram_range=(1, 2), min_df=2, sublinear_tf=True,
-                           token_pattern=r"(?u)\b\w+\b", max_features=200000)
+    if kind == "char_cross_logreg":
+        return TfidfVectorizer(analyzer="char", ngram_range=(3, 6), min_df=2, sublinear_tf=True, max_features=300000)
+    return TfidfVectorizer(analyzer="word", ngram_range=WORD_RANGES[kind], min_df=2, sublinear_tf=True,
+                           token_pattern=r"(?u)\b\w+\b", max_features=300000)
 
 
 def _classifier(c: float):
@@ -189,10 +248,26 @@ def _bow_fit_predict(train, y, test, groups=None):
     return _text_fit_predict("bow_logreg", train, y, test, groups or list(range(len(train))))[0]
 
 
+def _charx_fit_predict(train, y, test, groups=None):
+    return _text_fit_predict("char_cross_logreg", train, y, test, groups or list(range(len(train))))[0]
+
+
+def _word13_fit_predict(train, y, test, groups=None):
+    return _text_fit_predict("word13_logreg", train, y, test, groups or list(range(len(train))))[0]
+
+
+def _word14_fit_predict(train, y, test, groups=None):
+    return _text_fit_predict("word14_logreg", train, y, test, groups or list(range(len(train))))[0]
+
+
+def _context_fit_predict(train, y, test, groups=None):
+    return _text_fit_predict("context_logreg", train, y, test, groups or list(range(len(train))))[0]
+
+
 def _fit_score(name: str, train: list, score: list) -> tuple[list, list, dict]:
     """One baseline fitted on ``train`` rows, applied to ``score`` rows: (AUROC scores, BA predictions, meta)."""
     y = _labels(train)
-    texts = [r["state"]["text"] for r in score]
+    texts = [gate_text(r["state"]) for r in score]
     if name == "source_id":
         s = _source_fit_predict([r["source"] for r in train], y, [r["source"] for r in score])
         seen = {r["source"] for r in train}
@@ -203,14 +278,11 @@ def _fit_score(name: str, train: list, score: list) -> tuple[list, list, dict]:
         return k, k, {}
     if name == "length":
         return ([float(len(t)) for t in texts],
-                _length_fit_predict([r["state"]["text"] for r in train], y, texts), {})
-    tr_texts, groups = [r["state"]["text"] for r in train], [_group(r) for r in train]
-    if name == "char_ngram_logreg":
-        p = _logreg_fit_predict(tr_texts, y, texts, groups)
-        c = _LAST_C.pop("char_ngram_logreg", None)
-    else:
-        p = _bow_fit_predict(tr_texts, y, texts, groups)
-        c = _LAST_C.pop("bow_logreg", None)
+                _length_fit_predict([gate_text(r["state"]) for r in train], y, texts), {})
+    read = context_text if name == "context_logreg" else gate_text
+    tr_texts, groups = [read(r["state"]) for r in train], [_group(r) for r in train]
+    p = globals()[TEXT_HOOKS[name]](tr_texts, y, [read(r["state"]) for r in score], groups)
+    c = _LAST_C.pop(name, None)
     p = [float(v) for v in p]
     return p, [1.0 if v >= 0.5 else 0.0 for v in p], ({"C": c} if c is not None else {})
 
@@ -332,15 +404,21 @@ def _counts(rs):
     return {"n_yes": sum(r["label"] == "yes" for r in rs), "n_no": sum(r["label"] == "no" for r in rs)}
 
 
+def subtasks_of(rows: list) -> tuple:
+    """SUBTASKS, then any other subtask the rows hold (an indirect subtask joins the gate when it has rows)."""
+    return SUBTASKS + tuple(sorted({r["subtask"] for r in rows} - set(SUBTASKS)))
+
+
 def gate_report(rows: list, use_sklearn: bool | None = None, which=None) -> dict:
     """Every baseline of every subtask in every view (``views_of``), with a flat table and the failures. A cell fails
     when a baseline was not computed (scikit-learn missing), predicted a constant, or is over either bound; a view
     subtask without both classes on either side fails too."""
     use = sklearn_available() if use_sklearn is None else use_sklearn
     out, table, failures = {}, [], []
+    subs = subtasks_of(rows)
     for view, (kind, train, score) in views_of(rows, which).items():
         per = {}
-        for sub in SUBTASKS:
+        for sub in subs:
             sc = [r for r in score if r["subtask"] == sub]
             tr = [r for r in (train or []) if r["subtask"] == sub]
             cell = {"scored": _counts(sc)}
@@ -380,6 +458,119 @@ def gate_report(rows: list, use_sklearn: bool | None = None, which=None) -> dict
             "pass": not failures}
 
 
+# --- strata and sources (owner ruling 25) -----------------------------------------------------------------------------
+
+SUBSET_VIEWS = ("in_sample_pool", "heldback_half_a_to_half_b", "heldback_half_b_to_half_a", "heldback_dev_to_pool")
+DEV_MIN_PER_CLASS = 10           # dev to the pool runs when dev holds this many rows of each class
+
+
+def subset_views(rows: list) -> dict:
+    """Views for one stratum or source of one subtask: grouped five-fold CV on test + unpublished (the pool), the
+    pool's seeded group halves both ways, and dev to the pool when dev has DEV_MIN_PER_CLASS of each class."""
+    dev = [r for r in rows if r["proposed_split"] == "dev"]
+    pool = [r for r in rows if r["proposed_split"] in ("test", "private")]
+    a, b = seeded_halves(pool)
+    v = {"in_sample_pool": ("cv", None, pool), "heldback_half_a_to_half_b": ("fit", a, b),
+         "heldback_half_b_to_half_a": ("fit", b, a)}
+    c = _counts(dev)
+    if min(c.values()) >= DEV_MIN_PER_CLASS:
+        v["heldback_dev_to_pool"] = ("fit", dev, pool)
+    return v
+
+
+def _subset_cells(name: str, rows: list, use: bool, single_source: bool) -> tuple[dict, list, list]:
+    """Every baseline in every ``subset_views`` view of one subset: (per-view cells, table rows, failures)."""
+    out, table, failures = {}, [], []
+    names = [b for b in BASELINES if not (single_source and b == "source_id")]
+    for view, (kind, train, score) in subset_views(rows).items():
+        cell = {"scored": _counts(score)}
+        if kind == "fit":
+            cell["fitted_on"] = _counts(train)
+        if min(cell["scored"].values()) == 0 or (kind == "fit" and min(cell["fitted_on"].values()) == 0):
+            cell["error"] = "needs both classes"
+            failures.append(f"{name}/{view}: needs both classes")
+            out[view] = cell
+            continue
+        rep = subtask_report(score, use) if kind == "cv" else transfer_report(train, score, use)
+        for b in names:
+            if b not in rep:
+                cell[b] = {"computed": False, "pass": False, "reason": "not computed: needs scikit-learn"}
+                failures.append(f"{name}/{view}/{b}: not computed (needs scikit-learn)")
+                continue
+            v = {k: x for k, x in rep[b].items() if k != "meets_target"}
+            v["pass"] = bool(v["ba"] <= BA_TARGET and v["auroc"] <= AUROC_TARGET and not v.get("constant_prediction"))
+            if v.get("constant_prediction"):
+                failures.append(f"{name}/{view}/{b}: constant prediction (the fit failed; not a pass)")
+            elif not v["pass"]:
+                failures.append(f"{name}/{view}/{b}: BA {v['ba']}, AUROC {v['auroc']}")
+            cell[b] = v
+            table.append({"subset": name, "view": view, "baseline": b, "ba": v["ba"], "auroc": v["auroc"],
+                          "constant_prediction": bool(v.get("constant_prediction")), "pass": v["pass"]})
+        out[view] = cell
+    return out, table, failures
+
+
+def strata_report(rows: list, use_sklearn: bool | None = None) -> dict:
+    """Per subtask: the baselines on each stratum and each source large enough to fit (``subset_views``), the
+    external stratum's size, the authored share of each class, and single-class sources. Every cell and every check
+    must pass. Rows are the gate's row dicts with ``proposed_split`` dev, test or private."""
+    use = sklearn_available() if use_sklearn is None else use_sklearn
+    out, table, failures = {}, [], []
+    for sub in sorted({r["subtask"] for r in rows}, key=lambda x: (x not in SUBTASKS, x)):
+        rs = [r for r in rows if r["subtask"] == sub]
+        pool = [r for r in rs if r["proposed_split"] in ("test", "private")]
+        rep = {"checks": {}, "subsets": {}, "not_fitted_small": {}}
+        # authored share per class, over every split
+        share = {}
+        for lab in ("yes", "no"):
+            n = [r for r in rs if r["label"] == lab]
+            share[lab] = round(sum(stratum_of(r) == "authored" for r in n) / len(n), 3) if n else 0.0
+        ok = all(v <= AUTHORED_MAX_SHARE for v in share.values())
+        rep["checks"]["authored_share"] = {"by_class": share, "max": AUTHORED_MAX_SHARE, "pass": ok}
+        if not ok:
+            failures.append(f"{sub}/authored_share: {share} over {AUTHORED_MAX_SHARE}")
+        # every source gives both classes
+        by_src = defaultdict(lambda: {"yes": 0, "no": 0})
+        for r in rs:
+            by_src[r["source"]][r["label"]] += 1
+        single = {s: c for s, c in sorted(by_src.items()) if min(c.values()) == 0}
+        rep["checks"]["single_class_sources"] = {"sources": single, "pass": not single}
+        for s, c in single.items():
+            failures.append(f"{sub}/single_class_source/{s}: {c}")
+        # subsets
+        subsets = {}
+        for st in ("external", "authored"):
+            subsets[f"stratum:{st}"] = [r for r in rs if stratum_of(r) == st]
+        for s in sorted(by_src):
+            subsets[f"source:{s}"] = [r for r in rs if r["source"] == s]
+        facets = sorted({(k, v) for r in rs for k, v in (r.get("facets") or {}).items() if v})
+        for k, v in facets:          # e.g. the carrier source or the construction of indirect rows
+            subsets[f"{k}:{v}"] = [r for r in rs if (r.get("facets") or {}).get(k) == v]
+        ext = _counts([r for r in pool if stratum_of(r) == "external"])
+        ext_ok = min(ext.values()) >= MIN_SUBSET_PER_CLASS
+        rep["checks"]["external_stratum_size"] = {"pool": ext, "min_per_class": MIN_SUBSET_PER_CLASS, "pass": ext_ok}
+        if not ext_ok:
+            failures.append(f"{sub}/external_stratum_size: {ext} under {MIN_SUBSET_PER_CLASS} per class in the pool")
+        for name, sr in subsets.items():
+            if not sr:
+                continue
+            c = _counts([r for r in sr if r["proposed_split"] in ("test", "private")])
+            if min(c.values()) < MIN_SUBSET_PER_CLASS:
+                rep["not_fitted_small"][name] = c
+                continue
+            single_source = len({r["source"] for r in sr}) == 1
+            cells, t, f = _subset_cells(f"{sub}/{name}", sr, use, single_source)
+            rep["subsets"][name] = {"pool": c, "views": cells}
+            table += [dict(x, subtask=sub) for x in t]
+            failures += f
+        out[sub] = rep
+    return {"what": "the shortcut baselines per stratum (authored, external) and per source with at least "
+                    f"{MIN_SUBSET_PER_CLASS} rows of each class in test + unpublished, plus the stratum checks",
+            "views": list(SUBSET_VIEWS), "min_per_class": MIN_SUBSET_PER_CLASS,
+            "authored_max_share": AUTHORED_MAX_SHARE, "subtasks": out, "table": table, "failures": failures,
+            "pass": not failures}
+
+
 def heldback_report(rows: list, use_sklearn: bool | None = None, seed: int = HELDBACK_SEED) -> dict:
     """The held-back views of ``gate_report`` only (``seed`` is fixed at HELDBACK_SEED; kept for callers).
     ``over_bounds`` lists every failing cell, constant fits included."""
@@ -394,7 +585,8 @@ def table_markdown(rep: dict) -> str:
     in bold, a constant fit marked)."""
     head = "| Subtask | View | " + " | ".join(rep["baselines"]) + " |"
     lines = [head, "|" + "---|" * (2 + len(rep["baselines"]))]
-    for sub in SUBTASKS:
+    subs = list(SUBTASKS) + sorted({k for per in rep["views"].values() for k in per} - set(SUBTASKS))
+    for sub in subs:
         for view, per in rep["views"].items():
             cell = per.get(sub, {})
             if "error" in cell:

@@ -460,9 +460,10 @@ def test_committed_candidates_meet_the_shortcut_targets(cands):
     counts = json.loads((E2 / "counts.json").read_text(encoding="utf-8"))
     from goldrails_dataset.sources.e2_prompt_attacks_build import SELECTION
     assert counts["selection"] == SELECTION
+    recorded = counts["shortcut_baselines"]["heldback"]["baselines"]    # the baselines of the record's day
     for view in ("built_test", "built_test_with_private"):
         for sub in SUBTASKS:
-            for name in BASELINES:
+            for name in recorded:
                 assert name in counts["shortcut_baselines"][view][sub], (view, sub, name)
                 if not counts["shortcut_baselines"][view][sub][name]["meets_target"]:
                     failing.append((view, sub, name))
@@ -499,7 +500,7 @@ def test_committed_heldback_views_meet_the_shortcut_targets():
     failing = list(hb["failures"])
     for view in hb["views"].values():
         for sub in SUBTASKS:
-            for name in BASELINES:
+            for name in hb["baselines"]:     # the baselines of the record's day (ruling 25 added four)
                 cell = view[sub][name]
                 if name in CONSTANT_CHECKED:
                     assert "constant_prediction" in cell, (sub, name)

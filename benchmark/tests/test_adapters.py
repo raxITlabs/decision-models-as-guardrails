@@ -70,7 +70,14 @@ def f3_from_topics(topics):
 
 
 def test_e2_sets_change_only_what_the_rulings_changed():
-    assert sorted(question_sets.available("e2")) == sorted(SOURCES)
+    # candidate sets copied from an e2 set (f2-attacks-r24, owner ruling 24) are revisions of it, not frozen copies
+    frozen = [n for n in question_sets.available("e2")
+              if not str(question_sets.load("e2", n).get("copied_from", "")).startswith("e2/")]
+    assert sorted(frozen) == sorted(SOURCES)
+    for n in set(question_sets.available("e2")) - set(frozen):
+        cand = question_sets.load("e2", n)
+        base = question_sets.load("e2", cand["copied_from"].split("/", 1)[1])
+        assert cand["decision"] == base["decision"] and set(cand["questions"]) == set(base["questions"]), n
     for name, ver in SOURCES.items():
         e2, src = question_sets.load("e2", name), question_sets.load(ver, name)
         assert e2["version"] == "e2" and e2["frozen_for"] == "edition 2"

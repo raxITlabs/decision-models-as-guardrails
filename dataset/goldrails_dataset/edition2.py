@@ -47,11 +47,15 @@ it. The repository is public, so those files hold the public rows only: the priv
    positives per scored PII entity type; DRIVER_ID is an unscored diagnostic under owner ruling 6, so it has no
    floor; F4 profanity is scored, while the F4 custom-words rows are a pass/fail sanity check outside the score under
    ruling 13, so they have no floor), second-label coverage, and the prompt-attack shortcut gate: every shortcut
-   baseline (source id, keyword regex, length, L2 char 2-5-gram and word 1-2-gram logistic regression with C chosen by
-   grouped inner CV) of every prompt-attack subtask at balanced accuracy <= 0.70 and AUROC <= 0.75, and not a constant
-   prediction, both in sample (``shortcut_audit``: grouped five-fold CV on the built test split, and with the
-   unpublished slice) and held back (``shortcut_heldback``: fitted on built rows it then does not score, seeded group
-   halves both ways, dev to test, dev to the unpublished slice, test and unpublished to dev). Both must pass;
+   baseline (source id, keyword regex, length, and L2 logistic regression with C chosen by grouped inner CV on char
+   2-5-grams within words, char 3-6-grams across words, word 1-2, 1-3 and 1-4-grams, and word 1-2-grams of the trust
+   context; owner ruling 25 added the last four) of every prompt-attack subtask at balanced accuracy <= 0.70 and
+   AUROC <= 0.75, and not a constant prediction, in sample (``shortcut_audit``: grouped five-fold CV on the built
+   test split, and with the unpublished slice), held back (``shortcut_heldback``: fitted on built rows it then does
+   not score, seeded group halves both ways, dev to test, dev to the unpublished slice, test and unpublished to dev),
+   and per stratum and per source (``shortcut_strata``, ruling 25: authored and external rows each pass on their own,
+   every source large enough to fit passes on its own, authored rows stay a minority, every source gives both
+   classes). All three must pass;
 6. runs ``goldrails_bench.overlap`` in strict mode: every public and private test row against the examined list,
    smoke, pilot and diagnostic ledgers, every id in a results ledger, every v1 release build and sample row, and the
    edition 2 dev split, by id, text, group and near-duplicate text; private rows also against the public test split.
@@ -105,7 +109,8 @@ UNSCORED_ENTITIES_DEFAULT = ("DRIVER_ID",)    # owner ruling 6: dropped from the
 # Shortcut gate (prompt attacks): every baseline at or under both bounds on the built test split.
 SHORTCUT_BA_MAX = 0.70
 SHORTCUT_AUROC_MAX = 0.75
-SHORTCUT_BASELINES = ("source_id", "keyword_regex", "length", "char_ngram_logreg", "bow_logreg")   # = shortcuts.BASELINES
+SHORTCUT_BASELINES = ("source_id", "keyword_regex", "length", "char_ngram_logreg", "char_cross_logreg", "bow_logreg",
+                      "word13_logreg", "word14_logreg", "context_logreg")   # = shortcuts.BASELINES (ruling 25)
 CONTENT_TAGS = ("harm_category", "harm_categories", "harm_subcategories", "in_bedrock_five", "vendor_owned", "vendor",
                 "upstream_split", "upstream_train_split_flag", "tag_version")
 
@@ -848,8 +853,23 @@ def gate_audit(out: Path = BUILD) -> dict:
 
 def _shortcut_rows(rows: list) -> list:
     """Built prompt-attack records as the shortcut module's row dicts. Counts only leave this module."""
-    return [{"id": r.id, "subtask": r.subtask, "label": r.expected, "source": r.provenance.source,
-             "group": r.group or r.id, "state": {"text": r.state.text}} for r in rows if r.feature == "F2"]
+    out = []
+    for r in rows:
+        if r.feature != "F2":
+            continue
+        try:
+            n = json.loads(r.provenance.notes or "{}")
+        except ValueError:
+            n = {}
+        d = {"id": r.id, "subtask": r.subtask, "label": r.expected, "source": r.provenance.source,
+             "group": r.group or r.id,
+             "state": {"text": r.state.text, "context": r.state.context or [], "tool_call": r.state.tool_call}}
+        if n.get("stratum"):                 # ruling 25: a row may say it is authored or external
+            d["stratum"] = n["stratum"]
+        if isinstance(n.get("gate_facets"), dict):
+            d["facets"] = n["gate_facets"]
+        out.append(d)
+    return out
 
 
 def _gate_rows(parts: dict) -> list:
@@ -891,17 +911,30 @@ def shortcut_heldback(parts: dict, use_sklearn: bool | None = None) -> dict:
             "table": rep["table"], "constant_prediction": constant, "failures": rep["failures"], "pass": rep["pass"]}
 
 
+def shortcut_strata(parts: dict, use_sklearn: bool | None = None) -> dict:
+    """Owner ruling 25: the baselines per stratum (authored, external) and per source large enough to fit, in sample
+    and held back, plus the stratum checks (``e2_prompt_attacks_shortcuts.strata_report``). Every cell must pass."""
+    from .sources import e2_prompt_attacks_shortcuts as sc
+    rep = sc.strata_report(_gate_rows(parts), use_sklearn)
+    rep["rule"] = f"every baseline per stratum and per source, every view: {_CELL_RULE}; plus the stratum checks"
+    return rep
+
+
 def shortcut_gate(parts: dict, use_sklearn: bool | None = None) -> dict:
-    """The prompt-attack shortcut gate: the in-sample view (``shortcut_audit``) and the held-back views
-    (``shortcut_heldback``) must both pass, every subtask x baseline x view cell of them."""
+    """The prompt-attack shortcut gate: the in-sample view (``shortcut_audit``), the held-back views
+    (``shortcut_heldback``) and, from owner ruling 25, the per-stratum and per-source views (``shortcut_strata``) must
+    all pass, every cell of them."""
     ins, held = shortcut_audit(parts, use_sklearn), shortcut_heldback(parts, use_sklearn)
-    return {"rule": "both views pass: in sample (grouped five-fold CV on the built test split, and with the unpublished "
-                    "slice) and held back (fitted on built rows it does not score), every cell: " + _CELL_RULE,
-            "in_sample": ins, "heldback": held,
+    strata = shortcut_strata(parts, use_sklearn)
+    return {"rule": "all three pass: in sample (grouped five-fold CV on the built test split, and with the unpublished "
+                    "slice), held back (fitted on built rows it does not score), and per stratum and per source "
+                    "(ruling 25), every cell: " + _CELL_RULE,
+            "in_sample": ins, "heldback": held, "strata": strata,
             "table": [dict(t, half="in_sample") for t in ins.get("table", [])]
                      + [dict(t, half="heldback") for t in held.get("table", [])],
-            "failures": [f"in_sample/{f}" for f in ins["failures"]] + [f"heldback/{f}" for f in held["failures"]],
-            "pass": ins["pass"] and held["pass"]}
+            "failures": [f"in_sample/{f}" for f in ins["failures"]] + [f"heldback/{f}" for f in held["failures"]]
+                        + [f"strata/{f}" for f in strata["failures"]],
+            "pass": ins["pass"] and held["pass"] and strata["pass"]}
 
 
 # --- a failed shortcut gate and owner ruling 17: the prompt-attack suite published as provisional --------------------
@@ -923,6 +956,11 @@ def gate_summary(gate: dict) -> dict:
             if t[m] > cell.get(m, -1):
                 cell[m], cell[f"{m}_at"] = t[m], f"{t['view']}/{t['baseline']}"
     out["max"] = {sub: dict(sorted(v.items())) for sub, v in sorted(out["max"].items())}
+    if "strata" in gate:          # owner ruling 25: per stratum and per source
+        st = gate["strata"]
+        out["strata_pass"] = bool(st.get("pass"))
+        out["strata_cells"] = len(st.get("table") or [])
+        out["strata_failures"] = len(st.get("failures") or [])
     return out
 
 

@@ -359,8 +359,8 @@ def test_shortcut_gate_needs_both_bounds_and_passes_a_clean_split(monkeypatch):
     import zlib
     # an uninformative but working fit: a different score per row that says nothing about the label
     noise = lambda train, y, test, groups=None: [zlib.crc32(t.encode()) % 1000 / 1000 for t in test]   # noqa: E731
-    monkeypatch.setattr(sc, "_logreg_fit_predict", noise)
-    monkeypatch.setattr(sc, "_bow_fit_predict", noise)
+    for hook in sc.TEXT_HOOKS.values():     # every text model, the ruling 25 ones included
+        monkeypatch.setattr(sc, hook, noise)
     rows = [r for sub in ("injection", "jailbreak", "leakage") for r in _attack_rows(sub, 40, shortcut=False)]
     rep = e2.shortcut_audit({"test": rows}, use_sklearn=True)
     assert rep["pass"] is True, rep["failures"]
@@ -681,7 +681,7 @@ def test_heldback_gate_report_has_both_views():
             "heldback_test_and_private_to_dev", "heldback_seeded_groups"} <= set(views)
     for v in views.values():
         for sub in ("injection", "jailbreak", "leakage"):
-            for b in e2.SHORTCUT_BASELINES:
+            for b in rep["baselines"]:   # a record keeps the baselines of its day (ruling 25 added four)
                 assert {"ba", "auroc"} <= set(v[sub][b]), (sub, b)
     assert (e2.E2 / "prompt_attacks" / "ADVERSARIAL-FILTERING.md").exists()
 
