@@ -2,7 +2,7 @@
  "version": "v2.0",
  "source": "docs/benchmark/27-evaluation-contract-v2.md",
  "plan": "docs/benchmark/26-edition-2-plan.md",
- "status": "draft, not signed",
+ "status": "signed",
  "change_from": {
   "version": "v1.1",
   "change": "headline is the out-of-the-box decision at a rule fixed in advance (no per-model threshold fitting); the task is policy text plus labelled rows; catch rate and false-block rate are required columns; secondary curve metrics for score-producing systems; 2% failure cap; rank intervals, tiers and Holm-adjusted paired tests; tuned v1.1 results become a labelled appendix cohort"
