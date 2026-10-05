@@ -75,6 +75,16 @@ Each phase ends with a gate. A gate failure stops the workflow and reports back.
 | 3. Full test, current systems | Run Jev, Kev-0.8B/4B/9B, Open-Jev-2B, Laya, Bedrock and the regex baseline on the edition 2 test set | Ledgers, leaderboard, paired intervals, tiers | Publication checks pass; owner review |
 | 4. New models | **Research**: access, pricing, terms, data retention for OpenAI and Perplexity decision APIs, Cloudflare's model, OpenAI moderation, selected HF reproductions. **Adapters**: one per new API. | Onboarding plan, adapters, compatibility checks | Each new system passes the compatibility check before a full run |
 
+### Before the full run (status 5 October 2026)
+
+- [ ] Owner reviews the 242 disputed rows (`dataset/edition2/build/needs-owner-review.jsonl`).
+- [ ] Owner second-labels the 400-row content sample (ruling 7).
+- [ ] Owner checks the custom-words row label.
+- [ ] Licence review of the new edition 2 sources (ids-only until cleared, ruling 10).
+- [ ] Perplexity confirms its data-retention terms.
+- [ ] Publish edition 2 to the Hugging Face dataset (`raxITLabs/decision-models-as-guardrails`) and point the runners at that copy, so published scores come from the same rows anyone can download. Withheld text and the unpublished slice stay local.
+- [ ] Owner signs contract v2.0 and approves the run budget.
+
 Owner-only steps, never automated: signing the contract, approving spend, reviewing authored labels, publishing.
 
 ## Cost and time
