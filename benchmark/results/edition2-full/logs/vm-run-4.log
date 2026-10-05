@@ -1,0 +1,6 @@
+vm up at 2026-10-05T08:47:13Z
+[vm] retry pass 1: {'kev-0-8b': 141}
+[vm] retry pass 1: {'kev-4b': 171}
+[vm] retry pass 1: {'open-jev-2b': 180}
+vm paused at 2026-10-05T08:59:47Z
+[vm] paused (exit 0); ['vm: none  (project raxit-ai)']; terminated=False

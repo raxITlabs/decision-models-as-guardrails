@@ -1,0 +1,10 @@
+Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 3764.56it/s]
+bedrock-guardrails   content/request            1731 sent, 0 failed
+bedrock-guardrails   content/reply              756 sent, 0 failed
+bedrock-guardrails   prompt_attacks/direct             2655 sent, 0 failed
+bedrock-guardrails   denied_topics/topic              718 sent, 0 failed
+bedrock-guardrails   sensitive_info/entity_detection   720 sent, 0 failed
+bedrock-guardrails   grounding/grounding          724 sent, 0 failed
+bedrock-guardrails   word_filters/word               100 sent, 0 failed
+bedrock-guardrails   word_filters/profanity          704 sent, 0 failed
+bedrock-guardrails: 4000s

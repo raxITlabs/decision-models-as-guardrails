@@ -35,6 +35,8 @@ SHORT = {"jev-1.13.0": "Jev 1.13.0", "clef": "Clef", "clef-flash": "Clef-flash",
          "kev-0-8b": "Kev-0.8B", "kev-4b": "Kev-4B", "kev-9b": "Kev-9B", "open-jev-2b": "Open-Jev-2B", "laya": "Laya",
          "strands-decider-2b": "Strands 2B", "bedrock-guardrails": "Bedrock"}
 TAG = "dev-split sample, not a held-out result"
+# One line under the overall chart's title; e2_full_plots.py sets these three globals for the full run.
+SPLIT_NOTE = "Edition 2 public dev split, 1,422 rows"
 
 plt.rcParams.update({"font.family": ["Helvetica Neue", "Arial", "DejaVu Sans"], "font.size": 10,
                      "axes.edgecolor": AXIS, "axes.labelcolor": INK2, "xtick.color": MUTED, "ytick.color": INK2,
@@ -148,7 +150,7 @@ def overall_chart(doc):
         ax.text(ax.get_xlim()[0], -1.0, "Not ranked: " + "; ".join(f"{name(e['name'])} ({e.get('reason', '')[:60]})"
                                                                 for e in unr), fontsize=8, color=INK2, va="top")
     title(fig, f"Overall score per system ({TAG})",
-          "Edition 2 public dev split, 1,422 rows, fixed 0.5 rule. Tiers: Holm-adjusted paired tests vs the tier "
+          f"{SPLIT_NOTE}, fixed 0.5 rule. Tiers: Holm-adjusted paired tests vs the tier "
           "leader. Prompt attacks provisional.")
     save(fig, "overall")
 
@@ -294,7 +296,8 @@ def main():
     heatmap(doc)
     catch_vs_block(doc)
     score_cost_latency(doc)
-    pplx_overlap(doc)
+    if doc.get("pplx_overlap_sensitivity"):
+        pplx_overlap(doc)
     print(sorted(p.name for p in PLOTS.iterdir()))
 
 

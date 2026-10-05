@@ -339,10 +339,12 @@ class _Term(Exception):
     pass
 
 
-def vm_run() -> dict:
+def vm_run(systems: list | None = None, sequential: bool = False, retry_only: bool = False) -> dict:
     """make up, the six VM models at once (placement from terraform.tfvars: Kev-0.8B, Kev-4B, Open-Jev-2B and Strands
     on GPU 0, Kev-9B and Laya on GPU 1, as in the dev-split sample), retry passes, then make pause in ``finally``
-    and a status check that the VM is TERMINATED."""
+    and a status check that the VM is TERMINATED. ``sequential`` runs one model at a time (less load on a GPU) and
+    ``retry_only`` skips the main pass and resends only failed rows."""
+    names = list(systems or VM_SYSTEMS)
     def on_term(*_):
         raise _Term()
     signal.signal(signal.SIGTERM, on_term)
@@ -353,11 +355,17 @@ def vm_run() -> dict:
         res["make_up"] = code
         if code != 0:
             raise RuntimeError(f"make up failed (exit {code}): {text.strip().splitlines()[-1:]}")
-        procs = {n: _spawn(["run", "--systems", "open,strands", "--only", n], LOGS / f"{n}.log") for n in VM_SYSTEMS}
-        res["exit"] = _wait(procs)
-        procs = {}
-        res["retry_passes"] = _retry_passes(lambda n: ["run", "--systems", "open,strands", "--only", n],
-                                            list(VM_SYSTEMS), "vm")
+        res.update(systems=names, sequential=sequential, retry_only=retry_only)
+        if not retry_only:
+            procs = {n: _spawn(["run", "--systems", "open,strands", "--only", n], LOGS / f"{n}.log") for n in names}
+            res["exit"] = _wait(procs)
+            procs = {}
+        if sequential:
+            res["retry_passes"] = [r for n in names for r in _retry_passes(
+                lambda m: ["run", "--systems", "open,strands", "--only", m], [n], "vm")]
+        else:
+            res["retry_passes"] = _retry_passes(lambda n: ["run", "--systems", "open,strands", "--only", n],
+                                                names, "vm")
     except (_Term, KeyboardInterrupt) as e:
         res["interrupted"] = type(e).__name__
         raise
@@ -453,8 +461,18 @@ def privacy_check(tr: TestRows, files=None) -> dict:
         n = sum(1 for i in unp if i in s)
         if n:
             id_hits[_rel(p)] = n
-    text_files = [p for p in files if p.suffix in (".jsonl", ".json", ".md", ".svg", ".log")]
-    leaks = sample.fast_leak_check(text_files, tr.rows)
+    text_files = [p for p in files if p.suffix in (".jsonl", ".json", ".md", ".log")]
+    import re
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        # An SVG is scanned on its visible text only: its XML header (namespace URLs) matches a row that quotes the same
+        # boilerplate, which is not row text leaking into the plot.
+        for i, p in enumerate(f for f in files if f.suffix == ".svg"):
+            q = Path(tmp) / f"{i}.txt"
+            q.write_text(" ".join(re.findall(r"<text[^>]*>(.*?)</text>", p.read_text(encoding="utf-8"), re.S)),
+                         encoding="utf-8")
+            text_files.append(q)
+        leaks = sample.fast_leak_check(text_files, tr.rows)
     from goldrails_dataset import e2_local
     tl = e2_local.tracked_leaks(files=[_rel(p) for p in files if p.suffix != ".png"])
     return {"files": len(files), "unpublished_ids_found": id_hits, "rows_with_text_in_files": len(leaks),
@@ -480,7 +498,11 @@ def report() -> int:
 
 def scorer_record(d: dict, tr: TestRows) -> dict | None:
     """``e2_sample.scorer_record`` (same config hash, so the arms match the freeze) on the test split, with the
-    freeze stamp, the retry policy and the attempt times the frozen-mode scorer checks."""
+    freeze stamp, the retry policy and the attempt times the frozen-mode scorer checks. A row the service refused
+    as over its limits (``not_offered`` on one row, e.g. Bedrock's 1,000-character grounding query cap) is scored as
+    a failure, wrong in its class, as the contract's frozen row list would score it unlogged."""
+    if d["outcome"] == "not_offered":
+        d = {**d, "outcome": "failed", "error": f"not offered for this row: {d.get('error') or ''}"[:300]}
     x = sample.scorer_record(d, tr)
     if x is None:
         return None
@@ -488,8 +510,24 @@ def scorer_record(d: dict, tr: TestRows) -> dict | None:
     x["dataset"] = {**x["dataset"], "split": "test"}
     x["freeze"] = d.get("freeze")
     x["retry_policy"] = d.get("retry_policy")
-    x["attempts"] = d.get("attempts")
+    # The ledger keeps each attempt's time but not its usage, and the record's usage is the final call's. The scorer
+    # bills attempts, so the final attempt carries the record's usage and a failed attempt bills nothing ({}): a call
+    # that returned no answer (HTTP 429/500, connection reset) is not billed, as in the dev-split sample.
+    att = [dict(a) for a in d.get("attempts") or []]
+    for i, a in enumerate(att):
+        a["usage"] = (d.get("usage") or {}) if i == len(att) - 1 and a.get("ok") else {}
+    if not att and str(x.get("error") or "").startswith("not offered for this row"):
+        # refused by the adapter before any call (a service limit); the time is when the refusal was recorded
+        att = [{"attempt": 0, "ok": False, "at": d["at"], "latency_s": None, "usage": {},
+                "error": "refused locally before any call: " + str(x["error"])[:200], "local_refusal": True}]
+    x["attempts"] = att
     return x
+
+
+def blocked_systems() -> dict:
+    """{system: reason} from every ``<system>.blocked.json`` (results folder and private/)."""
+    return {p.name.replace(".blocked.json", ""): json.loads(p.read_text(encoding="utf-8"))["reason"]
+            for p in sorted(OUT.glob("*.blocked.json")) + sorted(WORK.glob("*.blocked.json"))}
 
 
 def frozen_rows(tr: TestRows, keep=None) -> dict:
@@ -517,6 +555,13 @@ def score(replicates: int | None = None) -> Path:
     sel = select_all(tr)
     recs = load_work()
     summary = sample.run_summary(recs, sel)
+    blocked = blocked_systems()
+    # A blocked system that did not finish (credentials or quota ran out) is left out of the score and listed under
+    # run.blocked; its partial ledger stays in private/ so a follow-up run resumes it.
+    unfinished = {s for s in blocked if s not in summary or summary[s]["never_logged"]
+                  or summary[s]["failed"] > 0.02 * max(1, summary[s]["rows"])}
+    recs = [d for d in recs if d["system"] not in unfinished]
+    summary = {k: v for k, v in summary.items() if k not in unfinished}
     final = sample.latest(recs)
     records = [x for d in final if (x := scorer_record(d, tr))]
     tariffs = lb.load_tariffs()
@@ -535,8 +580,6 @@ def score(replicates: int | None = None) -> Path:
     pub, unp = tr.public_ids(), tr.unpublished
     by_feat = {f: {"public": sum(1 for i in pub if tr.feature[i] == f),
                    "unpublished": sum(1 for i in unp if tr.feature[i] == f)} for f in FEATURES}
-    blocked = {p.name.replace(".blocked.json", ""): json.loads(p.read_text())["reason"]
-               for p in list(OUT.glob("*.blocked.json")) + list(WORK.glob("*.blocked.json"))}
     log = sample._log()
     doc["full_run"] = {
         "label": LABEL,
@@ -563,12 +606,17 @@ def score(replicates: int | None = None) -> Path:
         ],
     }
     doc["full_run"]["question_set_names"] = sample.question_set_note()
-    doc["run"] = {"systems": summary, "blocked": blocked, "vm": vm_info,
+    doc["run"] = {"systems": summary, "blocked": {s: blocked[s] for s in sorted(unfinished)},
+                  "blocked_resolved": {s: blocked[s] for s in sorted(set(blocked) - unfinished)}, "vm": vm_info,
                   "cost": sample.system_costs(records, serving, tariffs),
                   "hosted_runs": log.get("hosted_runs"), "vm_runs": log.get("vm_runs"), "all_runs": log.get("all_runs"),
+                  "fixed_costs": log.get("fixed_costs"), "vm_status_checks": log.get("vm_status_checks"),
                   "not_run": {f"{k[0]}/{k[1]}": v for k, v in smoke.NOT_RUN.items()}}
     costs = [c["usd_total"] for c in doc["run"]["cost"].values() if c.get("usd_total") is not None]
     doc["run"]["cost_total_usd"] = round(sum(costs), 2)
+    doc["run"]["cost_note"] = ("cost_total_usd is metered use (hosted tokens and text units at dated list prices, VM "
+                               "up-to-paused time at the dated machine and disk rate); fixed_costs (subscriptions) are "
+                               "listed separately and not allocated per check")
     doc["table"] = sample.compact(doc)
     doc["unpublished_slice_view"] = {
         "label": "diagnostic, never ranked: every system re-scored on the public test rows alone and on the "
@@ -613,6 +661,8 @@ def main(argv=None) -> int:
     ap.add_argument("--systems", default=",".join(HOSTED_KINDS))
     ap.add_argument("--only", default=None, help="comma-separated system names to run")
     ap.add_argument("--retry-failed", action="store_true", help="send again only rows whose latest record failed")
+    ap.add_argument("--sequential", action="store_true", help="vm-run: one VM model at a time")
+    ap.add_argument("--retry-only", action="store_true", help="vm-run: only the retry passes")
     ap.add_argument("--replicates", type=int, default=None)
     ap.add_argument("--source", help="edition 2 source (default: the pinned Hugging Face revision)")
     a = ap.parse_args(argv)
@@ -629,7 +679,7 @@ def main(argv=None) -> int:
         run(set(a.systems.split(",")), set(a.only.split(",")) if a.only else None, a.retry_failed)
     elif a.stage == "vm-run":
         committed_freeze()
-        r = vm_run()
+        r = vm_run(a.only.split(",") if a.only else None, a.sequential, a.retry_only)
         return 0 if r.get("terminated") and not r.get("error") else 1
     elif a.stage == "hosted-run":
         committed_freeze()

@@ -1,0 +1,6 @@
+{
+ "system": "bedrock-guardrails",
+ "reason": "TokenRetrievalError: Error when retrieving token from sso: Token has expired and refresh failed",
+ "at": "2026-10-05T04:27:52Z",
+ "follow_up": "the owner runs `aws sso login`, then: uv run python benchmark/runs/e2_full.py run --systems bedrock"
+}

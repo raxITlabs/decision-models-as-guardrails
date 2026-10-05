@@ -1,0 +1,24 @@
+
+=== 2026-10-05T08:19:27Z run --systems open,strands --only open-jev-2b --retry-failed
+Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 3530.56it/s]
+open-jev-2b          content/request              0 sent, 0 failed
+open-jev-2b          content/reply              185 sent, 156 failed
+open-jev-2b          prompt_attacks/direct              24 sent, 24 failed
+open-jev-2b          denied_topics/topic                0 sent, 0 failed
+open-jev-2b          sensitive_info/entity_detection     0 sent, 0 failed
+open-jev-2b          grounding/grounding            0 sent, 0 failed
+open-jev-2b          word_filters/word                 0 sent, 0 failed
+open-jev-2b          word_filters/profanity            0 sent, 0 failed
+open-jev-2b: 1809s
+
+=== 2026-10-05T08:54:00Z run --systems open,strands --only open-jev-2b --retry-failed
+Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 1931.97it/s]
+open-jev-2b          content/request              0 sent, 0 failed
+open-jev-2b          content/reply              156 sent, 0 failed
+open-jev-2b          prompt_attacks/direct              24 sent, 0 failed
+open-jev-2b          denied_topics/topic                0 sent, 0 failed
+open-jev-2b          sensitive_info/entity_detection     0 sent, 0 failed
+open-jev-2b          grounding/grounding            0 sent, 0 failed
+open-jev-2b          word_filters/word                 0 sent, 0 failed
+open-jev-2b          word_filters/profanity            0 sent, 0 failed
+open-jev-2b: 267s

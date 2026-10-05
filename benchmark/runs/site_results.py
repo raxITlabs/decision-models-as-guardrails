@@ -30,6 +30,7 @@ import argparse
 import hashlib
 import json
 import sys
+import time
 from collections import defaultdict
 from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
@@ -1261,7 +1262,7 @@ def _v2_overall(lb: dict, sysname: str, method: str) -> dict:
         "coverage": {"subtasks_evaluated": [s for s in V2_OVERALL if comps.get(s) is not None],
                      "subtasks_required": list(V2_OVERALL), "note": "custom words is a sanity check outside this mean"},
         "cost": {"usd_per_1000": _r(cost["usd_per_1000"], 5), "basis": cost["basis"],
-                 "note": f"USD {cost['usd_per_1000']:.3f} per 1,000 checks over all {cost['checks']:,} dev rows, USD {cost['usd_total']:.2f} in total"},
+                 "note": f"USD {cost['usd_per_1000']:.3f} per 1,000 checks over all {cost['checks']:,} {'test' if lb.get('full_run') else 'dev'} rows, USD {cost['usd_total']:.2f} in total"},
         "latency": {"p50_s": _r(run.get("latency_p50_s")), "p95_s": _r(run.get("latency_p95_s")) or None,
                     "throughput_per_s": None,
                     "basis": "per row over every dev row, as recorded under the system's own worker count; not a declared-load latency"},
@@ -1292,10 +1293,7 @@ def edition2_doc(lb_path: Path) -> dict:
     boot = lb["rules"]["statistics"]["bootstrap"]
     method = f"group bootstrap, {boot['replicates']:,} replicates, seed {boot['seed']}; tiers from Holm-adjusted paired tests"
     order = [r["name"] for r in lb["overall"]["ranking"]] + [s for s in lb["table"] if s not in {r["name"] for r in lb["overall"]["ranking"]}]
-    sample, run, cost = lb["sample"], lb["run"], lb["run"]["cost"]
-    pplx = lb["pplx_overlap_sensitivity"]
-    pw, pwo = pplx["pplx_with"]["overall"]["balanced_accuracy"], pplx["pplx_without"]["overall"]["balanced_accuracy"]
-    laya = run["systems"]["laya"]
+    run = lb["run"]
     impls, entries = [], []
     for s in order:
         iid, label, typ = V2_IMPL[s]
@@ -1329,6 +1327,12 @@ def edition2_doc(lb_path: Path) -> dict:
                          "positive": r["n"]["positive"], "negative": r["n"]["negative"],
                          "missed": r["n"]["missed"], "false_blocks": r["n"]["false_blocks"]}
                         for s, r in sorted(c["systems"].items(), key=lambda kv: order.index(kv[0]))]})
+    if lb.get("full_run"):
+        return _clean(edition2_full_doc(lb, res_dir, method, impls, entries, checks))
+    sample, cost = lb["sample"], lb["run"]["cost"]
+    pplx = lb["pplx_overlap_sensitivity"]
+    pw, pwo = pplx["pplx_with"]["overall"]["balanced_accuracy"], pplx["pplx_without"]["overall"]["balanced_accuracy"]
+    laya = run["systems"]["laya"]
     qs_names = [k for k, v in sample["question_set_names"]["identical_to_v1"].items() if v]
     rows_by_suite = {V2_SUITE.get(FEATURE_SUITE[f], FEATURE_SUITE[f]): n for f, n in sample["rows"].items()}
     disclosures = [
@@ -1425,6 +1429,108 @@ def edition2_doc(lb_path: Path) -> dict:
         "entries": entries,
     }
     return _clean(doc)
+
+
+def edition2_full_doc(lb: dict, res_dir: str, method: str, impls: list, entries: list, checks: list) -> dict:
+    """The page document for the edition 2 full run (a leaderboard_v2 result in frozen mode with a ``full_run``
+    block, written by benchmark/runs/e2_full.py). Every number is copied from that document."""
+    fr, run = lb["full_run"], lb["run"]
+    laya = run["systems"].get("laya") or {}
+    retried = {s: x.get("first_pass_failed") for s, x in run["systems"].items() if x.get("first_pass_failed")}
+    still = {s: x["failed"] for s, x in run["systems"].items() if x.get("failed")}
+    blocked = run.get("blocked") or {}
+    qs_names = [k for k, v in fr["question_set_names"]["identical_to_v1"].items() if v]
+    vm = run["vm"]
+    valid = lb["valid_for_publication"]
+    disclosures = [
+        f"Held-out test split. Every edition 2 test row ({fr['rows_public']:,} public rows) and the unpublished slice "
+        f"({fr['rows_unpublished']:,} rows) went to each system once, {fr['rows_total']:,} rows in all.",
+        "Fixed 0.5 rule. A probability output flags at 0.5 or above on any decision question; Bedrock runs at a frozen, "
+        "documented setting. Nothing was fitted on dev or test rows, and the freeze manifest was committed before the "
+        "first test call.",
+        "Prompt attacks are provisional (owner rulings 17 and 18). Their labels are partly predictable from source and "
+        "writing style, so the score partly measures style pickup. The suite still counts in the overall.",
+        "Custom words is a pass/fail sanity check (pass at 95 or higher), outside the overall and every rank. DRIVER_ID "
+        "is unscored inside sensitive information (owner ruling 6).",
+        "Profanity is its own suite here. In edition 1 it was half of word filters; in edition 2 the word-filters score "
+        "is profanity alone.",
+        f"Laya truncation. Laya reads at most 512 tokens per question (owner ruling 16), and {laya.get('truncated', 0):,} "
+        f"of {laya.get('rows', 0):,} rows were cut, including every denied-topics row. Its scores include those rows.",
+        "Strands Decider 2B cuts silently at 4,096 tokens; rows estimated near that window are counted in the results file.",
+        "Latency is per row as recorded under each system's own worker count, not a load test. The six VM models shared "
+        "two L4 GPUs at the same time, so their latencies include queueing behind each other.",
+        "The unpublished slice can be rebuilt from public upstream data (owner ruling 15). It supports a contamination "
+        "check, shown in the results file as a public-versus-unpublished re-score, and is not a secret test.",
+        f"Question-set names. The scorer lists {', '.join(qs_names)} as differing from the contract's v1 sets. They are "
+        "copies with the same questions and decision lists, so this is about the name only.",
+    ]
+    if retried:
+        disclosures.append("Rows that failed on the first pass were resent in retry passes ("
+                           + ", ".join(f"{V2_IMPL[s][1]} {n}" for s, n in sorted(retried.items())) + "). The ledgers "
+                           "keep both records and the score uses the latest."
+                           + (" Still failed after the retries: " + ", ".join(f"{V2_IMPL[s][1]} {n}" for s, n in sorted(still.items())) + "." if still else ""))
+    if blocked:
+        disclosures.append("Not run: " + "; ".join(f"{V2_IMPL.get(s, (s, s))[1]} ({why[:80]})" for s, why in sorted(blocked.items())) + ".")
+    return {
+        "schema_version": "goldrails-leaderboard-site/0.1",
+        "placeholder": False,
+        "edition": 2,
+        "overall_suites": list(V2_OVERALL),
+        "banner": {"title": "Edition 2 test split" + ("" if valid else ": not yet valid for publication"),
+                   "text": (f"Every edition 2 test row and the unpublished slice, {fr['rows_total']:,} rows per system, "
+                            "scored at the fixed 0.5 rule under the signed contract v2.0."
+                            + ("" if valid else " The results file lists the publication blockers."))},
+        "notice": lb["label"],
+        "benchmark": {"name": f"{BRAND}, edition 2",
+                      "dataset_version": f"edition 2 test split, {fr['rows_public']:,} public rows and {fr['rows_unpublished']:,} unpublished",
+                      "dataset_sha256": hashlib.sha256(json.dumps(fr["dataset_sha256"], sort_keys=True).encode()).hexdigest(),
+                      "dataset_url": None, "split": "test",
+                      "evaluation_contract": f"{lb['contract']['version']} ({lb['contract']['status']})",
+                      "release_manifest": (lb.get("freeze") or {}).get("path"),
+                      "generated_at": time.strftime("%Y-%m-%d", time.gmtime()),
+                      "headline_metric": "Balanced accuracy x 100 = 100 x 1/2 x (catch rate + 1 - false-block rate), at a fixed 0.5 rule",
+                      "aggregation": "Subtasks equal within a suite; six suites equal in the overall; custom words outside it as a sanity check",
+                      "fpr_budget": None,
+                      "public_note": ("dataset_sha256 is the sha256 of the six suites' dataset hashes as sorted JSON; each "
+                                      f"suite's hash is in {res_dir}/leaderboard.json under full_run.dataset_sha256.")},
+        "cost_basis": {"unit": "usd_per_1000_evaluations", "tariff_date": "2026-09-23",
+                       "region": "hosted: list prices in goldrails_bench/tariffs.json; VM: " + vm["hardware"],
+                       "pricing_region": "us-east4", "self_hosted_cost": "normalized estimate",
+                       "notes": ("Hosted cost is the measured input tokens times the dated list price in "
+                                 "goldrails_bench/tariffs.json. VM cost is the VM's up-to-paused time "
+                                 f"({vm['vm_seconds']:,} s over {len(vm['sessions'])} sessions) at the dated g2-standard-24 "
+                                 "on-demand rate plus the disk, split across the six VM models by their share of run time. "
+                                 "List prices, not reconciled against a bill.")},
+        "latency_basis": {"unit": "seconds", "concurrency": None, "client_location": None,
+                          "notes": ("Latency is per row as recorded in the accuracy pass, under each system's own worker "
+                                    "count. It is a diagnostic, not a load test, and the six VM models shared two L4 GPUs.")},
+        "blockers": list(lb["publication_blockers"]),
+        "source": {"schema": lb["schema"], "mode": lb["mode"], "valid_for_publication": valid,
+                   "file": f"{res_dir}/leaderboard.json", "readme": f"{res_dir}/README.md", "plots": f"{res_dir}/plots/"},
+        "disclosures": disclosures,
+        "provisional": {"suites": list(lb["provisional_suites"]),
+                        "note": lb["overall"]["provisional_note"] + ". " + lb["overall"]["rule"] + "."},
+        "sanity_checks": checks,
+        "run": {"id": Path(res_dir).name, "label": "Edition 2 test split",
+                "summary": (f"Systems on every edition 2 test row and the unpublished slice ({fr['rows_total']:,} rows), "
+                            "scored by leaderboard_v2 in frozen mode at the fixed 0.5 rule."),
+                "valid_for_publication": valid,
+                "publication_blockers": list(lb["publication_blockers"]),
+                "previous": {"id": CURRENT_RUN, "label": "Edition 1 published run", "results": "results.json",
+                             "valid_for_publication": True,
+                             "status": "Edition 1 is scored on held-out test rows with frozen thresholds."},
+                "changes": [
+                    {"id": "rule", "title": "Fixed 0.5 rule",
+                     "text": "Edition 1 tuned one threshold per system on tuning rows. Edition 2 fixes the rule at 0.5 for every system."},
+                    {"id": "metric", "title": "Balanced accuracy",
+                     "text": "The headline is balanced accuracy x 100, the same arithmetic as edition 1's task score, with tiers from Holm-adjusted paired tests."},
+                    {"id": "suites", "title": "Profanity is a suite; custom words is a sanity check",
+                     "text": "The overall averages content, prompt attacks, denied topics, profanity, sensitive information and grounding. Custom words is pass/fail outside it."},
+                    {"id": "slice", "title": "An unpublished slice",
+                     "text": "Part of the test split is held back from every public file, so a public-versus-unpublished re-score can flag contamination."}]},
+        "implementations": impls,
+        "entries": entries,
+    }
 
 
 def write_edition2(lb_path: Path, out: Path) -> int:

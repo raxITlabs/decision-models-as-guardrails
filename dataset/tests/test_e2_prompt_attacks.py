@@ -311,7 +311,10 @@ def test_no_overlap_with_v1_ids_texts_samples_or_ledgers(cands):
     smoke = set()        # edition 2's smoke run and dev-split sample send dev rows only, by design (e2_smoke.py, e2_sample.py)
     for f in glob.glob(str(REPO / "benchmark/results/**/*.jsonl"), recursive=True):
         found = set(ID_PATTERN.findall(Path(f).read_text(encoding="utf-8", errors="ignore")))
-        if Path(f).relative_to(REPO / "benchmark/results").parts[0] in ("edition2-smoke", "edition2-dev-sample"):
+        top = Path(f).relative_to(REPO / "benchmark/results").parts[0]
+        if top == "edition2-full":   # the frozen edition 2 test run itself (e2_full.py), after the freeze
+            continue
+        if top in ("edition2-smoke", "edition2-dev-sample"):
             smoke |= found
         else:
             ids |= found
