@@ -71,10 +71,12 @@ def f3_from_topics(topics):
 
 def test_e2_sets_change_only_what_the_rulings_changed():
     # candidate sets copied from an e2 set (f2-attacks-r24, owner ruling 24) are revisions of it, not frozen copies
-    frozen = [n for n in question_sets.available("e2")
-              if not str(question_sets.load("e2", n).get("copied_from", "")).startswith("e2/")]
+    # a set whose status starts with DRAFT (f2-attacks-indirect, owner rulings 25-27) awaits the owner: not frozen
+    sets = [n for n in question_sets.available("e2")
+            if not str(question_sets.load("e2", n).get("status", "")).startswith("DRAFT")]
+    frozen = [n for n in sets if not str(question_sets.load("e2", n).get("copied_from", "")).startswith("e2/")]
     assert sorted(frozen) == sorted(SOURCES)
-    for n in set(question_sets.available("e2")) - set(frozen):
+    for n in set(sets) - set(frozen):
         cand = question_sets.load("e2", n)
         base = question_sets.load("e2", cand["copied_from"].split("/", 1)[1])
         assert cand["decision"] == base["decision"] and set(cand["questions"]) == set(base["questions"]), n
