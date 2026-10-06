@@ -55,7 +55,13 @@ it. The repository is public, so those files hold the public rows only: the priv
    not score, seeded group halves both ways, dev to test, dev to the unpublished slice, test and unpublished to dev),
    and per stratum and per source (``shortcut_strata``, ruling 25: authored and external rows each pass on their own,
    every source large enough to fit passes on its own, authored rows stay a minority, every source gives both
-   classes). All three must pass;
+   classes). Owner ruling 26 (6 October 2026) replaced that gate as the acceptance test for prompt attacks: the build
+   now runs the confounds-only gate (``prompt_attack_gate``, ``e2_prompt_attacks_confounds``): models that see only
+   nuisance features (source, platform, language, carrier type, template, payload position, length, format, the trust
+   context, and for indirect rows the document with the payload masked and the payload's neighbours) must stay at or
+   under BA 0.70 and AUROC 0.75 on held-out groups, per subtask, stratum, source and facet, with planted-signal and
+   label-permutation controls. Full-text n-gram models are reported beside it, not pass/fail. There is no provisional
+   path: a prompt-attack suite that fails this gate fails the build (rulings 23 and 26);
 6. runs ``goldrails_bench.overlap`` in strict mode: every public and private test row against the examined list,
    smoke, pilot and diagnostic ledgers, every id in a results ledger, every v1 release build and sample row, and the
    edition 2 dev split, by id, text, group and near-duplicate text; private rows also against the public test split.
@@ -98,7 +104,8 @@ SCORED = {
     ("F1", "input"): (TEST_FLOOR, TEST_FLOOR), ("F1", "output"): (TEST_FLOOR, TEST_FLOOR),
     ("F1", "harmful_goal"): (TEST_FLOOR, TEST_FLOOR), ("F1", "over_refusal"): (0, TEST_FLOOR),
     ("F2", "injection"): (TEST_FLOOR, TEST_FLOOR), ("F2", "jailbreak"): (TEST_FLOOR, TEST_FLOOR),
-    ("F2", "leakage"): (TEST_FLOOR, TEST_FLOOR), ("F3", "topic"): (TEST_FLOOR, TEST_FLOOR),
+    ("F2", "leakage"): (TEST_FLOOR, TEST_FLOOR), ("F2", "indirect"): (TEST_FLOOR, TEST_FLOOR),   # ruling 25
+    ("F3", "topic"): (TEST_FLOOR, TEST_FLOOR),
     ("F4", "profanity"): (TEST_FLOOR, TEST_FLOOR),         # ruling 13: profanity stays scored; custom words do not
     ("F5", "pii"): (TEST_FLOOR, TEST_FLOOR), ("F6", "grounding"): (TEST_FLOOR, TEST_FLOOR),
 }
@@ -867,7 +874,9 @@ def _shortcut_rows(rows: list) -> list:
         if n.get("stratum"):                 # ruling 25: a row may say it is authored or external
             d["stratum"] = n["stratum"]
         if isinstance(n.get("gate_facets"), dict):
-            d["facets"] = n["gate_facets"]
+            d["facets"] = {k: v for k, v in n["gate_facets"].items() if v is not None}
+        if isinstance(n.get("gate_nuisance"), dict):     # ruling 26: platform, template, payload position and span
+            d["nuisance"] = n["gate_nuisance"]
         out.append(d)
     return out
 
@@ -937,10 +946,9 @@ def shortcut_gate(parts: dict, use_sklearn: bool | None = None) -> dict:
             "pass": ins["pass"] and held["pass"] and strata["pass"]}
 
 
-# --- a failed shortcut gate and owner ruling 17: the prompt-attack suite published as provisional --------------------
+# --- owner ruling 26: the confounds-only gate is the prompt-attack acceptance test -----------------------------------
 
 CONTRACT = REPO / "benchmark" / "contracts" / "v2.0.json"
-PROVISIONAL_TOLERANCE = 0.01     # recorded maxima may differ by this much (scikit-learn versions); more is stale
 
 
 def gate_summary(gate: dict) -> dict:
@@ -964,42 +972,15 @@ def gate_summary(gate: dict) -> dict:
     return out
 
 
-def _same_summary(want: dict, got: dict, tol: float = PROVISIONAL_TOLERANCE) -> list:
-    """Where a recorded gate summary differs from the computed one (empty when they agree within ``tol``)."""
-    diffs = [k for k in ("in_sample_pass", "heldback_pass") if want.get(k) != got.get(k)]
-    for sub, halves in got["max"].items():
-        for half, cell in halves.items():
-            rec = ((want.get("max") or {}).get(sub) or {}).get(half) or {}
-            diffs += [f"{sub}/{half}/{m}: recorded {rec.get(m)}, computed {cell[m]}" for m in ("ba", "auroc")
-                      if not isinstance(rec.get(m), (int, float)) or abs(rec[m] - cell[m]) > tol]
-    return diffs
-
-
-def provisional_status(gate: dict, contract_path: Path = CONTRACT) -> dict:
-    """Owner ruling 17: when the shortcut gate fails, prompt-attack scores are published as provisional with the
-    source-style caveat. The gate's failure stays recorded (``gate["pass"]`` is unchanged); the build accepts it only
-    when the contract marks ``suites.prompt_attacks`` provisional and records this gate's numbers (``gate_summary``,
-    within PROVISIONAL_TOLERANCE). A failed gate without that record, or with stale numbers, fails the build."""
-    got = gate_summary(gate)
-    spec = (json.loads(Path(contract_path).read_text(encoding="utf-8")).get("suites") or {}).get("prompt_attacks") or {}
-    marked = spec.get("status") == "provisional"
-    rec = (spec.get("provisional") or {}).get("shortcut_gate") or {}
-    out = {"suite": "prompt_attacks", "gate_pass": bool(gate.get("pass")), "marked_provisional": marked,
-           "contract": str(Path(contract_path).relative_to(REPO)) if Path(contract_path).is_relative_to(REPO)
-           else str(contract_path), "computed": got}
-    if gate.get("pass"):
-        out.update(status="final" if not marked else "final (contract still marks it provisional)", accepted=True)
-        return out
-    diffs = _same_summary(rec, got) if rec else ["the contract records no shortcut gate numbers"]
-    if not marked:
-        out.update(status="gate failed and the suite is not marked provisional", accepted=False)
-    elif diffs:
-        out.update(status="provisional, but the contract's recorded gate numbers are stale", accepted=False,
-                   stale=diffs)
-    else:
-        out.update(status="provisional", accepted=True, caveat=(spec.get("provisional") or {}).get("caveat"),
-                   ruling=(spec.get("provisional") or {}).get("ruling"))
-    return out
+def prompt_attack_gate(parts: dict, use_sklearn: bool | None = None, controls: bool = True) -> dict:
+    """Owner ruling 26: the confounds-only gate (``e2_prompt_attacks_confounds.gate_report``) on the built prompt-attack
+    rows, every subtask, stratum, source and facet, with the planted-signal and label-permutation controls and the
+    full-text n-gram baselines (reported, not pass/fail). The build accepts prompt attacks only when it passes; there
+    is no provisional path (rulings 23 and 26)."""
+    from .sources import e2_prompt_attacks_confounds as cg
+    rep = cg.gate_report(_gate_rows(parts), use_sklearn, controls=controls)
+    rep["summary"] = cg.summary(rep)
+    return rep
 
 
 # --- the shortcut gate's full table, written to prompt_attacks/gate-heldback.json -------------------------------------
@@ -1170,10 +1151,8 @@ def run(out: Path = BUILD, root: Path = E2, strict: bool = False, skip_overlap: 
         "second_label": second_label_coverage(parts, content_sample_status(out)),
         "near_duplicates": near_duplicate_summary(parts),
         "reference_overlap_drops": reference_drops,
-        "shortcut_baselines": shortcut_gate(parts, use_sklearn),
+        "prompt_attack_gate": prompt_attack_gate(parts, use_sklearn),
     }
-    report["shortcut_baselines"]["provisional"] = provisional_status(report["shortcut_baselines"])
-    report["suite_status"] = {"prompt_attacks": report["shortcut_baselines"]["provisional"]["status"]}
     if skip_overlap:
         report["overlap"] = {"skipped": True, "pass": None,
                              "note": "the overlap check was skipped, so it is not a pass and the build fails"}
@@ -1182,9 +1161,8 @@ def run(out: Path = BUILD, root: Path = E2, strict: bool = False, skip_overlap: 
     checks = {"gates": report["gates"]["status"] == "pass", "floors": report["floors"]["pass"],
               "pii_entity_floors": report["pii_entity_floors"]["pass"], "second_label": report["second_label"]["pass"],
               "overlap": report["overlap"]["pass"] is True,        # skipped (None) is not a pass
-              # a failed gate stays failed in the report; ruling 17 lets the build pass only with the suite marked
-              # provisional and this gate's numbers recorded in the contract
-              "shortcut_baselines": report["shortcut_baselines"]["provisional"]["accepted"]}
+              # ruling 26: the confounds-only gate; no provisional acceptance (rulings 23 and 26)
+              "prompt_attack_gate": report["prompt_attack_gate"]["pass"] is True}
     report["status"] = "pass" if all(checks.values()) else "fail"
     report["failed"] = sorted(k for k, v in checks.items() if not v)
     report["publication"] = publication(report, parts)
@@ -1260,15 +1238,11 @@ def main(argv=None) -> int:
     print(f"  near-duplicate clusters: {nd['rows_moved']} rows moved split {nd['moved']}, {nd['merged_groups']} merged groups")
     for suite, c in rep["second_label"]["by_suite"].items():
         print(f"  second label {suite}: {c}")
-    sb = rep["shortcut_baselines"]
-    print(f"  shortcut gate: {'pass' if sb['pass'] else 'FAIL'} ({sb['provisional']['computed']['failing_cells']} of "
-          f"{sb['provisional']['computed']['cells']} cells over a bound or constant); prompt_attacks suite: "
-          f"{sb['provisional']['status']}")
-    for sub, halves in sb["provisional"]["computed"]["max"].items():
-        for half, c in halves.items():
-            print(f"    {sub} {half}: max BA {c['ba']} ({c['ba_at']}), max AUROC {c['auroc']} ({c['auroc_at']})")
-    for d in sb["provisional"].get("stale", []):
-        print(f"    stale in the contract: {d}")
+    pg = rep["prompt_attack_gate"]["summary"]
+    print(f"  prompt-attack confounds gate (ruling 26): {'pass' if pg['pass'] else 'FAIL'} ({pg['failing_cells']} of "
+          f"{pg['cells']} cells fail; controls {'pass' if pg['controls_pass'] else 'FAIL'})")
+    for sub, c in pg["max_whole"].items():
+        print(f"    {sub}: max BA {c['ba']} ({c['ba_at']}), max AUROC {c['auroc']} ({c['auroc_at']})")
     if rep["overlap"].get("skipped"):
         print("  overlap: skipped (not a pass)")
     else:

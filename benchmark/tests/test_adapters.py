@@ -494,9 +494,10 @@ def test_contract_records_the_rulings_and_is_signed():
     c = json.loads((ROOT / "contracts/v2.0.json").read_text())
     assert c["status"] == "signed" and "pending_owner_rulings" not in c   # owner ruling 21, 5 October 2026
     assert "pending" not in json.dumps(c["secondary"]) + json.dumps(c["statistics"]) + json.dumps(c["suites"])
-    where = set(c["owner_rulings"]["where"])   # rulings 1-13, plus 14-18 as each is written into the contract
-    assert {str(i) for i in range(1, 14)} | {"15", "16", "17", "18"} <= where <= {str(i) for i in range(1, 19)}
-    assert c["owner_rulings"]["where"]["17"] == "suites.prompt_attacks.provisional"
+    where = set(c["owner_rulings"]["where"])   # rulings 1-13, plus later ones as each is written into the contract
+    assert {str(i) for i in range(1, 14)} | {"15", "16", "17", "18", "23", "25", "26"} <= where <= {str(i) for i in range(1, 27)}
+    assert c["owner_rulings"]["where"]["26"] == "suites.prompt_attacks.acceptance"      # ruling 26 replaced 17
+    assert "provisional" not in c["suites"]["prompt_attacks"]
     assert "private_slice" not in c["data_release"] and c["data_release"]["unpublished_slice"]["published"] is False
     wf = c["suites"]["word_filters"]
     assert "word" in wf["subtasks"] and "word" in wf["sanity_checks"] and wf["sanity_checks"]["word"]["scored"] is False

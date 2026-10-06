@@ -419,34 +419,21 @@ def _built(cands):
     return projected(cands, seconds, resolutions())
 
 
-def _provisional_record():
-    """The contract's ``suites.prompt_attacks`` provisional block (owner ruling 17), or None when the suite is final."""
-    spec = json.loads((REPO / "benchmark/contracts/v2.0.json").read_text(encoding="utf-8"))["suites"]["prompt_attacks"]
-    return spec.get("provisional") if spec.get("status") == "provisional" else None
-
-
 def _assert_passes_or_provisional(failing: list):
-    """Either no baseline is over a bound, or the suite is marked provisional (ruling 17) and the contract records the
-    gate's numbers: a failed held-back gate, the caveat, and per-subtask maxima over the bounds for both halves."""
+    """Owner ruling 26: full-text n-gram models are reported baselines, not pass/fail, and the provisional path is
+    gone. When the current suite misses the old targets, the contract must not accept it as provisional and must name
+    the confounds-only gate as the acceptance test."""
     if not failing:
         return
-    prov = _provisional_record()
-    assert prov is not None, f"shortcut targets missed and prompt_attacks is not marked provisional: {failing[:5]}"
-    gate = prov["shortcut_gate"]
-    assert prov["caveat"] and "17" in prov["ruling"]
-    assert gate["heldback_pass"] is False and gate["failing_cells"] > 0 and gate["cells"] >= gate["failing_cells"]
-    for sub in SUBTASKS:
-        for half in ("in_sample", "heldback"):
-            cell = gate["max"][sub][half]
-            assert {"ba", "auroc", "ba_at", "auroc_at"} <= set(cell), (sub, half)
-    assert any(gate["max"][sub]["heldback"]["auroc"] > 0.75 or gate["max"][sub]["heldback"]["ba"] > 0.70
-               for sub in SUBTASKS)
+    spec = json.loads((REPO / "benchmark/contracts/v2.0.json").read_text(encoding="utf-8"))["suites"]["prompt_attacks"]
+    assert spec.get("status") != "provisional" and "provisional" not in spec
+    assert "ruling 26" in spec["acceptance"]["ruling"]
 
 
 def test_committed_candidates_meet_the_shortcut_targets(cands):
     """Every shortcut baseline at or under BA 0.70 and AUROC 0.75 per subtask, on the would-be built test split (owner
     ruled relabels applied, rows awaiting the owner left out) with and without the private slice, or, under owner
-    ruling 17, the suite marked provisional in the contract with the gate's numbers recorded. The text models run when
+    ruling 26, recorded as baselines only while the contract names the confounds gate. The text models run when
     scikit-learn is importable (uv run --with scikit-learn pytest); the committed numbers in counts.json are checked
     either way, and a constant text-model fit counts as a miss."""
     from goldrails_dataset.separability import sklearn_available
@@ -491,8 +478,8 @@ def test_every_source_with_both_classes_is_used_for_both(cands):
 def test_committed_heldback_views_meet_the_shortcut_targets():
     """The held-back views recorded in counts.json (every baseline fitted on rows it then does not score:
     seeded group halves both ways, dev to test, dev to the unpublished slice, test and unpublished to dev, seeded
-    groups) are under BA 0.70 and AUROC 0.75 for every baseline, or the suite is marked provisional with the gate's
-    numbers recorded (owner ruling 17). A constant fit is recorded (constant_prediction) and is a miss."""
+    groups) are under BA 0.70 and AUROC 0.75 for every baseline, or (owner ruling 26) they are baselines only and the
+    contract names the confounds gate. A constant fit is recorded (constant_prediction)."""
     from goldrails_dataset.sources.e2_prompt_attacks_shortcuts import BASELINES, CONSTANT_CHECKED, HELDBACK_VIEWS
     counts = json.loads((E2 / "counts.json").read_text(encoding="utf-8"))
     hb = counts["shortcut_baselines"]["heldback"]

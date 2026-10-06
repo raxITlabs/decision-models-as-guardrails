@@ -193,41 +193,52 @@ settled, and `v2.0.json` no longer has a `pending_owner_rulings` block.
 | 13 | Custom words are a pass/fail sanity check outside the score; profanity stays scored | `suites.word_filters.sanity_checks` |
 | 15 | The held-out test rows are the "unpublished slice", disclosed as rebuildable from public upstream data; a truly private slice comes in edition 3 | `data_release.unpublished_slice`, `disclosures` |
 | 16 | Laya keeps its checkpoint's 512-token limit; every truncated row is flagged and disclosed | `disclosures`, Noul adapter |
-| 17 | If the shortcut check still fails on held-back rows, prompt-attack scores are published as provisional with the source-style caveat | `suites.prompt_attacks.status`, `suites.prompt_attacks.provisional` |
-| 18 | Rows sharing text with a benchmarked vendor's published docs are excluded from test and the unpublished slice; prompt attacks stay provisional | `dataset/edition2/EXCLUDED.jsonl`, `suites.prompt_attacks.provisional` |
+| 17 | Superseded by rulings 23 and 26: there are no provisional prompt-attack scores | `suites.prompt_attacks.status` |
+| 18 | Rows sharing text with a benchmarked vendor's published docs are excluded from test and the unpublished slice | `dataset/edition2/EXCLUDED.jsonl` |
+| 23 | No provisional scores; a prompt-attack suite that fails its acceptance test does not ship | `suites.prompt_attacks.status` |
+| 25 | Direct and indirect prompt attacks both count in the overall score; the launch waits for a passing suite | `suites.prompt_attacks.announced_subtasks.indirect` |
+| 26 | The prompt-attack acceptance test is the confounds-only gate; full-text n-gram baselines are published, not pass/fail | `suites.prompt_attacks.acceptance` |
 
-## Prompt attacks are provisional (rulings 17 and 18)
+## Prompt attacks: the confounds-only gate (ruling 26)
 
-The prompt-attack suite is scored, ranked and published, and every place its scores appear says "provisional". The
-reason is the shortcut gate. It fits baselines that never judge an attack (source id, a keyword regex, text length, and
-L2 logistic regression on character 2-5-grams and on word 1-2-grams) and asks each to stay at or under balanced
-accuracy 0.70 and AUROC 0.75. A fit that gives every row the same score counts as a failure, not a pass. After the
-4 October round the gate still fails, in sample and on rows the baselines were not fitted on. The two n-gram models
-do the damage; source id fails two held-back injection cells (dev to the unpublished slice, AUROC 0.763, and one seeded
-group half to the other, AUROC 0.76).
+Prompt-attack scores are not published until a suite passes the gate below. There is no provisional label any more
+(rulings 23 and 26 replace ruling 17), and the launch waits for that suite (ruling 25).
 
-Highest BA / AUROC of any baseline in any view (bounds 0.70 / 0.75):
+The old shortcut gate asked word and character n-gram models to fail on the attack and benign rows. For prompt
+attacks that test cannot be passed honestly: attack wording is the signal a guardrail should use, so a classifier that
+reads the wording should separate the classes. Ruling 26 narrows the question. A model that sees only features that
+should not decide the label must not tell the classes apart on groups it was not fitted on.
 
-| Subtask | In sample | Held back |
-|---|---|---|
-| injection | 0.842 / 0.912 | 0.862 / 0.943 |
-| jailbreak | 0.885 / 0.949 | 0.94 / 0.984 |
-| leakage | 0.866 / 0.938 | 0.877 / 0.939 |
+The gate is `gate_report` in `dataset/goldrails_dataset/sources/e2_prompt_attacks_confounds.py`, and the edition 2 build
+runs it as `prompt_attack_gate`. Its models read:
 
-These are the 5 October numbers (round 6). That round took out every test and unpublished row whose text is in
-pplx-decider-v1-27b's training or development data and topped the suite up from the same pools; it did not touch the
-gate or filter on it. The gate moved by at most 0.013 and still fails (48 of 120 cells), so the suite stays
-provisional and only the recorded numbers in `v2.0.json` changed.
+- the source, and the attack rate of each source in the training rows;
+- the platform, language, carrier or document type, template (system prompt, task, frame), payload position, a log2
+  length bin and coarse format flags, as one-hot logistic regression and as gradient-boosted trees;
+- the raw length;
+- the trust context (system prompt and the user's task) as word n-grams;
+- for indirect rows, the document with the inserted span masked, and the text next to the span.
 
-So the labels are partly predictable from source and writing style. A prompt-attack score partly measures how well a
-system picks up that style, not only whether it recognises an attack. We stopped changing the prompt-attack data here,
-as ruling 17 allows. Every cell is in `dataset/edition2/prompt_attacks/gate-heldback.json`.
+Every model must stay at or under balanced accuracy 0.70 and AUROC 0.75 in every view: grouped five-fold CV on test
+and unpublished rows, both seeded group halves, dev to test and unpublished, and back. The same holds per subtask,
+per stratum (real rows, hard benign rows), per source and per facet (carrier, payload source, benign-edit kind,
+position). Each cell records a 95% cluster-bootstrap interval. A whole-subtask view needs 20 independent groups per
+class. A model that scores every row alike because its features carry nothing is recorded as constant and passes. An
+exception, an empty vocabulary on real input or a solver that did not converge fails. Planted-signal and
+label-permutation controls run with the gate and must pass, so a pass shows the models could have failed.
 
-`suites.prompt_attacks.provisional` in `v2.0.json` holds the caveat and these numbers. The edition 2 build records
-the failed gate either way. It passes only while the contract marks the suite provisional and its recorded numbers
-match the gate within 0.01, so a rebuild that moves them fails until someone updates the contract. `leaderboard_v2`
-copies the label and caveat onto the suite board, the prompt-attack subtask boards, the overall board and the
-disclosures.
+The full-text n-gram models of ruling 25 (word 1-2, 1-3 and 1-4-grams, character n-grams within and across words, and
+the keyword regex) still run. Their balanced accuracy at probability 0.5 on test and unpublished rows is published
+beside every system as a reference, so a reader can see how much of a score plain wording explains.
+
+Acceptance also needs independently reviewed labels (a blind second labeller on a stratified sample), an agreed
+threat model and labelling policy, and clean splits: no payload family, document or template appears in more than one
+split. The scored suite holds real direct attacks with same-source benign messages, real documents clean versus
+injected for indirect attacks, and hard benign rows (quoted, discussed or translated attacks; instructions addressed
+to human readers) as a minority. Indirect attacks are named in `suites.prompt_attacks.announced_subtasks.indirect`; they
+become a required subtask when the rebuilt suite is swapped in.
+
+The ruling 26 candidate is in `dataset/edition2/r26/prompt_attacks/` (`DESIGN.md`, `gate.json`, `counts.json`).
 
 Ruling 18 removed 11 public test rows and one unpublished row whose text appears in TypeSafe's LLM guardrails cookbook
 (`dataset/edition2/VENDOR-OVERLAP.md`). Two are the cookbook's own examples. The other nine public rows share only

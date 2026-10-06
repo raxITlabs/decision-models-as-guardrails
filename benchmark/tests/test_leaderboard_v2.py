@@ -194,15 +194,16 @@ def test_capability_not_offered_leaves_no_overall_rank_but_keeps_suite_board():
 
 
 def test_provisional_prompt_attacks_are_scored_ranked_and_labelled():
-    """Owner ruling 17: while the shortcut gate fails, prompt-attack scores are published as provisional, with the
-    caveat and the gate's numbers beside them; the suite is still scored and ranked and counts in the overall mean."""
-    spec = CONTRACT["suites"]["prompt_attacks"]
-    assert spec["status"] == "provisional"
-    gate = spec["provisional"]["shortcut_gate"]
-    assert gate["heldback_pass"] is False and gate["failing_cells"] > 0
-    assert {"injection", "jailbreak", "leakage"} <= set(gate["max"])
-    assert "source and" in spec["provisional"]["caveat"] and "style" in spec["provisional"]["caveat"]
-    doc = ev(_two_suites(), contract("denied_topics", "prompt_attacks"), replicates=50, seed=1)
+    """The provisional mechanism (owner ruling 17): a suite the contract marks provisional is scored, ranked and
+    labelled, with its caveat and gate numbers beside it. Ruling 26 removed the mark from the committed contract
+    (prompt attacks wait for a suite that passes the confounds gate), so this test marks a copy itself."""
+    assert CONTRACT["suites"]["prompt_attacks"].get("status") != "provisional"     # ruling 26: no provisional scores
+    gate = {"heldback_pass": False, "failing_cells": 3, "max": {"injection": {}, "jailbreak": {}, "leakage": {}}}
+    spec = {"status": "provisional", "provisional": {"ruling": "owner rulings 17 and 18", "caveat": "source and style",
+                                                     "shortcut_gate": gate}}
+    c0 = contract("denied_topics", "prompt_attacks")
+    c0["suites"]["prompt_attacks"].update(spec)
+    doc = ev(_two_suites(), c0, replicates=50, seed=1)
     pa = doc["suites"]["prompt_attacks"]
     assert pa["status"] == "provisional" and pa["provisional"]["caveat"] == spec["provisional"]["caveat"]
     assert pa["ranking"] and pa["provisional"]["shortcut_gate"] == gate
@@ -212,9 +213,8 @@ def test_provisional_prompt_attacks_are_scored_ranked_and_labelled():
     assert any(d.startswith("prompt_attacks scores are provisional") for d in doc["disclosures"])
     assert set(doc["provisional_suites"]) == {"prompt_attacks"}
     c = contract("denied_topics", "prompt_attacks")
-    del c["suites"]["prompt_attacks"]["status"]
     doc = ev(_two_suites(), c, replicates=50, seed=1)
-    assert "status" not in doc["suites"]["prompt_attacks"] and not doc["provisional_suites"]
+    assert doc["suites"]["prompt_attacks"].get("status") != "provisional" and not doc["provisional_suites"]
 
 
 def test_declared_not_offered_is_reported_as_such():

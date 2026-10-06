@@ -308,7 +308,7 @@ def test_a_skipped_overlap_check_is_not_a_pass(monkeypatch, tmp_path):
     monkeypatch.setattr(e2, "gate_audit", lambda out: {"status": "pass"})
     monkeypatch.setattr(e2, "floors", lambda parts: {"pass": True, "shortfalls": []})
     monkeypatch.setattr(e2, "entity_floors", lambda parts: {"pass": True, "shortfalls": []})
-    monkeypatch.setattr(e2, "shortcut_gate", lambda parts, use_sklearn=None: {"pass": True, "failures": []})
+    monkeypatch.setattr(e2, "prompt_attack_gate", lambda parts, use_sklearn=None: _ok_gate(True))
     rep = e2.run(tmp_path, skip_overlap=True)
     assert rep["overlap"]["pass"] is None and rep["overlap"]["skipped"] is True
     assert rep["status"] == "fail" and "overlap" in rep["failed"]
@@ -404,43 +404,49 @@ def _gate(pass_, auroc=0.9):
     return {"pass": pass_, "in_sample": {"pass": pass_}, "heldback": {"pass": pass_}, "table": table}
 
 
-def test_failed_shortcut_gate_passes_the_build_only_as_recorded_provisional(tmp_path):
-    """Owner ruling 17: a failed gate stays failed in the report, and the build accepts it only when the contract
-    marks prompt attacks provisional and records this gate's numbers."""
-    def contract(spec):
-        p = tmp_path / "c.json"
-        p.write_text(json.dumps({"suites": {"prompt_attacks": spec}}))
-        return p
-    failed = _gate(False)
-    rec = e2.gate_summary(failed)
-    assert rec["failing_cells"] == 6 and rec["max"]["jailbreak"]["heldback"]["auroc"] == 0.9
-    ok = e2.provisional_status(failed, contract({"status": "provisional", "provisional": {
-        "shortcut_gate": rec, "caveat": "c", "ruling": "owner rulings 17 and 18"}}))
-    assert ok["accepted"] and ok["status"] == "provisional" and ok["gate_pass"] is False
-    assert not e2.provisional_status(failed, contract({}))["accepted"]                 # not marked
-    stale = e2.provisional_status(_gate(False, 0.95), contract({"status": "provisional",
-                                                                 "provisional": {"shortcut_gate": rec}}))
-    assert not stale["accepted"] and stale["stale"]
-    assert not e2.provisional_status(failed, contract({"status": "provisional"}))["accepted"]   # no numbers
-    assert e2.provisional_status(_gate(True, 0.6), contract({}))["status"] == "final"
+def _ok_gate(pass_):
+    return {"pass": pass_, "failures": [] if pass_ else ["indirect/whole/heldout_groups_cv/nuisance_gbt: fit: BA 0.8"],
+            "summary": {"pass": pass_, "failing_cells": 0 if pass_ else 1, "cells": 10, "controls_pass": True,
+                        "max_whole": {"indirect": {"ba": 0.6, "ba_at": "x", "auroc": 0.6, "auroc_at": "x"}}}}
 
 
-def test_committed_contract_records_the_current_gate():
-    """The contract's recorded gate numbers match the committed gate table (gate-heldback.json)."""
-    if not e2.HELDBACK.exists():
-        pytest.skip("gate-heldback.json not written")
+def test_a_failed_confounds_gate_fails_the_build_with_no_provisional_path(monkeypatch, tmp_path):
+    """Rulings 23 and 26: a prompt-attack suite that fails the confounds-only gate fails the build. Nothing in the
+    contract can mark it provisional any more."""
+    rows = [_row(i, "injection", "yes", "a") for i in range(3)]
+    monkeypatch.setattr(e2, "build_parts", lambda root, drop_overlaps=True: ({"test": rows}, None))
+    monkeypatch.setattr(e2, "gate_audit", lambda out: {"status": "pass"})
+    monkeypatch.setattr(e2, "floors", lambda parts: {"pass": True, "shortfalls": []})
+    monkeypatch.setattr(e2, "entity_floors", lambda parts: {"pass": True, "shortfalls": []})
+    monkeypatch.setattr(e2, "overlap_check", lambda parts, strict=False: {"pass": True})
+    monkeypatch.setattr(e2, "second_label_coverage", lambda parts, sample=None: {"pass": True, "by_suite": {}})
+    monkeypatch.setattr(e2, "publication", lambda report, parts: {"ready": False, "blockers": []})
+    monkeypatch.setattr(e2, "prompt_attack_gate", lambda parts, use_sklearn=None: _ok_gate(False))
+    rep = e2.run(tmp_path)
+    assert rep["status"] == "fail" and rep["failed"] == ["prompt_attack_gate"]
+    assert not hasattr(e2, "provisional_status") and "shortcut_baselines" not in rep
+    monkeypatch.setattr(e2, "prompt_attack_gate", lambda parts, use_sklearn=None: _ok_gate(True))
+    assert e2.run(tmp_path)["status"] == "pass"
+
+
+def test_the_build_gate_rows_carry_the_ruling_26_nuisance_fields():
+    r = _row(1, "indirect", "yes", "a")
+    r.feature = "F2"
+    r.provenance.notes = json.dumps({"stratum": "real", "gate_facets": {"carrier": "x", "negative_kind": None},
+                                     "gate_nuisance": {"platform": "x", "span": [0, 3], "position": "start"}})
+    d = e2._shortcut_rows([r])[0]
+    assert d["nuisance"]["span"] == [0, 3] and d["facets"] == {"carrier": "x"} and d["stratum"] == "real"
+
+
+def test_committed_contract_names_the_ruling_26_gate_and_the_indirect_subtask():
     spec = json.loads(e2.CONTRACT.read_text(encoding="utf-8"))["suites"]["prompt_attacks"]
-    rep = json.loads(e2.HELDBACK.read_text(encoding="utf-8"))
-    if rep["pass"]:
-        return
-    assert spec["status"] == "provisional"
-    half = lambda v: "in_sample" if v.startswith("in_sample") else "heldback"     # noqa: E731
-    gate = {"pass": False, "in_sample": {"pass": not any(not t["pass"] for t in rep["table"] if half(t["view"]) == "in_sample")},
-            "heldback": {"pass": not any(not t["pass"] for t in rep["table"] if half(t["view"]) == "heldback")},
-            "table": [dict(t, half=half(t["view"])) for t in rep["table"]]}
-    want = spec["provisional"]["shortcut_gate"]
-    assert not e2._same_summary(want, e2.gate_summary(gate))
-    assert want["failing_cells"] == sum(not t["pass"] for t in rep["table"])
+    assert spec.get("status") != "provisional" and "provisional" not in spec
+    assert "indirect" in spec["announced_subtasks"]           # ruling 25; required once a passing suite ships
+    acc = spec["acceptance"]
+    assert "ruling 26" in acc["ruling"] and acc["gate"].startswith("dataset/goldrails_dataset/sources/"
+                                                                     "e2_prompt_attacks_confounds.py")
+    assert acc["bounds"] == {"ba_max": 0.70, "auroc_max": 0.75}
+    assert ("F2", "indirect") in e2.SCORED
 
 
 def test_heldback_view_fails_on_a_source_shortcut_and_without_the_ngram_baseline():
@@ -598,10 +604,10 @@ def test_committed_audit_report_passes_and_is_ready_to_publish():
     rep = json.loads((e2.BUILD / "audit-report.json").read_text(encoding="utf-8"))
     assert rep["status"] == "pass" and not rep["failed"]
     assert rep["floors"]["pass"] and rep["pii_entity_floors"]["pass"]
-    # the shortcut gate passes, or (owner ruling 17) it failed and the suite is provisional with the numbers recorded
-    sb = rep["shortcut_baselines"]
-    assert sb["pass"] or (sb["provisional"]["accepted"] and sb["provisional"]["status"] == "provisional"
-                          and rep["suite_status"]["prompt_attacks"] == "provisional")
+    # a report written after ruling 26 carries the confounds gate, which must pass for the build to pass; the
+    # committed report predates it (written 5 October under ruling 17)
+    if "prompt_attack_gate" in rep:
+        assert rep["prompt_attack_gate"]["pass"] is True
     assert rep["overlap"]["pass"] is True
     assert rep["second_label"]["content_human_sample"]["fresh"]
     assert rep["publication"]["ready"] is True       # every dispute decided and the content sample labelled (5 Oct)

@@ -119,6 +119,9 @@ E2_PLAN = {
                           "yanis_prompt_injections", "e2_attack_controls"],
     ("F2", "leakage"): ["lakera_mosscap", "lakera_gandalf_summarization", "yanis_prompt_injections",
                         "neuralchemy_injection", "e2_attack_controls", "itw_jailbreak_prompts"],
+    # owner rulings 25 and 26: indirect attacks join the scored suite (carrier sources of the ruling 26 candidate,
+    # dataset/edition2/r26/prompt_attacks/); the edition 2 floors apply once that suite is swapped in
+    ("F2", "indirect"): ["llmail_inject", "bipia", "agentdojo", "sep_dataset"],
     ("F3", "topic"): ["e2_denied_topics", "e2_oasst2"],
     ("F4", "profanity"): ["e2_profanity_civil_comments", "e2_profanity_rtp", "e2_profanity_oasst2"],
     ("F5", "pii"): ["nemotron_pii", "gretel_pii_en", "gretel_pii_finance", "e2_pii_controls"],
