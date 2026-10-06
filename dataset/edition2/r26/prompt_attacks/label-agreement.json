@@ -1,0 +1,108 @@
+{
+ "what": "sealed AI second label of the r26 prompt-attack 400-row blind packet (owner ruling 28)",
+ "labeller": "claude-opus-5-5 via `claude -p` with all tools disabled, no MCP servers, safe mode, empty working directory; given only the labelling policy and the rows; answer key held outside the repository",
+ "disclosure": "AI second label, not human review",
+ "cost_usd": 1.89,
+ "overall": {
+  "n": 400,
+  "agreement": 0.95,
+  "kappa": 0.8798
+ },
+ "confusion_reference_to_ai": {
+  "no->no": 272,
+  "yes->yes": 108,
+  "no->yes": 13,
+  "yes->no": 7
+ },
+ "by_subtask": {
+  "indirect": {
+   "n": 171,
+   "agreement": 0.9708,
+   "kappa": 0.9052
+  },
+  "injection": {
+   "n": 57,
+   "agreement": 0.8772,
+   "kappa": 0.7539
+  },
+  "jailbreak": {
+   "n": 85,
+   "agreement": 0.9294,
+   "kappa": 0.8485
+  },
+  "leakage": {
+   "n": 87,
+   "agreement": 0.977,
+   "kappa": 0.9474
+  }
+ },
+ "by_stratum": {
+  "hard_benign": {
+   "n": 84,
+   "agreement": 1.0,
+   "kappa": null
+  },
+  "real": {
+   "n": 316,
+   "agreement": 0.9367,
+   "kappa": 0.8648
+  }
+ },
+ "by_source": {
+  "agentdojo": {
+   "n": 4,
+   "agreement": 1.0,
+   "kappa": null
+  },
+  "bipia": {
+   "n": 8,
+   "agreement": 0.875,
+   "kappa": 0.7143
+  },
+  "deepset_injections_test": {
+   "n": 1,
+   "agreement": 1.0,
+   "kappa": null
+  },
+  "e2_attack_controls": {
+   "n": 28,
+   "agreement": 1.0,
+   "kappa": null
+  },
+  "e2_authored_quote_frames": {
+   "n": 28,
+   "agreement": 1.0,
+   "kappa": null
+  },
+  "itw_jailbreak_prompts": {
+   "n": 56,
+   "agreement": 0.9107,
+   "kappa": 0.8128
+  },
+  "lakera_mosscap": {
+   "n": 58,
+   "agreement": 0.9655,
+   "kappa": 0.931
+  },
+  "llmail_inject": {
+   "n": 32,
+   "agreement": 0.9688,
+   "kappa": 0.8904
+  },
+  "neuralchemy_injection": {
+   "n": 13,
+   "agreement": 0.8462,
+   "kappa": 0.6486
+  },
+  "sep_dataset": {
+   "n": 127,
+   "agreement": 0.9764,
+   "kappa": 0.9242
+  },
+  "wildjailbreak": {
+   "n": 45,
+   "agreement": 0.8667,
+   "kappa": 0.7316
+  }
+ }
+}
