@@ -47,8 +47,15 @@ Fit status of a cell:
 - ``error``: an exception, an empty vocabulary on non-empty input, or a solver that did not converge. A failure.
 
 Independent groups. A cell is scored only when its scored rows hold at least ``MIN_GROUPS_PER_CLASS`` distinct groups
-of each class and its training rows at least ``MIN_TRAIN_GROUPS_PER_CLASS``. A whole-subtask view that is too small
-fails; a stratum, source or facet that is too small is listed under ``not_fitted_small``.
+of each class and its training rows at least ``MIN_TRAIN_GROUPS_PER_CLASS``. A whole-subtask pool view (grouped CV,
+seeded halves) that is too small fails; a dev view, a stratum, a source or a facet that is too small is listed under
+``not_fitted_small``.
+
+One-class subsets. A stratum, source or facet value held by one class only (the hard-benign rows, an unmodified
+document) is compared against every row of the other class. When that side is its own source (NotInject, the
+authored controls), the models that read the source, platform and template would only name the side, so those
+subsets run the other models (length, format, context, masked text, neighbours); the whole-subtask views still run
+every model on every row.
 
 Confidence bounds. Each scored cell carries a 95% cluster-bootstrap interval for AUROC and BA (``BOOTSTRAP``
 resamples of whole groups, seeded). The pass rule uses the point estimate; the intervals are recorded.
@@ -534,6 +541,9 @@ VIEW_NOTES = {
 }
 
 
+POOL_VIEWS = ("heldout_groups_cv", "heldout_half_a_to_half_b", "heldout_half_b_to_half_a")
+
+
 def views_of(rows: list) -> dict:
     """{view: (kind, train, score)}. Every view holds out whole groups."""
     by = {k: [r for r in rows if r["proposed_split"] == k] for k in ("dev", "test", "private")}
@@ -571,7 +581,8 @@ def subsets_of(rows: list) -> dict:
             name = f"{k}:{v}"
             if len(labs) == 1:
                 other = "no" if labs == {"yes"} else "yes"
-                sub = sub + [r for r in rows if r["label"] == other]
+                sub = [dict(r, _side="value") for r in sub] + [dict(r, _side="other") for r in rows
+                                                               if r["label"] == other]
                 name += " vs other class"
             out[name] = sub
     return out
@@ -588,9 +599,23 @@ def _enough(kind, train, score) -> tuple[bool, str]:
     return True, ""
 
 
+IDENTITY_MODELS = ("source_id", "nuisance_logreg", "nuisance_gbt")    # they read the source, platform and template
+
+
+def one_class_side_is_its_own_source(name: str, rows: list) -> bool:
+    """True for a ``vs other class`` subset whose one-class side shares no source with the other side (a hard-benign
+    source such as NotInject or the authored controls): the source then names the side by construction."""
+    if not name.endswith(" vs other class"):
+        return False
+    a = {r["source"] for r in rows if r.get("_side") == "value"}
+    b = {r["source"] for r in rows if r.get("_side") == "other"}
+    return bool(a) and not (a & b)
+
+
 def _jobs_for(rows: list, models) -> list:
     """[(subset, view, model, job)] for one subtask: whole-subtask views and every subset's views (no pool-to-dev for
-    subsets: dev subsets are small)."""
+    subsets: dev subsets are small). A ``vs other class`` subset whose one-class side is its own source skips the
+    models that read the source (``IDENTITY_MODELS``): they would recover the side's identity, not a confound."""
     out = []
     for view, (kind, train, score) in views_of(rows).items():
         for m in models:
@@ -598,11 +623,12 @@ def _jobs_for(rows: list, models) -> list:
                 out.append(("whole", view, m, (kind, m, train, score)))
     for name, sub in subsets_of(rows).items():
         single_source = len({r["source"] for r in sub}) == 1
+        own = one_class_side_is_its_own_source(name, sub)
         for view, (kind, train, score) in views_of(sub).items():
             if view == "pool_to_dev":
                 continue
             for m in models:
-                if (m == "source_id" and single_source) or not _applies(m, score):
+                if (m == "source_id" and single_source) or (own and m in IDENTITY_MODELS) or not _applies(m, score):
                     continue
                 out.append((name, view, m, (kind, m, train, score)))
     return out
@@ -645,7 +671,9 @@ def gate_report(rows: list, use_sklearn: bool | None = None, controls: bool = Tr
                 what = cell.get("error") if cell["status"] == "error" else f"BA {cell['ba']}, AUROC {cell['auroc']}"
                 failures.append(f"{sub}/{name}/{view}/{m}: {cell['status']}: {what}")
         for key, why in skipped[sub].items():
-            if key.startswith("whole/"):
+            # the pool views (grouped CV and the seeded halves) must be scored; a dev view needs a dev split with
+            # enough groups and is listed, not failed, when it has too few
+            if key.startswith("whole/") and key.split("/")[1] in POOL_VIEWS:
                 failures.append(f"{sub}/{key}: too few independent groups ({why})")
             else:
                 per["not_fitted_small"][key] = why

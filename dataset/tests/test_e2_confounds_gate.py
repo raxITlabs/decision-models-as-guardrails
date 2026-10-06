@@ -180,3 +180,26 @@ def test_a_process_pool_gives_the_same_cells(monkeypatch):
     serial = cg.run_jobs(jobs)
     monkeypatch.setenv(cg.WORKERS_ENV, "2")
     assert cg.run_jobs(jobs) == serial
+
+
+def test_a_one_class_side_that_is_its_own_source_skips_the_identity_models():
+    rows = _direct(120)
+    for i, r in enumerate(rows):
+        if r["label"] == "no" and i % 4 == 0:
+            r["source"], r["stratum"] = "authored", "hard_benign"
+    subs = cg.subsets_of(rows)
+    name = "source:authored vs other class"
+    assert cg.one_class_side_is_its_own_source(name, subs[name])
+    assert not cg.one_class_side_is_its_own_source("source:a", subs["source:a"])
+    jobs = cg._jobs_for(rows, ("source_id", "length", "nuisance_logreg"))
+    models = {m for n, v, m, j in jobs if n == name}
+    assert models == {"length"}
+    assert {m for n, v, m, j in jobs if n == "whole"} == {"source_id", "length", "nuisance_logreg"}
+
+
+def test_a_small_dev_split_lists_its_views_instead_of_failing():
+    rows = [r for r in _direct(240) if r["proposed_split"] != "dev"]
+    rows += [dict(r, proposed_split="dev", id=r["id"] + "d", group=r["group"] + "d") for r in _direct(20, seed=9)]
+    rep = cg.gate_report(rows, use_sklearn=False, controls=False, ngrams=False)
+    assert not any("dev" in f for f in rep["failures"]), rep["failures"]
+    assert any(k.startswith("whole/pool_to_dev") for k in rep["subtasks"]["injection"]["not_fitted_small"])
