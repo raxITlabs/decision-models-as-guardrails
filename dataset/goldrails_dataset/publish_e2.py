@@ -49,7 +49,7 @@ ROOT = Path(__file__).resolve().parents[1]          # dataset/
 REPO = ROOT.parent
 E2 = ROOT / "edition2"
 BUILD = E2 / "build"
-VERSION = "1.1.0"
+VERSION = "1.0.0"   # owner ruling 29: the first public release; no earlier version is named in public text
 STAGE = ROOT / "publish" / f"release-{VERSION}"
 HUB_REPO = "raxITLabs/decision-models-as-guardrails"
 CONFIGS = {"F1": "content", "F2": "prompt_attacks", "F3": "denied_topics", "F4": "word_filters",
@@ -656,19 +656,12 @@ def changelog_md(files: list, code_ref: str, build: Path = BUILD) -> str:
     return "\n".join([
         "# Changelog", "",
         f"## {VERSION}, {_today()}", "",
+        "- First public release.",
         f"- {total} rows in six configs, each with `dev` and `test` splits.",
-        "- New prompt-attack rows: real direct attacks with benign messages from the same sources, and a new "
-        "`indirect` subtask (instructions hidden in emails, tool results and passages, against the same documents "
-        "without them). Models that see only a row's source, format, length or payload position cannot tell the "
-        "classes apart.",
-        "- Adds the prompt-attack AI second-label result (README, `prompt-attack-label-agreement.json`).",
-        "- The other five configs are unchanged.",
+        "- Label checks: the content second-label sample (`content-label-agreement.json`) and the prompt-attack AI "
+        "second label (`prompt-attack-label-agreement.json`).",
         f"- Code: {PUBLIC_REPO} at `{code_ref}`. Manifest sha256 `{_sha(Path(build) / 'manifest.json')}`.",
-        "- Load a version by its Hub commit, not by `main`, if you need results to stay reproducible.", "",
-        "## 1.0.1", "",
-        "- Every disputed label decided; those rows joined their splits.",
-        "- Adds the content second-label sample result (`content-label-agreement.json`).", "",
-        "## 1.0.0, 5 October 2026", "", "- First public release.", ""])
+        "- Load a version by its Hub commit, not by `main`, if you need results to stay reproducible.", ""])
 
 
 def _today() -> str:

@@ -267,9 +267,11 @@ def _with_log(path: Path, fn):
 
 
 def started_sessions(log: dict) -> dict:
-    """The run log with the VM sessions of failed starts left out: a ``make up`` that failed (GPU stockout) never ran
-    the VM, though ``vm_run`` opened and closed a session around it. Those sessions are listed under ``failed_starts``."""
-    bad = [(r.get("started"), r.get("finished")) for r in log.get("vm_runs") or [] if r.get("make_up") not in (0, None)]
+    """The run log with the VM sessions in which the VM never ran left out: a ``make up`` that hit a GPU stockout on
+    every attempt opened and closed a session around nothing. Those windows are recorded in ``vm_no_start`` (with the
+    make-up log's evidence) and their sessions listed under ``failed_starts``. A boot that started the VM but timed out
+    waiting for a server cost VM time and stays in."""
+    bad = [(r.get("from"), r.get("to")) for r in log.get("vm_no_start") or []]
     def inside(s):
         return any(a and b and a <= s["up"] <= b for a, b in bad)
     return {**log, "vm": [s for s in log.get("vm", []) if not inside(s)],
@@ -376,6 +378,14 @@ def attack_views(final_new: list, tr) -> dict:
     return out
 
 
+def ai_label_disclosure() -> str:
+    p = REPO / "dataset" / "edition2" / "r26" / "prompt_attacks" / "label-agreement.json"
+    o = json.loads(p.read_text(encoding="utf-8"))["overall"]
+    return ("Prompt-attack labels have an AI second label, not a human review. A model with no tools and no file "
+            f"access labelled a {o['n']}-row blind sample from the policy and the rows alone and agreed with the "
+            f"reference label on {o['agreement']:.1%} of them (Cohen's kappa {o['kappa']:.2f}).")
+
+
 def score(replicates: int | None = None) -> Path:
     from goldrails_bench import freeze as F
     from goldrails_bench import leaderboard as lb
@@ -443,13 +453,14 @@ def score(replicates: int | None = None) -> Path:
         "dataset_sha256": {full.FEATURE_SUITE[f]: tr.file_sha[f] for f in full.FEATURES},
         "approval": APPROVAL,
         "forecast": (new_log.get("forecasts") or [None])[-1],
-        "prompt_attack_note": ("Prompt attacks are scored on the r26 suite, which passed the ruling 26 confounds-only "
-                               "gate: models that see only nuisance features stay at or under BA 0.70 and AUROC 0.75. "
-                               "Direct and indirect attacks are two equally weighted subtasks. A full-text n-gram "
-                               "baseline is published beside every system."),
+        "prompt_attack_note": ("Prompt attacks passed a confounds-only check: classifiers that see only a row's "
+                               "source, platform, format, length or payload position stay at or under balanced "
+                               "accuracy 0.70 and AUROC 0.75 on held-out groups. Direct and indirect attacks are two "
+                               "equally weighted subtasks. The best full-text n-gram classifier's score sits beside "
+                               "every system as a reference."),
         "extra_disclosures": [
             exc["disclosure"],
-            contract["suites"][SUITE]["acceptance"]["second_label"]["what"].replace("the 400-row", "The 400-row", 1) + ".",
+            ai_label_disclosure(),
             "On indirect rows Bedrock's prompt-attack check reads the system prompt, the user's task and the document as "
             "three messages; the document is tagged as untrusted retrieved content because the API has no tool role.",
             "Prompt attacks ran on 6 October 2026, a day after the other five suites, under a separate freeze manifest "
@@ -544,7 +555,7 @@ def tables(doc: dict) -> dict:
         ri = o.get("rank_interval") or {}
         sc = sanity.get(s) or {}
         rows.append(f"| {o.get('rank') or '-'} | {NAMES[s]} | {_f(o.get('balanced_accuracy'))} ({_f(ci.get('low'))} to "
-                    f"{_f(ci.get('high'))}) | {o.get('tier') or '-'} | {ri.get('low', '-')}-{ri.get('high', '-')} | "
+                    f"{_f(ci.get('high'))}) | {o.get('tier') or '-'} | {_f(ri.get('low'), 0)}-{_f(ri.get('high'), 0)} | "
                     + " | ".join(_f((t[s].get(k) or {}).get("balanced_accuracy")) for k, _ in SUITE_COLS)
                     + f" | {sc.get('result', '-')} ({_f(sc.get('balanced_accuracy'), 0)}) |")
     main = head + "\n".join(rows)

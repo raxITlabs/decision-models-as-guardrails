@@ -170,8 +170,12 @@ def heatmap(doc):
     vmin, vmax = 50, 100
     fig, ax = plt.subplots(figsize=(10.5, 0.5 * len(order) + 2.4))
     ax.grid(False)
-    labels = ["Content\nrequest", "Content\nreply", "Prompt attacks\n(provisional)", "Denied\ntopics",
-              "Profanity", "PII (entity\nmean)", "Grounding"]
+    names = {"content/request": "Content\nrequest", "content/reply": "Content\nreply",
+             "prompt_attacks/direct": "Prompt attacks\ndirect" + ("\n(provisional)" if doc.get("provisional_suites") else ""),
+             "prompt_attacks/indirect": "Prompt attacks\nindirect", "denied_topics/topic": "Denied\ntopics",
+             "word_filters/profanity": "Profanity", "sensitive_info/entity_detection": "PII (entity\nmean)",
+             "grounding/grounding": "Grounding"}
+    labels = [names[k] for k in cols]
     for i, sy in enumerate(order):
         for j, k in enumerate(cols + ["words"]):
             if k == "words":

@@ -9,7 +9,7 @@ from goldrails_bench import e2_source as S
 def test_default_is_the_staged_folder_until_the_revision_is_set(monkeypatch):
     monkeypatch.delenv(S.ENV, raising=False)
     monkeypatch.setattr(S, "E2_HF_REVISION", None)
-    assert S.source() == "dataset/publish/release-1.1.0"
+    assert S.source() == "dataset/publish/release-1.0.0"
     monkeypatch.setattr(S, "E2_HF_REVISION", "a" * 40)
     assert S.source() == f"hf:{S.HF_REPO}@{'a' * 40}"
     monkeypatch.setenv(S.ENV, "local")
