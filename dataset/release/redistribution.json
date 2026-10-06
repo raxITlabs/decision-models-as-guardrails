@@ -376,6 +376,14 @@
    "evidence": "ruling 26 candidate (dataset/goldrails_dataset/sources/e2_prompt_attacks_r26.py QUOTE_FRAMES); the quoted text carries its source's terms",
    "note": "ids only while any quoted source's text is not cleared here; the frame text itself is in the builder"
   },
+  "wildjailbreak": {
+   "mode": "ids_only",
+   "basis": "ODC-BY 1.0 plus the AI2 Responsible Use Guidelines (gated on Hugging Face; terms accepted by the owner, ruling 27)",
+   "reviewed": false,
+   "evidence": "README license: odc-by and the gate's AI2 Responsible Use Guidelines checkbox at allenai/wildjailbreak 5ddc12a; r26 uses the train split only (train:<row index>), never eval",
+   "attribution": "Jiang et al., 'WildTeaming at Scale' (NeurIPS 2024)",
+   "note": "ids only: the gated terms restrict redistribution to users who accept them; text is rebuilt locally from the pinned revision with an accepted HF account. WildGuard and other models trained on WildGuardMix have seen this split; no benchmarked system's published recipe includes it"
+  },
   "tensor_trust": {
    "mode": "ids_only",
    "basis": "no licence file in HumanCompatibleAI/tensor-trust-data at 747a75e; the paper describes the release as permissive",
