@@ -171,3 +171,18 @@ def test_context_model_catches_a_label_in_the_trust_context():
     assert not rep["context_logreg"]["meets_target"] and rep["context_logreg"]["auroc"] > 0.9
     flat = sc.subtask_report(_rows(200), use_sklearn=True)      # rows without context: constant, not a failure
     assert flat["context_logreg"]["meets_target"] and not flat["context_logreg"].get("constant_prediction")
+
+
+def test_a_process_pool_gives_the_same_report(monkeypatch):
+    """GOLDRAILS_GATE_WORKERS only spreads cells over processes; every number is the same as a serial run."""
+    pytest.importorskip("sklearn")
+    rows = _trigram_rows(160) + [dict(r, subtask="leakage", id=r["id"] + "l") for r in _trigram_rows(160, seed=3)]
+    for i, r in enumerate(rows):
+        r["proposed_split"] = ("dev", "test", "test", "private")[i % 4]
+    which = ("in_sample_public_test", "heldback_half_a_to_half_b")
+    monkeypatch.setenv(sc.WORKERS_ENV, "1")
+    serial = sc.gate_report(rows, True, which)
+    monkeypatch.setenv(sc.WORKERS_ENV, "3")
+    pooled = sc.gate_report(rows, True, which)
+    assert serial["table"] == pooled["table"] and serial["failures"] == pooled["failures"]
+    assert sc.run_settings()["workers"] == 3

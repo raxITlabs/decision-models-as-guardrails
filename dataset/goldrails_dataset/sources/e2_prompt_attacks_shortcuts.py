@@ -60,6 +60,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import random
 import re
 import warnings
@@ -310,13 +311,15 @@ def _cell(name: str, scores, preds, labels, constant: bool, meta: dict) -> dict:
     return v
 
 
-def subtask_report(rows: list, use_sklearn: bool | None = None) -> dict:
+def subtask_report(rows: list, use_sklearn: bool | None = None, names=None) -> dict:
     """In sample: every baseline with grouped five-fold CV on ``rows`` (one subtask, both classes; fitted baselines
     out of fold). ``constant_prediction`` is true when any fold's fit scored its fold with one value."""
     labels = _labels(rows)
     folds = folds_of([_group(r) for r in rows])
     out = {}
     for name in _baselines(use_sklearn):
+        if names is not None and name not in names:
+            continue
         scores, preds, const, cs = [0.0] * len(rows), [0.0] * len(rows), False, []
         for f in sorted(set(folds)):
             tr = [i for i, x in enumerate(folds) if x != f]
@@ -333,12 +336,14 @@ def subtask_report(rows: list, use_sklearn: bool | None = None) -> dict:
     return out
 
 
-def transfer_report(train: list, test: list, use_sklearn: bool | None = None) -> dict:
+def transfer_report(train: list, test: list, use_sklearn: bool | None = None, names=None) -> dict:
     """Held back: every baseline fitted on ``train`` rows and scored on ``test`` rows (one subtask; both need both
     classes). Metrics as in ``subtask_report``."""
     y = _labels(test)
     out = {}
     for name in _baselines(use_sklearn):
+        if names is not None and name not in names:
+            continue
         s, p, meta = _fit_score(name, train, test)
         out[name] = _cell(name, s, p, y, _failed_fit(name, s, meta), meta)
     return out
@@ -409,6 +414,66 @@ def subtasks_of(rows: list) -> tuple:
     return SUBTASKS + tuple(sorted({r["subtask"] for r in rows} - set(SUBTASKS)))
 
 
+# --- running cells in parallel ------------------------------------------------------------------------------------------
+# Every cell (one baseline, one subtask or subset, one view) is independent, so cells can run in a process pool. The
+# pool changes nothing a cell computes: same models, vectorisers, solver (liblinear), C grid, folds, seeds and bounds.
+# It runs only when GOLDRAILS_GATE_WORKERS > 1; serial is the default (tests replace model functions in-process,
+# which a worker process would not see).
+WORKERS_ENV = "GOLDRAILS_GATE_WORKERS"
+
+
+def workers() -> int:
+    try:
+        return max(1, int(os.environ.get(WORKERS_ENV, "1")))
+    except ValueError:
+        return 1
+
+
+def run_settings() -> dict:
+    """How the gate was run, for gate.json: the pool size and the fixed model settings it does not change."""
+    return {"workers": workers(), "solver": "liblinear (L2)", "c_grid": list(C_GRID), "inner_folds": INNER_FOLDS,
+            "vectorisers": {"char_ngram_logreg": "char_wb 2-5, min_df 2, max_features 200000",
+                            "char_cross_logreg": "char 3-6, min_df 2, max_features 300000",
+                            "bow_logreg": "word 1-2, min_df 2, max_features 300000",
+                            "word13_logreg": "word 1-3, min_df 2, max_features 300000",
+                            "word14_logreg": "word 1-4, min_df 2, max_features 300000",
+                            "context_logreg": "word 1-2 of the context turns and tool call, min_df 2"},
+            "cells": "each (view, subtask or subset, baseline) fitted on its own; results identical to a serial run"}
+
+
+def _job(args):
+    kind, train, score, use, names = args
+    return subtask_report(score, use, names) if kind == "cv" else transfer_report(train, score, use, names)
+
+
+def _job_groups(use: bool) -> list:
+    """Baselines per job: each text model alone (the slow ones), the fast ones together."""
+    fast = [b for b in _baselines(use) if b not in TEXT_MODELS]
+    return [fast] + [[b] for b in _baselines(use) if b in TEXT_MODELS]
+
+
+def run_cells(cells: list, use: bool) -> list:
+    """``cells``: [(kind, train, score)]. Returns one merged report per cell, every baseline."""
+    jobs, owner = [], []
+    for i, (kind, train, score) in enumerate(cells):
+        for names in _job_groups(use):
+            jobs.append((kind, train, score, use, tuple(names)))
+            owner.append(i)
+    w = workers()
+    if w <= 1 or len(jobs) < 2:
+        results = [_job(j) for j in jobs]
+    else:
+        from concurrent.futures import ProcessPoolExecutor
+        order = sorted(range(len(jobs)), key=lambda k: -len(jobs[k][2]) * (3 if jobs[k][4][0] in TEXT_MODELS else 1))
+        with ProcessPoolExecutor(max_workers=w) as ex:
+            futs = {k: ex.submit(_job, jobs[k]) for k in order}
+            results = [futs[k].result() for k in range(len(jobs))]
+    merged = [{} for _ in cells]
+    for i, rep in zip(owner, results):
+        merged[i].update(rep)
+    return [{b: m[b] for b in BASELINES if b in m} for m in merged]
+
+
 def gate_report(rows: list, use_sklearn: bool | None = None, which=None) -> dict:
     """Every baseline of every subtask in every view (``views_of``), with a flat table and the failures. A cell fails
     when a baseline was not computed (scikit-learn missing), predicted a constant, or is over either bound; a view
@@ -416,7 +481,16 @@ def gate_report(rows: list, use_sklearn: bool | None = None, which=None) -> dict
     use = sklearn_available() if use_sklearn is None else use_sklearn
     out, table, failures = {}, [], []
     subs = subtasks_of(rows)
-    for view, (kind, train, score) in views_of(rows, which).items():
+    views = views_of(rows, which)
+    todo = []
+    for view, (kind, train, score) in views.items():
+        for sub in subs:
+            sc = [r for r in score if r["subtask"] == sub]
+            tr = [r for r in (train or []) if r["subtask"] == sub]
+            if min(_counts(sc).values()) and (kind != "fit" or min(_counts(tr).values())):
+                todo.append(((view, sub), (kind, tr, sc)))
+    done = dict(zip([k for k, _ in todo], run_cells([c for _, c in todo], use)))
+    for view, (kind, train, score) in views.items():
         per = {}
         for sub in subs:
             sc = [r for r in score if r["subtask"] == sub]
@@ -429,7 +503,7 @@ def gate_report(rows: list, use_sklearn: bool | None = None, which=None) -> dict
                 failures.append(f"{view}/{sub}: needs both classes")
                 per[sub] = cell
                 continue
-            rep = subtask_report(sc, use) if kind == "cv" else transfer_report(tr, sc, use)
+            rep = done[(view, sub)]
             for b in BASELINES:
                 if b not in rep:
                     cell[b] = {"computed": False, "pass": False,
@@ -478,8 +552,10 @@ def subset_views(rows: list) -> dict:
     return v
 
 
-def _subset_cells(name: str, rows: list, use: bool, single_source: bool) -> tuple[dict, list, list]:
-    """Every baseline in every ``subset_views`` view of one subset: (per-view cells, table rows, failures)."""
+def _subset_cells(name: str, rows: list, use: bool, single_source: bool, reps: dict | None = None
+                  ) -> tuple[dict, list, list]:
+    """Every baseline in every ``subset_views`` view of one subset: (per-view cells, table rows, failures).
+    ``reps`` maps a view to its precomputed report (``run_cells``); missing views are computed here."""
     out, table, failures = {}, [], []
     names = [b for b in BASELINES if not (single_source and b == "source_id")]
     for view, (kind, train, score) in subset_views(rows).items():
@@ -491,7 +567,8 @@ def _subset_cells(name: str, rows: list, use: bool, single_source: bool) -> tupl
             failures.append(f"{name}/{view}: needs both classes")
             out[view] = cell
             continue
-        rep = subtask_report(score, use) if kind == "cv" else transfer_report(train, score, use)
+        rep = (reps or {}).get(view) or (subtask_report(score, use) if kind == "cv"
+                                         else transfer_report(train, score, use))
         for b in names:
             if b not in rep:
                 cell[b] = {"computed": False, "pass": False, "reason": "not computed: needs scikit-learn"}
@@ -515,7 +592,7 @@ def strata_report(rows: list, use_sklearn: bool | None = None) -> dict:
     external stratum's size, the authored share of each class, and single-class sources. Every cell and every check
     must pass. Rows are the gate's row dicts with ``proposed_split`` dev, test or private."""
     use = sklearn_available() if use_sklearn is None else use_sklearn
-    out, table, failures = {}, [], []
+    out, table, failures, pending = {}, [], [], []
     for sub in sorted({r["subtask"] for r in rows}, key=lambda x: (x not in SUBTASKS, x)):
         rs = [r for r in rows if r["subtask"] == sub]
         pool = [r for r in rs if r["proposed_split"] in ("test", "private")]
@@ -558,12 +635,21 @@ def strata_report(rows: list, use_sklearn: bool | None = None) -> dict:
             if min(c.values()) < MIN_SUBSET_PER_CLASS:
                 rep["not_fitted_small"][name] = c
                 continue
-            single_source = len({r["source"] for r in sr}) == 1
-            cells, t, f = _subset_cells(f"{sub}/{name}", sr, use, single_source)
-            rep["subsets"][name] = {"pool": c, "views": cells}
-            table += [dict(x, subtask=sub) for x in t]
-            failures += f
+            pending.append((sub, name, sr, c, rep))
         out[sub] = rep
+    todo = []
+    for sub, name, sr, c, rep in pending:
+        for view, (kind, train, score) in subset_views(sr).items():
+            if min(_counts(score).values()) and (kind != "fit" or min(_counts(train).values())):
+                todo.append(((sub, name, view), (kind, train, score)))
+    done = dict(zip([k for k, _ in todo], run_cells([x for _, x in todo], use)))
+    for sub, name, sr, c, rep in pending:
+        single_source = len({r["source"] for r in sr}) == 1
+        reps = {v: done[(sub, name, v)] for v in subset_views(sr) if (sub, name, v) in done}
+        cells, t, f = _subset_cells(f"{sub}/{name}", sr, use, single_source, reps)
+        rep["subsets"][name] = {"pool": c, "views": cells}
+        table += [dict(x, subtask=sub) for x in t]
+        failures += f
     return {"what": "the shortcut baselines per stratum (authored, external) and per source with at least "
                     f"{MIN_SUBSET_PER_CLASS} rows of each class in test + unpublished, plus the stratum checks",
             "views": list(SUBSET_VIEWS), "min_per_class": MIN_SUBSET_PER_CLASS,
