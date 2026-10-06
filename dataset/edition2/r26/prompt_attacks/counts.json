@@ -1,0 +1,325 @@
+{
+  "by_facet": {
+    "indirect/carrier": {
+      "agentdojo/no": 28,
+      "agentdojo/yes": 26,
+      "bipia/no": 38,
+      "bipia/yes": 38,
+      "llmail_inject/no": 178,
+      "llmail_inject/yes": 176,
+      "sep_dataset/no": 643,
+      "sep_dataset/yes": 538
+    },
+    "indirect/carrier_kind": {
+      "email/no": 216,
+      "email/yes": 214,
+      "passage/no": 643,
+      "passage/yes": 538,
+      "tool/no": 28,
+      "tool/yes": 26
+    },
+    "indirect/negative_kind": {
+      "clean_twin/no": 251,
+      "human_instruction/no": 114,
+      "paragraph/no": 360,
+      "quoted_attack/no": 53,
+      "unmodified_doc/no": 109
+    },
+    "indirect/payload_source": {
+      "bipia/no": 130,
+      "bipia/yes": 130,
+      "llmail_inject/no": 233,
+      "llmail_inject/yes": 233,
+      "none/no": 109,
+      "sep_dataset/no": 415,
+      "sep_dataset/yes": 415
+    },
+    "indirect/position": {
+      "end/no": 280,
+      "end/yes": 239,
+      "middle/no": 331,
+      "middle/yes": 295,
+      "start/no": 276,
+      "start/yes": 244
+    },
+    "indirect/stratum": {
+      "hard_benign/no": 53,
+      "real/no": 834,
+      "real/yes": 778
+    },
+    "injection/community": {
+      "ChatGPT Prompt Engineering/no": 1,
+      "ChatGPT Prompt Engineering/yes": 1,
+      "ChatGPT/no": 3,
+      "ChatGPT/yes": 2,
+      "ChatGPTJailbreak/no": 1,
+      "ChatGPTPromptGenius/no": 7,
+      "ChatGPTPromptGenius/yes": 7,
+      "LLM Promptwriting/yes": 1,
+      "aiprm/no": 29,
+      "aiprm/yes": 79,
+      "flowgpt/no": 196,
+      "flowgpt/yes": 100
+    },
+    "injection/hard_benign_kind": {
+      "authored_control/no": 17,
+      "notinject/no": 3,
+      "quote_frame/no": 32
+    },
+    "injection/stratum": {
+      "hard_benign/no": 52,
+      "real/no": 305,
+      "real/yes": 263
+    },
+    "jailbreak/community": {
+      "AI Prompt Sharing/no": 1,
+      "BreakGPT/no": 2,
+      "BreakGPT/yes": 10,
+      "ChatGPT Prompt Engineering/no": 25,
+      "ChatGPT Prompt Engineering/yes": 10,
+      "ChatGPT/no": 47,
+      "ChatGPT/yes": 63,
+      "ChatGPTJailbreak/no": 5,
+      "ChatGPTJailbreak/yes": 50,
+      "ChatGPTPromptGenius/no": 80,
+      "ChatGPTPromptGenius/yes": 4,
+      "LLM Promptwriting/no": 14,
+      "LLM Promptwriting/yes": 16,
+      "Spreadsheet Warriors/yes": 9,
+      "aiprm/no": 24,
+      "aiprm/yes": 5,
+      "flowgpt/no": 157,
+      "flowgpt/yes": 148,
+      "jailbreak_chat/yes": 2
+    },
+    "jailbreak/hard_benign_kind": {
+      "authored_control/no": 16,
+      "quote_frame/no": 54
+    },
+    "jailbreak/stratum": {
+      "hard_benign/no": 70,
+      "real/no": 358,
+      "real/yes": 317
+    },
+    "leakage/hard_benign_kind": {
+      "authored_control/no": 51,
+      "quote_frame/no": 17
+    },
+    "leakage/stratum": {
+      "hard_benign/no": 68,
+      "real/no": 409,
+      "real/yes": 485
+    }
+  },
+  "by_split": {
+    "indirect/no": {
+      "dev": 132,
+      "private": 199,
+      "test": 556
+    },
+    "indirect/yes": {
+      "dev": 113,
+      "private": 176,
+      "test": 489
+    },
+    "injection/no": {
+      "dev": 38,
+      "private": 122,
+      "test": 197
+    },
+    "injection/yes": {
+      "dev": 20,
+      "private": 92,
+      "test": 151
+    },
+    "jailbreak/no": {
+      "dev": 58,
+      "private": 130,
+      "test": 240
+    },
+    "jailbreak/yes": {
+      "dev": 36,
+      "private": 105,
+      "test": 176
+    },
+    "leakage/no": {
+      "dev": 56,
+      "private": 124,
+      "test": 297
+    },
+    "leakage/yes": {
+      "dev": 58,
+      "private": 125,
+      "test": 302
+    }
+  },
+  "by_split_and_source": {
+    "indirect/no": {
+      "dev:agentdojo": 5,
+      "dev:bipia": 7,
+      "dev:llmail_inject": 17,
+      "dev:sep_dataset": 103,
+      "private:agentdojo": 6,
+      "private:bipia": 10,
+      "private:llmail_inject": 55,
+      "private:sep_dataset": 128,
+      "test:agentdojo": 17,
+      "test:bipia": 21,
+      "test:llmail_inject": 106,
+      "test:sep_dataset": 412
+    },
+    "indirect/yes": {
+      "dev:agentdojo": 5,
+      "dev:bipia": 7,
+      "dev:llmail_inject": 15,
+      "dev:sep_dataset": 86,
+      "private:agentdojo": 5,
+      "private:bipia": 10,
+      "private:llmail_inject": 55,
+      "private:sep_dataset": 106,
+      "test:agentdojo": 16,
+      "test:bipia": 21,
+      "test:llmail_inject": 106,
+      "test:sep_dataset": 346
+    },
+    "injection/no": {
+      "dev:e2_attack_controls": 3,
+      "dev:e2_authored_quote_frames": 5,
+      "dev:itw_jailbreak_prompts": 20,
+      "dev:neuralchemy_injection": 10,
+      "private:deepset_injections_test": 2,
+      "private:e2_attack_controls": 3,
+      "private:e2_authored_quote_frames": 11,
+      "private:itw_jailbreak_prompts": 93,
+      "private:neuralchemy_injection": 13,
+      "test:deepset_injections_test": 7,
+      "test:e2_attack_controls": 11,
+      "test:e2_authored_quote_frames": 16,
+      "test:itw_jailbreak_prompts": 124,
+      "test:neuralchemy_injection": 36,
+      "test:notinject": 3
+    },
+    "injection/yes": {
+      "dev:itw_jailbreak_prompts": 9,
+      "dev:neuralchemy_injection": 11,
+      "private:deepset_injections_test": 2,
+      "private:itw_jailbreak_prompts": 77,
+      "private:neuralchemy_injection": 13,
+      "test:deepset_injections_test": 6,
+      "test:itw_jailbreak_prompts": 104,
+      "test:neuralchemy_injection": 41
+    },
+    "jailbreak/no": {
+      "dev:e2_attack_controls": 3,
+      "dev:e2_authored_quote_frames": 10,
+      "dev:itw_jailbreak_prompts": 42,
+      "dev:jackhhao_jailbreak": 3,
+      "private:e2_attack_controls": 1,
+      "private:e2_authored_quote_frames": 11,
+      "private:itw_jailbreak_prompts": 118,
+      "test:e2_attack_controls": 12,
+      "test:e2_authored_quote_frames": 33,
+      "test:itw_jailbreak_prompts": 195
+    },
+    "jailbreak/yes": {
+      "dev:itw_jailbreak_prompts": 36,
+      "private:itw_jailbreak_prompts": 105,
+      "test:itw_jailbreak_prompts": 176
+    },
+    "leakage/no": {
+      "dev:e2_attack_controls": 7,
+      "dev:lakera_mosscap": 47,
+      "dev:neuralchemy_injection": 2,
+      "private:e2_attack_controls": 15,
+      "private:e2_authored_quote_frames": 2,
+      "private:lakera_mosscap": 105,
+      "private:neuralchemy_injection": 2,
+      "test:e2_attack_controls": 29,
+      "test:e2_authored_quote_frames": 15,
+      "test:lakera_mosscap": 248,
+      "test:neuralchemy_injection": 5
+    },
+    "leakage/yes": {
+      "dev:lakera_mosscap": 56,
+      "dev:neuralchemy_injection": 2,
+      "private:lakera_mosscap": 123,
+      "private:neuralchemy_injection": 2,
+      "test:lakera_mosscap": 297,
+      "test:neuralchemy_injection": 5
+    }
+  },
+  "independent_groups": {
+    "indirect": {
+      "no": 322,
+      "yes": 214
+    },
+    "injection": {
+      "no": 348,
+      "yes": 251
+    },
+    "jailbreak": {
+      "no": 393,
+      "yes": 219
+    },
+    "leakage": {
+      "no": 466,
+      "yes": 456
+    }
+  },
+  "indirect_documents": {
+    "agentdojo": 28,
+    "bipia": 38,
+    "llmail_inject": 138,
+    "sep_dataset": 643
+  },
+  "indirect_payload_families": {
+    "bipia-category": 26,
+    "llmail-team": 146,
+    "sep-probe": 83
+  },
+  "revision": "constructed-2026-10-06",
+  "selection": "r26-confounds-matched-2026-10-06",
+  "split_hygiene": {
+    "authored_or_shared_template": {
+      "in_more_than_one_split": 0,
+      "units": 37
+    },
+    "carrier_document": {
+      "in_more_than_one_split": 0,
+      "units": 847
+    },
+    "direct_group": {
+      "in_more_than_one_split": 0,
+      "units": 2107
+    },
+    "direct_quote_frame": {
+      "in_more_than_one_split": 0,
+      "units": 12
+    },
+    "document": {
+      "in_more_than_one_split": 0,
+      "units": 1229
+    },
+    "donor_document": {
+      "in_more_than_one_split": 0,
+      "units": 382
+    },
+    "notice_or_instruction_template": {
+      "in_more_than_one_split": 0,
+      "units": 36
+    },
+    "payload_family": {
+      "in_more_than_one_split": 0,
+      "units": 255
+    },
+    "payload_or_quoted_family": {
+      "in_more_than_one_split": 0,
+      "units": 308
+    },
+    "quoted_family": {
+      "in_more_than_one_split": 0,
+      "units": 53
+    }
+  },
+  "total_rows": 3992
+}

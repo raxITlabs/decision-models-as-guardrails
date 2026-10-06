@@ -369,6 +369,13 @@
    "licence_check": "Claude, 2026-10-06: declared licence checked at the pinned revision",
    "note": "pending owner review: the licence check was done by Claude on 2026-10-06, not by the owner; ids, labels and hashes ship, the text stays in a git-ignored local cache until the owner records the review"
   },
+  "e2_authored_quote_frames": {
+   "mode": "ids_only",
+   "basis": "frames authored by raxIT (CC-BY-4.0) around real attack texts from in-the-wild, Mosscap, deepset, jackhhao and neuralchemy rows",
+   "reviewed": false,
+   "evidence": "ruling 26 candidate (dataset/goldrails_dataset/sources/e2_prompt_attacks_r26.py QUOTE_FRAMES); the quoted text carries its source's terms",
+   "note": "ids only while any quoted source's text is not cleared here; the frame text itself is in the builder"
+  },
   "tensor_trust": {
    "mode": "ids_only",
    "basis": "no licence file in HumanCompatibleAI/tensor-trust-data at 747a75e; the paper describes the release as permissive",
