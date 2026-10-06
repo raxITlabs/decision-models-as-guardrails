@@ -857,7 +857,18 @@
         "disagree": 0,
         "resolved_by_ruling": 0,
         "missing": 5320,
-        "agreement": null
+        "agreement": null,
+        "missing_covered_by": {
+          "ruling": 28,
+          "ai_second_label": {
+            "file": "dataset/edition2/r26/prompt_attacks/label-agreement.json",
+            "n": 400,
+            "agreement": 0.95,
+            "kappa": 0.8798,
+            "disclosure": "AI second label, not human review"
+          },
+          "pass": true
+        }
       },
       "word_filters": {
         "rows": 968,
@@ -868,7 +879,7 @@
         "agreement": 0.9907
       }
     },
-    "pass": false,
+    "pass": true,
     "content_human_sample": {
       "drawn": true,
       "fresh": true,
@@ -933,7 +944,7 @@
       "pool_to_dev": "fit on test + unpublished, score dev"
     },
     "run_settings": {
-      "workers": 11,
+      "workers": 8,
       "workers_env": "GOLDRAILS_GATE_WORKERS",
       "solver": "liblinear (L2), class_weight balanced",
       "c_grid": [
@@ -33574,15 +33585,11 @@
     },
     "pass": true
   },
-  "status": "fail",
-  "failed": [
-    "second_label"
-  ],
+  "status": "pass",
+  "failed": [],
   "publication": {
-    "ready": false,
-    "blockers": [
-      "build status fail: second_label"
-    ],
+    "ready": true,
+    "blockers": [],
     "awaiting_owner": {
       "public": 0,
       "private": 0

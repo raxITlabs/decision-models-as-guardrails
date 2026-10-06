@@ -130,22 +130,38 @@ def _row(i, sub, label, source, split="test"):
 
 
 def test_floors_report_every_shortfall():
-    rows = [_row(i, "injection", "yes", "a" if i % 2 else "b") for i in range(249)]
-    rows += [_row(1000 + i, "injection", "no", "a") for i in range(300)]
+    # jailbreak: injection carries the ruling 28 exception (test_a_floor_exception_passes_only_at_...)
+    rows = [_row(i, "jailbreak", "yes", "a" if i % 2 else "b") for i in range(249)]
+    rows += [_row(1000 + i, "jailbreak", "no", "a") for i in range(300)]
     rep = e2.floors({"test": rows})
-    inj = next(c for c in rep["cells"] if c["subtask"] == "injection")
+    inj = next(c for c in rep["cells"] if c["subtask"] == "jailbreak")
     assert not inj["pass"] and not rep["pass"]
-    assert {"feature": "F2", "subtask": "injection", "class": "yes", "have": 249, "floor": 250, "missing": 1} in rep["shortfalls"]
+    assert {"feature": "F2", "subtask": "jailbreak", "class": "yes", "have": 249, "floor": 250, "missing": 1} in rep["shortfalls"]
     assert any("no rows come from 1 source" in w for w in inj["warnings"])
     # cells with no rows at all are shortfalls too, never silently passed
     assert any(s["subtask"] == "leakage" and s.get("class") == "yes" and s["have"] == 0 for s in rep["shortfalls"])
 
 
-def test_second_label_coverage_fails_on_missing_labels():
+def test_second_label_coverage_fails_on_missing_labels(monkeypatch):
     rows = [_row(i, "injection", "yes", "a") for i in range(3)]
     rows[0].attribute["e2"]["second_label"] = "missing"
+    monkeypatch.setattr(e2, "AI_SECOND_LABEL", {})        # no ruling 28 sample: a missing label is a gap
     rep = e2.second_label_coverage({"test": rows})
     assert not rep["pass"] and rep["by_suite"]["prompt_attacks"]["missing"] == 1
+
+
+def test_prompt_attack_coverage_rests_on_the_ruling_28_ai_sample(tmp_path, monkeypatch):
+    rows = [_row(i, "injection", "yes", "a") for i in range(3)]
+    rows[0].attribute["e2"]["second_label"] = "missing"
+    p = tmp_path / "label-agreement.json"
+    monkeypatch.setattr(e2, "AI_SECOND_LABEL", {"prompt_attacks": p})
+    monkeypatch.setattr(e2, "REPO", tmp_path)
+    assert not e2.second_label_coverage({"test": rows})["pass"]                    # not labelled yet
+    p.write_text(json.dumps({"overall": {"n": 400, "agreement": 0.95, "kappa": 0.88},
+                             "disclosure": "AI second label, not human review"}), encoding="utf-8")
+    rep = e2.second_label_coverage({"test": rows})
+    cov = rep["by_suite"]["prompt_attacks"]["missing_covered_by"]
+    assert rep["pass"] and cov["ruling"] == 28 and cov["ai_second_label"]["n"] == 400
 
 
 def test_cross_suite_duplicate_keeps_the_test_copy():
@@ -491,7 +507,9 @@ def test_second_label_on_another_subtask_is_a_dispute():
 def test_later_round_second_labels_count(parts, suite, name):
     """Rows added after round 1 carry a later-round second label; a later-round disagreement leaves the splits like any
     other unless an owner ruling resolved it, and then the row holds the final label."""
-    later = {r["id"]: r for r in e2_local.row_file(suite, name)}
+    later = {r["id"]: r for r in e2_local.row_file(suite, name, e2_local.scored_root(suite))}
+    if suite in e2_local.SCORED_ROOT and not later:
+        pytest.skip(f"{suite}: the scored suite (ruling 28) has no {name}; its review is the AI second label")
     assert later
     res = e2.resolutions(next(s for s in e2.SUITES if s.name == suite))
     where = {r.id: b for b, rows in parts.items() for r in rows}
@@ -593,7 +611,7 @@ def test_content_coverage_rests_on_a_fresh_ruling_7_sample(tmp_path):
     assert not stale["fresh"] and not e2.second_label_coverage({"test": rows}, stale)["pass"]
     # another suite's missing second label is never covered by the content sample
     other = _row(3, "injection", "yes", "a")
-    other.attribute["e2"]["second_label"] = "missing"
+    other.attribute["e2"].update(suite="grounding", second_label="missing")
     assert not e2.second_label_coverage({"test": rows + [other]}, sample)["pass"]
 
 

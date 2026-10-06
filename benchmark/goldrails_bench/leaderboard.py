@@ -686,6 +686,9 @@ def cost_block(arm: Arm, report_ids: dict[str, set], arm_meta: dict | None, tari
     for st, ids in sorted(report_ids.items()):
         costs, zeros, why = [], Counter(), Counter()
         for i in sorted(ids):
+            if i not in recs:          # a frozen-list row the arm never logged (scored as a failure) has no usage
+                why["row never logged"] += 1
+                continue
             usd, reason, z = record_cost(recs[i], entry)
             if usd is None:
                 why[reason] += 1

@@ -933,6 +933,23 @@ def content_sample_status(out: Path = BUILD, agreement: Path | None = None) -> d
     return rep
 
 
+# Owner ruling 28: the prompt-attack suite's review is a sealed AI second label of its 400-row blind packet, disclosed
+# as an AI second label, not human review. It covers the rows without a per-row blind second label.
+AI_SECOND_LABEL = {"prompt_attacks": E2 / "r26" / "prompt_attacks" / "label-agreement.json"}
+AI_SAMPLE_N = 400
+
+
+def ai_second_label_status(suite: str) -> dict:
+    p = AI_SECOND_LABEL[suite]
+    doc = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
+    ov = doc.get("overall") or {}
+    ok = ov.get("n") == AI_SAMPLE_N and ov.get("agreement") is not None
+    return {"ruling": 28, "ai_second_label": {"file": str(p.relative_to(REPO)), "n": ov.get("n"),
+                                              "agreement": ov.get("agreement"), "kappa": ov.get("kappa"),
+                                              "disclosure": doc.get("disclosure")},
+            "pass": ok, **({} if ok else {"fix": "label the 400-row packet (ruling 28) and commit its agreement"})}
+
+
 def second_label_coverage(parts: dict, sample: dict | None = None) -> dict:
     """Blind second-label coverage per suite. Every suite needs a second label on every row, except content: under
     owner ruling 7 its second label is the human sample, so a content row without a blind second label is covered
@@ -950,6 +967,8 @@ def second_label_coverage(parts: dict, sample: dict | None = None) -> dict:
         compared = c["agree"] + c["disagree"] + c[RESOLVED]
         out[suite] = {"rows": n, "agree": c["agree"], "disagree": c["disagree"], "resolved_by_ruling": c[RESOLVED],
                       "missing": c["missing"], "agreement": round(c["agree"] / compared, 4) if compared else None}
+        if suite in AI_SECOND_LABEL and c["missing"]:
+            out[suite]["missing_covered_by"] = ai_second_label_status(suite)
         if suite == SAMPLE_SUITE and c["missing"]:
             ok = bool(sample and sample.get("drawn") and sample.get("fresh"))
             out[suite]["missing_covered_by"] = {"ruling": 7, "human_sample": (sample or {}).get("status", "not drawn"),

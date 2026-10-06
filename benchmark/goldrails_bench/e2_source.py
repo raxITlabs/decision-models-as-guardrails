@@ -1,7 +1,7 @@
 """Where the edition 2 runners take their rows from: the Hugging Face copy by default, rebuilt locally.
 
     GOLDRAILS_E2_SOURCE=hf:raxITLabs/decision-models-as-guardrails@<commit>   # the published copy, pinned
-    GOLDRAILS_E2_SOURCE=dataset/publish/release-1.0.1                             # a staged folder in the Hub layout
+    GOLDRAILS_E2_SOURCE=dataset/publish/release-1.1.0                             # a staged folder in the Hub layout
     GOLDRAILS_E2_SOURCE=local                                                # dataset/edition2/build as it is
 
 A published copy has no text for licence-withheld rows and no unpublished slice. ``dataset_dir`` downloads (or
@@ -24,7 +24,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 BUILD = REPO / "dataset" / "edition2" / "build"
-STAGED = REPO / "dataset" / "publish" / "release-1.0.1"
+STAGED = REPO / "dataset" / "publish" / "release-1.1.0"
 CACHE = REPO / "dataset" / "edition2" / ".materialized"
 HF_REPO = "raxITLabs/decision-models-as-guardrails"
 ENV = "GOLDRAILS_E2_SOURCE"
@@ -32,7 +32,9 @@ ENV = "GOLDRAILS_E2_SOURCE"
 # OWNER: after uploading, set this to the Hub commit sha of the upload (40 hex characters,
 # `hf repo tag list raxITLabs/decision-models-as-guardrails --repo-type dataset` or the Hub's "Files and versions").
 # None keeps the runners on the local staged folder.
-E2_HF_REVISION: str | None = "f88403efb827ba0c2771dd069ec545d35849ff8d"   # 1.0.1
+# 1.0.1 was f88403efb827ba0c2771dd069ec545d35849ff8d. 1.1.0 (the r26 prompt-attack suite, owner ruling 28) is staged and
+# not uploaded yet, so the runners read the staged folder until its Hub commit is filled in here.
+E2_HF_REVISION: str | None = None
 
 
 class E2SourceMissing(FileNotFoundError):
@@ -72,9 +74,10 @@ def _digest(data: Path) -> str:
     parts = [data / "canonical.json", *sorted((data / "data").glob("*/*.jsonl")), BUILD / "manifest.json",
              BUILD / "private" / "manifest.json"]
     for s in e2_local.SUITES:
-        sd = e2_local.suite_dir(s)
-        parts += [sd / "candidates.jsonl", sd / "resolutions.jsonl", sd / "corrections.jsonl", e2_local.text_cache(s),
-                  e2_local.private_dir(s) / "candidates.jsonl"]
+        r = e2_local.scored_root(s)
+        sd = e2_local.suite_dir(s, r)
+        parts += [sd / "candidates.jsonl", sd / "resolutions.jsonl", sd / "corrections.jsonl", e2_local.text_cache(s, r),
+                  e2_local.private_dir(s, r) / "candidates.jsonl"]
     for p in parts:
         h.update(str(p.relative_to(REPO) if p.is_relative_to(REPO) else p.name).encode())
         h.update(hashlib.sha256(p.read_bytes()).digest() if p.exists() else b"-")

@@ -373,12 +373,12 @@
    "mode": "ids_only",
    "basis": "frames authored by raxIT (CC-BY-4.0) around real attack texts from in-the-wild, Mosscap, deepset, jackhhao and neuralchemy rows",
    "reviewed": false,
-   "evidence": "ruling 26 candidate (dataset/goldrails_dataset/sources/e2_prompt_attacks_r26.py QUOTE_FRAMES); the quoted text carries its source's terms",
+   "evidence": "authored quote frames (dataset/goldrails_dataset/sources/e2_prompt_attacks_r26.py QUOTE_FRAMES); the quoted text carries its source's terms",
    "note": "ids only while any quoted source's text is not cleared here; the frame text itself is in the builder"
   },
   "wildjailbreak": {
    "mode": "ids_only",
-   "basis": "ODC-BY 1.0 plus the AI2 Responsible Use Guidelines (gated on Hugging Face; terms accepted by the owner, ruling 27)",
+   "basis": "ODC-BY 1.0 plus the AI2 Responsible Use Guidelines (gated on Hugging Face; terms accepted by the project lead on 6 October 2026)",
    "reviewed": false,
    "evidence": "README license: odc-by and the gate's AI2 Responsible Use Guidelines checkbox at allenai/wildjailbreak 5ddc12a; r26 uses the train split only (train:<row index>), never eval",
    "attribution": "Jiang et al., 'WildTeaming at Scale' (NeurIPS 2024)",

@@ -60,6 +60,7 @@ BEDROCK = "bedrock-guardrails"
 APPROVAL = ("owner ruling 21 (spend) and ruling 28 (swap the r26 suite in, rerun prompt attacks for all eleven systems, "
             "rescore and publish), docs/benchmark/29-owner-rulings-2026-10-03.md")
 _select_all_tasks = full.select_all
+_word_filter_implementations = sample.implementations
 
 
 def select_attacks(tr) -> dict:
@@ -219,7 +220,7 @@ full.write_freeze = write_freeze
 # --- score: every suite, edition2-final/ -----------------------------------------------------------------------
 
 def implementations(records: list) -> dict:
-    out = sample.implementations(records)
+    out = _word_filter_implementations(records)
     for sy in out:
         qs = {r["subtask"]: r["question_set"] for r in records if r["system"] == sy and r["dataset"]["feature"] == FEATURE}
         if qs:
@@ -265,12 +266,22 @@ def _with_log(path: Path, fn):
         sample.RUN_LOG = keep
 
 
+def started_sessions(log: dict) -> dict:
+    """The run log with the VM sessions of failed starts left out: a ``make up`` that failed (GPU stockout) never ran
+    the VM, though ``vm_run`` opened and closed a session around it. Those sessions are listed under ``failed_starts``."""
+    bad = [(r.get("started"), r.get("finished")) for r in log.get("vm_runs") or [] if r.get("make_up") not in (0, None)]
+    def inside(s):
+        return any(a and b and a <= s["up"] <= b for a, b in bad)
+    return {**log, "vm": [s for s in log.get("vm", []) if not inside(s)],
+            "failed_starts": [s for s in log.get("vm", []) if inside(s)]}
+
+
 def serving_entries(tr, old_summary: dict, new_summary: dict, old_log: dict, new_log: dict) -> tuple[list, dict]:
     """VM serving per system and dataset: the full run's allocated seconds split over its five kept suites by their
     share of the system's rows (the full run did not time suites apart; disclosed), and this run's allocated seconds on
     the r26 prompt-attack rows."""
     old_srv, old_info = sample.vm_serving(old_log, old_summary)
-    new_srv, new_info = sample.vm_serving(new_log, new_summary)
+    new_srv, new_info = sample.vm_serving(started_sessions(new_log), new_summary)
     pm = json.loads(PRIMARY.read_text(encoding="utf-8"))
     kept = {su: d["sha256"] for su, d in pm["integrity"]["datasets"].items() if su != SUITE}
     out = []
@@ -506,6 +517,67 @@ def privacy(tr, extra=()) -> dict:
     return full.privacy_check(tr, [f for f in files if f.exists()])
 
 
+# --- README tables --------------------------------------------------------------------------------------------
+
+NAMES = {"jev-1.13.0": "Jev 1.13.0", "clef": "Clef", "clef-flash": "Clef-flash", "pplx-decider-v1-27b": "pplx-decider-v1-27b",
+         "kev-0-8b": "Kev-0.8B", "kev-4b": "Kev-4B", "kev-9b": "Kev-9B", "open-jev-2b": "Open-Jev-2B", "laya": "Laya",
+         "strands-decider-2b": "Strands Decider 2B", "bedrock-guardrails": "Bedrock Guardrails"}
+SUITE_COLS = (("content", "Content"), ("prompt_attacks", "Prompt attacks"), ("denied_topics", "Denied topics"),
+              ("word_filters", "Profanity"), ("sensitive_info", "PII"), ("grounding", "Grounding"))
+
+
+def _f(v, n=1):
+    return "-" if v is None else f"{v:.{n}f}"
+
+
+def tables(doc: dict) -> dict:
+    """Markdown tables for the README, every number from leaderboard.json. No latency (owner ruling 22)."""
+    t, rank = doc["table"], doc["overall"]["ranking"]
+    order = [e["name"] for e in rank] + [e["name"] for e in doc["overall"].get("unranked", [])]
+    sanity = (doc.get("sanity_checks") or {}).get("checks", {}).get("word_filters/word", {}).get("systems", {})
+    head = "| Rank | System | Overall (95% interval) | Tier | Rank interval | " + " | ".join(n for _, n in SUITE_COLS) \
+        + " | Custom words |\n|" + "---|" * (6 + len(SUITE_COLS)) + "\n"
+    rows = []
+    for s in order:
+        o = t[s]["overall"]
+        ci = o.get("ci") or {}
+        ri = o.get("rank_interval") or {}
+        sc = sanity.get(s) or {}
+        rows.append(f"| {o.get('rank') or '-'} | {NAMES[s]} | {_f(o.get('balanced_accuracy'))} ({_f(ci.get('low'))} to "
+                    f"{_f(ci.get('high'))}) | {o.get('tier') or '-'} | {ri.get('low', '-')}-{ri.get('high', '-')} | "
+                    + " | ".join(_f((t[s].get(k) or {}).get("balanced_accuracy")) for k, _ in SUITE_COLS)
+                    + f" | {sc.get('result', '-')} ({_f(sc.get('balanced_accuracy'), 0)}) |")
+    main = head + "\n".join(rows)
+    cost = doc["run"]["cost"]
+    sm = doc["run"]["systems"]
+    h2 = ("| System | Catch rate | False-block rate | USD per 1,000 checks | USD total | First-pass failures | "
+          "Failed after retries | Truncated rows |\n|---|---|---|---|---|---|---|---|\n")
+    r2 = [f"| {NAMES[s]} | {_f(t[s]['overall'].get('catch_rate'), 3)} | {_f(t[s]['overall'].get('false_block_rate'), 3)} | "
+          f"{_f((cost.get(s) or {}).get('usd_per_1000'), 3)} | {_f((cost.get(s) or {}).get('usd_total'), 2)} | "
+          f"{sm[s]['first_pass_failed']} | {sm[s]['failed']} | {sm[s]['truncated']:,} |" for s in order]
+    rates = h2 + "\n".join(r2)
+    pa = doc["prompt_attacks"]
+    nb = pa["ngram_baseline"]["by_tag"]
+    subs = doc["subtasks"]
+    def sub(s, k):
+        e = next((x for x in subs.get(k, {}).get("ranking", []) + subs.get(k, {}).get("unranked", []) if x["name"] == s), {})
+        return e
+    h3 = ("| System | Prompt attacks | Direct | Indirect | Injection | Jailbreak | Leakage | Indirect (tag) | "
+          "Catch (direct / indirect) | False block (direct / indirect) |\n|---|---|---|---|---|---|---|---|---|---|\n")
+    r3 = []
+    for s in order:
+        d, i = sub(s, "prompt_attacks/direct"), sub(s, "prompt_attacks/indirect")
+        bt = pa["by_tag"].get(s) or {}
+        r3.append(f"| {NAMES[s]} | {_f((t[s].get('prompt_attacks') or {}).get('balanced_accuracy'))} | "
+                  f"{_f(d.get('balanced_accuracy'))} | {_f(i.get('balanced_accuracy'))} | "
+                  + " | ".join(_f((bt.get(k) or {}).get("balanced_accuracy")) for k in ("injection", "jailbreak", "leakage", "indirect"))
+                  + f" | {_f(d.get('catch_rate'), 3)} / {_f(i.get('catch_rate'), 3)} | "
+                    f"{_f(d.get('false_block_rate'), 3)} / {_f(i.get('false_block_rate'), 3)} |")
+    r3.append("| n-gram baseline (best full-text model) | - | - | - | "
+              + " | ".join(f"{nb[k]['best']:.1f}" for k in ("injection", "jailbreak", "leakage", "indirect")) + " | - | - |")
+    return {"main": main, "rates": rates, "attacks": h3 + "\n".join(r3)}
+
+
 # --- AWS wait --------------------------------------------------------------------------------------------------
 
 def wait_bedrock(minutes: int = 90, every: int = 240, profile: str = "AdministratorAccess-390403882872") -> int:
@@ -558,6 +630,11 @@ def main(argv=None) -> int:
         return 0
     if a.stage == "score":
         print(score(a.replicates))
+        return 0
+    if a.stage == "tables":
+        doc = json.loads((FINAL / "leaderboard.json").read_text(encoding="utf-8"))
+        for k, v in tables(doc).items():
+            print(f"<!-- {k} -->\n{v}\n")
         return 0
     if a.stage == "wait-bedrock":
         return wait_bedrock(a.minutes)

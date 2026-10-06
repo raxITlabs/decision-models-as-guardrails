@@ -49,7 +49,7 @@ ROOT = Path(__file__).resolve().parents[1]          # dataset/
 REPO = ROOT.parent
 E2 = ROOT / "edition2"
 BUILD = E2 / "build"
-VERSION = "1.0.1"
+VERSION = "1.1.0"
 STAGE = ROOT / "publish" / f"release-{VERSION}"
 HUB_REPO = "raxITLabs/decision-models-as-guardrails"
 CONFIGS = {"F1": "content", "F2": "prompt_attacks", "F3": "denied_topics", "F4": "word_filters",
@@ -344,7 +344,7 @@ def _local_variants(suites: set, root: Path = E2) -> dict:
         if s.name not in suites:
             continue
         res, fixes = edition2.resolutions(s, root), edition2.corrections(s, root)
-        for c in e2_local.candidates(s.name, root, private=False, text=True):
+        for c in e2_local.candidates(s.name, e2_local.scored_root(s.name, root), private=False, text=True):
             tries = [c]
             for extra in (res.get(c["id"]), fixes.get(c["id"])):
                 if extra and extra.get("status") in ("resolved", "applied"):
@@ -530,6 +530,10 @@ def _write_docs(out: Path, man: dict, files: list, pol: dict, code_ref: str, roo
         (out / "content-label-agreement.json").write_text(
             json.dumps({"labeller": "project lead with an AI assistant (Codex)", "design": doc.get("design"),
                         "result": doc.get("result")}, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    pa = prompt_attack_agreement(root)
+    if pa:
+        (out / "prompt-attack-label-agreement.json").write_text(json.dumps(pa, indent=1, ensure_ascii=False) + "\n",
+                                                                 encoding="utf-8")
     ann = out / "annotations"
     ann.mkdir(exist_ok=True)
     if (root / "MODEL-TRAINING-OVERLAP.json").exists():
@@ -541,6 +545,21 @@ def _write_docs(out: Path, man: dict, files: list, pol: dict, code_ref: str, roo
 
 SUITE_DOCS = (("content", "content"), ("prompt_attacks", "prompt_attacks"), ("denied_topics", "denied_topics"),
               ("word_filters", "word_filters"), ("sensitive_information", "pii"), ("grounding", "grounding"))
+# Where each suite's source list lives: SOURCES.md in the suite folder, or the scored folder's DESIGN.md "Sources"
+# table for prompt attacks (e2_local.scored_root).
+SUITE_SOURCES = {"prompt_attacks": "r26/prompt_attacks/DESIGN.md#sources"}
+
+
+def prompt_attack_agreement(root: Path = E2) -> dict | None:
+    """The prompt-attack AI second-label result, aggregates only, for the card and the staged folder."""
+    p = Path(root) / "r26" / "prompt_attacks" / "label-agreement.json"
+    if not p.exists():
+        return None
+    d = json.loads(p.read_text(encoding="utf-8"))
+    return {"what": "AI second label of a 400-row blind sample of the prompt-attack rows: a model with no tools and "
+                    "no file access, given only the labelling policy and the rows. Not a human review.",
+            **{k: d[k] for k in ("overall", "confusion_reference_to_ai", "by_subtask", "by_stratum", "by_source")
+               if k in d}}
 
 
 def sources_md(reg: list, code_ref: str) -> str:
@@ -549,7 +568,8 @@ def sources_md(reg: list, code_ref: str) -> str:
              "`dataset/release/redistribution.json` in the code repository. A source marked `ids_only` ships without "
              "text; RECONSTRUCT.md shows how to rebuild it. The upstream repository, pinned revision and split of "
              "each source are in the suite's own SOURCES.md:", ""]
-    lines += [f"- {cfg}: {PUBLIC_REPO}/blob/{code_ref}/dataset/edition2/{suite}/SOURCES.md" for cfg, suite in SUITE_DOCS]
+    lines += [f"- {cfg}: {PUBLIC_REPO}/blob/{code_ref}/dataset/edition2/{SUITE_SOURCES.get(suite, suite + '/SOURCES.md')}"
+              for cfg, suite in SUITE_DOCS]
     lines += ["", "| Source | Here | Licence basis | Rows |", "|---|---|---|---|"]
     for e in reg:
         lines.append(f"| {e['source']} | {e['here']} | {e['basis']} | "
@@ -637,10 +657,17 @@ def changelog_md(files: list, code_ref: str, build: Path = BUILD) -> str:
         "# Changelog", "",
         f"## {VERSION}, {_today()}", "",
         f"- {total} rows in six configs, each with `dev` and `test` splits.",
-        "- Every disputed label is now decided, and those rows have joined their splits.",
-        "- Adds the content second-label sample result (README, `content-label-agreement.json`).",
+        "- New prompt-attack rows: real direct attacks with benign messages from the same sources, and a new "
+        "`indirect` subtask (instructions hidden in emails, tool results and passages, against the same documents "
+        "without them). Models that see only a row's source, format, length or payload position cannot tell the "
+        "classes apart.",
+        "- Adds the prompt-attack AI second-label result (README, `prompt-attack-label-agreement.json`).",
+        "- The other five configs are unchanged.",
         f"- Code: {PUBLIC_REPO} at `{code_ref}`. Manifest sha256 `{_sha(Path(build) / 'manifest.json')}`.",
         "- Load a version by its Hub commit, not by `main`, if you need results to stay reproducible.", "",
+        "## 1.0.1", "",
+        "- Every disputed label decided; those rows joined their splits.",
+        "- Adds the content second-label sample result (`content-label-agreement.json`).", "",
         "## 1.0.0, 5 October 2026", "", "- First public release.", ""])
 
 
@@ -681,7 +708,8 @@ def _label_notes(review: dict, root: Path) -> list:
     if o:
         n = (doc.get("design") or {}).get("n", 400)
         notes.append(f"- **How the labels were checked.** Every row has a first label from its source or our "
-                     "labelling rules. Rows outside the content suite also have a blind second label. The project lead "
+                     "labelling rules. Rows outside the content and prompt-attack suites also have a blind second "
+                     "label. The project lead "
                      "decided every disagreement, working with an AI assistant (Codex). For the content suite, the "
                      f"project lead, with the same assistant, labelled a stratified sample of {n} rows blind, without seeing the first "
                      f"label or the source. They agreed with the first label on {o['agreement_population_weighted']:.1%} "
@@ -690,6 +718,14 @@ def _label_notes(review: dict, root: Path) -> list:
     else:
         notes.append("- **Content labels are being checked.** A 400-row blind second-label sample of the content suite "
                      "is in progress.")
+    pa = prompt_attack_agreement(root)
+    if pa:
+        o = pa["overall"]
+        notes.append(f"- **Prompt-attack labels have an AI second label.** A model with no tools and no file access, "
+                     f"given only the labelling policy, labelled a blind sample of {o['n']} prompt-attack rows. It agreed "
+                     f"with the reference label on {o['agreement']:.1%} of them (Cohen's kappa {o['kappa']:.2f}). This "
+                     "is an AI cross-check, not a human review. `prompt-attack-label-agreement.json` breaks it down by "
+                     "subtask and source.")
     return notes
 
 
@@ -719,9 +755,9 @@ def card(files: list, man: dict, reg: list, subtasks: dict, code_ref: str, root:
              *_label_notes(review, root),
              "- **One scoring rule.** The benchmark scores every system with a fixed 0.5 rule and fits nothing on "
              "`dev`. Use `dev` for smoke tests and dry runs, and report scores on `test`.",
-             "- **Prompt-attack scores are provisional.** On held-back rows, a simple text classifier can still tell "
-             "attacks from benign rows by the style of their source, so part of a prompt-attack score may come from "
-             "that.",
+             "- **Prompt attacks are direct and indirect.** Direct rows are one user message. Indirect rows are a "
+             "document the assistant reads (an email, a tool result, a passage), with the system prompt and the "
+             "user's request in `state.context`. Judge the document, not the request.",
              f"- **{tot('rows_ids_only')} rows ship without text**, because their sources' licence review is not "
              "finished. RECONSTRUCT.md shows how to rebuild the text from the original publishers.", "",
              "## Configs and splits", "",

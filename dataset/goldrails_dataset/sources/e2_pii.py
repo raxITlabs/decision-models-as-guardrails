@@ -325,7 +325,8 @@ SCAN_DIRS = ("benchmark", "dataset")
 SKIP_PARTS = ("edition2", ".venv", "__pycache__", "node_modules", ".git")
 # edition 2's own Hugging Face staging (goldrails_dataset.publish_e2) holds edition 2 rows, not v1 references; the
 # edition 2 full run (benchmark/runs/e2_full.py) sent the frozen test rows after the freeze, so its ledgers name them
-SKIP_PREFIXES = ("dataset/publish/v2", "dataset/publish/release-", "benchmark/results/edition2-full")
+SKIP_PREFIXES = ("dataset/publish/v2", "dataset/publish/release-", "benchmark/results/edition2-full",
+                 "benchmark/results/edition2-attacks-r26", "benchmark/results/edition2-final")   # the ruling 28 rerun
 HF_REPOS = ("raxITLabs/gold-rails", "raxITLabs/goldrails", "raxITLabs/goldrail", "raxITLabs/jev-as-a-guardrails",
             "raxITLabs/decision-models-as-guardrails")
 

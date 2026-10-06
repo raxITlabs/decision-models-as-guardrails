@@ -1263,7 +1263,12 @@ def rescore_v1(out=DEFAULT_RESCORE_OUT, replicates=None, seed=None) -> dict:
     manifest, so the result is labelled not valid for publication."""
     with tempfile.TemporaryDirectory() as td:
         args, dropped = v1_test_inputs(Path(td))
-        doc = build(args, None, DEFAULT_CONTRACT_PATH, V1_IMPLEMENTATIONS, V1_RESULTS / "leaderboard-final.json",
+        # v1 has no indirect prompt-attack rows (a subtask since owner ruling 28): the re-score keeps direct only
+        c = load_contract()
+        c["suites"]["prompt_attacks"]["subtasks"].pop("indirect", None)
+        cpath = Path(td) / "contract-v1-rescore.json"
+        cpath.write_text(json.dumps(c), encoding="utf-8")
+        doc = build(args, None, cpath, V1_IMPLEMENTATIONS, V1_RESULTS / "leaderboard-final.json",
                     "test", replicates, seed, lb.DEFAULT_TARIFFS, V1_RESULTS / "serving-v13.json", diagnostic=True,
                     note="v1 test set, previously examined, re-scored under a rule fixed in advance (contract v2.0 "
                          "draft). Each model keeps its declared v1.3 question set; Kev-9B content is v2-f1-bedrock5 "

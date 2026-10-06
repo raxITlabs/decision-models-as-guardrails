@@ -30,8 +30,12 @@ def ev(records, c=None, **kw):
 
 
 def contract(*required):
+    """The contract with only these suites required. The synthetic prompt-attack rows are direct rows, so the copy
+    keeps the direct subtask alone (indirect is required since owner ruling 28; see
+    test_prompt_attacks_need_indirect_rows_to_be_complete)."""
     c = copy.deepcopy(CONTRACT)
     c["required_suites"] = list(required)
+    c["suites"]["prompt_attacks"]["subtasks"].pop("indirect", None)
     return c
 
 
@@ -675,3 +679,15 @@ def test_the_committed_primary_freeze_amendment_is_reproduced_from_git():
            "contract": {"hash": _stable_hash(CONTRACT)}}
     info, probs = v2.contract_amendment_check(m, ident, [(ext, ident)], CONTRACT)
     assert probs == [] and info["changed_suites"] == ["prompt_attacks"]
+
+
+def test_prompt_attacks_need_indirect_rows_to_be_complete():
+    """Ruling 28: indirect is a required prompt-attack subtask, so a system with direct rows only has no complete
+    prompt-attack suite."""
+    assert CONTRACT["suites"]["prompt_attacks"]["subtasks"]["indirect"]["tags"] == ["indirect"]
+    c = copy.deepcopy(CONTRACT)
+    c["required_suites"] = ["prompt_attacks"]
+    recs = [rec("m", i, "yes" if i % 2 else "no", 0.9 if i % 2 else 0.1, suite="prompt_attacks") for i in range(40)]
+    doc = ev(recs, c, replicates=20, seed=1)
+    assert not doc["overall"]["ranking"]
+    assert doc["arms"][0]["subtasks"]["indirect"]["status"] == "not evaluated"

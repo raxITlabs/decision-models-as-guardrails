@@ -312,7 +312,7 @@ def test_no_overlap_with_v1_ids_texts_samples_or_ledgers(cands):
     for f in glob.glob(str(REPO / "benchmark/results/**/*.jsonl"), recursive=True):
         found = set(ID_PATTERN.findall(Path(f).read_text(encoding="utf-8", errors="ignore")))
         top = Path(f).relative_to(REPO / "benchmark/results").parts[0]
-        if top == "edition2-full":   # the frozen edition 2 test run itself (e2_full.py), after the freeze
+        if top in ("edition2-full", "edition2-attacks-r26"):   # the frozen edition 2 test runs, after their freezes
             continue
         if top in ("edition2-smoke", "edition2-dev-sample"):
             smoke |= found

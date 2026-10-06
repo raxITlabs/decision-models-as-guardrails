@@ -53,6 +53,8 @@ SOURCES = {"f1-bedrock5": "v1", "f2-attacks": "v1", "f3-topics": "v1", "f4-words
 # Questions revised by the owner's edition 2 rulings (docs/benchmark/29-owner-rulings-2026-10-03.md); every other
 # question must stay identical to its source. f3-topics is regenerated whole (ruling 1) and checked separately.
 REVISED = {"f2-attacks": {"prompt_injection", "prompt_leakage"}, "f5-pii": {"ADDRESS", "any_supported_entity"}}
+# Sets new in edition 2, with no earlier source: f2-attacks-indirect, approved and frozen by owner ruling 28.
+NEW_E2 = {"f2-attacks-indirect": "ruling 28"}
 TOPICS_E2 = ROOT / "suites/denied_topics/topics-e2.json"
 
 
@@ -75,7 +77,7 @@ def test_e2_sets_change_only_what_the_rulings_changed():
     sets = [n for n in question_sets.available("e2")
             if not str(question_sets.load("e2", n).get("status", "")).startswith("DRAFT")]
     frozen = [n for n in sets if not str(question_sets.load("e2", n).get("copied_from", "")).startswith("e2/")]
-    assert sorted(frozen) == sorted(SOURCES)
+    assert sorted(frozen) == sorted(set(SOURCES) | set(NEW_E2))
     for n in set(sets) - set(frozen):
         cand = question_sets.load("e2", n)
         base = question_sets.load("e2", cand["copied_from"].split("/", 1)[1])
@@ -497,7 +499,7 @@ def test_contract_records_the_rulings_and_is_signed():
     assert c["status"] == "signed" and "pending_owner_rulings" not in c   # owner ruling 21, 5 October 2026
     assert "pending" not in json.dumps(c["secondary"]) + json.dumps(c["statistics"]) + json.dumps(c["suites"])
     where = set(c["owner_rulings"]["where"])   # rulings 1-13, plus later ones as each is written into the contract
-    assert {str(i) for i in range(1, 14)} | {"15", "16", "17", "18", "23", "25", "26"} <= where <= {str(i) for i in range(1, 27)}
+    assert {str(i) for i in range(1, 14)} | {"15", "16", "17", "18", "23", "25", "26", "28"} <= where <= {str(i) for i in range(1, 29)}
     assert c["owner_rulings"]["where"]["26"] == "suites.prompt_attacks.acceptance"      # ruling 26 replaced 17
     assert "provisional" not in c["suites"]["prompt_attacks"]
     assert "private_slice" not in c["data_release"] and c["data_release"]["unpublished_slice"]["published"] is False
@@ -507,8 +509,8 @@ def test_contract_records_the_rulings_and_is_signed():
     assert c["suites"]["sensitive_info"]["unscored_units"] == ["DRIVER_ID"]
     assert "topics-e2.json" in c["suites"]["denied_topics"]["policy"]
     assert c["suites"]["denied_topics"]["topics"]["names"] == [t["name"] for t in json.loads(TOPICS_E2.read_text())["topics"]]
-    assert {c["question_sets"][s] for s in ("denied_topics", "prompt_attacks", "sensitive_info")} == {
-        "e2-f3-topics", "e2-f2-attacks", "e2-f5-pii"}
+    assert {c["question_sets"][s] for s in ("denied_topics", "sensitive_info")} == {"e2-f3-topics", "e2-f5-pii"}
+    assert c["question_sets"]["prompt_attacks"] == {"direct": "e2-f2-attacks", "indirect": "e2-f2-attacks-indirect"}
     assert "ids, labels and hashes only" in c["data_release"]["sources_pending_licence_review"]
 
 
@@ -564,3 +566,13 @@ def test_usage_rule_is_laya_only():
         identity = {"ref": "raxit/kev-4b", "revision": "abc", "kind": "kev"}
     res = NoulAdapter(KevAtCap(512), policy=NO_RETRY).evaluate("grounding", "grounding", LAYA_ROW)
     assert res.truncated is None and "truncation_basis" not in res.serving
+
+
+def test_the_indirect_set_is_frozen_by_ruling_28_with_the_approved_question():
+    q = question_sets.load("e2", "f2-attacks-indirect")
+    assert q["frozen_for"] == "edition 2" and "ruling 28" in q["status"] and not q["status"].startswith("DRAFT")
+    assert q["decision"] == ["indirect_injection"] and q["subtask"] == "indirect"
+    from goldrails_bench.adapters.noul import TASK_QSET
+    from goldrails_bench.adapters.bedrock import TASKS
+    assert TASK_QSET[("prompt_attacks", "indirect")] == "f2-attacks-indirect"
+    assert TASKS[("prompt_attacks", "indirect")] == TASKS[("prompt_attacks", "direct")]
