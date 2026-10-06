@@ -7,6 +7,12 @@
     uv run python -m goldrails_dataset.edition2 ruling5            # ruling 5 on undisputed PII rows (corrections.jsonl)
     uv run --with scikit-learn python -m goldrails_dataset.edition2 gate-heldback   # prompt_attacks/gate-heldback.json
 
+Owner ruling 28 (6 October 2026) swapped the ruling 26 candidate in as the scored prompt-attack suite: the build reads
+prompt attacks from ``dataset/edition2/r26/prompt_attacks/`` (``e2_local.scored_root``); the folder it replaced stays as
+that builder's pool. Rows public in the last published release or in a committed edition 2 result ledger are never
+held out, and suites the swap did not touch keep their published groups (``keep_published``). The injection floor
+shortfall is accepted at its recorded counts (``FLOOR_EXCEPTIONS``).
+
 Each suite agent left ``dataset/edition2/<suite>/candidates.jsonl``: rows already selected, grouped and split
 (``proposed_split`` dev, test or private), with a first label. A blind second labeller left ``relabel.jsonl`` beside
 it. The repository is public, so those files hold the public rows only: the private slice sits in the git-ignored
@@ -110,6 +116,17 @@ SCORED = {
     ("F5", "pii"): (TEST_FLOOR, TEST_FLOOR), ("F6", "grounding"): (TEST_FLOOR, TEST_FLOOR),
 }
 MIN_SOURCES = 2
+# Floor shortfalls the owner accepted for this release, each pinned to the public test counts it was accepted at: a
+# cell at or above those counts passes with the exception recorded (and disclosed beside its score), a cell below them
+# still fails. Owner ruling 28 (6 October 2026) accepted the injection shortfall of the r26 suite, narrowing ruling 27
+# point 7.
+FLOOR_EXCEPTIONS = {
+    ("F2", "injection"): {
+        "ruling": 28, "accepted_public_test": {"yes": 151, "no": 167},
+        "disclosure": "The injection subtask has 151 attack and 167 benign public test rows, under the 250-row floor "
+                      "for each class (owner ruling 28 accepted the shortfall for this release). Its interval is wider "
+                      "than the other prompt-attack subtasks'."},
+}
 ENTITY_TEST_FLOOR = 30          # same value as audit.ENTITY_TEST_FLOOR
 PII_QUESTION_SET = REPO / "benchmark" / "question_sets" / "e2" / "f5-pii.json"
 UNSCORED_ENTITIES_DEFAULT = ("DRIVER_ID",)    # owner ruling 6: dropped from the edition 2 score, an unscored diagnostic
@@ -167,6 +184,12 @@ SUITES = (
 )
 
 
+def _home(suite: Suite, root: Path) -> Path:
+    """The edition 2 root that holds ``suite``'s scored files (``e2_local.scored_root``; owner ruling 28 puts prompt
+    attacks in ``dataset/edition2/r26/``)."""
+    return e2_local.scored_root(suite.name, Path(root))
+
+
 def _jsonl(path: Path) -> list:
     if not path.exists():
         return []
@@ -179,10 +202,14 @@ EXCLUDED = "EXCLUDED.jsonl"
 
 def excluded(root: Path = E2) -> dict:
     """id -> reason for a row the owner dropped from edition 2 entirely: ``EXCLUDED.jsonl`` at the edition root
-    (public ids) and the same file in each suite's git-ignored ``private/`` (private-slice ids). An excluded id is left
+    (public ids) and the same file in each suite's git-ignored ``private/`` (private-slice ids; the scored folder's and
+    a retired folder's, ``e2_local.scored_root``). An excluded id is left
     out of the candidates, second labels, resolutions and corrections, so no split, review list or rebuild has it."""
     out = {}
-    for path in [Path(root) / EXCLUDED] + [e2_local.private_dir(s.name, Path(root)) / EXCLUDED for s in SUITES]:
+    # a retired suite's exclusions stay in force (ruling 14's ids, should a later suite reuse a row)
+    paths = ([Path(root) / EXCLUDED] + [e2_local.private_dir(s.name, _home(s, root)) / EXCLUDED for s in SUITES]
+             + [e2_local.private_dir(s, r) / EXCLUDED for s, r in e2_local.retired_roots(Path(root))])
+    for path in paths:
         for d in _jsonl(path):
             if not d.get("id") or not d.get("reason"):
                 raise ValueError(f"{path}: an exclusion needs an id and a reason")
@@ -194,10 +221,11 @@ def candidates(suite: Suite, root: Path = E2) -> list:
     """Every candidate row: the tracked public rows, the git-ignored private slice, licence-withheld text restored.
     Rows in ``excluded`` are left out. Raises e2_local.LocalDataMissing when the private slice or the text cache is not
     on this machine."""
-    if not (Path(root) / suite.name / "candidates.jsonl").exists():
+    home = _home(suite, root)
+    if not (home / suite.name / "candidates.jsonl").exists():
         return []
     drop = excluded(root)
-    return [c for c in e2_local.candidates(suite.name, Path(root)) if c["id"] not in drop]
+    return [c for c in e2_local.candidates(suite.name, home) if c["id"] not in drop]
 
 
 def second_labels(suite: Suite, root: Path = E2) -> dict:
@@ -205,10 +233,11 @@ def second_labels(suite: Suite, root: Path = E2) -> dict:
     round (the F4 custom-words rows: the regex rule in round 1, a blind labeller in round 5) keeps its latest round's
     label, with the earlier ones in ``_earlier``; ``compare`` checks every one of them, so a disagreement in any round
     is a dispute. One round listing a row twice is an error."""
-    if not (Path(root) / suite.name / "candidates.jsonl").exists():
+    home = _home(suite, root)
+    if not (home / suite.name / "candidates.jsonl").exists():
         return {}
     out, drop = {}, excluded(root)
-    for n, rows in e2_local.relabel_rounds(suite.name, Path(root)):
+    for n, rows in e2_local.relabel_rounds(suite.name, home):
         seen = set()
         for r in rows:
             if r["id"] in drop:
@@ -231,8 +260,8 @@ def resolutions(suite: Suite, root: Path = E2) -> dict:
     the ruling moves them, ``final_subtask``, ``final_entity_types``, ``final_tags``, ``final_category``) or
     ``owner_review`` (with the owner ``question`` it belongs to)."""
     out, drop = {}, excluded(root)
-    for path in (e2_local.suite_dir(suite.name, Path(root)) / "resolutions.jsonl",
-                 e2_local.private_dir(suite.name, Path(root)) / "resolutions.jsonl"):
+    for path in (e2_local.suite_dir(suite.name, _home(suite, root)) / "resolutions.jsonl",
+                 e2_local.private_dir(suite.name, _home(suite, root)) / "resolutions.jsonl"):
         for d in _jsonl(path):
             if d["id"] in drop:
                 continue
@@ -257,8 +286,8 @@ def corrections(suite: Suite, root: Path = E2) -> dict:
     (``ruling5_corrections``). Each line has ``status: applied``, the first label it was written for, ``final_label``,
     for PII ``first_entity_types`` and ``final_entity_types``, the ``ruling`` and a ``reason``."""
     out, drop = {}, excluded(root)
-    for path in (e2_local.suite_dir(suite.name, Path(root)) / CORRECTIONS,
-                 e2_local.private_dir(suite.name, Path(root)) / CORRECTIONS):
+    for path in (e2_local.suite_dir(suite.name, _home(suite, root)) / CORRECTIONS,
+                 e2_local.private_dir(suite.name, _home(suite, root)) / CORRECTIONS):
         for d in _jsonl(path):
             if d["id"] in drop:
                 continue
@@ -459,9 +488,106 @@ def assemble(root: Path = E2) -> dict:
                 out["private" if private else c["proposed_split"]].append(r)
     resolve_cross_suite_text(out)
     cluster_near_duplicates(out)
+    if Path(root).resolve() == E2.resolve():
+        keep_published(out, root)
     for rows in out.values():
         rows.sort(key=lambda r: (r.feature, r.subtask, r.id))
     return dict(out)
+
+
+# The release last published on the Hugging Face Hub. Its public rows stay public: a later build never holds one out,
+# and a suite the rebuild did not replace keeps the groups it was published with.
+PUBLISHED_RELEASE = {"name": "1.0.1", "repo": "raxITLabs/decision-models-as-guardrails",
+                     "revision": "f88403efb827ba0c2771dd069ec545d35849ff8d"}
+_PUBLISHED: dict = {}
+PUBLISHED_REPORT: dict = {}         # what keep_published did on the last assemble (the build report records it)
+
+
+def published_rows() -> dict:
+    """id -> {"group", "feature"} of every public row of PUBLISHED_RELEASE (the Hub files, cached locally)."""
+    if _PUBLISHED:
+        return _PUBLISHED
+    from huggingface_hub import snapshot_download
+    kw = dict(repo_id=PUBLISHED_RELEASE["repo"], repo_type="dataset", revision=PUBLISHED_RELEASE["revision"],
+              allow_patterns=["data/*/*.jsonl"])
+    try:
+        folder = Path(snapshot_download(local_files_only=True, **kw))
+    except Exception:  # noqa: BLE001  not cached: download the pinned revision
+        folder = Path(snapshot_download(**kw))
+    for p in sorted(folder.glob("data/*/*.jsonl")):
+        for d in _jsonl(p):
+            _PUBLISHED[d["id"]] = {"group": d.get("group"), "feature": d.get("feature")}
+    if not _PUBLISHED:
+        raise RuntimeError(f"release {PUBLISHED_RELEASE['name']}: no rows in {folder}")
+    return _PUBLISHED
+
+
+def published_result_ids(results: Path = REPO / "benchmark" / "results") -> set:
+    """Row ids in the committed edition 2 result ledgers (``edition2-*/*.jsonl``, never a git-ignored ``private/``):
+    rows that were public when they ran, even when the Hub copy carries them only locally (ids-only sources)."""
+    tracked = set(subprocess.run(["git", "ls-files", "benchmark/results"], cwd=REPO, capture_output=True,
+                                 text=True).stdout.split())
+    ids = set()
+    for f in sorted(Path(results).glob("edition2-*/*.jsonl")):
+        if f.relative_to(REPO).as_posix() not in tracked:
+            continue
+        for d in _jsonl(f):
+            if isinstance(d.get("row_id"), str):
+                ids.add(d["row_id"])
+    return ids
+
+
+def tracked_row_ids() -> set:
+    """Every edition 2 row id named in a tracked file (``git grep``): a tracked file is public, so such a row is."""
+    p = subprocess.run(["git", "grep", "-ohwE", r"f[0-9]-[A-Za-z0-9_]+-[0-9a-f]{10}", "--", "dataset", "benchmark",
+                        "docs", "site", ":!dataset/edition2/build/F*.jsonl"],
+                       cwd=REPO, capture_output=True, text=True)
+    return set(p.stdout.split())
+
+
+def keep_published(out: dict, root: Path = E2) -> dict:
+    """Two rules against PUBLISHED_RELEASE, applied after clustering. (1) A held-out row whose id was public in the
+    release, in a committed edition 2 result ledger (``published_result_ids``) or in any tracked file
+    (``tracked_row_ids``), or whose text is such a row's text (ids-only rows included: their text is rebuilt from public
+    upstream data), leaves the unpublished slice for ``dropped_private``. (2) A row of a suite the rebuild did not
+    replace (``e2_local.SCORED_ROOT``; owner ruling 28 replaced prompt attacks) keeps the group it was published with,
+    so an unchanged suite stays byte-identical when a replaced suite's rows no longer join its clusters. Returns
+    counts, recorded in the build report."""
+    from .audit import normalise
+    pub = published_rows()
+    public_ids = set(pub) | published_result_ids() | tracked_row_ids()
+    swapped = {s.feature for s in SUITES if s.name in e2_local.SCORED_ROOT}
+    texts = set()
+    for s in SUITES:
+        roots = [_home(s, root)] + [r for n, r in e2_local.retired_roots(Path(root)) if n == s.name]
+        for h in roots:
+            for c in e2_local.candidates(s.name, h):
+                if c["id"] in public_ids and (c.get("state") or {}).get("text"):
+                    texts.add(normalise(c["state"]["text"]))
+    held, pinned = Counter(), Counter()
+    for bucket in ("private", "review_private"):
+        for r in list(out.get(bucket, [])):
+            why = ("id" if r.id in public_ids else "text" if normalise(r.state.text) in texts else None)
+            if why:
+                r.attribute["e2"]["dropped"] = (f"public in release {PUBLISHED_RELEASE['name']} ({why}): a published "
+                                                "row is never held out")
+                out[bucket].remove(r)
+                out.setdefault("dropped_private", []).append(r)
+                held[f"{r.feature}/{why}"] += 1
+    for bucket in ("dev", "test", "private", "review", "review_private"):
+        for r in out.get(bucket, []):
+            p = pub.get(r.id)
+            if r.feature in swapped or p is None or not p.get("group") or p["group"] == r.group:
+                continue
+            if str(p["group"]).startswith("nd:") and "loader_group" not in r.attribute["e2"]:
+                r.attribute["e2"]["loader_group"] = r.group
+            r.group = p["group"]
+            pinned[r.feature] += 1
+    rep = {"release": PUBLISHED_RELEASE, "held_out_rows_dropped": dict(sorted(held.items())),
+           "groups_kept": dict(sorted(pinned.items()))}
+    PUBLISHED_REPORT.clear()
+    PUBLISHED_REPORT.update(rep)
+    return rep
 
 
 # Which copy of a text shared by two suites stays when the copies sit in different splits. Each suite agent split its
@@ -691,11 +817,18 @@ def floors(parts: dict) -> dict:
                 "public_test": dict(sorted(pub[(f, s)].items())), "with_private": dict(sorted(both[(f, s)].items())),
                 "public_test_second_label_agreed": dict(sorted(ok2[(f, s)].items())),
                 "sources": n_src, "sources_by_class": srcs}
-        short = []
+        short, exc = [], FLOOR_EXCEPTIONS.get((f, s))
         for lab, need in (("yes", need_yes), ("no", need_no)):
             have = pub[(f, s)].get(lab, 0)
             if have < need:
-                short.append({"class": lab, "have": have, "floor": need, "missing": need - have})
+                miss = {"class": lab, "have": have, "floor": need, "missing": need - have}
+                if exc and have >= exc["accepted_public_test"][lab]:
+                    cell.setdefault("accepted_shortfalls", []).append({**miss, "ruling": exc["ruling"]})
+                    continue
+                short.append(miss)
+        if cell.get("accepted_shortfalls"):
+            cell["exception"] = {"ruling": exc["ruling"], "accepted_public_test": exc["accepted_public_test"],
+                                 "disclosure": exc["disclosure"]}
         if n_src < MIN_SOURCES:
             short.append({"sources": n_src, "floor": MIN_SOURCES})
         for lab, need in (("yes", need_yes), ("no", need_no)):
@@ -705,8 +838,10 @@ def floors(parts: dict) -> dict:
         cells.append(cell)
         for sh in short:
             shortfalls.append({"feature": f, "subtask": s, **sh})
+    accepted = [{"feature": c["feature"], "subtask": c["subtask"], **a} for c in cells
+                for a in c.get("accepted_shortfalls", [])]
     return {"floor_rows": TEST_FLOOR, "min_sources": MIN_SOURCES, "cells": cells, "shortfalls": shortfalls,
-            "pass": not shortfalls}
+            "accepted_shortfalls": accepted, "pass": not shortfalls}
 
 
 def unscored_entities() -> list:
@@ -1151,6 +1286,7 @@ def run(out: Path = BUILD, root: Path = E2, strict: bool = False, skip_overlap: 
         "second_label": second_label_coverage(parts, content_sample_status(out)),
         "near_duplicates": near_duplicate_summary(parts),
         "reference_overlap_drops": reference_drops,
+        "published_release": dict(PUBLISHED_REPORT) or None,
         "prompt_attack_gate": prompt_attack_gate(parts, use_sklearn),
     }
     if skip_overlap:

@@ -41,6 +41,7 @@ def _jsonl(path: Path) -> list:
 
 
 def _res_paths(suite: str, root: Path) -> tuple[Path, Path]:
+    root = e2_local.scored_root(suite, root)        # owner ruling 28: prompt attacks live in r26/
     return (e2_local.suite_dir(suite, root) / "resolutions.jsonl",
             e2_local.private_dir(suite, root) / "resolutions.jsonl")
 
@@ -71,8 +72,8 @@ def review_items(root: Path = e2_local.E2, parts: dict | None = None) -> list:
                  and (waiting is None or d["id"] in waiting)]
         if not lines:
             continue
-        cands = {c["id"]: c for c in e2_local.candidates(suite, root)}
-        seconds = {r["id"]: r for r in e2_local.relabels(suite, root)}
+        cands = {c["id"]: c for c in e2_local.candidates(suite, e2_local.scored_root(suite, root))}
+        seconds = {r["id"]: r for r in e2_local.relabels(suite, e2_local.scored_root(suite, root))}
         for d, private in lines:
             c = cands[d["id"]]
             st = c.get("state") or (c.get("record") or {}).get("state") or {}
@@ -348,8 +349,9 @@ def write_summary(path: Path, root: Path = e2_local.E2, parts: dict | None = Non
             else:
                 c["waiting"] += 1
                 questions.setdefault((suite, d.get("question") or "unruled"), []).append(d)
-        for d, private in [(d, False) for d in _jsonl(e2_local.suite_dir(suite, root) / "corrections.jsonl")] + \
-                [(d, True) for d in _jsonl(e2_local.private_dir(suite, root) / "corrections.jsonl")]:
+        sroot = e2_local.scored_root(suite, root)
+        for d, private in [(d, False) for d in _jsonl(e2_local.suite_dir(suite, sroot) / "corrections.jsonl")] + \
+                [(d, True) for d in _jsonl(e2_local.private_dir(suite, sroot) / "corrections.jsonl")]:
             corr["private" if private else "public"] += 1
             corr["benign"] += d.get("final_label") != d.get("first_label")
     cands = {}
@@ -370,8 +372,10 @@ def write_summary(path: Path, root: Path = e2_local.E2, parts: dict | None = Non
     lines += ["", "## Questions", ""]
     for (suite, q), rows in sorted(questions.items()):
         if suite not in cands:
-            cands[suite] = {c["id"]: c for c in e2_local.candidates(suite, root, private=False, text=False)}
-        seconds = {r["id"]: r for r in e2_local.relabels(suite, root, private=False)} if suite else {}
+            cands[suite] = {c["id"]: c for c in e2_local.candidates(suite, e2_local.scored_root(suite, root),
+                                                                    private=False, text=False)}
+        seconds = {r["id"]: r for r in e2_local.relabels(suite, e2_local.scored_root(suite, root), private=False)} \
+            if suite else {}
         lines += [f"### {q} ({suite}, {len(rows)} rows)", "", rows[0].get("question_text") or "", "", "Your decision: ____", "",
                   "| Id | Subtask | Split | First | Second | Note |", "|---|---|---|---|---|---|"]
         for d in sorted(rows, key=lambda d: d["id"]):
@@ -453,7 +457,7 @@ def import_decisions(path: Path, root: Path = e2_local.E2) -> dict:
             if not any(d["id"] in decisions for d in lines):
                 continue
             if cands is None:
-                cands = {c["id"]: c for c in e2_local.candidates(suite, root, text=False)}
+                cands = {c["id"]: c for c in e2_local.candidates(suite, e2_local.scored_root(suite, root), text=False)}
             out = []
             for d in lines:
                 dec = decisions.get(d["id"])

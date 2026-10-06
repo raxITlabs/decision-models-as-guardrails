@@ -28,8 +28,7 @@ In all, 0 disputed rows wait: 0 public and 0 private. Ruling 5 changed 11 undisp
 | denied_topics | 4 | 0 | 0 | 0 | 0 | 4 | 0 | 0 |
 | grounding | 28 | 0 | 0 | 10 | 0 | 18 | 0 | 0 |
 | pii | 19 | 0 | 0 | 0 | 11 | 8 | 0 | 0 |
-| prompt_attacks | 174 | 17 | 24 | 0 | 0 | 132 | 0 | 1 |
 | word_filters | 9 | 0 | 0 | 0 | 0 | 9 | 0 | 0 |
-| all | 257 | 17 | 24 | 10 | 11 | 194 | 0 | 1 |
+| all | 83 | 0 | 0 | 10 | 11 | 62 | 0 | 0 |
 
 ## Questions

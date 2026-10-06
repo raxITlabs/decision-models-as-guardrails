@@ -35,6 +35,13 @@ The rules follow the draft contract v2.0 (docs/benchmark/27-evaluation-contract-
 - Freeze records (the v1 checks, restored): in a frozen run every test record must carry the manifest's sha256, have
   run under the manifest's retry policy and have attempt timestamps all later than the manifest's commit time; each
   failure is a publication blocker.
+- Extension manifests: a suite rerun on a new dataset version after the primary freeze (owner ruling 28: prompt
+  attacks on the r26 suite) is frozen by a separate manifest whose ``extends`` block names the primary's sha256 and,
+  when the contract changed in between, a ``contract_amendment`` (from and to hash, the amended suites). The scorer
+  takes the arms of both, checks each record against the manifest whose sha256 it carries, and accepts the contract
+  change only when ``contract_amendment_check`` reproduces it from Git: the primary's contract at its commit hashes
+  to the recorded value and differs from the current one only inside the amended suites and the descriptive keys
+  (``AMENDABLE``); every record of an amended suite must carry the extension's sha256.
 - Owner rulings of 3 October 2026 (docs/benchmark/29-owner-rulings-2026-10-03.md): an unscored entity type (ruling 6:
   DRIVER_ID) is reported per arm as an unscored diagnostic and never enters the PII mean, the failure cap, the
   bootstrap or any board; a sanity-check subtask (ruling 13: word filters ``word``, the custom-words suite) gets a
@@ -201,6 +208,69 @@ def freeze_record_check(manifest: dict, identity: dict | None, records: list[dic
              "earliest_test_attempt": earliest and earliest.strftime(freeze_mod.TIME_FORMAT),
              "committed_at": (identity or {}).get("committed_at"),
              "pass": not blockers}, ["freeze: " + b for b in blockers])
+
+
+# --- extension manifests and contract amendments -------------------------------------------------------------------
+
+# Top-level contract keys an amendment may change besides the amended suites themselves; everything else (the headline
+# rule, frozen settings, metrics, coverage, statistics, weights, required suites, bootstrap) must be identical.
+AMENDABLE = ("suites", "disclosures", "owner_rulings", "question_sets", "amendments")
+
+
+def _contract_at(commit: str, path: Path = DEFAULT_CONTRACT_PATH) -> dict | None:
+    import subprocess
+    rel = Path(path).resolve().relative_to(REPO).as_posix()
+    p = subprocess.run(["git", "-C", str(REPO), "show", f"{commit}:{rel}"], capture_output=True, text=True)
+    return json.loads(p.stdout) if p.returncode == 0 else None
+
+
+def contract_amendment_check(primary: dict, primary_identity: dict | None, extensions: list, contract: dict,
+                             contract_path=None) -> tuple[dict, list[str]]:
+    """({"amended_suites", "checks"}, problems) for the contract change between the primary freeze and the current
+    contract. No change: nothing to check. A change needs an extension manifest that extends the primary and records
+    ``extends.contract_amendment`` {from_hash: the primary's contract hash, to_hash: the current hash, suites: [...]},
+    frozen under the current contract; the primary's contract, read from Git at the primary's commit, must hash to its
+    recorded value and differ from the current contract only in AMENDABLE keys, and within ``suites`` only in the
+    amended suites."""
+    want = _stable_hash(contract)
+    have = (primary.get("contract") or {}).get("hash")
+    if have in (None, want):
+        return {"amended_suites": [], "checks": "contract unchanged since the primary freeze"}, []
+    probs, amended = [], set()
+    sha = (primary_identity or {}).get("manifest_sha256")
+    match = [(m, i) for m, i in extensions or [] if (m.get("extends") or {}).get("manifest_sha256") == sha
+             and ((m.get("extends") or {}).get("contract_amendment") or {}).get("from_hash") == have]
+    if not match:
+        return {"amended_suites": []}, ["the freeze manifest froze a different contract (hash differs) and no extension "
+                                        "manifest records the amendment"]
+    ext, _ = match[-1]
+    am = ext["extends"]["contract_amendment"]
+    amended = set(am.get("suites") or [])
+    if am.get("to_hash") != want or (ext.get("contract") or {}).get("hash") != want:
+        probs.append("the extension manifest's contract amendment does not end at the current contract hash")
+    old = _contract_at((primary_identity or {}).get("commit") or "", contract_path or DEFAULT_CONTRACT_PATH)
+    if old is None:
+        probs.append("the primary freeze's contract cannot be read from Git at its commit")
+        return {"amended_suites": sorted(amended)}, probs
+    if _stable_hash(old) != have:
+        probs.append("the contract in Git at the primary freeze's commit does not hash to the primary's recorded hash")
+    keys = sorted(set(old) | set(contract))
+    bad_top = [k for k in keys if old.get(k) != contract.get(k) and k not in AMENDABLE]
+    if bad_top:
+        probs.append("the contract amendment changed keys outside the amendable ones: " + ", ".join(bad_top))
+    so, sn = old.get("suites") or {}, contract.get("suites") or {}
+    changed = sorted(s for s in set(so) | set(sn) if so.get(s) != sn.get(s))
+    outside = [s for s in changed if s not in amended]
+    if outside:
+        probs.append("the contract amendment changed suites it does not declare: " + ", ".join(outside))
+    qo, qn = old.get("question_sets") or {}, contract.get("question_sets") or {}
+    q_outside = [s for s in set(qo) | set(qn) if qo.get(s) != qn.get(s) and s not in amended and s not in ("revisions",)]
+    if q_outside:
+        probs.append("the contract amendment changed question sets of suites it does not declare: "
+                     + ", ".join(sorted(q_outside)))
+    return {"amended_suites": sorted(amended), "from_hash": have, "to_hash": want, "changed_suites": changed,
+            "changed_keys": [k for k in keys if old.get(k) != contract.get(k)], "ruling": am.get("ruling"),
+            "reason": am.get("reason")}, probs
 
 
 # --- the headline rule -----------------------------------------------------------------------------------------------
@@ -612,7 +682,8 @@ def evaluate(records: list[dict], contract: dict | None = None, implementations:
              replicates: int | None = None, seed: int | None = None, tariffs: dict | None = None,
              serving: list | None = None, arms_meta: dict | None = None, not_offered: dict | None = None,
              frozen: dict | None = None, manifest: dict | None = None, manifest_identity: dict | None = None,
-             diagnostic: bool = False, integrity: dict | None = None) -> dict:
+             diagnostic: bool = False, integrity: dict | None = None, extensions: list | None = None,
+             extension_integrity: list | None = None) -> dict:
     """The v2.0 leaderboard document for exploded ledger records.
 
     ``implementations``: {name: {suite: selector}} as ``leaderboard.declared_implementations`` returns, where a
@@ -628,8 +699,10 @@ def evaluate(records: list[dict], contract: dict | None = None, implementations:
     references, pool, v1_build_rows or repo, default this repository's), so a hand-written block is refused. In a test
     run outside diagnostic mode an arm with no frozen row list, or not listed in the manifest, or whose rule differs
     from the manifest's, is an invalid run. ``diagnostic`` results, and any report split other than test, are labelled
-    not valid for publication."""
+    not valid for publication. ``extensions``: [(manifest, identity)] of committed extension manifests of the
+    primary (see the module notes); ``extension_integrity`` their ``integrity`` arguments, in the same order."""
     strict = report_split == "test" and not diagnostic
+    extensions = list(extensions or [])
     if manifest is None and strict:
         raise FreezeError("a test run is scored only against a committed edition-2 freeze manifest with a passing "
                           "integrity block; give one, or run in diagnostic mode (not valid for publication)")
@@ -637,9 +710,20 @@ def evaluate(records: list[dict], contract: dict | None = None, implementations:
         probs = freeze_mod.integrity_problems(manifest, **(integrity or {}))
         if probs:
             raise FreezeError("freeze manifest cannot back a test run: " + "; ".join(probs))
+    for i, (xm, _) in enumerate(extensions):
+        probs = freeze_mod.integrity_problems(xm, **((extension_integrity or [None] * len(extensions))[i] or {}))
+        if probs:
+            raise FreezeError("extension freeze manifest cannot back a test run: " + "; ".join(probs))
     if strict and frozen is None:
         frozen = {}
     frozen_arms = {freeze_mod.arm_key(a): a for a in (manifest or {}).get("arms") or []}
+    arm_manifest = {k: (manifest_identity or {}).get("manifest_sha256") for k in frozen_arms}
+    for xm, xi in extensions:
+        for a in xm.get("arms") or []:
+            if freeze_mod.arm_key(a) in frozen_arms:
+                raise FreezeError(f"extension manifest arm {freeze_mod.arm_key(a)} is already in the primary")
+            frozen_arms[freeze_mod.arm_key(a)] = a
+            arm_manifest[freeze_mod.arm_key(a)] = (xi or {}).get("manifest_sha256")
     contract = contract or load_contract()
     stats = contract.get("statistics") or {}
     boot = stats.get("bootstrap") or contract.get("bootstrap") or {}
@@ -955,18 +1039,41 @@ def evaluate(records: list[dict], contract: dict | None = None, implementations:
     blockers, disclosures = [], []
     for suite, p in sorted(provisional.items()):
         disclosures.append(f"{suite} scores are provisional ({p.get('ruling') or 'contract'}): {p.get('caveat')}")
-    freeze_records = None
+    freeze_records, amendment = None, None
     if manifest is not None and strict:
-        test_recs = [r for e in ev.values() for r in e["arm"].records
-                     if ((r.get("dataset") or {}).get("split") or report_split) == report_split]
-        freeze_records, fb = freeze_record_check(manifest, manifest_identity, test_recs)
+        is_test = lambda r: ((r.get("dataset") or {}).get("split") or report_split) == report_split  # noqa: E731
+        by_sha = defaultdict(list)
+        for k, e in ev.items():
+            for r in e["arm"].records:
+                if is_test(r):
+                    by_sha[arm_manifest.get(k, (manifest_identity or {}).get("manifest_sha256"))].append(r)
+        freeze_records, fb = freeze_record_check(manifest, manifest_identity,
+                                                 by_sha.pop((manifest_identity or {}).get("manifest_sha256"), []))
         blockers += fb
+        if extensions:
+            freeze_records = {"primary": freeze_records, "extensions": []}
+            for xm, xi in extensions:
+                xr, xb = freeze_record_check(xm, xi, by_sha.pop((xi or {}).get("manifest_sha256"), []))
+                freeze_records["extensions"].append({"manifest_sha256": (xi or {}).get("manifest_sha256"), **xr})
+                blockers += ["extension " + b for b in xb]
+        if by_sha:
+            blockers.append(f"freeze: {sum(len(v) for v in by_sha.values())} test records belong to arms of no "
+                            "given manifest")
+        amendment, ab = contract_amendment_check(manifest, manifest_identity, extensions, contract)
+        blockers += ["contract amendment: " + b for b in ab]
+        amended = set(amendment.get("amended_suites") or [])
+        ext_shas = {(xi or {}).get("manifest_sha256") for _, xi in extensions}
+        stale = sorted({k[0] + "/" + e["arm"].suite for k, e in ev.items()
+                        if e["arm"].suite in amended and arm_manifest.get(k) not in ext_shas and e["arm"].records})
+        if stale:
+            blockers.append("contract amendment: arms of an amended suite scored under the primary freeze: "
+                            + ", ".join(stale))
     if diagnostic:
         blockers.append("diagnostic mode: not scored against a committed edition-2 freeze manifest and frozen row "
                         "list; not valid for publication")
     elif report_split != "test":
         blockers.append(f"report split {report_split or 'all rows'!r} is not the frozen test split")
-    if manifest is not None and (manifest.get("contract") or {}).get("hash") not in (None, _stable_hash(contract)):
+    if manifest is not None and not strict and (manifest.get("contract") or {}).get("hash") not in (None, _stable_hash(contract)):
         blockers.append("the freeze manifest froze a different contract (hash differs)")
     status = str(contract.get("status", "")).lower()
     if "draft" in status or "not signed" in status:
@@ -1024,7 +1131,13 @@ def evaluate(records: list[dict], contract: dict | None = None, implementations:
         "freeze": ({"edition": manifest.get("edition"), "integrity": manifest.get("integrity"),
                     **({k: manifest_identity.get(k) for k in ("path", "manifest_sha256", "commit", "committed_at")}
                        if manifest_identity else {}),
-                    **({"records": freeze_records} if freeze_records is not None else {})}
+                    **({"records": freeze_records} if freeze_records is not None else {}),
+                    **({"extensions": [{"edition": xm.get("edition"), "integrity": xm.get("integrity"),
+                                        "extends": xm.get("extends"),
+                                        **{k: (xi or {}).get(k) for k in ("path", "manifest_sha256", "commit",
+                                                                         "committed_at")}}
+                                       for xm, xi in extensions]} if extensions else {}),
+                    **({"contract_amendment": amendment} if amendment else {})}
                    if manifest is not None else None),
         "arms": out_arms,
         "subtasks": subtask_boards,

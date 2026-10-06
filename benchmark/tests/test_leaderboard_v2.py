@@ -14,6 +14,7 @@ from goldrails_bench.leaderboard import Arm, Row, task_score
 from goldrails_bench.score import auroc as score_auroc
 
 CONTRACT = v2.load_contract()
+REPO = v2.REPO
 FEAT = {"denied_topics": ("F3", "topic", "v1-f3-topics"), "prompt_attacks": ("F2", "injection", "v1-f2-attacks"),
         "word_filters": ("F4", "word", "v1-f4-words"), "sensitive_info": ("F5", "pii", "v2-f5-pii"),
         "content": ("F1", "input", "v1-f1-bedrock5")}
@@ -639,3 +640,38 @@ def test_load_frozen_rows_keys_by_the_runner_dataset_hash(tmp_path):
     got = fr[dataset_hash(read_jsonl(f))]["f1-x-0000000001"]
     assert got["in_bedrock_five"] is True and got["vendor_owned"] is False and got["subtask"] == "input"
     assert "text" not in got and "state" not in got
+
+
+def test_a_contract_change_needs_an_extension_that_records_it_and_git_that_reproduces_it():
+    from goldrails_bench.leaderboard import _stable_hash
+    c = json.loads(json.dumps(CONTRACT))
+    primary = {"contract": {"hash": _stable_hash(c)}}
+    assert v2.contract_amendment_check(primary, {"manifest_sha256": "p"}, [], c)[1] == []
+    old = {"contract": {"hash": "0" * 16}}
+    _, probs = v2.contract_amendment_check(old, {"manifest_sha256": "p"}, [], c)
+    assert probs and "no extension manifest records the amendment" in probs[0]
+    ext = {"extends": {"manifest_sha256": "p", "contract_amendment": {"from_hash": "0" * 16, "to_hash": _stable_hash(c),
+                                                                       "suites": ["prompt_attacks"]}},
+           "contract": {"hash": _stable_hash(c)}}
+    info, probs = v2.contract_amendment_check(old, {"manifest_sha256": "p", "commit": "0" * 40}, [(ext, {})], c)
+    assert info["amended_suites"] == ["prompt_attacks"]
+    assert any("cannot be read from Git" in p for p in probs)          # a made-up commit proves nothing
+
+
+def test_the_committed_primary_freeze_amendment_is_reproduced_from_git():
+    """The committed full-run freeze froze the contract before ruling 28; the current contract differs from it only in
+    prompt attacks and the descriptive keys."""
+    from goldrails_bench import freeze
+    from goldrails_bench.leaderboard import _stable_hash
+    p = REPO / "benchmark" / "subsets" / "edition2" / "freeze-manifest.json"
+    if not p.exists():
+        pytest.skip("no primary freeze")
+    m, ident = freeze.load_committed(p)
+    if m["contract"]["hash"] == _stable_hash(CONTRACT):
+        pytest.skip("contract unchanged since the freeze")
+    ext = {"extends": {"manifest_sha256": ident["manifest_sha256"],
+                       "contract_amendment": {"from_hash": m["contract"]["hash"], "to_hash": _stable_hash(CONTRACT),
+                                              "suites": ["prompt_attacks"]}},
+           "contract": {"hash": _stable_hash(CONTRACT)}}
+    info, probs = v2.contract_amendment_check(m, ident, [(ext, ident)], CONTRACT)
+    assert probs == [] and info["changed_suites"] == ["prompt_attacks"]

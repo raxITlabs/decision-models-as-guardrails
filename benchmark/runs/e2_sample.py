@@ -55,6 +55,7 @@ VM_SYSTEMS = ("kev-0-8b", "kev-4b", "kev-9b", "open-jev-2b", "laya", "strands-de
 # Bedrock answers are not probabilities: each answer carries the basis the contract's frozen setting is keyed by.
 BEDROCK_BASIS = {("content", "request"): "bedrock_severity", ("content", "reply"): "bedrock_severity",
                  ("prompt_attacks", "direct"): "bedrock_severity",
+                 ("prompt_attacks", "indirect"): "bedrock_severity",
                  ("sensitive_info", "entity_detection"): "bedrock_confidence",
                  ("denied_topics", "topic"): "bedrock_topic_binary",
                  ("word_filters", "word"): "bedrock_word_binary",

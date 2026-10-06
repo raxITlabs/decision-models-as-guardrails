@@ -440,8 +440,13 @@ def test_the_build_gate_rows_carry_the_ruling_26_nuisance_fields():
 
 def test_committed_contract_names_the_ruling_26_gate_and_the_indirect_subtask():
     spec = json.loads(e2.CONTRACT.read_text(encoding="utf-8"))["suites"]["prompt_attacks"]
-    assert spec.get("status") != "provisional" and "provisional" not in spec
-    assert "indirect" in spec["announced_subtasks"]           # ruling 25; required once a passing suite ships
+    assert spec.get("status") == "scored" and "provisional" not in spec          # ruling 28: r26 swapped in
+    assert spec["subtasks"]["indirect"]["tags"] == ["indirect"]                # ruling 25, required since ruling 28
+    assert "announced_subtasks" not in spec
+    assert spec["acceptance"]["gate_result"]["pass"] is True
+    exc = spec["acceptance"]["floor_exception"]
+    assert exc["ruling"] == 28 and exc["public_test"] == e2.FLOOR_EXCEPTIONS[("F2", "injection")]["accepted_public_test"]
+    assert exc["disclosure"] == e2.FLOOR_EXCEPTIONS[("F2", "injection")]["disclosure"]
     acc = spec["acceptance"]
     assert "ruling 26" in acc["ruling"] and acc["gate"].startswith("dataset/goldrails_dataset/sources/"
                                                                      "e2_prompt_attacks_confounds.py")
@@ -741,3 +746,19 @@ def test_excluded_rows_are_in_no_bucket_and_no_candidate_file(parts):
         cache = e2_local.text_cache(s.name)
         if cache.exists():
             assert not [i for i in drop if i in cache.read_text(encoding="utf-8")], cache
+
+
+def test_a_floor_exception_passes_only_at_or_above_its_accepted_counts(monkeypatch):
+    def rows(n_yes, n_no):
+        out = []
+        for i in range(n_yes + n_no):
+            r = _row(i, "injection", "yes" if i < n_yes else "no", "a" if i % 2 else "b")
+            r.feature = "F2"
+            r.provenance.source = "a" if i % 2 else "b"
+            out.append(r)
+        return out
+    monkeypatch.setattr(e2, "SCORED", {("F2", "injection"): (250, 250)})
+    ok = e2.floors({"test": rows(151, 167)})
+    assert ok["pass"] and len(ok["accepted_shortfalls"]) == 2 and ok["cells"][0]["exception"]["ruling"] == 28
+    low = e2.floors({"test": rows(150, 167)})
+    assert not low["pass"] and low["shortfalls"][0]["class"] == "yes"

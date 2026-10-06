@@ -25,6 +25,7 @@ EDITION = "e2"
 # (suite, subtask) -> the frozen e2 question set the Noul adapter sends.
 TASK_QSET = {("content", "request"): "f1-bedrock5", ("content", "reply"): "f1-bedrock5",
              ("prompt_attacks", "direct"): "f2-attacks",
+             ("prompt_attacks", "indirect"): "f2-attacks-indirect",       # owner ruling 28
              ("denied_topics", "topic"): "f3-topics",
              ("word_filters", "word"): "f4-words", ("word_filters", "profanity"): "f4-obscenity",
              ("sensitive_info", "entity_detection"): "f5-pii",

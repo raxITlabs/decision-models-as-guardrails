@@ -18,3 +18,11 @@ The headline score uses one fixed rule for every model. A probability of 0.5 or 
 ### Some rows come from vendors' own datasets
 
 511 of the 2,088 content test rows come from datasets that companies building safety models published themselves. 311 are from NVIDIA's Aegis 2.0 and 200 are from OpenAI's moderation evaluation set. A vendor may have trained or tuned its own models on that data, so every such row carries `vendor_owned` and its vendor name, and you can score with or without them. Neither NVIDIA nor OpenAI has a model on the leaderboard today. We also removed every row whose text appears in a benchmarked model's training data or in a benchmarked vendor's published material, such as TypeSafe's guardrails cookbook. EXCLUDED.jsonl lists each one with its reason.
+
+### Prompt-attack labels had an AI second reader, not a person
+
+The prompt-attack suite's second label comes from a model, not a person. A separate model labelled a 400-row blind sample of it with no tools and no file access, given only the labelling policy and the rows. We publish its agreement rate. Treat it as an AI cross-check, not a human review.
+
+### Injection has fewer rows than the other prompt-attack subtasks
+
+Injection has 151 attack and 167 benign public test rows. Every other subtask has at least 250 of each. Once we removed prompts that appear in benchmarked models' training data, few real injection prompts with same-source benign messages were left. The injection score's interval is wider for that reason.

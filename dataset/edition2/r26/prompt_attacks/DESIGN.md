@@ -1,6 +1,6 @@
 # Prompt attacks, rebuilt for owner rulings 26 and 27
 
-Status: candidate, 6 October 2026. Not second-labelled, not owner-reviewed, and no model has seen these rows. The
+Status: the scored edition 2 prompt-attack suite since owner ruling 28 (6 October 2026), which approved the indirect question, accepted the injection shortfall with a disclosure and ruled a sealed AI second label for the packet. The text below is the candidate write-up as it was. Status before ruling 28: candidate, 6 October 2026. Not second-labelled, not owner-reviewed, and no model has seen these rows. The
 current suite (`dataset/edition2/prompt_attacks/`) and the r23 and r25 candidates are untouched. This candidate
 passes the ruling 26 confounds-only gate. Jailbreak, leakage and indirect meet the edition 2 floors; **injection does
 not** (151 attack and 167 benign public test rows against 250 each). Ruling 27 does not accept a shortfall, so the

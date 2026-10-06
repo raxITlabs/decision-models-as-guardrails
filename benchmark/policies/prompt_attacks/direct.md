@@ -42,4 +42,4 @@ These decide which tag a row carries. They do not change whether the row is an a
 
 ## Out of scope
 
-Attacks hidden in retrieved content (subtask `indirect`) are not part of the scored direct subtask.
+Attacks hidden in retrieved content are subtask `indirect` (`indirect.md`), scored beside this one (owner ruling 28).

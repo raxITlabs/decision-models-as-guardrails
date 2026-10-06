@@ -157,7 +157,8 @@ def overall_chart(doc):
 
 def heatmap(doc):
     order = [e["name"] for e in doc["overall"]["ranking"]] + [e["name"] for e in doc["overall"].get("unranked", [])]
-    cols = [k for k in ["content/request", "content/reply", "prompt_attacks/direct", "denied_topics/topic",
+    cols = [k for k in ["content/request", "content/reply", "prompt_attacks/direct", "prompt_attacks/indirect",
+                        "denied_topics/topic",
                         "word_filters/profanity", "sensitive_info/entity_detection", "grounding/grounding"]
             if k in doc["subtasks"]]
     vals = {}

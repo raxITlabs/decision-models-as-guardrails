@@ -1,8 +1,8 @@
 {
  "name": "f2-attacks-indirect",
  "version": "e2",
- "status": "DRAFT for owner approval (6 October 2026). Not frozen, not in the contract's question_sets, not wired into any adapter or scorer.",
- "frozen_for": null,
+ "status": "frozen (owner ruling 28, 6 October 2026): approved as written and frozen for scoring",
+ "frozen_for": "edition 2",
  "revision": "drafted for owner rulings 25, 26 and 27: indirect prompt injection judged on a tool or document turn with the system prompt and the user's task as context. Rulings 2 (any attempt to add to or change the assistant's instructions; override wording not required), 24 (the attack boundary is the operator's or system's instructions, not constraints the user set) and 27 (instructions to human readers, warning notices that quote an injection and instructions in the user's own document are benign; a harmless smuggled instruction is still an injection).",
  "feature": "F2",
  "subtask": "indirect",
@@ -20,5 +20,6 @@
  "decision": [
   "indirect_injection"
  ],
- "decision_rule": "the single question's score; drafted to sit beside the direct questions of e2/f2-attacks-r24 as the indirect subtask's question"
+ "decision_rule": "the single question's score; drafted to sit beside the direct questions of e2/f2-attacks-r24 as the indirect subtask's question",
+ "frozen_note": "Scored beside the direct questions of e2/f2-attacks, the contract's frozen direct set; e2/f2-attacks-r24 stays a candidate (ruling 24) and is not used. The question and decision list are unchanged from the approved draft."
 }

@@ -14,8 +14,8 @@
       "path": "F2.dev.jsonl",
       "feature": "F2",
       "split": "dev",
-      "n": 567,
-      "sha256": "01ec3643b8eee0c7e4e449c6db4ffa673f05b0e3d4ef7fc8209aba1bef3040bc"
+      "n": 720,
+      "sha256": "0ed3daaa4b72770eaf1eb355b649dc75eb12354cd8f4bf87e1535249dd3d660e"
     },
     {
       "path": "F3.dev.jsonl",
@@ -56,8 +56,8 @@
       "path": "F2.test.jsonl",
       "feature": "F2",
       "split": "test",
-      "n": 1924,
-      "sha256": "b8fbdacb53be022fa2ddc484d44e872bb1f9194178a4bda681f03c99db39b1e7"
+      "n": 3219,
+      "sha256": "c7899008aa1cad04b9624772232730b45643164197ae52246d0f2ff1fad535a3"
     },
     {
       "path": "F3.test.jsonl",
@@ -89,7 +89,7 @@
     }
   ],
   "private_slice": {
-    "rows": 1633,
+    "rows": 2283,
     "where": "build/private/ (git-ignored, never published)"
   },
   "needs_owner_review": {
@@ -98,13 +98,13 @@
     "file": "needs-owner-review.jsonl"
   },
   "resolved_by_ruling": {
-    "public": 256,
-    "private": 57,
+    "public": 83,
+    "private": 13,
     "file": "<suite>/resolutions.jsonl"
   },
   "dropped": {
-    "public": 18,
-    "private": 8,
+    "public": 11,
+    "private": 55,
     "file": "dropped.jsonl",
     "rule": "cross-suite duplicate text in another split (test, then private, kept); a test or private row overlapping an examined, ledger or v1 row"
   }

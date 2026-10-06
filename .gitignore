@@ -58,3 +58,6 @@ dataset/edition2/r25/*/local/
 # (~/.goldrails-private/r26/)
 dataset/edition2/r26/*/private/
 dataset/edition2/r26/*/local/
+# prompt-attack rerun on the r26 suite (benchmark/runs/e2_attacks_rerun.py): raw ledgers hold unpublished-slice ids
+benchmark/results/edition2-attacks-r26/private/
+benchmark/results/edition2-attacks-r26/.run-log.lock

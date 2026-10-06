@@ -33,7 +33,7 @@ THRESHOLD = 0.5   # the v2.0 out-of-the-box rule for probability outputs: flag a
 # Suites and subtasks of contract v2.0, by the names the contract uses (as in v1.1). ``optional`` subtasks are scored
 # only where rows carry their label.
 SUITES = {"content": ("request", "reply"),
-          "prompt_attacks": ("direct",),
+          "prompt_attacks": ("direct", "indirect"),
           "denied_topics": ("topic",),
           "word_filters": ("word", "profanity"),
           "sensitive_info": ("entity_detection",),

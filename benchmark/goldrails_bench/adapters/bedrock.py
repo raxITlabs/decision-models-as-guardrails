@@ -45,6 +45,10 @@ PII_ENTITIES = ["NAME", "EMAIL", "PHONE", "ADDRESS", "USERNAME", "PASSWORD", "IP
 # (suite, subtask) -> (which client, how the verdict is read)
 TASKS = {("content", "request"): (CHECKS, "score_threshold"), ("content", "reply"): (CHECKS, "score_threshold"),
          ("prompt_attacks", "direct"): (CHECKS, "score_threshold"),
+         # indirect (owner ruling 28): the same three prompt-attack categories over the whole state, sent as messages
+         # (bedrock.messages_of): the system prompt as a system message, the user's task as a user message and the
+         # document as a user message tagged "[Untrusted retrieved content]" (the API has no tool role)
+         ("prompt_attacks", "indirect"): (CHECKS, "score_threshold"),
          ("sensitive_info", "entity_detection"): (CHECKS, "score_threshold"),
          ("denied_topics", "topic"): (TOPICS, "binary"),
          ("word_filters", "word"): (WORDS, "binary"), ("word_filters", "profanity"): (WORDS, "binary"),

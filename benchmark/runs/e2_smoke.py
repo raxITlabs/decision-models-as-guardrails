@@ -51,6 +51,7 @@ from goldrails_bench import question_sets  # noqa: E402
 TASKS = {("content", "request"): ("F1", ("harmful_goal", "input", "over_refusal")),
          ("content", "reply"): ("F1", ("output",)),
          ("prompt_attacks", "direct"): ("F2", ("injection", "jailbreak", "leakage")),
+         ("prompt_attacks", "indirect"): ("F2", ("indirect",)),          # owner ruling 28
          ("denied_topics", "topic"): ("F3", ("topic",)),
          ("sensitive_info", "entity_detection"): ("F5", ("pii",)),
          ("grounding", "grounding"): ("F6", ("grounding",)),

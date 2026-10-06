@@ -198,6 +198,7 @@ settled, and `v2.0.json` no longer has a `pending_owner_rulings` block.
 | 23 | No provisional scores; a prompt-attack suite that fails its acceptance test does not ship | `suites.prompt_attacks.status` |
 | 25 | Direct and indirect prompt attacks both count in the overall score; the launch waits for a passing suite | `suites.prompt_attacks.announced_subtasks.indirect` |
 | 26 | The prompt-attack acceptance test is the confounds-only gate; full-text n-gram baselines are published, not pass/fail | `suites.prompt_attacks.acceptance` |
+| 28 | The r26 suite is scored, indirect is a scored subtask, the injection floor shortfall is accepted with a disclosure | `suites.prompt_attacks` (`status`, `subtasks.indirect`, `acceptance.floor_exception`, `acceptance.second_label`) |
 
 ## Prompt attacks: the confounds-only gate (ruling 26)
 
@@ -239,6 +240,17 @@ to human readers) as a minority. Indirect attacks are named in `suites.prompt_at
 become a required subtask when the rebuilt suite is swapped in.
 
 The ruling 26 candidate is in `dataset/edition2/r26/prompt_attacks/` (`DESIGN.md`, `gate.json`, `counts.json`).
+
+Ruling 28 (6 October 2026) made that candidate the scored suite. Prompt attacks now have two equally weighted
+subtasks, `direct` and `indirect`, and the status changed from blocked to scored. The gate result is recorded in
+`suites.prompt_attacks.acceptance.gate_result` and rerun by every build. Injection has 151 attack and 167 benign public
+test rows, under the 250 floor. The owner accepted that shortfall for this release
+(`acceptance.floor_exception`), and the build passes it only at those counts or more. The disclosure sits beside the
+injection score. A sealed AI second labeller labels the 400-row blind packet, disclosed as an AI second label. Noul
+models answer indirect rows with `e2-f2-attacks-indirect`. Bedrock's prompt-attack check gets the whole indirect row
+as three messages: the system prompt, the user's task and the document, tagged as untrusted retrieved content. The
+prompt attacks were rerun under an extension freeze manifest, and `leaderboard_v2` checks the contract amendment
+against Git (`contract_amendment_check`).
 
 Ruling 18 removed 11 public test rows and one unpublished row whose text appears in TypeSafe's LLM guardrails cookbook
 (`dataset/edition2/VENDOR-OVERLAP.md`). Two are the cookbook's own examples. The other nine public rows share only

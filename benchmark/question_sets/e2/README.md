@@ -20,6 +20,7 @@ question is identical to its source and that `f3-topics.json` is exactly what th
 |---|---|---|
 | content / request, reply | `f1-bedrock5.json` | `v1/f1-bedrock5` |
 | prompt_attacks / direct | `f2-attacks.json` | `v1/f2-attacks` |
+| prompt_attacks / indirect | `f2-attacks-indirect.json` | new; drafted for rulings 25 to 27, approved and frozen by ruling 28 |
 | denied_topics / topic | `f3-topics.json` | generated from `benchmark/suites/denied_topics/topics-e2.json` with the `v1/f3-topics` template |
 | word_filters / word | `f4-words.json` | `v1/f4-words` |
 | word_filters / profanity | `f4-obscenity.json` | `v1/f4-obscenity` (the set in use since v1.3) |

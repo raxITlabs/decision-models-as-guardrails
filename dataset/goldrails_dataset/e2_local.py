@@ -101,6 +101,31 @@ class LocalDataMissing(FileNotFoundError):
     """A git-ignored part of edition 2 (private slice or licence cache) is not on this machine."""
 
 
+# Owner ruling 28 (6 October 2026): the scored prompt-attack suite is the ruling 26 candidate. Its files stay where its
+# builder (``sources.e2_prompt_attacks_r26``) writes them, ``dataset/edition2/r26/prompt_attacks/``. The folder it
+# replaced, ``dataset/edition2/prompt_attacks/``, is kept unchanged as that builder's pool (and the r23 and r25
+# builders'), so ``suite_dir`` keeps its literal meaning and the edition 2 readers (the build, the owner review, the
+# leak checks) ask ``scored_root`` where a suite's scored files live.
+SCORED_ROOT = {"prompt_attacks": "r26"}
+# The prompt-attack slice the build held out before ruling 28 (ids, one per line, in the retired suite's git-ignored
+# private/): those rows stay leak needles although the scored build no longer holds them.
+RETIRED_SLICE = "retired-slice-ids.txt"
+
+
+def scored_root(suite: str, root: Path = E2) -> Path:
+    """The edition 2 root whose ``<suite>/`` folder holds the scored suite: ``E2 / SCORED_ROOT[suite]`` for the real
+    edition 2 root when that folder exists, else ``root`` itself (a test or scratch root is read literally)."""
+    home = SCORED_ROOT.get(suite)
+    if home and Path(root).resolve() == E2.resolve() and (E2 / home / suite / "candidates.jsonl").exists():
+        return E2 / home
+    return Path(root)
+
+
+def retired_roots(root: Path = E2) -> list:
+    """[(suite, root)] of suite folders a scored suite replaced (``scored_root`` differs from ``root``)."""
+    return [(s, Path(root)) for s in SUITES if scored_root(s, root) != Path(root)]
+
+
 def suite_dir(suite: str, root: Path = E2) -> Path:
     return Path(root) / suite
 
@@ -388,8 +413,8 @@ def write_private_config(suite: str, cfg: dict, root: Path = E2) -> None:
 def held_out_texts(root: Path = E2) -> dict:
     """{key: row text} of every held-out authored case on this machine (each suite's ``private/authored.json``)."""
     out = {}
-    for s in SUITES:
-        p = private_dir(s, root) / "authored.json"
+    for s, r in [(s, scored_root(s, root)) for s in SUITES] + retired_roots(root):
+        p = private_dir(s, r) / "authored.json"
         if not p.exists():
             continue
         for key, case in json.loads(p.read_text(encoding="utf-8")).items():
@@ -886,7 +911,7 @@ def private_slice_ids(root: Path = E2, build_private: Path = BUILD_PRIVATE) -> s
     the slice. Without a build on this machine, every private candidate."""
     bp = Path(build_private)
     if not (bp / "manifest.json").exists():
-        return {c["id"] for s in SUITES for c in _jsonl(private_dir(s, root) / "candidates.jsonl")}
+        return {c["id"] for s in SUITES for c in _jsonl(private_dir(s, scored_root(s, root)) / "candidates.jsonl")}
     ids = {r["id"] for f in sorted(bp.glob("F*.test.jsonl")) for r in _jsonl(f)}
     return ids | {r["id"] for r in _jsonl(bp / "needs-owner-review.jsonl")}
 
@@ -900,9 +925,19 @@ def leak_needles(root: Path = E2, withheld: bool = True, build_private: Path = B
     slice_ids = private_slice_ids(root, build_private)
     out = [("held_out_text", k, t) for k, t in sorted(held_out_texts(root).items())]
     shared, cleared, rows = {}, set(), []
-    for s in SUITES:
-        pub = _jsonl(suite_dir(s, root) / "candidates.jsonl")
-        prv = _jsonl(private_dir(s, root) / "candidates.jsonl")
+    for s, sroot, retired in ([(s, scored_root(s, root), False) for s in SUITES]
+                              + [(s, r, True) for s, r in retired_roots(root)]):
+        pub = _jsonl(suite_dir(s, sroot) / "candidates.jsonl")
+        prv = _jsonl(private_dir(s, sroot) / "candidates.jsonl")
+        if retired:
+            # a retired suite: its public rows add nothing new to protect, its unpublished slice stays protected
+            keep = set((private_dir(s, sroot) / RETIRED_SLICE).read_text(encoding="utf-8").split()) \
+                if (private_dir(s, sroot) / RETIRED_SLICE).exists() else set()
+            for c in prv:
+                if c["id"] in keep and c["id"] not in slice_ids:
+                    out.append(("retired_private_id", c["id"], c["id"]))
+                    rows += [("retired_private_text", c["id"], t) for t in _field_texts(*_fields(c)) if t and t.strip()]
+            continue
         for c in pub + prv:
             for t in {_nws(t) for t in _field_texts(*_fields(c)) if t}:
                 shared[t] = shared.get(t, 0) + 1
@@ -912,13 +947,27 @@ def leak_needles(root: Path = E2, withheld: bool = True, build_private: Path = B
                 out.append(("private_id", c["id"], c["id"]))
                 rows += [("private_text", c["id"], t) for t in _field_texts(*_fields(c)) if t and t.strip()]
         if withheld:
-            for e in _jsonl(text_cache(s, root)):
+            for e in _jsonl(text_cache(s, sroot)):
                 rows += [("withheld_text", e["id"], t) for f in e["fields"] for t in _field_texts(f)
                          if t and t.strip() and _nws(t) not in cleared]
     for e in _jsonl(Path(build_private) / "needs-owner-review.jsonl"):
         if not any(k == "private_id" and key == e["id"] for k, key, _ in out):
             out.append(("private_id", e["id"], e["id"]))
-    return out + [r for r in rows if shared.get(_nws(r[2]), 0) < BOILERPLATE_ROWS]
+    authored = authored_constants()
+    return out + [r for r in rows if shared.get(_nws(r[2]), 0) < BOILERPLATE_ROWS and _nws(r[2]) not in authored]
+
+
+AUTHORED_CODE = "dataset/goldrails_dataset/sources/e2_prompt_attacks_r2*.py"
+
+
+def authored_constants(repo: Path = REPO) -> set:
+    """Whole string constants of the prompt-attack candidate builders (``AUTHORED_CODE``): the system prompts, tasks,
+    frames and notices they write around real text (CC-BY-4.0, published as code). A row field equal to one of them is
+    a template every row of its split shares, not a row's text, so it is no leak needle."""
+    out = set()
+    for f in sorted(Path(repo).glob(AUTHORED_CODE)):
+        out |= {_nws(v) for v in _py_strings(f) if v.strip()}
+    return out
 
 
 def tracked_leaks(root: Path = E2, repo: Path = REPO, withheld: bool = True, needles: list | None = None,
@@ -929,10 +978,10 @@ def tracked_leaks(root: Path = E2, repo: Path = REPO, withheld: bool = True, nee
     constant, a line or a table cell). Returns {"leaks": [{"kind", "key", "file"}], "unscanned": {kind: n} (texts too
     short for a probe), "needles": {kind: n}}, never the texts themselves."""
     needles = leak_needles(root, withheld, build_private) if needles is None else needles
-    ids = {v: (k, key) for k, key, v in needles if k == "private_id"}
+    ids = {v: (k, key) for k, key, v in needles if k in ("private_id", "retired_private_id")}
     texts, unscanned = {}, {}
     for k, key, v in needles:
-        if k == "private_id":
+        if k in ("private_id", "retired_private_id"):
             continue
         p = _probe(v)
         if p is None:
@@ -1347,11 +1396,13 @@ def derivable_private_ids(root: Path = E2, repo: Path = REPO, files: list | None
 def status(root: Path = E2) -> dict:
     out = {}
     for s in SUITES:
-        sd = suite_dir(s, root)
+        r = scored_root(s, root)
+        sd = suite_dir(s, r)
         pub = _jsonl(sd / "candidates.jsonl")
         out[s] = {"public_rows": len(pub), "redacted": sum("redacted" in c for c in pub),
-                  "private_file": (private_dir(s, root) / "candidates.jsonl").exists(),
-                  "text_cache_rows": len(_cache(s, root)), "complete": have_local(s, root)}
+                  "private_file": (private_dir(s, r) / "candidates.jsonl").exists(),
+                  "text_cache_rows": len(_cache(s, r)), "complete": have_local(s, r),
+                  **({"folder": str(sd.relative_to(E2))} if r != Path(root) else {})}
     return out
 
 

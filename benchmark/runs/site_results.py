@@ -1227,8 +1227,9 @@ def _v2_entry(lb: dict, sysname: str, suite: str, row: dict, method: str, res_di
                  # a documented zero list price (Bedrock's word filters), never a defaulted zero
                  **({"zero_tariff": True} if cost.get("usd_per_1000") == 0 and (cost.get("subtasks") or {}) and all(
                      x.get("records_tariff_zero") == x.get("records") for x in cost["subtasks"].values()) else {})},
-        "latency": {"p50_s": _r(lat.get("p50_s")), "p95_s": _r(lat.get("p95_s")) or None, "throughput_per_s": None,
-                    "basis": "per row as recorded in the accuracy pass under the system's own worker count; a diagnostic, not a declared-load latency"},
+        "latency": None if lb.get("no_latency") else {
+            "p50_s": _r(lat.get("p50_s")), "p95_s": _r(lat.get("p95_s")) or None, "throughput_per_s": None,
+            "basis": "per row as recorded in the accuracy pass under the system's own worker count; a diagnostic, not a declared-load latency"},
         "bias": None,
         "ledger": {"path": f"{res_dir}/{sysname}.jsonl", "config_hash": arm.get("config_hash", ""),
                    "dataset_sha256": (arm.get("dataset") or {}).get("sha256", ""), "rows": (arm.get("sample_sizes") or {}).get("report_rows")},
@@ -1245,7 +1246,9 @@ def _v2_overall(lb: dict, sysname: str, method: str) -> dict:
     e = {
         "implementation": V2_IMPL[sysname][0], "suite": "overall", "track": None,
         "status": "evaluated" if ok else "not_evaluated",
-        "status_note": "equal-weight mean of six suites: content, prompt attacks (provisional), denied topics, profanity, sensitive information, grounding",
+        "status_note": ("equal-weight mean of six suites: content, prompt attacks"
+                        + (" (provisional)" if "prompt_attacks" in (lb.get("provisional_suites") or {}) else "")
+                        + ", denied topics, profanity, sensitive information, grounding"),
         "missing_suites": [] if ok else [s for s in V2_OVERALL if comps.get(s) is None],
         "tier": row.get("tier"),
         "rank_interval": {"low": row["rank_interval"]["low"], "high": row["rank_interval"]["high"]} if row.get("rank_interval") else None,
@@ -1263,9 +1266,10 @@ def _v2_overall(lb: dict, sysname: str, method: str) -> dict:
                      "subtasks_required": list(V2_OVERALL), "note": "custom words is a sanity check outside this mean"},
         "cost": {"usd_per_1000": _r(cost["usd_per_1000"], 5), "basis": cost["basis"],
                  "note": f"USD {cost['usd_per_1000']:.3f} per 1,000 checks over all {cost['checks']:,} {'test' if lb.get('full_run') else 'dev'} rows, USD {cost['usd_total']:.2f} in total"},
-        "latency": {"p50_s": _r(run.get("latency_p50_s")), "p95_s": _r(run.get("latency_p95_s")) or None,
-                    "throughput_per_s": None,
-                    "basis": "per row over every dev row, as recorded under the system's own worker count; not a declared-load latency"},
+        "latency": None if lb.get("no_latency") else {
+            "p50_s": _r(run.get("latency_p50_s")), "p95_s": _r(run.get("latency_p95_s")) or None,
+            "throughput_per_s": None,
+            "basis": "per row over every dev row, as recorded under the system's own worker count; not a declared-load latency"},
         "bias": None, "ledger": None,
     }
     if without and without.get("balanced_accuracy") is not None:
@@ -1448,8 +1452,10 @@ def edition2_full_doc(lb: dict, res_dir: str, method: str, impls: list, entries:
         "Fixed 0.5 rule. A probability output flags at 0.5 or above on any decision question; Bedrock runs at a frozen, "
         "documented setting. Nothing was fitted on dev or test rows, and the freeze manifest was committed before the "
         "first test call.",
-        "Prompt attacks are provisional (owner rulings 17 and 18). Their labels are partly predictable from source and "
-        "writing style, so the score partly measures style pickup. The suite still counts in the overall.",
+        (fr.get("prompt_attack_note") if not lb.get("provisional_suites") else
+         "Prompt attacks are provisional (owner rulings 17 and 18). Their labels are partly predictable from source and "
+         "writing style, so the score partly measures style pickup. The suite still counts in the overall."),
+        *fr.get("extra_disclosures", []),
         "Custom words is a pass/fail sanity check (pass at 95 or higher), outside the overall and every rank. DRIVER_ID "
         "is unscored inside sensitive information (owner ruling 6).",
         "Profanity is its own suite here. In edition 1 it was half of word filters; in edition 2 the word-filters score "
@@ -1457,8 +1463,9 @@ def edition2_full_doc(lb: dict, res_dir: str, method: str, impls: list, entries:
         f"Laya truncation. Laya reads at most 512 tokens per question (owner ruling 16), and {laya.get('truncated', 0):,} "
         f"of {laya.get('rows', 0):,} rows were cut, including every denied-topics row. Its scores include those rows.",
         "Strands Decider 2B cuts silently at 4,096 tokens; rows estimated near that window are counted in the results file.",
-        "Latency is per row as recorded under each system's own worker count, not a load test. The six VM models shared "
-        "two L4 GPUs at the same time, so their latencies include queueing behind each other.",
+        *([] if lb.get("no_latency") else [
+            "Latency is per row as recorded under each system's own worker count, not a load test. The six VM models "
+            "shared two L4 GPUs at the same time, so their latencies include queueing behind each other."]),
         "The unpublished slice can be rebuilt from public upstream data (owner ruling 15). It supports a contamination "
         "check, shown in the results file as a public-versus-unpublished re-score, and is not a secret test.",
         f"Question-set names. The scorer lists {', '.join(qs_names)} as differing from the contract's v1 sets. They are "
@@ -1501,15 +1508,17 @@ def edition2_full_doc(lb: dict, res_dir: str, method: str, impls: list, entries:
                                  f"({vm['vm_seconds']:,} s over {len(vm['sessions'])} sessions) at the dated g2-standard-24 "
                                  "on-demand rate plus the disk, split across the six VM models by their share of run time. "
                                  "List prices, not reconciled against a bill.")},
-        "latency_basis": {"unit": "seconds", "concurrency": None, "client_location": None,
-                          "notes": ("Latency is per row as recorded in the accuracy pass, under each system's own worker "
-                                    "count. It is a diagnostic, not a load test, and the six VM models shared two L4 GPUs.")},
+        "latency_basis": None if lb.get("no_latency") else {
+            "unit": "seconds", "concurrency": None, "client_location": None,
+            "notes": ("Latency is per row as recorded in the accuracy pass, under each system's own worker "
+                      "count. It is a diagnostic, not a load test, and the six VM models shared two L4 GPUs.")},
         "blockers": list(lb["publication_blockers"]),
         "source": {"schema": lb["schema"], "mode": lb["mode"], "valid_for_publication": valid,
                    "file": f"{res_dir}/leaderboard.json", "readme": f"{res_dir}/README.md", "plots": f"{res_dir}/plots/"},
         "disclosures": disclosures,
-        "provisional": {"suites": list(lb["provisional_suites"]),
-                        "note": lb["overall"]["provisional_note"] + ". " + lb["overall"]["rule"] + "."},
+        "provisional": ({"suites": list(lb["provisional_suites"]),
+                         "note": lb["overall"]["provisional_note"] + ". " + lb["overall"]["rule"] + "."}
+                        if lb.get("provisional_suites") else None),
         "sanity_checks": checks,
         "run": {"id": Path(res_dir).name, "label": "Edition 2 test split",
                 "summary": (f"Systems on every edition 2 test row and the unpublished slice ({fr['rows_total']:,} rows), "
