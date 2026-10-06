@@ -1,0 +1,5 @@
+
+=== 2026-10-06T10:40:22Z run --systems open,strands --only strands-decider-2b
+strands-decider-2b   prompt_attacks/direct             3180 sent, 0 failed
+strands-decider-2b   prompt_attacks/indirect           1420 sent, 0 failed
+strands-decider-2b: 2246s

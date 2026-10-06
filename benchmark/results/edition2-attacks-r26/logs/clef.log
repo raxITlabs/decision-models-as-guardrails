@@ -1,0 +1,5 @@
+
+=== 2026-10-06T09:22:21Z run --systems clef
+clef                 prompt_attacks/direct             3180 sent, 0 failed
+clef                 prompt_attacks/indirect           1420 sent, 0 failed
+clef: 656s

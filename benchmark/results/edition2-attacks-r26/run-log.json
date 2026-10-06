@@ -1,0 +1,282 @@
+{
+ "systems": {
+  "jev-1.13.0": [
+   {
+    "seconds": 132.0,
+    "sent": 4600,
+    "failed": 0,
+    "started": "2026-10-06T09:22:22Z",
+    "finished": "2026-10-06T09:24:34Z",
+    "blocked": null,
+    "retry_failed_only": false
+   }
+  ],
+  "clef-flash": [
+   {
+    "seconds": 474.1,
+    "sent": 4600,
+    "failed": 0,
+    "started": "2026-10-06T09:22:22Z",
+    "finished": "2026-10-06T09:30:16Z",
+    "blocked": null,
+    "retry_failed_only": false
+   }
+  ],
+  "clef": [
+   {
+    "seconds": 655.9,
+    "sent": 4600,
+    "failed": 0,
+    "started": "2026-10-06T09:22:22Z",
+    "finished": "2026-10-06T09:33:18Z",
+    "blocked": null,
+    "retry_failed_only": false
+   }
+  ],
+  "pplx-decider-v1-27b": [
+   {
+    "seconds": 1154.1,
+    "sent": 4600,
+    "failed": 0,
+    "started": "2026-10-06T09:22:22Z",
+    "finished": "2026-10-06T09:41:37Z",
+    "blocked": null,
+    "retry_failed_only": false
+   }
+  ],
+  "bedrock-guardrails": [
+   {
+    "seconds": 2535.4,
+    "sent": 4600,
+    "failed": 0,
+    "started": "2026-10-06T09:22:24Z",
+    "finished": "2026-10-06T10:04:39Z",
+    "blocked": null,
+    "retry_failed_only": false
+   }
+  ],
+  "kev-0-8b": [
+   {
+    "seconds": 1512.2,
+    "sent": 4600,
+    "failed": 0,
+    "started": "2026-10-06T10:40:32Z",
+    "finished": "2026-10-06T11:05:44Z",
+    "blocked": null,
+    "retry_failed_only": false
+   }
+  ],
+  "kev-9b": [
+   {
+    "seconds": 1775.4,
+    "sent": 4600,
+    "failed": 0,
+    "started": "2026-10-06T10:40:32Z",
+    "finished": "2026-10-06T11:10:07Z",
+    "blocked": null,
+    "retry_failed_only": false
+   }
+  ],
+  "strands-decider-2b": [
+   {
+    "seconds": 2246.3,
+    "sent": 4600,
+    "failed": 0,
+    "started": "2026-10-06T10:40:32Z",
+    "finished": "2026-10-06T11:17:58Z",
+    "blocked": null,
+    "retry_failed_only": false
+   }
+  ],
+  "kev-4b": [
+   {
+    "seconds": 2776.0,
+    "sent": 4600,
+    "failed": 0,
+    "started": "2026-10-06T10:40:32Z",
+    "finished": "2026-10-06T11:26:48Z",
+    "blocked": null,
+    "retry_failed_only": false
+   }
+  ],
+  "laya": [
+   {
+    "seconds": 3014.8,
+    "sent": 4600,
+    "failed": 0,
+    "started": "2026-10-06T10:40:32Z",
+    "finished": "2026-10-06T11:30:47Z",
+    "blocked": null,
+    "retry_failed_only": false
+   }
+  ],
+  "open-jev-2b": [
+   {
+    "seconds": 3909.3,
+    "sent": 4600,
+    "failed": 0,
+    "started": "2026-10-06T10:40:32Z",
+    "finished": "2026-10-06T11:45:41Z",
+    "blocked": null,
+    "retry_failed_only": false
+   }
+  ]
+ },
+ "vm": [
+  {
+   "up": "2026-10-06T09:22:17Z",
+   "paused": "2026-10-06T09:31:00Z"
+  },
+  {
+   "up": "2026-10-06T09:36:55Z",
+   "paused": "2026-10-06T10:01:51Z"
+  },
+  {
+   "up": "2026-10-06T10:04:09Z",
+   "paused": "2026-10-06T10:27:58Z"
+  },
+  {
+   "up": "2026-10-06T10:28:24Z",
+   "paused": "2026-10-06T10:40:02Z"
+  },
+  {
+   "up": "2026-10-06T10:40:02Z",
+   "paused": "2026-10-06T11:46:48Z"
+  }
+ ],
+ "forecasts": [
+  {
+   "at": "2026-10-06T09:22:05Z",
+   "rows_per_system": 4600,
+   "usd_per_1000_full_run": {
+    "bedrock-guardrails": 0.107932,
+    "clef": 0.161068,
+    "clef-flash": 0.0604,
+    "jev-1.13.0": 0.032919,
+    "kev-0-8b": 0.178091,
+    "kev-4b": 0.272506,
+    "kev-9b": 0.132209,
+    "laya": 0.117138,
+    "open-jev-2b": 0.30053,
+    "pplx-decider-v1-27b": 0.040333,
+    "strands-decider-2b": 0.109247
+   },
+   "chars_per_row": 748,
+   "chars_per_row_full_run": 613,
+   "char_scale": 1.22,
+   "by_system_usd": {
+    "bedrock-guardrails": 0.606,
+    "clef": 0.904,
+    "clef-flash": 0.339,
+    "jev-1.13.0": 0.185,
+    "kev-0-8b": 0.999,
+    "kev-4b": 1.529,
+    "kev-9b": 0.742,
+    "laya": 0.657,
+    "open-jev-2b": 1.686,
+    "pplx-decider-v1-27b": 0.226,
+    "strands-decider-2b": 0.613
+   },
+   "hosted_usd_total": 2.26,
+   "vm_usd": 6.23,
+   "total_usd": 8.49,
+   "high_usd": 12.73,
+   "cap_usd": 30.0,
+   "vm_hours_est": 3.03,
+   "basis": "full run (benchmark/results/edition2-full/leaderboard.json) prompt-attack arms' measured USD per 1,000 rows, scaled by rows and characters per row; high = 1.5 x"
+  }
+ ],
+ "vm_runs": [
+  {
+   "started": "2026-10-06T09:22:17Z",
+   "make_up": 2,
+   "error": "RuntimeError: make up failed (exit 2): ['make: *** [up] Error 1']",
+   "make_pause": 0,
+   "status": [
+    "vm: TERMINATED us-east4-a (project raxit-ai)"
+   ],
+   "terminated": true,
+   "finished": "2026-10-06T09:31:02Z",
+   "seconds": 524.8
+  },
+  {
+   "started": "2026-10-06T09:36:55Z",
+   "make_up": 2,
+   "error": "RuntimeError: make up failed (exit 2): ['make: *** [up] Error 1']",
+   "make_pause": 0,
+   "status": [
+    "vm: TERMINATED us-east4-a (project raxit-ai)"
+   ],
+   "terminated": true,
+   "finished": "2026-10-06T10:01:54Z",
+   "seconds": 1498.7
+  },
+  {
+   "started": "2026-10-06T10:40:02Z",
+   "make_up": 0,
+   "systems": [
+    "kev-0-8b",
+    "kev-4b",
+    "kev-9b",
+    "open-jev-2b",
+    "laya",
+    "strands-decider-2b"
+   ],
+   "sequential": false,
+   "retry_only": false,
+   "exit": {
+    "kev-0-8b": 0,
+    "kev-4b": 0,
+    "kev-9b": 0,
+    "open-jev-2b": 0,
+    "laya": 0,
+    "strands-decider-2b": 0
+   },
+   "retry_passes": [],
+   "make_pause": 0,
+   "status": [
+    "vm: TERMINATED us-east4-a (project raxit-ai)"
+   ],
+   "terminated": true,
+   "finished": "2026-10-06T11:46:50Z",
+   "seconds": 4008.1
+  }
+ ],
+ "vm_no_start": [
+  {
+   "from": "2026-10-06T09:22:17Z",
+   "to": "2026-10-06T09:31:00Z",
+   "evidence": "logs/make-up.log 09:30:59: GPU stockout in us-east4-a on all six start attempts; the VM stayed TERMINATED"
+  }
+ ],
+ "hosted_runs": [
+  {
+   "started": "2026-10-06T09:22:21Z",
+   "finished": "2026-10-06T10:04:39Z",
+   "seconds": 2538.5,
+   "kinds": [
+    "jev",
+    "clef",
+    "clef-flash",
+    "perplexity",
+    "bedrock"
+   ],
+   "exit": {
+    "jev": 0,
+    "clef": 0,
+    "clef-flash": 0,
+    "perplexity": 0,
+    "bedrock": 0
+   },
+   "retry_passes": []
+  }
+ ],
+ "all_runs": [
+  {
+   "started": "2026-10-06T09:22:17Z",
+   "finished": "2026-10-06T10:04:39Z",
+   "seconds": 2542.0,
+   "vm_terminated": true
+  }
+ ]
+}
