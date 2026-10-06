@@ -443,6 +443,8 @@ def run_settings() -> dict:
 
 def _job(args):
     kind, train, score, use, names = args
+    if names is None:          # every baseline in one call, the serial path's original signature
+        return subtask_report(score, use) if kind == "cv" else transfer_report(train, score, use)
     return subtask_report(score, use, names) if kind == "cv" else transfer_report(train, score, use, names)
 
 
@@ -454,6 +456,8 @@ def _job_groups(use: bool) -> list:
 
 def run_cells(cells: list, use: bool) -> list:
     """``cells``: [(kind, train, score)]. Returns one merged report per cell, every baseline."""
+    if workers() <= 1:
+        return [_job((kind, train, score, use, None)) for kind, train, score in cells]
     jobs, owner = [], []
     for i, (kind, train, score) in enumerate(cells):
         for names in _job_groups(use):
