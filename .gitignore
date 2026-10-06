@@ -49,3 +49,7 @@ benchmark/results/edition2-full/.run-log.lock
 # ruling 23 prompt-attack candidate (goldrails_dataset.sources.e2_prompt_attacks_r23_build): same layout as the suites above
 dataset/edition2/r23/*/private/
 dataset/edition2/r23/*/local/
+# ruling 25 prompt-attack candidate (goldrails_dataset.sources.e2_prompt_attacks_r25): same layout; the packet's answer
+# key and the labelled review page go outside the repository (~/.goldrails-private/r25-prompt-attacks/)
+dataset/edition2/r25/*/private/
+dataset/edition2/r25/*/local/
