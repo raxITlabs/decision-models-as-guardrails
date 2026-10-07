@@ -17,7 +17,7 @@ The headline score uses one fixed rule for every model. A probability of 0.5 or 
 
 ### Some rows come from vendors' own datasets
 
-511 of the 2,088 content test rows come from datasets that companies building safety models published themselves. 311 are from NVIDIA's Aegis 2.0 and 200 are from OpenAI's moderation evaluation set. A vendor may have trained or tuned its own models on that data, so every such row carries `vendor_owned` and its vendor name, and you can score with or without them. Neither NVIDIA nor OpenAI has a model on the leaderboard today. We also removed every row whose text appears in a benchmarked model's training data or in a benchmarked vendor's published material, such as TypeSafe's guardrails cookbook. EXCLUDED.jsonl lists each one with its reason.
+511 of the 2,088 content test rows come from datasets that companies building safety models published themselves. 311 are from NVIDIA's Aegis 2.0 and 200 are from OpenAI's moderation evaluation set. A vendor may have trained or tuned its own models on that data, so every such row carries `vendor_owned` and its vendor name, and you can score with or without them. OpenAI has a model on the leaderboard, gpt-6-luna, and OpenAI may have trained or tuned it on its own moderation set. For that reason the leaderboard reports every system's content score twice, once on all rows and once without the OpenAI rows. NVIDIA has no model on the leaderboard. We also removed every row whose text appears in a benchmarked model's training data or in a benchmarked vendor's published material, such as TypeSafe's guardrails cookbook. EXCLUDED.jsonl lists each one with its reason.
 
 ### Prompt-attack labels had an AI second reader, not a person
 

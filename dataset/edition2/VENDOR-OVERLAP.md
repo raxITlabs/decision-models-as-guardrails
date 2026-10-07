@@ -81,3 +81,20 @@ or a live docs page changed after we copied it. Rerun the scanner after refreshi
 
 Excluding these rows changes the prompt attack test split. The edition 2 build, the counts and the shortcut gate need
 a rerun before any score uses them.
+
+## OpenAI (gpt-6-luna), checked 7 October 2026
+
+gpt-6-luna joined the leaderboard on 7 October 2026, so OpenAI became a benchmarked vendor. Two screens were possible.
+
+**Published docs.** The repository holds one OpenAI file: `docs/reference/openai/decisions-api.md`, our copy of the
+Decisions API docs. It is now in `VENDOR_FILES` under "OpenAI (gpt-6-luna)", and the scanner was rerun over every row
+(52 vendor files). No row matched it. The only match is still the TypeSafe dev row listed above.
+
+**Published data.** OpenAI's moderation evaluation set is OpenAI-published material, and the content suite draws
+208 public test rows and 36 unpublished rows from it (source `openai_moderation`, tagged `vendor_owned`). These rows
+are not excluded. Excluding them would change the content test split that the other eleven systems were scored on.
+The leaderboard reports content with and without them instead (view `excluding_openai_owned`).
+
+**Training data.** OpenAI publishes no training or tuning recipe for gpt-6-luna, so there is no upstream split for
+`goldrails_dataset.model_overlap` to stream. Nothing about its training data can be checked by machine.
+`MODEL-TRAINING-OVERLAP.json` records this under `not_checkable`.

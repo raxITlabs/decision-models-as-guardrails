@@ -1158,6 +1158,7 @@ V2_IMPL = {   # leaderboard_v2 system -> (page id, label, type)
     "clef": ("clef", "Clef", "hosted_api"),
     "clef-flash": ("clef-flash", "Clef-flash", "hosted_api"),
     "pplx-decider-v1-27b": ("pplx-decider", "pplx-decider-v1-27b", "hosted_api"),
+    "gpt-6-luna": ("gpt-6-luna", "gpt-6-luna", "hosted_api"),
     "kev-9b": ("kev-9b", "Kev-9B", "self_hosted"),
     "kev-4b": ("kev-4b", "Kev-4B", "self_hosted"),
     "kev-0-8b": ("kev-0-8b", "Kev-0.8B", "self_hosted"),

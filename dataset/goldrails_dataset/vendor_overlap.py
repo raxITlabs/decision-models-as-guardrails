@@ -51,6 +51,7 @@ VENDOR_FILES = (
     ("docs/research/early-2026-09-18/05-bedrock-guardrails-mapping.md", "AWS (Bedrock Guardrails)"),
     ("docs/archive/2026-09-28-bedrock-feature-map/**", "AWS (Bedrock Guardrails)"),
     ("research_notes/Profanity and denied topic references/bedrock_equivalence.md", "AWS (Bedrock Guardrails)"),
+    ("docs/reference/openai/**", "OpenAI (gpt-6-luna)"),
 )
 
 # Tracked paths the --others scan skips: the dataset and run outputs hold the rows themselves (that is

@@ -33,7 +33,7 @@ SUITE_NAME = {"content": "Content", "prompt_attacks": "Prompt attacks (provision
               "grounding": "Grounding"}
 SHORT = {"jev-1.13.0": "Jev 1.13.0", "clef": "Clef", "clef-flash": "Clef-flash", "pplx-decider-v1-27b": "pplx-decider",
          "kev-0-8b": "Kev-0.8B", "kev-4b": "Kev-4B", "kev-9b": "Kev-9B", "open-jev-2b": "Open-Jev-2B", "laya": "Laya",
-         "strands-decider-2b": "Strands 2B", "bedrock-guardrails": "Bedrock"}
+         "strands-decider-2b": "Strands 2B", "bedrock-guardrails": "Bedrock", "gpt-6-luna": "gpt-6-luna"}
 TAG = "dev-split sample, not a held-out result"
 # One line under the overall chart's title; e2_full_plots.py sets these three globals for the full run.
 SPLIT_NOTE = "Edition 2 public dev split, 1,422 rows"
@@ -151,7 +151,7 @@ def overall_chart(doc):
                                                                 for e in unr), fontsize=8, color=INK2, va="top")
     title(fig, f"Overall score per system ({TAG})",
           f"{SPLIT_NOTE}, fixed 0.5 rule. Tiers: Holm-adjusted paired tests vs the tier "
-          "leader. Prompt attacks provisional.")
+          "leader." + (" Prompt attacks provisional." if doc.get("provisional_suites") else ""))
     save(fig, "overall")
 
 

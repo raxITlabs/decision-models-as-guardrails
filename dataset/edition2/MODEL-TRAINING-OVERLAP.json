@@ -226,5 +226,13 @@
     "f2-itw_jailbreak_prompts-ddddeca5b5"
    ]
   }
+ ],
+ "not_checkable": [
+  {
+   "model": "gpt-6-luna",
+   "checked": "2026-10-07",
+   "reason": "OpenAI publishes no training or tuning recipe for gpt-6-luna, so there is no upstream split to scan",
+   "known_vendor_data": "the content suite's openai_moderation rows (OpenAI's moderation evaluation set: 208 public test rows and 36 unpublished) are OpenAI-published; they are kept and reported with and without (content view excluding_openai_owned), not excluded"
+  }
  ]
 }
