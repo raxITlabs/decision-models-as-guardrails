@@ -46,7 +46,7 @@ export default function Home() {
               Browse the data
             </Link>
           </div>
-          <a href="#notify" className="inline-flex w-fit items-center gap-1.5 text-[14px] text-muted no-underline hover:text-fg">
+          <a href="#notify" className="inline-flex min-h-11 w-fit items-center gap-1.5 text-[14px] text-muted no-underline hover:text-fg">
             Get notified when systems join the board <ArrowDown className="size-3.5" />
           </a>
         </div>
@@ -85,7 +85,7 @@ export default function Home() {
             <h3 className="m-0 text-[17px] font-semibold">One fixed rule, no tuning.</h3>
             <p className="m-0 text-[15px] leading-relaxed text-fg-2">
               A probability of {board.stats.threshold} or more blocks, for every model. Nobody gets a threshold fitted to the test rows,
-              so you see how each system behaves out of the box. Verdict APIs use their own flag, and Bedrock runs at one documented
+              so you see how each system behaves out of the box. Verdict APIs use their own flag, and Amazon Bedrock Guardrails runs at one documented
               setting.
             </p>
           </li>
@@ -118,7 +118,7 @@ export default function Home() {
       <section aria-labelledby="jobs-h" className="flex flex-col gap-6">
         <div className="flex flex-wrap items-baseline justify-between gap-4">
           <h2 id="jobs-h" className="m-0 text-[28px] font-semibold tracking-[-0.02em]">Eight guardrail jobs</h2>
-          <Link href="/data" className="inline-flex items-center gap-1.5 text-[14px]">
+          <Link href="/data" className="inline-flex min-h-11 items-center gap-1.5 text-[14px]">
             All {int(index.rows.length)} public rows <ArrowRight />
           </Link>
         </div>
@@ -150,7 +150,7 @@ export default function Home() {
                     </dd>
                   </div>
                 </dl>
-                <Link href={`/data?job=${j.id}#rows`} className="inline-flex items-center gap-1.5 text-[14px]">
+                <Link href={`/data?job=${j.id}#rows`} className="inline-flex min-h-11 items-center gap-1.5 text-[14px]">
                   {int(rowsPerJob[i])} rows<span className="sr-only"> for {j.title}</span> <ArrowRight />
                 </Link>
               </li>

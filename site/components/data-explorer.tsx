@@ -6,6 +6,7 @@ import { JOBS, type JobId } from "@/lib/jobs";
 import { int, score1 } from "@/lib/format";
 import type { Board, RowLite, RowsIndex, Score } from "@/lib/types";
 import { Lock } from "./icons";
+import { SystemMark } from "./system-mark";
 import { Segmented, Select } from "./segmented";
 
 type Colour = "score" | "catch" | "fbr";
@@ -170,16 +171,16 @@ export function DataExplorer({ board }: { board: Board }) {
               { value: "no", label: "Should pass" },
             ]}
           />
-          <label className="inline-flex min-h-9 cursor-pointer items-center gap-2 rounded-lg border border-line bg-surface px-3 text-[13px] text-fg hover:border-line-strong">
-            <input type="checkbox" checked={f.hard} onChange={(e) => update({ hard: e.target.checked })} className="size-4 accent-[var(--accent)]" />
+          <label className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-line bg-surface px-3 text-[13px] text-fg hover:border-line-strong">
+            <input type="checkbox" checked={f.hard} onChange={(e) => update({ hard: e.target.checked })} className="size-5 accent-[var(--accent)]" />
             Most systems got it wrong
           </label>
-          <label className="inline-flex min-h-9 cursor-pointer items-center gap-2 rounded-lg border border-line bg-surface px-3 text-[13px] text-fg hover:border-line-strong">
-            <input type="checkbox" checked={f.text} onChange={(e) => update({ text: e.target.checked })} className="size-4 accent-[var(--accent)]" />
+          <label className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-line bg-surface px-3 text-[13px] text-fg hover:border-line-strong">
+            <input type="checkbox" checked={f.text} onChange={(e) => update({ text: e.target.checked })} className="size-5 accent-[var(--accent)]" />
             Text available
           </label>
           {(f.job || f.source || f.label || f.hard || f.text || f.system) && (
-            <button type="button" onClick={() => update(EMPTY)} className="min-h-9 rounded-lg px-2 text-[13px] text-link hover:text-link-hover">
+            <button type="button" onClick={() => update(EMPTY)} className="min-h-11 rounded-lg px-2 text-[13px] text-link hover:text-link-hover">
               Clear filters
             </button>
           )}
@@ -300,7 +301,7 @@ function RowItem({ r, index, sysName, highlight }: { r: RowLite; index: RowsInde
     <li className="grid gap-x-6 gap-y-3 rounded-lg border border-line bg-surface px-4 py-3.5 transition-colors hover:border-line-strong md:grid-cols-[minmax(0,1fr)_auto]">
       <div className="flex min-w-0 flex-col gap-1.5">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-muted">
-          <Link href={`/data/rows/${id}`} className="num text-[13px] font-medium">
+          <Link href={`/data/rows/${id}`} className="num -my-2 inline-flex min-h-11 items-center text-[13px] font-medium">
             {id}
           </Link>
           <span>{job?.title}</span>
@@ -411,8 +412,13 @@ function Heatmap({
               return (
                 <tr key={o.system}>
                   <th scope="row" className="sticky left-0 z-10 bg-bg py-0.5 pl-1 pr-2 text-left font-normal">
-                    <span className="block font-semibold text-fg">{m?.name ?? o.system}</span>
-                    <span className="block text-[11px] text-muted">{m?.hosting === "managed" ? "Managed API" : "Self-hosted"}</span>
+                    <span className="flex items-center gap-2">
+                      <SystemMark m={m} />
+                      <span>
+                        <span className="block font-semibold text-fg">{m?.name ?? o.system}</span>
+                        <span className="block text-[12px] text-muted">{m?.provider}</span>
+                      </span>
+                    </span>
                   </th>
                   {JOBS.map((j) => {
                     const s = lookup[o.system]?.[j.id];

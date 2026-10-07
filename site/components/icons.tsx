@@ -24,12 +24,6 @@ export const External = ({ className = "size-3.5" }: P) => (
 export const Chevron = ({ className = "size-4" }: P) => (
   <svg {...base} className={className}><path d="M6 3l5 5-5 5" /></svg>
 );
-export const Sun = ({ className = "size-4" }: P) => (
-  <svg {...base} className={className}><circle cx="8" cy="8" r="3" /><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1" /></svg>
-);
-export const Moon = ({ className = "size-4" }: P) => (
-  <svg {...base} className={className}><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" /></svg>
-);
 export const Copy = ({ className = "size-4" }: P) => (
   <svg {...base} className={className}><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" /><path d="M10.5 5.5V3.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2" /></svg>
 );

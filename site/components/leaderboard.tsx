@@ -7,6 +7,7 @@ import { halfCi, maxTier, money, pct, score1, tierVar } from "@/lib/format";
 import type { Board, Score, SystemMeta } from "@/lib/types";
 import { ArrowRight, ArrowUpLeft } from "./icons";
 import { Segmented, Select } from "./segmented";
+import { SystemMark } from "./system-mark";
 
 type JobPick = "overall" | JobId;
 type Axis = "cost" | "fbr";
@@ -115,10 +116,13 @@ export function Leaderboard({ board }: { board: Board }) {
                       type="button"
                       onClick={() => setSelected(s.system)}
                       aria-pressed={on}
-                      className="flex flex-col items-start text-left"
+                      className="flex min-h-11 items-center gap-3 text-left"
                     >
-                      <span className="font-semibold text-fg">{m?.name ?? s.system}</span>
-                      <span className="text-[12px] text-muted">{m?.provider}</span>
+                      <SystemMark m={m} size="md" />
+                      <span className="flex flex-col items-start">
+                        <span className="font-semibold text-fg">{m?.name ?? s.system}</span>
+                        <span className="text-[12px] text-muted">{m?.provider}</span>
+                      </span>
                     </button>
                   </th>
                   <td className="py-2.5 pr-3">
@@ -191,10 +195,12 @@ function Scatter({
   onSelect: (id: string) => void;
 }) {
   const box = useRef<HTMLDivElement>(null);
-  const [w, setW] = useState(800);
+  // Start narrow and grow to the measured width, so the chart never pushes a phone page wider than the screen.
+  const [w, setW] = useState(320);
   useLayoutEffect(() => {
     const el = box.current;
     if (!el) return;
+    setW(el.clientWidth);
     const ro = new ResizeObserver(([e]) => setW(e.contentRect.width));
     ro.observe(el);
     return () => ro.disconnect();
@@ -224,7 +230,7 @@ function Scatter({
     placed.push({ s, x, y });
   }
   for (const p of placed) {
-    const name = sys[p.s.system]?.name ?? p.s.system;
+    const name = sys[p.s.system]?.short ?? sys[p.s.system]?.name ?? p.s.system;
     const lw = name.length * 6.9 + 6;
     const tries: { x: number; y: number; anchor: "left" | "right" }[] = [];
     for (const dy of [0, -14, 14, -26, 26]) {
@@ -246,18 +252,18 @@ function Scatter({
   const present = [...new Set(scores.map((s) => s.tier))].sort((a, b) => a - b);
   return (
     <figure className="m-0 flex flex-col gap-3">
-      <div ref={box} className="relative w-full select-none rounded-xl border border-line bg-surface" style={{ height: h }}>
-        <svg width={w} height={h} className="absolute inset-0" aria-hidden="true">
+      <div ref={box} className="relative w-full select-none overflow-hidden rounded-xl border border-line bg-surface" style={{ height: h }}>
+        <svg width={w} height={h} className="absolute inset-0 max-w-full" aria-hidden="true">
           {yTicks.map((v) => (
             <g key={`y${v}`}>
               <line x1={pad.l} x2={w - pad.r} y1={py(v)} y2={py(v)} stroke="var(--line)" strokeDasharray="3 4" />
-              <text x={pad.l - 8} y={py(v)} dy="0.32em" textAnchor="end" className="num" fontSize="11" fill="var(--muted)">
+              <text x={pad.l - 8} y={py(v)} dy="0.32em" textAnchor="end" className="num" fontSize="12" fill="var(--muted)">
                 {v}
               </text>
             </g>
           ))}
           {xTicks.map((v) => (
-            <text key={`x${v}`} x={px(v)} y={h - pad.b + 18} textAnchor="middle" className="num" fontSize="11" fill="var(--muted)">
+            <text key={`x${v}`} x={px(v)} y={h - pad.b + 18} textAnchor="middle" className="num" fontSize="12" fill="var(--muted)">
               {fmtX(v)}
             </text>
           ))}
@@ -277,7 +283,7 @@ function Scatter({
           const m = sys[p.s.system];
           const on = p.s.system === selected;
           const self = m?.hosting === "self-hosted";
-          const size = on ? 16 : 12;
+
           return (
             <button
               key={p.s.system}
@@ -290,10 +296,9 @@ function Scatter({
               style={{ left: p.x, top: p.y }}
             >
               <span
-                className="block rounded-full transition-[width,height] duration-150"
+                className="block size-3 rounded-full transition-transform duration-150 ease-out"
                 style={{
-                  width: size,
-                  height: size,
+                  transform: on ? "scale(1.34)" : undefined,
                   background: self && axis === "cost" ? "var(--surface)" : tierVar(p.s.tier),
                   border: `2px solid ${tierVar(p.s.tier)}`,
                   boxShadow: on ? "0 0 0 3px var(--surface), 0 0 0 5px var(--fg)" : "0 0 0 2px var(--surface)",
@@ -312,7 +317,7 @@ function Scatter({
               }`}
               style={{ left: p.label.x, top: p.label.y, width: p.label.w, textAlign: p.label.anchor === "left" ? "right" : "left" }}
             >
-              {sys[p.s.system]?.name ?? p.s.system}
+              {sys[p.s.system]?.short ?? sys[p.s.system]?.name ?? p.s.system}
             </span>
           ) : null,
         )}
@@ -350,9 +355,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
     <section aria-label={`${m?.name ?? s.system} in detail`} className="grid gap-8 rounded-xl border border-line bg-surface p-5 sm:p-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
-          <span className="num grid size-11 place-items-center rounded-lg bg-accent text-[14px] font-semibold text-accent-ink" aria-hidden="true">
-            {m?.mono}
-          </span>
+          <SystemMark m={m} size="lg" />
           <span className="flex flex-col">
             <span className="text-[20px] font-semibold tracking-[-0.01em]">{m?.name ?? s.system}</span>
             <span className="text-[13px] text-muted">
@@ -369,7 +372,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
             </div>
           ))}
         </dl>
-        <Link href={`/data?system=${encodeURIComponent(s.system)}${job === "overall" ? "" : `&job=${job}`}#rows`} className="inline-flex items-center gap-1.5 text-[14px]">
+        <Link href={`/data?system=${encodeURIComponent(s.system)}${job === "overall" ? "" : `&job=${job}`}#rows`} className="inline-flex min-h-11 items-center gap-1.5 self-start text-[14px]">
           See the rows it got wrong <ArrowRight />
         </Link>
       </div>

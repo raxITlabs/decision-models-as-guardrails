@@ -31,20 +31,21 @@ import type {
 export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna"];
 export const RELEASE_VERSION = "1.0.0";
 
-/** Display names for the systems on the board. Ids not listed fall back to the id itself. */
-export const SYSTEM_DISPLAY: Record<string, { name: string; provider: string; mono: string }> = {
-  "pplx-decider-v1-27b": { name: "pplx-decider", provider: "Perplexity", mono: "Px" },
-  "gpt-6-luna": { name: "gpt-6-luna", provider: "OpenAI", mono: "Oa" },
-  clef: { name: "Clef", provider: "Cloudflare Workers AI", mono: "Cf" },
+/** Display names, makers and marks for the systems on the board. Ids not listed fall back to the id itself.
+ *  `short` labels the chart dots. `logo` is a file in public/logos; systems without one show `mono`, a two-letter monogram of the maker. */
+export const SYSTEM_DISPLAY: Record<string, { name: string; short?: string; provider: string; mono: string; logo?: string }> = {
+  "pplx-decider-v1-27b": { name: "pplx-decider v1 27B", short: "pplx-decider", provider: "Perplexity", mono: "Px", logo: "/logos/perplexity.svg" },
+  "gpt-6-luna": { name: "GPT-6 Luna", provider: "OpenAI · Decisions API", mono: "Oa", logo: "/logos/openai.svg" },
+  clef: { name: "Clef", provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg" },
   "jev-1.13.0": { name: "Jev 1.13", provider: "TypeSafe", mono: "Ts" },
-  "clef-flash": { name: "Clef-flash", provider: "Cloudflare Workers AI", mono: "Cf" },
-  "kev-4b": { name: "Kev-4B", provider: "Open weights", mono: "K4" },
-  "kev-9b": { name: "Kev-9B", provider: "Open weights", mono: "K9" },
-  "bedrock-guardrails": { name: "Bedrock Guardrails", provider: "AWS", mono: "Aw" },
-  "strands-decider-2b": { name: "Strands Decider 2B", provider: "Amazon, open weights", mono: "St" },
-  "open-jev-2b": { name: "Open-Jev-2B", provider: "Open weights", mono: "OJ" },
-  "kev-0-8b": { name: "Kev-0.8B", provider: "Open weights", mono: "K0" },
-  laya: { name: "Laya", provider: "Open weights", mono: "La" },
+  "clef-flash": { name: "Clef Flash", provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg" },
+  "kev-4b": { name: "Kev 4B", provider: "Jared Palmer · open weights", mono: "JP" },
+  "kev-9b": { name: "Kev 9B", provider: "Jared Palmer · open weights", mono: "JP" },
+  "bedrock-guardrails": { name: "Amazon Bedrock Guardrails", short: "Bedrock Guardrails", provider: "Amazon Web Services", mono: "Aw", logo: "/logos/aws.svg" },
+  "strands-decider-2b": { name: "Strands Decider 2B", short: "Strands 2B", provider: "Strands Agents (AWS) · open weights", mono: "St", logo: "/logos/aws.svg" },
+  "open-jev-2b": { name: "Open-Jev 2B", provider: "Zefan Cai · open weights", mono: "ZC" },
+  "kev-0-8b": { name: "Kev 0.8B", provider: "Jared Palmer · open weights", mono: "JP" },
+  laya: { name: "Laya", provider: "Convai Innovations · open weights", mono: "CI" },
 };
 
 /** The system whose native question format every decision model receives (disclosed in the FAQ). */
@@ -204,6 +205,8 @@ export function buildBoard(lb: Json, source: Board["source"]): Board {
       name: d?.name ?? r.name,
       provider: d?.provider ?? "",
       mono: d?.mono ?? r.name.slice(0, 2),
+      ...(d?.short ? { short: d.short } : {}),
+      ...(d?.logo ? { logo: d.logo } : {}),
       hosting: hostingOf(arms, r.name),
     };
   });

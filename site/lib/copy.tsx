@@ -24,7 +24,7 @@ export function faqItems(board: Board): QA[] {
       ),
     },
     {
-      q: "Doesn't the question format favour Jev?",
+      q: "Doesn't the question format favour TypeSafe's Jev?",
       a: (
         <p className="m-0">
           It may. Every decision model gets the same yes/no questions in the format Jev&apos;s API takes, and Jev was trained on that

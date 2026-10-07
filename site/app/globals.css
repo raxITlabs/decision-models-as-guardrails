@@ -1,38 +1,7 @@
 @import "tailwindcss";
 
-/* raxIT palette. Dark is the brand ground; light mirrors it on warm paper. */
-:root,
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --bg: #14120b;
-  --surface: #0d0c08;
-  --raised: #1d1b15;
-  --line: #2e2b24;
-  --line-strong: #4c483e;
-  --fg: #f5f1ec;
-  --fg-2: #cfc8bf;
-  --muted: #a69e94;
-  --accent: #5673dc;
-  --accent-hover: #8fa6ec;
-  --accent-ink: #0d0c08;
-  --link: #8fa6ec;
-  --link-hover: #c3cff5;
-  --selected: #161c35;
-  --warn: #e8a87c;
-  --good: #8fbf9a;
-  --tier-1: #8fa6ec;
-  --tier-2: #b3a7d6;
-  --tier-3: #d0a874;
-  --tier-4: #a69e94;
-  --tier-5: #6e6a60;
-  --code-bg: #0d0c08;
-  --heat-accent: #5673dc;
-  --heat-warn: #b8552a;
-  --heat-ink: #f5f1ec;
-  --heat-max: 0.8;
-}
-
-:root[data-theme="light"] {
+/* raxIT palette: warm paper, ink and one blue accent. The site has a single light theme. */
+:root {
   color-scheme: light;
   --bg: #f7f4ef;
   --surface: #fdfcfa;
@@ -44,7 +13,7 @@
   --muted: #645d53;
   --accent: #3f5bc8;
   --accent-hover: #2d47a6;
-  --accent-ink: #ffffff;
+  --accent-ink: #fdfcfa;
   --link: #3550b8;
   --link-hover: #1f3690;
   --selected: #e4e9f8;
@@ -60,38 +29,6 @@
   --heat-warn: #b0521c;
   --heat-ink: #14120b;
   --heat-max: 0.7;
-}
-
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) {
-    color-scheme: light;
-    --bg: #f7f4ef;
-    --surface: #fdfcfa;
-    --raised: #efebe4;
-    --line: #e1dbd1;
-    --line-strong: #c4bcaf;
-    --fg: #14120b;
-    --fg-2: #3b372f;
-    --muted: #645d53;
-    --accent: #3f5bc8;
-    --accent-hover: #2d47a6;
-    --accent-ink: #ffffff;
-    --link: #3550b8;
-    --link-hover: #1f3690;
-    --selected: #e4e9f8;
-    --warn: #b0521c;
-    --good: #2f7a45;
-    --tier-1: #3f5bc8;
-    --tier-2: #7b8fd4;
-    --tier-3: #8a6fb8;
-    --tier-4: #8a8276;
-    --tier-5: #b9b1a4;
-    --code-bg: #f1ede6;
-    --heat-accent: #3f5bc8;
-    --heat-warn: #b0521c;
-    --heat-ink: #14120b;
-    --heat-max: 0.7;
-  }
 }
 
 @theme inline {
@@ -146,7 +83,7 @@ a:hover {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent-hover);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 4px;
 }

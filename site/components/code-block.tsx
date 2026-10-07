@@ -13,8 +13,32 @@ export function CodeBlock({ code, label }: { code: string; label: string }) {
     .join("\n")
     .trim();
   return (
-    <div className="relative rounded-xl border border-line bg-code">
-      <pre className="num m-0 overflow-x-auto px-4 py-4 pr-14 text-[13px] leading-[1.7] text-fg">
+    <div className="overflow-hidden rounded-xl border border-line bg-code">
+      <div className="flex items-center justify-between gap-3 border-b border-line py-1 pl-4 pr-1">
+        <span className="text-[12px] text-muted first-letter:uppercase">{label}</span>
+        <button
+          type="button"
+          onClick={async () => {
+            try {
+              await navigator.clipboard.writeText(copyText);
+              setCopied(true);
+              setTimeout(() => setCopied(false), 1600);
+            } catch {}
+          }}
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-md px-3 text-[13px] text-fg-2 hover:bg-raised hover:text-fg"
+          aria-label={copied ? "Copied" : `Copy: ${label}`}
+        >
+          {copied ? <Check /> : <Copy />}
+          <span aria-hidden="true">{copied ? "Copied" : "Copy"}</span>
+        </button>
+      </div>
+      {/* Focusable so keyboard users can scroll long lines sideways. */}
+      <pre
+        tabIndex={0}
+        role="region"
+        aria-label={`Code: ${label}`}
+        className="num m-0 overflow-x-auto px-4 py-4 text-[13px] leading-[1.7] text-fg"
+      >
         {code.split("\n").map((l, i) => {
           const c = l.indexOf(" #");
           const comment = l.trim().startsWith("#") ? 0 : c >= 0 ? c : -1;
@@ -30,20 +54,6 @@ export function CodeBlock({ code, label }: { code: string; label: string }) {
           );
         })}
       </pre>
-      <button
-        type="button"
-        onClick={async () => {
-          try {
-            await navigator.clipboard.writeText(copyText);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 1600);
-          } catch {}
-        }}
-        className="absolute right-2 top-2 inline-flex size-9 items-center justify-center rounded-md text-muted hover:bg-raised hover:text-fg"
-        aria-label={copied ? "Copied" : `Copy: ${label}`}
-      >
-        {copied ? <Check /> : <Copy />}
-      </button>
       <span className="sr-only" aria-live="polite">{copied ? "Copied to clipboard" : ""}</span>
     </div>
   );

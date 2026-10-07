@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { JOB_BY_ID } from "@/lib/jobs";
 import { shardUrl } from "@/lib/shard";
 import type { Board, RowDetail, RowResult } from "@/lib/types";
+import { SystemMark } from "./system-mark";
 import { Check, Cross, Lock } from "./icons";
 
 function rowIdFromLocation(): string {
@@ -176,8 +177,16 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
                 return (
                   <tr key={r.system} className="border-t border-line">
                     <th scope="row" className="py-2.5 pl-4 pr-3 text-left font-normal sm:pl-2">
-                      <span className="block font-semibold">{m?.name ?? r.system}</span>
-                      <span className="block text-[12px] text-muted">{m?.hosting === "managed" ? "Managed API" : "Self-hosted"}</span>
+                      <span className="flex items-center gap-2.5">
+                        <SystemMark m={m} />
+                        <span>
+                          <span className="block font-semibold">{m?.name ?? r.system}</span>
+                          <span className="block text-[12px] text-muted">
+                            {m?.provider}
+                            {m ? (m.hosting === "managed" ? " · managed API" : " · self-hosted") : ""}
+                          </span>
+                        </span>
+                      </span>
                     </th>
                     <td className="py-2.5 pr-3">
                       {p === null ? (

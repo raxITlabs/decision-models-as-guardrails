@@ -16,23 +16,27 @@
  "systems": [
   {
    "id": "pplx-decider-v1-27b",
-   "name": "pplx-decider",
+   "name": "pplx-decider v1 27B",
    "provider": "Perplexity",
    "mono": "Px",
+   "short": "pplx-decider",
+   "logo": "/logos/perplexity.svg",
    "hosting": "managed"
   },
   {
    "id": "gpt-6-luna",
-   "name": "gpt-6-luna",
-   "provider": "OpenAI",
+   "name": "GPT-6 Luna",
+   "provider": "OpenAI · Decisions API",
    "mono": "Oa",
+   "logo": "/logos/openai.svg",
    "hosting": "managed"
   },
   {
    "id": "clef",
    "name": "Clef",
-   "provider": "Cloudflare Workers AI",
+   "provider": "Cloudflare · Workers AI",
    "mono": "Cf",
+   "logo": "/logos/cloudflare.svg",
    "hosting": "managed"
   },
   {
@@ -44,58 +48,63 @@
   },
   {
    "id": "clef-flash",
-   "name": "Clef-flash",
-   "provider": "Cloudflare Workers AI",
+   "name": "Clef Flash",
+   "provider": "Cloudflare · Workers AI",
    "mono": "Cf",
+   "logo": "/logos/cloudflare.svg",
    "hosting": "managed"
   },
   {
    "id": "kev-4b",
-   "name": "Kev-4B",
-   "provider": "Open weights",
-   "mono": "K4",
+   "name": "Kev 4B",
+   "provider": "Jared Palmer · open weights",
+   "mono": "JP",
    "hosting": "self-hosted"
   },
   {
    "id": "kev-9b",
-   "name": "Kev-9B",
-   "provider": "Open weights",
-   "mono": "K9",
+   "name": "Kev 9B",
+   "provider": "Jared Palmer · open weights",
+   "mono": "JP",
    "hosting": "self-hosted"
   },
   {
    "id": "bedrock-guardrails",
-   "name": "Bedrock Guardrails",
-   "provider": "AWS",
+   "name": "Amazon Bedrock Guardrails",
+   "provider": "Amazon Web Services",
    "mono": "Aw",
+   "short": "Bedrock Guardrails",
+   "logo": "/logos/aws.svg",
    "hosting": "managed"
   },
   {
    "id": "strands-decider-2b",
    "name": "Strands Decider 2B",
-   "provider": "Amazon, open weights",
+   "provider": "Strands Agents (AWS) · open weights",
    "mono": "St",
+   "short": "Strands 2B",
+   "logo": "/logos/aws.svg",
    "hosting": "self-hosted"
   },
   {
    "id": "open-jev-2b",
-   "name": "Open-Jev-2B",
-   "provider": "Open weights",
-   "mono": "OJ",
+   "name": "Open-Jev 2B",
+   "provider": "Zefan Cai · open weights",
+   "mono": "ZC",
    "hosting": "self-hosted"
   },
   {
    "id": "kev-0-8b",
-   "name": "Kev-0.8B",
-   "provider": "Open weights",
-   "mono": "K0",
+   "name": "Kev 0.8B",
+   "provider": "Jared Palmer · open weights",
+   "mono": "JP",
    "hosting": "self-hosted"
   },
   {
    "id": "laya",
    "name": "Laya",
-   "provider": "Open weights",
-   "mono": "La",
+   "provider": "Convai Innovations · open weights",
+   "mono": "CI",
    "hosting": "self-hosted"
   }
  ],

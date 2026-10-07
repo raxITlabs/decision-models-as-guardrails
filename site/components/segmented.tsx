@@ -27,8 +27,8 @@ export function Segmented<T extends string>({
             type="button"
             aria-pressed={on}
             onClick={() => onChange(o.value)}
-            className={`min-h-9 whitespace-nowrap rounded-md px-3 text-[13px] transition-colors ${
-              on ? "bg-raised font-medium text-fg shadow-[0_1px_2px_rgb(0_0_0/0.25)]" : "text-muted hover:text-fg"
+            className={`min-h-11 whitespace-nowrap rounded-md px-3 text-[13px] transition-colors sm:min-h-9 ${
+              on ? "bg-raised font-medium text-fg shadow-[0_1px_2px_color-mix(in_oklab,var(--fg)_10%,transparent)]" : "text-muted hover:text-fg"
             }`}
           >
             {o.label}
@@ -62,7 +62,7 @@ export function Select<T extends string>({
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value as T)}
-          className="min-h-9 appearance-none rounded-lg border border-line bg-surface py-1.5 pl-3 pr-8 text-[13px] text-fg hover:border-line-strong"
+          className="min-h-11 appearance-none sm:min-h-9 rounded-lg border border-line bg-surface py-1.5 pl-3 pr-8 text-[13px] text-fg hover:border-line-strong"
         >
           {options.map((o) => (
             <option key={o.value} value={o.value}>

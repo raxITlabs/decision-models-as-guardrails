@@ -1,4 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [{ "source": "/data/rows/:id", "destination": "/data/rows/view" }]
+  "rewrites": [{ "source": "/data/rows/:id", "destination": "/data/rows/view" }],
+  "headers": [{ "source": "/opengraph-image", "headers": [{ "key": "Content-Type", "value": "image/png" }] }]
 }

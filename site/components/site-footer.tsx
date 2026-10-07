@@ -17,13 +17,13 @@ export function SiteFooter() {
           </p>
         </div>
         <nav aria-label="Footer">
-          <ul className="grid grid-cols-2 gap-x-8 gap-y-2 sm:grid-cols-3">
-            <li><Link href="/">Results</Link></li>
-            <li><Link href="/reproduce">Reproduce</Link></li>
-            <li><Link href="/data">Data</Link></li>
-            <li><Link href="/changelog">Changelog</Link></li>
-            <li><a href={HF_URL}>Dataset</a></li>
-            <li><a href={REPO_URL}>GitHub</a></li>
+          <ul className="grid grid-cols-2 gap-x-8 sm:grid-cols-3">
+            <li><Link className="inline-flex min-h-11 items-center" href="/">Results</Link></li>
+            <li><Link className="inline-flex min-h-11 items-center" href="/reproduce">Reproduce</Link></li>
+            <li><Link className="inline-flex min-h-11 items-center" href="/data">Data</Link></li>
+            <li><Link className="inline-flex min-h-11 items-center" href="/changelog">Changelog</Link></li>
+            <li><a className="inline-flex min-h-11 items-center" href={HF_URL}>Dataset</a></li>
+            <li><a className="inline-flex min-h-11 items-center" href={REPO_URL}>GitHub</a></li>
           </ul>
         </nav>
       </div>

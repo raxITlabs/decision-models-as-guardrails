@@ -8,27 +8,18 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://decision-models-as-guardrails.vercel.app"),
   title: { default: "decision-models-as-guardrails", template: "%s · decision-models-as-guardrails" },
   description:
     "Can a decision model replace your guardrail? Twelve systems answer the same guardrail checks under one fixed rule, compared on accuracy and cost. By raxIT Labs.",
 };
 
-export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#14120b" },
-    { media: "(prefers-color-scheme: light)", color: "#f7f4ef" },
-  ],
-};
-
-// Runs before first paint: apply the stored theme choice, if any, so the page never flashes the wrong theme.
-const THEME_SCRIPT = `try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}`;
+// Matches --bg in globals.css; the site has one light theme.
+export const viewport: Viewport = { themeColor: "#f7f4ef", colorScheme: "light" };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
-      </head>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
       <body className="flex min-h-dvh flex-col">
         <a
           href="#main"

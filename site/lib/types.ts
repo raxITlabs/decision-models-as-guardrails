@@ -8,8 +8,12 @@ export interface SystemMeta {
   name: string;
   provider: string;
   hosting: Hosting;
-  /** two-letter monogram for compact marks */
+  /** shorter name for chart labels */
+  short?: string;
+  /** two-letter monogram of the maker, shown when there is no logo */
   mono: string;
+  /** maker's mark, a path under public/logos */
+  logo?: string;
 }
 
 export interface Score {
