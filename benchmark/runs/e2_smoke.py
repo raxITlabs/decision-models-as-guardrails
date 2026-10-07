@@ -14,7 +14,7 @@ row ids, labels and system outputs, never the row text, because many dev rows co
 (owner ruling 10). Error strings are cut to 300 characters and checked for row text before they are written.
 
 New decision models (docs/benchmark/28): ``clef`` and ``clef-flash`` (Cloudflare Workers AI), ``perplexity``
-(pplx-decider-v1-27b), ``strands`` (Strands Decider 2B on the GCP VM) and ``openai`` (gpt-6-luna, unverified stub).
+(pplx-decider-v1-27b), ``strands`` (Strands Decider 2B on the GCP VM) and ``openai`` (gpt-6-luna, OpenAI Decisions API).
 A system whose credentials or VM slot are missing is skipped as ``not_configured`` before any row is read for it;
 nothing is sent and nothing is written for it.
 
@@ -65,7 +65,7 @@ LIMITS = {"jev-1.13.0": (32000, "documented"), "open-jev-2b": (4096, "served --m
           "clef": (65536, "hosted context (Workers AI)"), "clef-flash": (65536, "hosted context (Workers AI)"),
           "pplx-decider-v1-27b": (262144, "hosted input limit (Perplexity docs)"),
           "strands-decider-2b": (4096, "documented window; cut silently, no truncation flag"),
-          "gpt-6-luna": (None, "undocumented (limited preview)"),
+          "gpt-6-luna": (None, "undocumented (the public beta docs give no input limit)"),
           "laya": (512, "observed: usage.input_tokens tops out at 512 x questions, so each prompt is cut at 512"),
           "bedrock-guardrails": (None, "service")}
 # Servers whose usage.input_tokens is the sum over one prompt per question: per-prompt tokens = usage / questions.
@@ -259,7 +259,7 @@ def build_new_systems(kinds: set, env) -> tuple[dict, dict]:
         if c is None:
             skipped["openai"] = hosted.not_configured("openai")
         else:
-            out[c.system] = (NoulAdapter(c, endpoint=c.endpoint), 2)
+            out[c.system] = (NoulAdapter(c, endpoint=c.endpoint), 4)   # the client throttles the pool to 5/s
     if "strands" in kinds:
         found, why = strands_models()
         if not found:

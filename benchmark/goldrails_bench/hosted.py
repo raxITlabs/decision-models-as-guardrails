@@ -5,11 +5,13 @@ unchanged ``NoulAdapter`` and ``policy.ask_with_policy`` drive them:
 
 - ``CloudflareSystemOneClient``: Workers AI ``@cf/cloudflare/clef`` and ``@cf/cloudflare/clef-flash``.
 - ``PerplexityDecisionsClient``: ``POST https://api.perplexity.ai/v1/decisions``, ``pplx-decider-v1-27b``.
-- ``OpenAIDecisionsClient``: ``POST https://api.openai.com/v1/decisions``, ``gpt-6-luna``. UNVERIFIED stub: OpenAI
-  has published no docs; the shape comes from community reports and must be confirmed before any run.
+- ``OpenAIDecisionsClient``: ``POST https://api.openai.com/v1/decisions``, ``gpt-6-luna`` (public beta). Its API has
+  no roles and its own question type, so the state is serialised to one text string and each Noul question becomes a
+  predicate (``OPENAI_INPUT_MAPPING``, recorded in the identity and disclosed with the results).
 
-The request body is the System One body (``model``, ``state``, ``questions``), with each question serialised by the
-TypeSafe SDK's own question classes, so every system receives the same bytes for the same question set.
+For Clef and pplx-decider the request body is the System One body (``model``, ``state``, ``questions``), with each
+question serialised by the TypeSafe SDK's own question classes, so every system receives the same bytes for the same
+question set.
 
 Errors. A client never retries. It turns each transport failure into a failed call whose error starts with a class
 name, and the run's retry policy (``policy.TRANSIENT``) decides what is retried: HTTP 429 is ``RateLimitError``,
@@ -29,7 +31,7 @@ from typing import Any
 
 import httpx
 
-from .systemone import SystemOneCall, build_question
+from .systemone import UNTRUSTED_PREFIX, UNTRUSTED_ROLE, SystemOneCall, build_question, untrusted
 
 DEFAULT_TIMEOUT = 60.0
 
@@ -142,6 +144,10 @@ class HostedDecisionClient:
     def on_status(self, resp: httpx.Response) -> str:
         return status_error(resp.status_code, resp.text)
 
+    def response_meta(self, resp: httpx.Response) -> dict | None:
+        """Response headers worth keeping as serving identity (none by default)."""
+        return None
+
     def check(self, call: SystemOneCall) -> SystemOneCall:
         """A last look at a successful call (identity checks, truncation flags). Returns the call to record."""
         return call
@@ -174,8 +180,11 @@ class HostedDecisionClient:
         usage = result.get("usage") if isinstance(result.get("usage"), dict) else None
         raw = dict(result)
         raw["answers"] = answers
-        if payload is not result:
+        if payload is not result and "result" in payload:
             raw["envelope"] = {k: v for k, v in payload.items() if k != "result"}
+        meta = self.response_meta(resp)
+        if meta:
+            raw["response_headers"] = meta
         call = SystemOneCall(system=self.system, ok=True, model=result.get("model"), answers=answers, usage=usage,
                              latency_s=dt, raw=raw)
         return self.check(call)
@@ -314,12 +323,78 @@ class PerplexityDecisionsClient(HostedDecisionClient):
         return call
 
 
-# --- OpenAI Decisions API (UNVERIFIED stub) -------------------------------------------------------------------------
+# --- OpenAI Decisions API -------------------------------------------------------------------------------------------
 
 OPENAI_URL = "https://api.openai.com/v1/decisions"
 OPENAI_MODEL = "gpt-6-luna"
-UNVERIFIED = ("UNVERIFIED: OpenAI has published no Decisions API docs; endpoint, body and response shape follow "
-              "community reports (pydantic-ai issue 9633) and must be checked against the vendor's example first")
+OPENAI_RATE = 5.0   # requests/s across threads; OpenAI publishes no Decisions API rate limit for the beta
+OPENAI_DOCS = "OpenAI Decisions API docs (public beta), as pasted by the project owner on 7 October 2026"
+# Response headers kept as serving identity: version and model headers only. Organisation, project and request ids
+# identify the account or one call, not the model, and are never recorded.
+OPENAI_KEEP_HEADERS = re.compile(r"^(openai-version|openai-model|x-model[-a-z]*|x-openai-model[-a-z]*)$", re.I)
+OPENAI_HEADER_DENY = re.compile(r"organi[sz]ation|project|request-id|ratelimit|processing-ms|cookie|auth", re.I)
+ROLE_LABELS = {"user": "User", "assistant": "Assistant", "system": "System", UNTRUSTED_ROLE: "Tool"}
+# How the System One state becomes the one text string the API takes (input: a string or user messages only). This
+# dict is recorded in the identity, so the mapping travels with every result.
+OPENAI_INPUT_MAPPING = {
+    "input": "one text string (the API takes a string or user messages only; no system, assistant or tool role)",
+    "sections": "blank-line separated, in this order, each only when the state has it: 'Context turns:' then one "
+                "'Role: text' line per earlier turn (System, User, Assistant, Tool); 'Source document:' then "
+                "state.source; 'Query:' then state.query; 'Tool call:' then state.tool_call as sorted JSON; "
+                "'Text under review (<role>):' then state.text",
+    "untrusted": f"a tool-role text (retrieved content: email, web page, tool output) is tagged '{UNTRUSTED_PREFIX}' "
+                 "on its own line, the same tag Bedrock receives",
+    "questions": "each Noul question becomes a predicate: name = the question key, instructions = the question's "
+                 "instructions, then 'Answer true if: <criteria.true>' and 'Answer false if: <criteria.false>'; all "
+                 "of a row's predicates go in one request; a Score or Choice question (content's severity) is not "
+                 "sent: it is outside every decision list",
+    "answer": "answers[].probability of each predicate is read as the Noul probability; the fixed 0.5 rule applies",
+}
+INPUT_MAPPING_VERSION = "1"
+
+
+def _turn(t: Any) -> tuple[str, str]:
+    if isinstance(t, dict):
+        return str(t.get("role") or "user"), str(t.get("text") if t.get("text") is not None else t.get("content") or "")
+    return "user", str(t)
+
+
+def serialise_state(state: Any) -> str:
+    """The System One state as the one text string the Decisions API takes (``OPENAI_INPUT_MAPPING``)."""
+    import json as _json
+    if isinstance(state, str):
+        return state
+    parts = []
+    turns = state.get("context") or []
+    if turns:
+        lines = []
+        for role, text in map(_turn, turns):
+            label = ROLE_LABELS.get(role, role.capitalize())
+            lines.append(f"{label}: {untrusted(text) if role == UNTRUSTED_ROLE else text}")
+        parts.append("Context turns:\n" + "\n".join(lines))
+    if state.get("source"):
+        parts.append(f"Source document:\n{state['source']}")
+    if state.get("query"):
+        parts.append(f"Query:\n{state['query']}")
+    if state.get("tool_call"):
+        parts.append("Tool call:\n" + _json.dumps(state["tool_call"], ensure_ascii=False, sort_keys=True))
+    role = str(state.get("role") or "user")
+    text = str(state.get("text") or "")
+    parts.append(f"Text under review ({role}):\n{untrusted(text) if role == UNTRUSTED_ROLE else text}")
+    return "\n\n".join(parts)
+
+
+def predicate_of(name: str, q: dict) -> dict | None:
+    """A Noul question as a Decisions API predicate, or None for a question type that is not sent."""
+    if q.get("type") != "noul":
+        return None
+    text = str(q["instructions"]).strip()
+    crit = q.get("criteria") or {}
+    if crit.get("true"):
+        text += f"\nAnswer true if: {str(crit['true']).strip()}"
+    if crit.get("false"):
+        text += f"\nAnswer false if: {str(crit['false']).strip()}"
+    return {"type": "predicate", "name": name, "instructions": text}
 
 
 class AccessPending(RuntimeError):
@@ -327,41 +402,110 @@ class AccessPending(RuntimeError):
 
 
 class OpenAIDecisionsClient(HostedDecisionClient):
-    """gpt-6-luna on OpenAI's Decisions API, limited preview. UNVERIFIED (see ``UNVERIFIED``). A 403 means the
-    organisation has no access yet: the call fails with ``AccessPending`` (final) and ``access_pending`` is set, so
-    a run stops sending after the first one."""
-    provider = "openai"
-    adapter = {"name": "openai-decisions", "version": "0-unverified"}
+    """gpt-6-luna on OpenAI's Decisions API (public beta; ``OPENAI_DOCS``).
 
-    def __init__(self, api_key: str, system: str = OPENAI_MODEL, model: str = OPENAI_MODEL, url: str = OPENAI_URL, **kw):
-        identity = {"provider": self.provider, "model": model, "revision": None, "max_length": None, "precision": None,
-                    "schema": UNVERIFIED}
-        super().__init__(system, model, url, api_key, identity=identity, **kw)
+    Request: ``{"model", "input", "questions"}``. ``input`` is ``serialise_state(state)``, one string, because the API
+    takes only a string or user messages; ``questions`` holds one predicate per Noul question of the row's question
+    set (``predicate_of``), all in one request. Response: ``{"answers": [{"type": "predicate", "name", "probability"}]}``.
+    Each predicate's probability becomes a Noul answer under the question's key. A response that leaves a predicate
+    unanswered, or gives a probability outside [0, 1], is a final ``BadResponse`` (an answer is never retried).
+
+    Retries are the run's policy (``policy.TRANSIENT``): 429 is ``RateLimitError`` and pauses the shared throttle for
+    Retry-After seconds, 5xx is ``InternalServerError`` / ``ServiceUnavailableError``, both retried with backoff. A 403
+    or 404 means the organisation has no Decisions API access (or the model is not offered to it): the call fails with
+    ``AccessPending`` (final) and ``access_pending`` stops any further sending.
+
+    Usage: ``usage.input_tokens`` and ``usage.output_tokens`` as reported (the whole block is kept under
+    ``raw.usage_reported``; ``total_tokens`` is left out of the billable usage because it repeats the two). Serving
+    identity: the model the response reports, plus version and model response headers (``OPENAI_KEEP_HEADERS``),
+    never organisation, project or request ids."""
+    provider = "openai"
+    adapter = {"name": "openai-decisions", "version": INPUT_MAPPING_VERSION}
+
+    def __init__(self, api_key: str, system: str = OPENAI_MODEL, model: str = OPENAI_MODEL, url: str = OPENAI_URL,
+                 throttle: Throttle | None = None, **kw):
+        identity = {"provider": self.provider, "model": model, "revision": None,
+                    "revision_basis": "hosted model, not version-pinned; the response's model field and version "
+                                      "headers are recorded per call",
+                    "max_length": None, "precision": None, "docs": OPENAI_DOCS,
+                    "input_mapping": {"version": INPUT_MAPPING_VERSION, **OPENAI_INPUT_MAPPING}}
+        super().__init__(system, model, url, api_key, identity=identity,
+                         throttle=throttle if throttle is not None else Throttle(OPENAI_RATE), **kw)
         self.endpoint = url
         self.access_pending = False
+        self._tl = threading.local()   # the questions of the call in flight, per worker thread
 
     @classmethod
     def from_env(cls, env=os.environ, **kw):
-        """Needs OPENAI_API_KEY and OPENAI_DECISIONS_ENABLED=1: the key exists for other uses, and the Decisions API
-        is not enabled for the organisation until OpenAI grants preview access."""
         key = env.get("OPENAI_API_KEY")
-        return cls(key, **kw) if key and env.get("OPENAI_DECISIONS_ENABLED") == "1" else None
+        return cls(key, **kw) if key else None
+
+    def body(self, state, questions):
+        preds = [p for k, q in questions.items() if (p := predicate_of(k, q)) is not None]
+        return {"model": self.model, "input": serialise_state(state), "questions": preds}
 
     def ask(self, state, questions):
         if self.access_pending:
-            return SystemOneCall(system=self.system, ok=False, error="AccessPending: Decisions API not enabled for "
-                                 "this organisation (an earlier call returned 403); nothing sent")
+            return SystemOneCall(system=self.system, ok=False, error="AccessPending: an earlier call returned 403 or "
+                                 "404 (no Decisions API access for this organisation); nothing sent")
+        self._tl.asked = [k for k, q in questions.items() if q.get("type") == "noul"]
+        self._tl.unasked = [k for k, q in questions.items() if q.get("type") != "noul"]
         return super().ask(state, questions)
 
     def on_status(self, resp):
-        if resp.status_code == 403:
+        if resp.status_code in (403, 404):
             self.access_pending = True
-            return ("AccessPending: HTTP 403, the Decisions API is not enabled for this organisation "
-                    "(limited preview, access pending)")
+            return (f"AccessPending: HTTP {resp.status_code}, no Decisions API access for this organisation or model "
+                    f"{self.model} not offered: " + re.sub(r"\s+", " ", resp.text or "")[:200])
+        if resp.status_code == 429:
+            wait = retry_after_s(resp.headers)
+            if wait is not None and self.throttle:
+                self.throttle.hold(wait)
+            return status_error(429, f"retry-after {wait}s" if wait is not None else "")
         return super().on_status(resp)
 
+    def response_meta(self, resp) -> dict | None:
+        keep = {k.lower(): v for k, v in resp.headers.items()
+                if OPENAI_KEEP_HEADERS.match(k) and not OPENAI_HEADER_DENY.search(k)}
+        return keep or None
+
+    def unwrap(self, payload):
+        if not isinstance(payload, dict):
+            return None, "BadResponse: body is not a JSON object"
+        if isinstance(payload.get("error"), dict):
+            e = payload["error"]
+            return None, f"APIError: {e.get('type') or ''} {e.get('message') or ''}".strip()[:240]
+        ans = payload.get("answers")
+        if not isinstance(ans, list):
+            return None, "BadResponse: answers is not a list"
+        out, asked = {}, list(getattr(self._tl, "asked", None) or [])
+        for a in ans:
+            if not isinstance(a, dict) or not isinstance(a.get("name"), str):
+                return None, "BadResponse: an answer has no name"
+            p = a.get("probability")
+            if a.get("type", "predicate") != "predicate" or isinstance(p, bool) or not isinstance(p, (int, float)):
+                return None, f"BadResponse: answer {a['name'][:40]!r} is not a predicate with a probability"
+            if not 0.0 <= float(p) <= 1.0:
+                return None, f"BadResponse: answer {a['name'][:40]!r} probability {p} is outside [0, 1]"
+            out[a["name"]] = {"type": "noul", "noul": float(p), "probability": float(p), "answer_type": "predicate"}
+        missing = [k for k in asked if k not in out]
+        if missing:
+            return None, f"BadResponse: no answer for {', '.join(missing)[:200]}"
+        result = {k: v for k, v in payload.items() if k != "answers"}
+        result["answers"] = out
+        if isinstance(payload.get("usage"), dict):
+            # billable counts only: total_tokens repeats input + output and the *_details blocks are breakdowns
+            result["usage"] = {k: v for k, v in payload["usage"].items() if k in ("input_tokens", "output_tokens")
+                               and isinstance(v, int) and not isinstance(v, bool)} or None
+            result["usage_reported"] = payload["usage"]
+        return result, None
+
     def check(self, call):
-        call.raw["schema"] = UNVERIFIED
+        call.raw["reported_model"] = call.model
+        call.model = call.model or self.model
+        call.raw["input_mapping_version"] = INPUT_MAPPING_VERSION
+        if getattr(self._tl, "unasked", None):
+            call.raw["unasked"] = list(self._tl.unasked)
         return call
 
 
@@ -369,5 +513,5 @@ def not_configured(system: str) -> str:
     """Why ``from_env`` returned None: the names (never the values) of what is missing."""
     need = {"clef": "CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN", "clef-flash": "CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN",
             "perplexity": "PERPLEXITY_API_KEY",
-            "openai": "OPENAI_API_KEY and OPENAI_DECISIONS_ENABLED=1 (set only once OpenAI grants preview access)"}
+            "openai": "OPENAI_API_KEY"}
     return f"not_configured: {system} needs {need.get(system, 'credentials')}"

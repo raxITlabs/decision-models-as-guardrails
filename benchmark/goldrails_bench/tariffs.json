@@ -65,6 +65,22 @@
       "status": "vendor list price, repository copy; not reconciled against a billing statement"
     },
     {
+      "id": "openai/decisions/gpt-6-luna",
+      "provider": "OpenAI Decisions API",
+      "kind": "per_token",
+      "match": {"models": ["gpt-6-luna"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.10},
+        "output_tokens": {"usd_per_million": 0.0, "note": "provider lists no output charge"},
+        "cached_tokens": {"usd_per_million": 0.0, "note": "provider lists no cache charge"}
+      },
+      "checked_on": "2026-10-07",
+      "source": "OpenAI Decisions API docs, public beta, pasted by the project owner on 7 October 2026 (repository copy: docs/reference/openai/decisions-api.md)",
+      "status": "vendor list price, repository copy; not reconciled against a billing statement. Regional and long-context multipliers are not applied: requests go to the default endpoint with no data-residency setting",
+      "note": "billed per request on input tokens only"
+    },
+    {
       "id": "aws/bedrock/invoke-guardrail-checks",
       "provider": "Amazon Bedrock Guardrails, InvokeGuardrailChecks",
       "kind": "per_text_unit",
