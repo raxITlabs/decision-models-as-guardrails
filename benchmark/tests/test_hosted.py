@@ -315,6 +315,7 @@ def test_openai_no_access_is_final_and_stops_sending(status):
     (lambda: {"answers": [{"type": "predicate", "name": "hate", "probability": 1.4}]}, "outside [0, 1]"),
     (lambda: {"answers": [{"type": "score", "name": "hate", "score": 2}]}, "not a predicate"),
     (lambda: {"answers": {"hate": 0.3}}, "answers is not a list"),
+    (lambda: {"answers": [{"type": "refusal", "name": "hate"}]}, "Refusal: the model refused predicate 'hate'"),
     (lambda: {"error": {"type": "invalid_request_error", "message": "bad"}}, "APIError"),
 ])
 def test_openai_bad_answers_are_final_failures(body, why):

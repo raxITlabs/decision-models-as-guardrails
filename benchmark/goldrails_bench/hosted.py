@@ -408,7 +408,8 @@ class OpenAIDecisionsClient(HostedDecisionClient):
     takes only a string or user messages; ``questions`` holds one predicate per Noul question of the row's question
     set (``predicate_of``), all in one request. Response: ``{"answers": [{"type": "predicate", "name", "probability"}]}``.
     Each predicate's probability becomes a Noul answer under the question's key. A response that leaves a predicate
-    unanswered, or gives a probability outside [0, 1], is a final ``BadResponse`` (an answer is never retried).
+    unanswered, or gives a probability outside [0, 1], is a final ``BadResponse``, and an undocumented
+    ``{"type": "refusal"}`` answer is a final ``Refusal`` (an answer is never retried).
 
     Retries are the run's policy (``policy.TRANSIENT``): 429 is ``RateLimitError`` and pauses the shared throttle for
     Retry-After seconds, 5xx is ``InternalServerError`` / ``ServiceUnavailableError``, both retried with backoff. A 403
@@ -483,8 +484,15 @@ class OpenAIDecisionsClient(HostedDecisionClient):
             if not isinstance(a, dict) or not isinstance(a.get("name"), str):
                 return None, "BadResponse: an answer has no name"
             p = a.get("probability")
+            if a.get("type") == "refusal":
+                # not in the docs: seen on 10 of 10,053 test rows on 7 October 2026, an answer {"type": "refusal",
+                # "name"} with no probability. Final (resending gave the same refusal); the row scores as a failure.
+                return None, f"Refusal: the model refused predicate {a['name'][:40]!r} (answer type refusal, no probability)"
             if a.get("type", "predicate") != "predicate" or isinstance(p, bool) or not isinstance(p, (int, float)):
-                return None, f"BadResponse: answer {a['name'][:40]!r} is not a predicate with a probability"
+                got = {k: (v if isinstance(v, (int, float, bool)) or v is None
+                           or (isinstance(v, str) and len(v) <= 24) else type(v).__name__)
+                       for k, v in a.items() if k != "name"}   # the answer's fields; long strings by type only
+                return None, f"BadResponse: answer {a['name'][:40]!r} is not a predicate with a probability: {got}"[:240]
             if not 0.0 <= float(p) <= 1.0:
                 return None, f"BadResponse: answer {a['name'][:40]!r} probability {p} is outside [0, 1]"
             out[a["name"]] = {"type": "noul", "noul": float(p), "probability": float(p), "answer_type": "predicate"}

@@ -68,9 +68,14 @@ DISCLOSURES = [
     "The unpublished slice was sent to OpenAI. Zero Data Retention is available only to eligible customers under a "
     "separate agreement, so OpenAI's default API data retention applies to those rows. The owner's waiver of the "
     "data-retention check for Perplexity (ruling 21) is taken to cover OpenAI as well.",
-    "200 of the content test rows (244 with the unpublished slice) come from OpenAI's own moderation evaluation set. "
+    "208 of the public content test rows (244 with the unpublished slice) come from OpenAI's own moderation evaluation "
+    "set. "
     "OpenAI may have trained or tuned gpt-6-luna on them. Content is also reported without those rows "
     "(content view excluding_openai_owned).",
+    "gpt-6-luna refused one question on 10 of its 10,053 rows (9 PII rows, 7 of them on the Social Security number "
+    "question, and 1 content row): the API returned an answer of type 'refusal' with no probability, which its docs "
+    "do not describe. Resending gave the same answer. Those rows count as failures, wrong in their class (0.1% of "
+    "rows; 1.25% of PII rows, under the 2% cap).",
     "gpt-6-luna ran on 7 October 2026, after the other eleven systems, under its own freeze manifest committed before "
     "its first test call (benchmark/subsets/edition2/freeze-manifest-gpt-6-luna.json).",
 ]
