@@ -209,8 +209,8 @@ def v1_reference(fetch_pools: bool = True) -> dict:
             texts.add(normalise(d.get("state", {}).get("text", "")))
             if d.get("feature") == "F2":
                 near.append(d["state"]["text"])
-    examined = REPO / "dataset" / "frozen" / "examined-ids.txt"
-    ids |= {l.strip() for l in examined.read_text(encoding="utf-8").splitlines() if l.strip() and not l.startswith("#")}
+    from goldrails_bench.overlap import prior_ids
+    ids |= prior_ids()
     n_ledger = 0
     for f in glob.glob(str(REPO / "benchmark" / "results" / "**" / "*"), recursive=True):
         if f.endswith((".jsonl", ".json", ".csv", ".md")) and Path(f).is_file():

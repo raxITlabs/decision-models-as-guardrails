@@ -299,8 +299,8 @@ def test_no_duplicates_and_groups_never_straddle_splits(cands):
 def test_no_overlap_with_v1_ids_texts_samples_or_ledgers(cands):
     from goldrails_dataset.sources.e2_prompt_attacks_build import ID_PATTERN, v1_build_files
     from goldrails_dataset.sources.e2_prompt_attacks_common import normalise
-    ids = {l.strip() for l in (REPO / "dataset/frozen/examined-ids.txt").read_text().splitlines()
-           if l.strip() and not l.startswith("#")}
+    from goldrails_bench.overlap import prior_ids
+    ids = set(prior_ids())
     texts = set()
     for f in v1_build_files() + glob.glob(str(REPO / "dataset/samples/**/*.jsonl"), recursive=True):
         for line in Path(f).read_text(encoding="utf-8").split("\n"):
@@ -312,7 +312,7 @@ def test_no_overlap_with_v1_ids_texts_samples_or_ledgers(cands):
     for f in glob.glob(str(REPO / "benchmark/results/**/*.jsonl"), recursive=True):
         found = set(ID_PATTERN.findall(Path(f).read_text(encoding="utf-8", errors="ignore")))
         top = Path(f).relative_to(REPO / "benchmark/results").parts[0]
-        if top in ("edition2-full", "edition2-attacks-r26", "edition2-openai"):   # frozen test runs, after their freezes
+        if top in ("final", "edition2-full", "edition2-attacks-r26", "edition2-openai"):   # frozen test runs, after their freezes
             continue
         if top in ("edition2-smoke", "edition2-dev-sample"):
             smoke |= found

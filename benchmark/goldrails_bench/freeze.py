@@ -583,7 +583,7 @@ def load_committed(path) -> tuple[dict, dict]:
 def default_references(repo=None, dev_files=None) -> dict:
     """The edition-2 reference rows as this repository records them, by role: ``examined`` (examined-ids.txt less
     documented clearances, plus every id in a ledger, output or notebook: ``overlap.repo_examined_ids``), ``smoke`` and
-    ``pilot`` (the ids in those ledgers), ``diagnostic`` (when any diagnostic ledger exists) and ``dev`` (the edition 2
+    ``pilot`` (the ids in those ledgers, with the ids ``overlap.PRIOR_USE`` records), ``diagnostic`` (when any diagnostic ledger exists) and ``dev`` (the edition 2
     dev rows: ``F*.dev.jsonl`` of the edition 2 source, ``e2_source.dev_files()``, when ``repo`` is this repository,
     else ``<repo>/dataset/edition2/build/F*.dev.jsonl``, unless ``dev_files`` names them). A required role with no
     rows is left in, so the check that uses it fails rather than passing on less."""
@@ -597,10 +597,10 @@ def default_references(repo=None, dev_files=None) -> dict:
     dev_files = sorted((repo / "dataset" / "edition2" / "build").glob("F*.dev.jsonl")) if dev_files is None \
         else [Path(f) for f in dev_files]
     refs = {"examined": sorted(overlap.repo_examined_ids(repo)),
-            "smoke": sorted(overlap.ledger_ids(results, ("smoke-*.jsonl",))),
-            "pilot": sorted(overlap.ledger_ids(results, ("pilot-*.jsonl",))),
+            "smoke": sorted(set(overlap.ledger_ids(results, ("smoke-*.jsonl",))) | overlap.prior_use("smoke", repo)),
+            "pilot": sorted(set(overlap.ledger_ids(results, ("pilot-*.jsonl",))) | overlap.prior_use("pilot", repo)),
             "dev": [r for f in dev_files for r in read_jsonl(f)]}
-    diag = sorted(overlap.ledger_ids(results, ("diagnostics/**/*.jsonl",)))
+    diag = sorted(set(overlap.ledger_ids(results, ("diagnostics/**/*.jsonl",))) | overlap.prior_use("diagnostic", repo))
     if diag:
         refs["diagnostic"] = diag
     return refs

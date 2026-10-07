@@ -114,9 +114,8 @@ def v1_index(build_dirs=(), extra_files=()) -> tuple[set, set]:
                     ids.add(json.loads(line).get("id"))
                 except json.JSONDecodeError:
                     pass
-    examined = ROOT / "dataset" / "frozen" / "examined-ids.txt"
-    if examined.exists():
-        ids |= {l.strip() for l in examined.read_text(encoding="utf-8").splitlines() if l.strip() and not l.startswith("#")}
+    from goldrails_bench.overlap import prior_ids
+    ids |= prior_ids()
     ids.discard(None)
     return ids, texts
 

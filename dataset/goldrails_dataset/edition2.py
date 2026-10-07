@@ -523,12 +523,12 @@ def published_rows() -> dict:
 
 
 def published_result_ids(results: Path = REPO / "benchmark" / "results") -> set:
-    """Row ids in the committed edition 2 result ledgers (``edition2-*/*.jsonl``, never a git-ignored ``private/``):
+    """Row ids in the committed result ledgers (``benchmark/results/**/*.jsonl``, never a git-ignored ``private/``):
     rows that were public when they ran, even when the Hub copy carries them only locally (ids-only sources)."""
     tracked = set(subprocess.run(["git", "ls-files", "benchmark/results"], cwd=REPO, capture_output=True,
                                  text=True).stdout.split())
     ids = set()
-    for f in sorted(Path(results).glob("edition2-*/*.jsonl")):
+    for f in sorted(Path(results).rglob("*.jsonl")):
         if f.relative_to(REPO).as_posix() not in tracked:
             continue
         for d in _jsonl(f):
@@ -555,7 +555,17 @@ def keep_published(out: dict, root: Path = E2) -> dict:
     counts, recorded in the build report."""
     from .audit import normalise
     pub = published_rows()
-    public_ids = set(pub) | published_result_ids() | tracked_row_ids()
+    import hashlib
+    from goldrails_bench.overlap import prior_use
+    live = set(pub) | published_result_ids() | tracked_row_ids()
+    # ids public in ledgers and files no longer kept, recorded as sha256 so the record names no row
+    hashed = prior_use("published_result_ids_sha256") | prior_use("tracked_row_ids_sha256")
+
+    class _Public:
+        def __contains__(self, i):
+            return i in live or hashlib.sha256(i.encode()).hexdigest() in hashed
+
+    public_ids = _Public()
     swapped = {s.feature for s in SUITES if s.name in e2_local.SCORED_ROOT}
     texts = set()
     for s in SUITES:
@@ -1214,7 +1224,8 @@ def ledger_row_ids(root: Path = REPO / "benchmark" / "results") -> set:
                     continue
                 if isinstance(rid, str):
                     ids.add(rid)
-    return ids
+    from goldrails_bench.overlap import prior_use
+    return ids | prior_use("results_ledgers")
 
 
 def _external_references(extra_roots=()) -> tuple[dict, list, list]:

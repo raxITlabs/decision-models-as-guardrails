@@ -283,9 +283,8 @@ def v1_index(include_ledgers: bool = True) -> tuple:
                     _walk(json.loads(p.read_text(encoding="utf-8", errors="replace")), ids, texts)
                 except json.JSONDecodeError:
                     pass
-    for line in (REPO / "dataset" / "frozen" / "examined-ids.txt").read_text(encoding="utf-8").splitlines():
-        if line.strip():
-            ids.add(line.strip())
+    from goldrails_bench.overlap import prior_ids
+    ids |= prior_ids()
     return ids, texts
 
 

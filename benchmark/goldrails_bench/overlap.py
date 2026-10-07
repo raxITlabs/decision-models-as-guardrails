@@ -75,6 +75,11 @@ LEDGER_GLOBS = ("smoke-*.jsonl", "pilot-*.jsonl", "diagnostics/**/*.jsonl")
 TEXT_GLOBS = ("benchmark/results/smoke-*", "benchmark/results/pilot-*", "benchmark/results/diagnostics/**/*",
               "benchmark/results/leaderboard-smoke.json", "benchmark/notebooks/*.ipynb", "dataset/notebooks/*.ipynb")
 TEXT_SUFFIXES = (".jsonl", ".json", ".md", ".csv", ".ipynb", ".txt")
+# Row ids looked at or sent to a model before the test split was drawn, recorded by role: the examined list, the smoke,
+# pilot and diagnostic ledgers, every earlier result ledger, and dataset row ids that were public in a committed ledger
+# or tracked file. Those ledgers and lists are not kept in the repository, so this file stands in for them: every
+# reader below takes the union of what is still on disk and what the file records (``prior_use``).
+PRIOR_USE = REPO / "dataset" / "edition2" / "prior-use-ids.json"
 ID_PATTERN = re.compile(r"\bf\d+-[a-z0-9_]+-[0-9a-f]{10}\b")
 KINDS = ("id", "text", "group", "near")
 _WS = re.compile(r"\s+")
@@ -361,6 +366,26 @@ def check(test_rows: Iterable, references, *, pool: Iterable = (), strict: bool 
 
 # --- what the repository says was examined -----------------------------------------------------------------------
 
+def prior_use(role: str, root=REPO) -> set:
+    """The recorded ids of one role in ``PRIOR_USE`` (empty for another repository or when the file is absent)."""
+    p = Path(root) / PRIOR_USE.relative_to(REPO)
+    if not p.exists():
+        return set()
+    return set(json.loads(p.read_text(encoding="utf-8"))["ids"].get(role, []))
+
+
+# Roles of ids that were looked at or sent to a model outside a frozen test run (the last two are edition 2's own
+# public ids, not prior use of a row, so ``prior_ids`` leaves them out).
+PRIOR_ROLES = ("examined", "smoke", "pilot", "diagnostic", "results_ledgers")
+
+
+def prior_ids(root=REPO) -> set:
+    """Every id that must never be a test row, for the candidate builders: the examined list when it is on disk and
+    every prior-use role ``PRIOR_USE`` records."""
+    return read_examined(Path(root) / "dataset" / "frozen" / "examined-ids.txt") | \
+        {i for r in PRIOR_ROLES for i in prior_use(r, root)}
+
+
 def read_examined(path=EXAMINED) -> set:
     p = Path(path)
     if not p.exists():
@@ -420,7 +445,7 @@ def repo_examined_ids(root=REPO, cleared: set | None = None) -> set:
         from goldrails_dataset.build import cleared_ids
         cleared = cleared_ids() if root.resolve() == REPO.resolve() else set()
     listed = read_examined(root / "dataset" / "frozen" / "examined-ids.txt") - set(cleared)
-    return listed | set(seen_ids(root))
+    return listed | set(seen_ids(root)) | prior_use("examined", root)
 
 
 def missing_examined(root=REPO) -> dict:
@@ -495,7 +520,7 @@ def main(argv=None) -> int:
 __all__ = ["OverlapError", "OverlapReport", "normalise_text", "text_hash", "row_id", "row_text", "row_group",
            "row_fields", "row_shingles",
            "NEAR_THRESHOLD", "NEAR_MIN_SHINGLES", "shingles", "similarity", "is_near_duplicate", "near_duplicate_pairs",
-           "check", "read_examined", "ledger_ids", "scanned_ids", "seen_ids", "repo_examined_ids",
+           "check", "prior_use", "prior_ids", "read_examined", "ledger_ids", "scanned_ids", "seen_ids", "repo_examined_ids",
            "missing_examined", "append_examined"]
 
 

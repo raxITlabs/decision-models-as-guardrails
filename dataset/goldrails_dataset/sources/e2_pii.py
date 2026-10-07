@@ -325,7 +325,8 @@ SCAN_DIRS = ("benchmark", "dataset")
 SKIP_PARTS = ("edition2", ".venv", "__pycache__", "node_modules", ".git")
 # edition 2's own Hugging Face staging (goldrails_dataset.publish_e2) holds edition 2 rows, not v1 references; the
 # edition 2 full run (benchmark/runs/e2_full.py) sent the frozen test rows after the freeze, so its ledgers name them
-SKIP_PREFIXES = ("dataset/publish/v2", "dataset/publish/release-", "benchmark/results/edition2-full",
+SKIP_PREFIXES = ("dataset/publish/v2", "dataset/publish/release-", "benchmark/results/final",   # the frozen test runs, after their freezes
+                 "benchmark/results/edition2-full",
                  "benchmark/results/edition2-attacks-r26", "benchmark/results/edition2-final",   # the ruling 28 rerun
                  "benchmark/results/edition2-openai")   # gpt-6-luna's run on the frozen test rows, after its freeze
 HF_REPOS = ("raxITLabs/gold-rails", "raxITLabs/goldrails", "raxITLabs/goldrail", "raxITLabs/jev-as-a-guardrails",
@@ -381,6 +382,9 @@ def reference_index(repo: Path = REPO, use_hf_cache: bool = True) -> dict:
                         texts.add(text_hash(st["text"]))
                     if d.get("group"):
                         groups.add(d["group"])
+    if repo == REPO:                     # the ledgers and lists PRIOR_USE stands in for are not kept
+        from goldrails_bench.overlap import prior_ids
+        ids |= prior_ids()
     hf = _hf_snapshot_files() if use_hf_cache else []
     for p in hf:
         for line in p.read_text(encoding="utf-8").splitlines():
