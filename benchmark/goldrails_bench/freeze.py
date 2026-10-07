@@ -643,6 +643,9 @@ def recompute_integrity(m: dict, *, references=None, pool=(), v1_build_rows=None
         if key in _RECOMPUTED:
             return copy.deepcopy(_RECOMPUTED[key])
     datasets, rows = frozen_test_rows({su: (d or {}).get("sha256") for su, d in ds.items()}, files)
+    for su, d in datasets.items():      # the paths as recorded (relative to ``repo``, which may be a frozen copy)
+        for e, rec in zip(d["files"], ds[su]["files"]):
+            e["path"] = rec["path"]
     refs = default_references(repo) if references is None else references
     block = _integrity_check(rows, refs, pool, v1_build_rows)
     block["datasets"] = datasets

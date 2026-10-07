@@ -673,9 +673,18 @@ def blocks(doc: dict, names: dict) -> dict:
             rb.append(f"| {nm(e['system'])} | {tier[0] or '-'} to {tier[1] or '-'} | " + " | ".join(
                 f"{_f(e[k]['before'])} to {_f(e[k]['after'])} ({e[k]['change']:+.1f})" if e[k]["change"] is not None
                 else "-" for k, _ in cols) + " |")
+        sy = la["before_after"]["systems"]
+        moved = [f"{nm(e['system'])} ({e['rank']['before']} to {e['rank']['after']})" for e in sy
+                 if e["rank"]["before"] != e["rank"]["after"]]
+        tiers = [nm(e["system"]) for e in sy if e["tier"]["before"] != e["tier"]["after"]]
+        fell = [nm(e["system"]) for e in sy if any((e[k]["change"] or 0) < 0 for k, _ in cols)]
+        summary = ("No rank changed" if not moved else "Ranks changed: " + ", ".join(moved)) + ". " + (
+            f"Tiers changed for {', '.join(tiers)}. Each tier is built down from its leader, so a single paired gap "
+            "that turns significant near the top moves every system below it down one tier." if tiers else "No tier changed.") + (
+            " No score fell." if not fell else f" Some scores fell: {', '.join(fell)}.")
         out["label-review"] = ("## Scores", "\n".join([
             "## Label review after the runs", "",
-            la["disclosure"], "",
+            la["disclosure"].removeprefix("Label review after the runs. "), "", summary, "",
             "Each cell is balanced accuracy before the review, after it, and the change. The answers are the same "
             "saved answers, scored with the same rule.", "", hb + "\n".join(rb)]))
 

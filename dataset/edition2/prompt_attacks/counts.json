@@ -23,20 +23,20 @@
     "rule": "agreed or not yet second-labelled rows as built; disputed rows resolved by an owner ruling with their final label and subtask; disputed rows awaiting the owner left out"
   },
   "by_source_licence": {
-    "deepset_injections_test|apache-2.0": 56,
+    "deepset_injections_test|apache-2.0": 55,
     "e2_attack_controls|cc-by-4.0": 954,
-    "itw_jailbreak_prompts|mit": 1061,
+    "itw_jailbreak_prompts|mit": 1060,
     "jackhhao_jailbreak|apache-2.0": 94,
     "lakera_gandalf_summarization|mit": 26,
-    "lakera_mosscap|mit": 582,
-    "neuralchemy_injection|apache-2.0": 167,
+    "lakera_mosscap|mit": 561,
+    "neuralchemy_injection|apache-2.0": 166,
     "notinject|mit": 125,
     "yanis_prompt_injections|apache-2.0": 173
   },
   "by_split": {
     "dev": 572,
-    "private": 744,
-    "test": 1922
+    "private": 738,
+    "test": 1904
   },
   "by_subtask_label_source": {
     "injection|no|deepset_injections_test": 29,
@@ -44,17 +44,17 @@
     "injection|no|itw_jailbreak_prompts": 222,
     "injection|no|neuralchemy_injection": 15,
     "injection|no|notinject": 125,
-    "injection|yes|deepset_injections_test": 27,
+    "injection|yes|deepset_injections_test": 26,
     "injection|yes|e2_attack_controls": 128,
     "injection|yes|itw_jailbreak_prompts": 188,
-    "injection|yes|neuralchemy_injection": 114,
+    "injection|yes|neuralchemy_injection": 113,
     "injection|yes|yanis_prompt_injections": 83,
     "jailbreak|no|e2_attack_controls": 214,
     "jailbreak|no|itw_jailbreak_prompts": 245,
     "jailbreak|no|jackhhao_jailbreak": 80,
     "jailbreak|no|neuralchemy_injection": 1,
     "jailbreak|yes|e2_attack_controls": 144,
-    "jailbreak|yes|itw_jailbreak_prompts": 323,
+    "jailbreak|yes|itw_jailbreak_prompts": 322,
     "jailbreak|yes|jackhhao_jailbreak": 14,
     "jailbreak|yes|neuralchemy_injection": 27,
     "jailbreak|yes|yanis_prompt_injections": 30,
@@ -64,7 +64,7 @@
     "leakage|yes|e2_attack_controls": 147,
     "leakage|yes|itw_jailbreak_prompts": 1,
     "leakage|yes|lakera_gandalf_summarization": 26,
-    "leakage|yes|lakera_mosscap": 296,
+    "leakage|yes|lakera_mosscap": 275,
     "leakage|yes|neuralchemy_injection": 10,
     "leakage|yes|yanis_prompt_injections": 60
   },
@@ -73,22 +73,22 @@
     "injection|no|private": 127,
     "injection|no|test": 316,
     "injection|yes|dev": 89,
-    "injection|yes|private": 131,
-    "injection|yes|test": 320,
+    "injection|yes|private": 130,
+    "injection|yes|test": 319,
     "jailbreak|no|dev": 94,
     "jailbreak|no|private": 128,
     "jailbreak|no|test": 318,
     "jailbreak|yes|dev": 108,
     "jailbreak|yes|private": 121,
-    "jailbreak|yes|test": 309,
+    "jailbreak|yes|test": 308,
     "leakage|no|dev": 90,
     "leakage|no|private": 129,
     "leakage|no|test": 321,
     "leakage|yes|dev": 94,
-    "leakage|yes|private": 108,
-    "leakage|yes|test": 338
+    "leakage|yes|private": 103,
+    "leakage|yes|test": 322
   },
-  "candidates_sha256": "9454f6cc8455c6f03512de5703485010c71964adc224897c37dbdf50c735e367",
+  "candidates_sha256": "6f252439a74eb06bc3c1dc130828590e08ddaabb4477df21bb1bee2b71e88787",
   "entity_types": "not applicable to prompt attacks",
   "groups_by_subtask_label": {
     "injection|no": 537,
@@ -104,6 +104,11 @@
     "dropped": 391,
     "kept": 2835,
     "rows": 3226
+  },
+  "purged_after_build": {
+    "note": "rows excluded by owner ruling 32 were purged from this pool after its builder ran; the count fields above are recomputed from the purged candidates",
+    "rows": 24,
+    "ruling": 32
   },
   "second_label": {
     "by_round": {
