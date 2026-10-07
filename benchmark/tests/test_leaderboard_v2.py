@@ -616,10 +616,26 @@ def test_content_views_are_secondary_and_use_the_row_tags():
     assert v["excluding_vendor_owned"]["catch_rate"] == pytest.approx(0.5)
     cv = doc["content_views"]
     assert "not ranked" in cv["label"] and set(cv["definitions"]) == {"all_rows", "bedrock_five",
-                                                                      "excluding_vendor_owned"}
+                                                                      "excluding_vendor_owned",
+                                                                      "excluding_openai_owned"}
     assert cv["systems"]["a"]["bedrock_five"]["subtasks"]["request"] == pytest.approx(75.0)
     # the headline is unchanged: all rows
     assert doc["suites"]["content"]["ranking"][0]["balanced_accuracy"] == pytest.approx((50.0 + 100.0) / 2)
+
+
+def test_openai_owned_view_leaves_out_openai_moderation_rows_only():
+    # 15 positives caught; 15 negatives, 10 from OpenAI's moderation set (flagged) and 5 from Aegis (passed)
+    tags = {i: {"in_bedrock_five": True, "vendor_owned": False, "source": "beavertails"} for i in range(15)}
+    tags.update({i: {"in_bedrock_five": False, "vendor_owned": True,
+                     "source": "openai_moderation" if i < 25 else "aegis2"} for i in range(15, 30)})
+    frozen = _frozen(n=30, feat="f1", suite="content", tag="input", tags=tags)
+    recs = [rec("a", i, "yes" if i < 15 else "no", 0.9 if i < 25 else 0.1, suite="content") for i in range(30)]
+    doc = ev(recs, contract("content"), replicates=20, seed=1, frozen=frozen)
+    v = doc["arms"][0]["subtasks"]["request"]["views"]
+    assert v["all_rows"]["false_block_rate"] == pytest.approx(10 / 15)
+    assert v["excluding_openai_owned"]["false_block_rate"] == 0.0
+    assert v["excluding_openai_owned"]["n"]["negative"] == 5 and v["excluding_openai_owned"]["n"]["positive"] == 15
+    assert v["excluding_vendor_owned"]["n"]["negative"] == 0
 
 
 def test_content_views_leave_untagged_rows_out_and_count_them():

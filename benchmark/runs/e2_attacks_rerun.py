@@ -386,7 +386,11 @@ def ai_label_disclosure() -> str:
             f"reference label on {o['agreement']:.1%} of them (Cohen's kappa {o['kappa']:.2f}).")
 
 
-def score(replicates: int | None = None) -> Path:
+def score(replicates: int | None = None, extra_runs=(), final: Path | None = None) -> Path:
+    """The rescore over every suite. ``extra_runs`` adds systems run later under their own extension manifests (each
+    a dict: ``work`` raw ledger folder, ``log`` run-log path, ``manifest``, ``label``, ``run`` (an entry for
+    ``full_run.runs``), ``approval``, ``disclosures``, ``caveats``, ``public_files`` (committed files the privacy
+    check also covers)). ``final`` is the output folder (default ``FINAL``)."""
     from goldrails_bench import freeze as F
     from goldrails_bench import leaderboard as lb
     from goldrails_bench import leaderboard_v2 as lv2
@@ -407,13 +411,28 @@ def score(replicates: int | None = None) -> Path:
     new_log = json.loads(RUN_LOG.read_text(encoding="utf-8")) if RUN_LOG.exists() else {"systems": {}, "vm": []}
     old_sum = _with_log(FULL / "run-log.json", lambda: sample.run_summary(old_raw, sel_old))
     new_sum = _with_log(RUN_LOG, lambda: sample.run_summary(new_raw, sel_new))
+    ext_raw, ext_sum, ext_logs, ext_manifests = [], {}, [], []
+    for x in extra_runs:
+        raw = sample.load_ledgers(x["work"])
+        log = json.loads(Path(x["log"]).read_text(encoding="utf-8")) if Path(x["log"]).exists() else {"systems": {}}
+        s = _with_log(Path(x["log"]), lambda: sample.run_summary(raw, sel_all))
+        unfinished_x = {k for k, v in s.items() if v["never_logged"] or v["failed"] > 0.02 * max(1, v["rows"])}
+        if unfinished_x:
+            raise SystemExit(f"extension run {x['label']}: unfinished systems {sorted(unfinished_x)} (never-logged "
+                             "rows or more than 2% failures)")
+        ext_raw += raw
+        ext_sum.update(s)
+        ext_logs.append((x, log))
+        ext_manifests.append(lv2.load_freeze(x["manifest"]))
+    ext_systems = set(ext_sum)
     blocked = full.blocked_systems()
     unfinished = {s for s in blocked if s not in new_sum or new_sum[s]["never_logged"]
                   or new_sum[s]["failed"] > 0.02 * max(1, new_sum[s]["rows"])}
     new_raw = [d for d in new_raw if d["system"] not in unfinished]
     new_sum = {k: v for k, v in new_sum.items() if k not in unfinished}
-    final_old, final_new = sample.latest(old_raw), sample.latest(new_raw)
-    final = final_old + final_new
+    final_old, final_new, final_ext = sample.latest(old_raw), sample.latest(new_raw), sample.latest(ext_raw)
+    final_dir = final or FINAL
+    final = final_old + final_new + final_ext
     records = [x for d in final if (x := full.scorer_record(d, tr))]
     tariffs = lb.load_tariffs()
     # the full run's VM time was shared by all six of its suites: allocate from its whole summary
@@ -430,11 +449,14 @@ def score(replicates: int | None = None) -> Path:
     doc = lv2.evaluate([dict(r) for r in records], lv2.load_contract(), implementations(records), None, "test",
                        None, replicates, None, tariffs, serving, arms_meta, {}, frozen=full.frozen_rows(tr),
                        manifest=pm, manifest_identity=pident, diagnostic=False, integrity=_primary_integrity(),
-                       extensions=[(xm, xident)])
+                       extensions=[(xm, xident)] + ext_manifests)
     for a in doc["arms"]:                     # owner ruling 22: no latency in the published results
         a.pop("latency", None)
     pub, unp = tr.public_ids(), tr.unpublished
     summary = _merge_summaries(old_sum, new_sum)
+    for sy, v in _merge_summaries({}, ext_sum).items():
+        v["runs"] = {"extension_run": len(ext_sum[sy].get("runs") or [])}
+        summary[sy] = v
     contract = lv2.load_contract()
     exc = contract["suites"][SUITE]["acceptance"]["floor_exception"]
     by_feat = {f: {"public": sum(1 for i in pub if tr.feature[i] == f),
@@ -451,7 +473,7 @@ def score(replicates: int | None = None) -> Path:
                                   "suites": [SUITE], "manifest": full._rel(MANIFEST), "source": sample._source_label()}},
         "rows": by_feat, "rows_total": len(tr.rows), "rows_public": len(pub), "rows_unpublished": len(unp),
         "dataset_sha256": {full.FEATURE_SUITE[f]: tr.file_sha[f] for f in full.FEATURES},
-        "approval": APPROVAL,
+        "approval": APPROVAL + "".join(f"; {x['approval']}" for x in extra_runs),
         "forecast": (new_log.get("forecasts") or [None])[-1],
         "prompt_attack_note": ("Prompt attacks passed a confounds-only check: classifiers that see only a row's "
                                "source, platform, format, length or payload position stay at or under balanced "
@@ -467,6 +489,7 @@ def score(replicates: int | None = None) -> Path:
             "committed before the rerun. The other suites' results are the full run's, unchanged.",
             "Self-hosted cost for the five full-run suites is the full run's VM time split by each suite's share of a "
             "system's rows, since that run did not time suites apart.",
+            *[d for x in extra_runs for d in x.get("disclosures") or []],
         ],
         "caveats": [
             "custom words (word_filters/word) are a pass/fail sanity check outside the score (owner ruling 13)",
@@ -478,9 +501,12 @@ def score(replicates: int | None = None) -> Path:
             "the unpublished slice can be rebuilt from public upstream data (owner ruling 15); it supports a "
             "contamination check, not a secret test",
             "no latency is reported: the leaderboard compares accuracy and cost (owner ruling 22)",
+            *[c for x in extra_runs for c in x.get("caveats") or []],
         ],
         "question_set_names": sample.question_set_note(),
     }
+    for x in extra_runs:
+        doc["full_run"]["runs"][x["run"]["key"]] = {k: v for k, v in x["run"].items() if k != "key"}
     doc["no_latency"] = {"ruling": 22, "note": "latency is not measured under controlled conditions and is not reported"}
     doc["run"] = {"systems": summary, "blocked": {s: blocked[s] for s in sorted(unfinished)},
                   "blocked_resolved": {s: blocked[s] for s in sorted(set(blocked) - unfinished)}, "vm": vm_info,
@@ -492,7 +518,17 @@ def score(replicates: int | None = None) -> Path:
                   "not_run": {f"{k[0]}/{k[1]}": v for k, v in smoke.NOT_RUN.items()}}
     costs = [c["usd_total"] for c in doc["run"]["cost"].values() if c.get("usd_total") is not None]
     doc["run"]["cost_total_usd"] = round(sum(costs), 2)
-    rerun_cost = system_costs([r for r in records if r["dataset"]["feature"] == FEATURE],
+    if extra_runs:
+        doc["run"]["extension_runs"] = []
+        for x, log in ext_logs:
+            sys_x = {s for s in ext_sum if any(d["system"] == s for d in sample.load_ledgers(x["work"]))}
+            c = system_costs([r for r in records if r["system"] in sys_x], [], tariffs)
+            doc["run"]["extension_runs"].append({
+                "label": x["label"], "systems": sorted(sys_x), "runs": log.get("runs"), "forecasts": log.get("forecasts"),
+                "retry_passes": log.get("retry_passes"), "cost": c,
+                "cost_total_usd": round(sum(v["usd_total"] or 0 for v in c.values()), 2)})
+    rerun_cost = system_costs([r for r in records if r["dataset"]["feature"] == FEATURE
+                               and r["system"] not in ext_systems],
                               [s for s in serving if s.get("dataset_sha256") == tr.file_sha[FEATURE]], tariffs)
     doc["run"]["attack_rerun"]["cost"] = rerun_cost
     doc["run"]["attack_rerun"]["cost_total_usd"] = round(sum(c["usd_total"] or 0 for c in rerun_cost.values()), 2)
@@ -500,7 +536,7 @@ def score(replicates: int | None = None) -> Path:
                                "prices, VM up-to-paused time at the dated machine and disk rate); fixed_costs are listed "
                                "separately")
     doc["table"] = sample.compact(doc)
-    doc["prompt_attacks"] = {"ngram_baseline": ngram_baselines(), "by_tag": attack_views(final_new, tr),
+    doc["prompt_attacks"] = {"ngram_baseline": ngram_baselines(), "by_tag": attack_views(final_new + final_ext, tr),
                              "floor_exception": exc}
     sample.implementations = implementations          # slice views score with the same arm selectors
     doc["unpublished_slice_view"] = {
@@ -510,11 +546,12 @@ def score(replicates: int | None = None) -> Path:
         "public": full.slice_view(records, tr, pub, replicates),
         "unpublished": full.slice_view(records, tr, unp, replicates),
     }
-    FINAL.mkdir(parents=True, exist_ok=True)
-    p = FINAL / "leaderboard.json"
+    final_dir.mkdir(parents=True, exist_ok=True)
+    p = final_dir / "leaderboard.json"
     p.write_text(json.dumps(doc, indent=1, ensure_ascii=False, default=float) + "\n", encoding="utf-8")
     full.write_public(tr)
-    pc = privacy(tr)
+    pc = privacy(tr, [f for x in extra_runs for f in x.get("public_files") or []] + [x["manifest"] for x in extra_runs],
+                 final=final_dir)
     doc["privacy_check"] = pc
     p.write_text(json.dumps(doc, indent=1, ensure_ascii=False, default=float) + "\n", encoding="utf-8")
     if not pc["pass"]:
@@ -522,9 +559,10 @@ def score(replicates: int | None = None) -> Path:
     return p
 
 
-def privacy(tr, extra=()) -> dict:
+def privacy(tr, extra=(), final: Path | None = None) -> dict:
     """``e2_full.privacy_check`` over this run's committed files, edition2-final/ and the extension manifest."""
-    files = full.committed_files() + sorted(q for q in FINAL.rglob("*") if q.is_file()) + [MANIFEST, *map(Path, extra)]
+    final = final or FINAL
+    files = full.committed_files() + sorted(q for q in final.rglob("*") if q.is_file()) + [MANIFEST, *map(Path, extra)]
     return full.privacy_check(tr, [f for f in files if f.exists()])
 
 
@@ -532,7 +570,8 @@ def privacy(tr, extra=()) -> dict:
 
 NAMES = {"jev-1.13.0": "Jev 1.13.0", "clef": "Clef", "clef-flash": "Clef-flash", "pplx-decider-v1-27b": "pplx-decider-v1-27b",
          "kev-0-8b": "Kev-0.8B", "kev-4b": "Kev-4B", "kev-9b": "Kev-9B", "open-jev-2b": "Open-Jev-2B", "laya": "Laya",
-         "strands-decider-2b": "Strands Decider 2B", "bedrock-guardrails": "Bedrock Guardrails"}
+         "strands-decider-2b": "Strands Decider 2B", "bedrock-guardrails": "Bedrock Guardrails",
+         "gpt-6-luna": "gpt-6-luna"}
 SUITE_COLS = (("content", "Content"), ("prompt_attacks", "Prompt attacks"), ("denied_topics", "Denied topics"),
               ("word_filters", "Profanity"), ("sensitive_info", "PII"), ("grounding", "Grounding"))
 

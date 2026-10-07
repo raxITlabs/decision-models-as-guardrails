@@ -447,7 +447,8 @@ def row_summary(x: dict) -> dict:
     return {"id": x["id"], "subtask": x.get("subtask"), "expected": x.get("expected"),
             "expected_types": sorted({sp["label"] for sp in spans}) if spans is not None else None,
             "group": x.get("group"), "split": x.get("split"),
-            "in_bedrock_five": e2.get("in_bedrock_five"), "vendor_owned": e2.get("vendor_owned")}
+            "in_bedrock_five": e2.get("in_bedrock_five"), "vendor_owned": e2.get("vendor_owned"),
+            "source": (x.get("provenance") or {}).get("source")}
 
 
 def _dataset_files(paths) -> list[Path]:
@@ -531,7 +532,10 @@ CONTENT_VIEWS = {
     "all_rows": "every labelled row (the headline)",
     "bedrock_five": "positives in Bedrock's five content categories (tag in_bedrock_five); every negative kept",
     "excluding_vendor_owned": "rows from vendor-owned sources left out (tag vendor_owned: openai_moderation, aegis2)",
+    "excluding_openai_owned": "rows from OpenAI's moderation evaluation set left out (source openai_moderation): the "
+                              "view for OpenAI's own model, gpt-6-luna",
 }
+OPENAI_OWNED_SOURCES = ("openai_moderation",)
 
 
 def _tag(x, frozen_rows: dict | None, key: str):
@@ -550,6 +554,7 @@ def content_views(units: dict, t, frozen_rows: dict | None) -> dict:
     keep = {
         "bedrock_five": lambda x, b, v: (b is True) if x.positive else True,
         "excluding_vendor_owned": lambda x, b, v: v is False,
+        "excluding_openai_owned": lambda x, b, v: _tag(x, frozen_rows, "source") not in OPENAI_OWNED_SOURCES,
     }
     for view in CONTENT_VIEWS:
         if view == "all_rows":
@@ -557,11 +562,13 @@ def content_views(units: dict, t, frozen_rows: dict | None) -> dict:
             untagged = 0
         else:
             sel, untagged = defaultdict(list), 0
-            need = "in_bedrock_five" if view == "bedrock_five" else "vendor_owned"
+            need = {"bedrock_five": "in_bedrock_five", "excluding_openai_owned": "source"}.get(view, "vendor_owned")
             for u, rs in units.items():
                 for x in rs:
                     b, v = _tag(x, frozen_rows, "in_bedrock_five"), _tag(x, frozen_rows, "vendor_owned")
-                    if (b if need == "in_bedrock_five" else v) is None and (need == "vendor_owned" or x.positive):
+                    tag = {"in_bedrock_five": b, "vendor_owned": v}.get(need) if need != "source" \
+                        else _tag(x, frozen_rows, "source")
+                    if tag is None and (need != "in_bedrock_five" or x.positive):
                         untagged += 1
                         continue
                     if keep[view](x, b, v):
