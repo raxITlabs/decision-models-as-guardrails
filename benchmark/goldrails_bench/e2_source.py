@@ -37,7 +37,7 @@ ENV = "GOLDRAILS_E2_SOURCE"
 # the full run of 5 October read was f88403efb827ba0c2771dd069ec545d35849ff8d.
 # The upload 06db773e6b9f6598eaf62159b0e6ef01f26071c0 predates the ruling 32 label review (7 October 2026); the
 # restaged 1.0.0 replaces it, so the runners read the staged folder until its new Hub commit is filled in here.
-E2_HF_REVISION: str | None = None
+E2_HF_REVISION: str | None = "13beb711a4c2de3f9652bab02570c7c439a2f79b"   # 1.0.0
 
 
 class E2SourceMissing(FileNotFoundError):
