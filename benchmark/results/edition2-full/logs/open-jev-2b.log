@@ -1,17 +1,0 @@
-
-=== 2026-10-05T04:31:56Z run --systems open,strands --only open-jev-2b
-Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 2150.16it/s]
-open-jev-2b          content/request            1731 sent, 0 failed
-open-jev-2b          content/reply              756 sent, 185 failed
-
-=== 2026-10-05T06:37:03Z run --systems open,strands --only open-jev-2b
-Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 1970.58it/s]
-open-jev-2b          content/request              0 sent, 0 failed
-open-jev-2b          content/reply                0 sent, 0 failed
-open-jev-2b          prompt_attacks/direct             2631 sent, 0 failed
-open-jev-2b          denied_topics/topic              718 sent, 0 failed
-open-jev-2b          sensitive_info/entity_detection   720 sent, 0 failed
-open-jev-2b          grounding/grounding          724 sent, 0 failed
-open-jev-2b          word_filters/word               100 sent, 0 failed
-open-jev-2b          word_filters/profanity          704 sent, 0 failed
-open-jev-2b: 6127s

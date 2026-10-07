@@ -1,34 +1,0 @@
-preflight: {"typesafe": true, "cloudflare": true, "perplexity": true, "aws_profile_set": true, "aws_blocked": "ok", "bedrock_config": true, "vm_status": "vm: TERMINATED us-east4-a (project raxit-ai)"}
-Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 3689.17it/s]
-forecast: {"rows_per_system": 8108, "dev_rows": 1422, "scale": 5.702, "hosted_usd": {"jev-1.13.0": 0.315, "clef": 1.68, "clef-flash": 0.63, "pplx-decider-v1-27b": 0.472, "bedrock-guardrails": 0.903}, "hosted_usd_total": 4.0, "vm_seconds": 11687, "vm_usd": 6.57, "vm_rate_usd_per_hour": 1.9943, "total_usd": 10.57, "high_usd": 15.86, "wall_hours": 3.25, "cap_usd": 30.0, "basis": "dev-split sample (benchmark/results/edition2-dev-sample): measured hosted cost and VM main-pass seconds, scaled by rows; high = 1.5 x"}
-Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 5642.76it/s]
-vm up at 2026-10-05T04:27:50Z
-vm paused at 2026-10-05T06:10:38Z
-[vm] paused (exit 0); ['vm: TERMINATED us-east4-a (project raxit-ai)']; terminated=True
-Traceback (most recent call last):
-  File "/Users/adeshgairola/Documents/raxIT/code/raxitlabs-github/jev-as-a-guardrails/benchmark/runs/e2_full.py", line 647, in <module>
-    committed_freeze()
-         ^^^^^^
-  File "/Users/adeshgairola/Documents/raxIT/code/raxitlabs-github/jev-as-a-guardrails/benchmark/runs/e2_full.py", line 638, in main
-    elif a.stage == "freeze":
-               ^^^^^^^^^
-  File "/Users/adeshgairola/Documents/raxIT/code/raxitlabs-github/jev-as-a-guardrails/benchmark/runs/e2_full.py", line 411, in run_all
-    vm = vm_run()
-  File "/Users/adeshgairola/Documents/raxIT/code/raxitlabs-github/jev-as-a-guardrails/benchmark/runs/e2_full.py", line 357, in vm_run
-    res["exit"] = _wait(procs)
-                  ~~~~~^^^^^^^
-  File "/Users/adeshgairola/Documents/raxIT/code/raxitlabs-github/jev-as-a-guardrails/benchmark/runs/e2_full.py", line 289, in _wait
-    return {k: p.wait() for k, p in procs.items()}
-               ~~~~~~^^
-  File "/Users/adeshgairola/.local/share/uv/python/cpython-3.13.2-macos-aarch64-none/lib/python3.13/subprocess.py", line 1276, in wait
-    return self._wait(timeout=timeout)
-           ~~~~~~~~~~^^^^^^^^^^^^^^^^^
-  File "/Users/adeshgairola/.local/share/uv/python/cpython-3.13.2-macos-aarch64-none/lib/python3.13/subprocess.py", line 2068, in _wait
-    (pid, sts) = self._try_wait(0)
-                 ~~~~~~~~~~~~~~^^^
-  File "/Users/adeshgairola/.local/share/uv/python/cpython-3.13.2-macos-aarch64-none/lib/python3.13/subprocess.py", line 2026, in _try_wait
-    (pid, sts) = os.waitpid(self.pid, wait_flags)
-                 ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/adeshgairola/Documents/raxIT/code/raxitlabs-github/jev-as-a-guardrails/benchmark/runs/e2_full.py", line 347, in on_term
-    raise _Term()
-_Term

@@ -1,24 +1,0 @@
-
-=== 2026-10-05T04:31:56Z run --systems open,strands --only strands-decider-2b
-Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 2309.54it/s]
-strands-decider-2b   content/request            1731 sent, 0 failed
-strands-decider-2b   content/reply              756 sent, 0 failed
-strands-decider-2b   prompt_attacks/direct             2655 sent, 0 failed
-strands-decider-2b   denied_topics/topic              718 sent, 0 failed
-strands-decider-2b   sensitive_info/entity_detection   720 sent, 0 failed
-strands-decider-2b   grounding/grounding          724 sent, 0 failed
-strands-decider-2b   word_filters/word               100 sent, 0 failed
-strands-decider-2b   word_filters/profanity          704 sent, 0 failed
-strands-decider-2b: 5084s
-
-=== 2026-10-05T06:37:03Z run --systems open,strands --only strands-decider-2b
-Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 2881.92it/s]
-strands-decider-2b   content/request              0 sent, 0 failed
-strands-decider-2b   content/reply                0 sent, 0 failed
-strands-decider-2b   prompt_attacks/direct               0 sent, 0 failed
-strands-decider-2b   denied_topics/topic                0 sent, 0 failed
-strands-decider-2b   sensitive_info/entity_detection     0 sent, 0 failed
-strands-decider-2b   grounding/grounding            0 sent, 0 failed
-strands-decider-2b   word_filters/word                 0 sent, 0 failed
-strands-decider-2b   word_filters/profanity            0 sent, 0 failed
-strands-decider-2b: 0s

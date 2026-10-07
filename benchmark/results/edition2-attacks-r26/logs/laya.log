@@ -1,5 +1,0 @@
-
-=== 2026-10-06T10:40:22Z run --systems open,strands --only laya
-laya                 prompt_attacks/direct             3180 sent, 0 failed
-laya                 prompt_attacks/indirect           1420 sent, 0 failed
-laya: 3015s

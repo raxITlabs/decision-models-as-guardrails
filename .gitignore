@@ -5,7 +5,6 @@ coverage/
 .venv/
 __pycache__/
 .ipynb_checkpoints/
-dataset/samples/raw/
 *.egg-info/
 vendor/*
 !vendor/README.md
@@ -26,12 +25,12 @@ dataset/publish/*/data/
 # edition 2: never committed, the repository is public (dataset/goldrails_dataset/e2_local.py explains the layout).
 # private/: the private slice and owner-only files (review packets, _lead answer keys, full disagreement notes).
 # local/: text of rows whose source licence is not cleared in dataset/release/redistribution.json.
-dataset/edition2/*/private/
+dataset/edition2/**/private/
 # the private-slice salt (dataset/goldrails_dataset/e2_local.py): owner only, back it up with the private/ folders
 dataset/edition2/.private-salt
 # digests of upstream training splits for the model-training overlap check (goldrails_dataset.model_overlap)
 dataset/edition2/.model-overlap-cache/
-dataset/edition2/*/local/
+dataset/edition2/**/local/
 dataset/edition2/**/_lead/
 # content human second-label sample (ruling 7): label.html embeds row text, much of it harmful
 dataset/edition2/content/sample/
@@ -43,23 +42,10 @@ dataset/publish/release-*/
 dataset/publish/v2.*/
 # edition 2 rows rebuilt for the runners from the Hub copy plus local text and the unpublished slice (goldrails_bench.e2_source)
 dataset/edition2/.materialized/
-# edition 2 full run: raw ledgers hold unpublished-slice ids (benchmark/runs/e2_full.py writes public-only copies)
-benchmark/results/edition2-full/private/
-benchmark/results/edition2-full/.run-log.lock
-# ruling 23 prompt-attack candidate (goldrails_dataset.sources.e2_prompt_attacks_r23_build): same layout as the suites above
-dataset/edition2/r23/*/private/
-dataset/edition2/r23/*/local/
-# ruling 25 prompt-attack candidate (goldrails_dataset.sources.e2_prompt_attacks_r25): same layout; the packet's answer
-# key and the labelled review page go outside the repository (~/.goldrails-private/r25-prompt-attacks/)
-dataset/edition2/r25/*/private/
-dataset/edition2/r25/*/local/
-# ruling 26 prompt-attack candidate (goldrails_dataset.sources.e2_prompt_attacks_r26): same layout; local/ also holds the
-# row recipes (upstream ids). The packet's answer key and the labelled review page go outside the repository
-# (~/.goldrails-private/r26/)
-dataset/edition2/r26/*/private/
-dataset/edition2/r26/*/local/
-# prompt-attack rerun on the r26 suite (benchmark/runs/e2_attacks_rerun.py): raw ledgers hold unpublished-slice ids
-benchmark/results/edition2-attacks-r26/private/
-benchmark/results/edition2-openai/private/
-benchmark/results/edition2-attacks-r26/.run-log.lock
-benchmark/results/*/.run-log.lock
+# the prompt-attack suite in r26/ has the same layout; its local/ also holds the row recipes (upstream ids)
+# result ledgers: the raw ledgers hold unpublished-slice ids; the run scripts write public-only copies beside them
+benchmark/results/**/private/
+benchmark/results/**/.run-log.lock
+# the published results (leaderboard, README, plots, per-row ledgers and run logs) are held back until release day;
+# benchmark/runs/e2_openai_run.py score rebuilds leaderboard.json from these ledgers
+benchmark/results/final/

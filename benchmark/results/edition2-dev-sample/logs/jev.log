@@ -1,9 +1,0 @@
-jev-1.13.0           content/request            261 sent, 0 failed
-jev-1.13.0           content/reply               87 sent, 0 failed
-jev-1.13.0           prompt_attacks/direct             544 sent, 0 failed
-jev-1.13.0           denied_topics/topic              131 sent, 0 failed
-jev-1.13.0           sensitive_info/entity_detection   118 sent, 0 failed
-jev-1.13.0           grounding/grounding          119 sent, 0 failed
-jev-1.13.0           word_filters/word                11 sent, 0 failed
-jev-1.13.0           word_filters/profanity          151 sent, 0 failed
-jev-1.13.0: 42s

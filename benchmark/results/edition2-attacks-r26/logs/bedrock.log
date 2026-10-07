@@ -1,5 +1,0 @@
-
-=== 2026-10-06T09:22:21Z run --systems bedrock
-bedrock-guardrails   prompt_attacks/direct             3180 sent, 0 failed
-bedrock-guardrails   prompt_attacks/indirect           1420 sent, 0 failed
-bedrock-guardrails: 2535s

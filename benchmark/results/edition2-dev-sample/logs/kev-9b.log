@@ -1,9 +1,0 @@
-kev-9b               content/request            261 sent, 0 failed
-kev-9b               content/reply               87 sent, 0 failed
-kev-9b               prompt_attacks/direct             544 sent, 0 failed
-kev-9b               denied_topics/topic              131 sent, 0 failed
-kev-9b               sensitive_info/entity_detection   118 sent, 0 failed
-kev-9b               grounding/grounding          119 sent, 0 failed
-kev-9b               word_filters/word                11 sent, 0 failed
-kev-9b               word_filters/profanity          151 sent, 0 failed
-kev-9b: 1038s

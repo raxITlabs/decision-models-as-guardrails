@@ -1,5 +1,0 @@
-
-=== 2026-10-06T10:40:22Z run --systems open,strands --only kev-9b
-kev-9b               prompt_attacks/direct             3180 sent, 0 failed
-kev-9b               prompt_attacks/indirect           1420 sent, 0 failed
-kev-9b: 1775s

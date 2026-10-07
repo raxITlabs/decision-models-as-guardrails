@@ -1,9 +1,0 @@
-kev-4b               content/request              0 sent, 0 failed
-kev-4b               content/reply                0 sent, 0 failed
-kev-4b               prompt_attacks/direct               0 sent, 0 failed
-kev-4b               denied_topics/topic                0 sent, 0 failed
-kev-4b               sensitive_info/entity_detection     9 sent, 0 failed
-kev-4b               grounding/grounding            0 sent, 0 failed
-kev-4b               word_filters/word                 0 sent, 0 failed
-kev-4b               word_filters/profanity            0 sent, 0 failed
-kev-4b: 14s

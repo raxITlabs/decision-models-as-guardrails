@@ -1,4 +1,0 @@
-vm up at 2026-10-05T06:10:52Z
-[vm] error: RuntimeError: make up failed (exit 2): ['make: *** [up] Error 1']
-vm paused at 2026-10-05T06:27:33Z
-[vm] paused (exit 0); ['vm: TERMINATED us-east4-a (project raxit-ai)']; terminated=True

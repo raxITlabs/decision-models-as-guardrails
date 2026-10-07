@@ -8,7 +8,9 @@
     uv run python benchmark/runs/e2_full.py vm-run        # make up, the six VM models, retry passes, make pause
     uv run python benchmark/runs/e2_full.py hosted-run    # Jev, Clef, Clef-flash, pplx-decider, Bedrock, retry passes
     uv run python benchmark/runs/e2_full.py report        # offline: run summary, public ledgers, privacy checks
-    uv run python benchmark/runs/e2_full.py score         # offline: leaderboard.json (frozen mode)
+
+The run's records feed the published results in ``benchmark/results/final/`` (``e2_openai_run.py score``), which keep
+content, denied topics, word filters, PII and grounding from this run and take prompt attacks from the r26 rerun.
 
 What is sent: every row of the edition 2 test split, ``F*.test.jsonl`` of the edition 2 source
 (``goldrails_bench.e2_source``: the Hugging Face copy at the pinned revision, withheld text rebuilt locally), plus
@@ -26,8 +28,8 @@ anything until that manifest is committed, and stamps its sha256 and the adapter
 ``leaderboard_v2`` can show the freeze predates every attempt.
 
 Privacy (the repository is public). The raw ledgers hold unpublished-slice ids and live in the git-ignored
-``benchmark/results/edition2-full/private/``. ``report`` and ``score`` write the committed ledgers
-``benchmark/results/edition2-full/<system>.jsonl`` with public test rows only, and check that no committed file
+``benchmark/results/final/ledgers/main-run/private/``. ``report`` writes the committed ledgers
+``benchmark/results/final/ledgers/main-run/<system>.jsonl`` with public test rows only (prompt-attack records left out), and check that no committed file
 holds an unpublished id or any row text (``e2_sample.fast_leak_check`` and ``e2_local.tracked_leaks``). No ledger
 ever holds row text: ``e2_smoke.record`` keeps ids, labels and outputs, and error strings are scrubbed.
 """
@@ -50,7 +52,8 @@ import e2_smoke as smoke  # noqa: E402
 import e2_sample as sample  # noqa: E402
 
 REPO = smoke.REPO
-OUT = REPO / "benchmark" / "results" / "edition2-full"
+FINAL = REPO / "benchmark" / "results" / "final"     # the published results and the ledgers behind them
+OUT = FINAL / "ledgers" / "main-run"
 WORK = OUT / "private"            # git-ignored: raw ledgers with unpublished-slice ids
 LOGS = OUT / "logs"
 RUN_LOG = OUT / "run-log.json"
@@ -60,6 +63,9 @@ FEATURES = sample.FEATURES
 FEATURE_SUITE = {"F1": "content", "F2": "prompt_attacks", "F3": "denied_topics", "F4": "word_filters",
                  "F5": "sensitive_info", "F6": "grounding"}
 LABEL = "edition 2 full run: test split and unpublished slice, contract v2.0"
+# Suites whose records the committed ledgers leave out: this run's prompt attacks were replaced by the r26 rerun
+# (e2_attacks_rerun.py), which scores them; the raw ledgers in private/ keep every record.
+PUBLIC_EXCLUDE = {"prompt_attacks"}
 HOSTED_KINDS = ("jev", "clef", "clef-flash", "perplexity", "bedrock")
 HOSTED_NAMES = {"jev": "jev-1.13.0", "clef": "clef", "clef-flash": "clef-flash", "perplexity": "pplx-decider-v1-27b",
                 "bedrock": "bedrock-guardrails"}
@@ -142,6 +148,8 @@ def forecast(n_rows: int) -> dict:
     """USD and wall time forecast from the dev-split sample's measurements (its leaderboard.json and run-log.json),
     scaled by rows. VM: the slowest VM model's main-pass seconds per row, plus boot and pause overhead, at the dated
     machine and disk rate. A high estimate allows 50% more tokens per row and 50% more VM time."""
+    if not (DEV_SAMPLE / "leaderboard.json").exists():
+        return recorded_forecast()
     lbd = json.loads((DEV_SAMPLE / "leaderboard.json").read_text(encoding="utf-8"))
     log = json.loads((DEV_SAMPLE / "run-log.json").read_text(encoding="utf-8"))
     dev_rows = lbd["sample"]["rows_total"]
@@ -163,6 +171,16 @@ def forecast(n_rows: int) -> dict:
             "wall_hours": round(max(vm_s, hosted_wall) / 3600, 2), "cap_usd": COST_CAP_USD,
             "basis": "dev-split sample (benchmark/results/edition2-dev-sample): measured hosted cost and VM main-pass "
                      "seconds, scaled by rows; high = 1.5 x"}
+
+
+def recorded_forecast() -> dict:
+    """The forecast this run's log recorded before its first call. The measurements it was made from (the dev-split
+    sample, or an earlier run's results) are not kept in the repository, so a rerun repeats the recorded forecast."""
+    rec = (sample._log().get("forecasts") or [None])[-1]
+    if rec is None:
+        raise SystemExit(f"no forecast in {_rel(sample.RUN_LOG)}, and its measurements are not on this machine")
+    return {**{k: v for k, v in rec.items() if k != "at"},
+            "basis": f"{rec.get('basis')}; recorded in {_rel(sample.RUN_LOG)} before the run"}
 
 
 # --- run log ---------------------------------------------------------------------------------------------------
@@ -435,7 +453,8 @@ def write_public(tr: TestRows) -> list[Path]:
     pub = tr.public_ids()
     out = []
     for p in sorted(WORK.glob("*.jsonl")):
-        keep = [x for x in p.open(encoding="utf-8") if x.strip() and json.loads(x)["row_id"] in pub]
+        keep = [x for x in p.open(encoding="utf-8") if x.strip() and json.loads(x)["row_id"] in pub
+                and json.loads(x)["suite"] not in PUBLIC_EXCLUDE]
         q = OUT / p.name
         q.write_text("".join(keep), encoding="utf-8")
         out.append(q)
@@ -548,94 +567,6 @@ def slice_view(records: list, tr: TestRows, keep: set, replicates) -> dict:
     return sample.compact(doc)
 
 
-def score(replicates: int | None = None) -> Path:
-    from goldrails_bench import leaderboard as lb
-    from goldrails_bench import leaderboard_v2 as lv2
-    tr = TestRows()
-    sel = select_all(tr)
-    recs = load_work()
-    summary = sample.run_summary(recs, sel)
-    blocked = blocked_systems()
-    # A blocked system that did not finish (credentials or quota ran out) is left out of the score and listed under
-    # run.blocked; its partial ledger stays in private/ so a follow-up run resumes it.
-    unfinished = {s for s in blocked if s not in summary or summary[s]["never_logged"]
-                  or summary[s]["failed"] > 0.02 * max(1, summary[s]["rows"])}
-    recs = [d for d in recs if d["system"] not in unfinished]
-    summary = {k: v for k, v in summary.items() if k not in unfinished}
-    final = sample.latest(recs)
-    records = [x for d in final if (x := scorer_record(d, tr))]
-    tariffs = lb.load_tariffs()
-    serving, vm_info = sample.vm_serving(sample._log(), summary)
-    arms_meta = {}
-    for d in final:
-        x = scorer_record(d, tr)
-        ident = (d.get("serving") or {}).get("identity") or {}
-        if x and ident.get("kind"):
-            arms_meta[(x["system"], x["config_hash"], x["dataset"]["sha256"])] = {
-                "system": x["system"], "model": x["model"], "identity": ident}
-    m, ident = lv2.load_freeze(MANIFEST)
-    doc = lv2.evaluate([dict(r) for r in records], lv2.load_contract(), sample.implementations(records), None, "test",
-                       None, replicates, None, tariffs, serving, arms_meta, {}, frozen=frozen_rows(tr),
-                       manifest=m, manifest_identity=ident, diagnostic=False)
-    pub, unp = tr.public_ids(), tr.unpublished
-    by_feat = {f: {"public": sum(1 for i in pub if tr.feature[i] == f),
-                   "unpublished": sum(1 for i in unp if tr.feature[i] == f)} for f in FEATURES}
-    log = sample._log()
-    doc["full_run"] = {
-        "label": LABEL,
-        "what": f"every edition 2 test row ({sample._source_label()}, F*.test.jsonl) and the unpublished slice "
-                "(local private/F*.test.jsonl) sent to every system once, scored by leaderboard_v2 in frozen mode "
-                "at the contract v2.0 fixed rule against the committed freeze manifest",
-        "rows": by_feat, "rows_total": len(tr.rows), "rows_public": len(pub), "rows_unpublished": len(unp),
-        "dataset_sha256": {FEATURE_SUITE[f]: tr.file_sha[f] for f in FEATURES},
-        "approval": "owner ruling 21 (docs/benchmark/29-owner-rulings-2026-10-03.md): contract v2.0 signed, run and "
-                    "spend approved, unpublished slice may be sent to Perplexity",
-        "forecast": (log.get("forecasts") or [None])[-1],
-        "caveats": [
-            "prompt attacks are provisional (owner rulings 17 and 18): labels are partly predictable from source and style",
-            "custom words (word_filters/word) are a pass/fail sanity check outside the score (owner ruling 13)",
-            "DRIVER_ID is an unscored diagnostic (owner ruling 6)",
-            "Laya reads at most 512 tokens per question (owner ruling 16); truncated rows are counted in run.systems",
-            "Strands Decider 2B has a 4,096-token window and cuts silently; rows estimated over it are counted",
-            "latency is per row under each system's worker count, not a declared-load measurement; the six VM models "
-            "shared two L4 GPUs at the same time",
-            "rows that failed on the first pass with a transient error were resent in up to two retry passes; both "
-            "records stay in the ledgers and the score uses the latest",
-            "the unpublished slice can be rebuilt from public upstream data (owner ruling 15); it supports a "
-            "contamination check, not a secret test",
-        ],
-    }
-    doc["full_run"]["question_set_names"] = sample.question_set_note()
-    doc["run"] = {"systems": summary, "blocked": {s: blocked[s] for s in sorted(unfinished)},
-                  "blocked_resolved": {s: blocked[s] for s in sorted(set(blocked) - unfinished)}, "vm": vm_info,
-                  "cost": sample.system_costs(records, serving, tariffs),
-                  "hosted_runs": log.get("hosted_runs"), "vm_runs": log.get("vm_runs"), "all_runs": log.get("all_runs"),
-                  "fixed_costs": log.get("fixed_costs"), "vm_status_checks": log.get("vm_status_checks"),
-                  "not_run": {f"{k[0]}/{k[1]}": v for k, v in smoke.NOT_RUN.items()}}
-    costs = [c["usd_total"] for c in doc["run"]["cost"].values() if c.get("usd_total") is not None]
-    doc["run"]["cost_total_usd"] = round(sum(costs), 2)
-    doc["run"]["cost_note"] = ("cost_total_usd is metered use (hosted tokens and text units at dated list prices, VM "
-                               "up-to-paused time at the dated machine and disk rate); fixed_costs (subscriptions) are "
-                               "listed separately and not allocated per check")
-    doc["table"] = sample.compact(doc)
-    doc["unpublished_slice_view"] = {
-        "label": "diagnostic, never ranked: every system re-scored on the public test rows alone and on the "
-                 "unpublished slice alone (owner ruling 15); a system far better on public rows may have seen them",
-        "rows": {"public": len(pub), "unpublished": len(unp)},
-        "public": slice_view(records, tr, pub, replicates),
-        "unpublished": slice_view(records, tr, unp, replicates),
-    }
-    p = OUT / "leaderboard.json"
-    p.write_text(json.dumps(doc, indent=1, ensure_ascii=False, default=float) + "\n", encoding="utf-8")
-    write_public(tr)
-    pc = privacy_check(tr)
-    doc["privacy_check"] = pc
-    p.write_text(json.dumps(doc, indent=1, ensure_ascii=False, default=float) + "\n", encoding="utf-8")
-    if not pc["pass"]:
-        raise SystemExit(f"privacy check failed: {pc}")
-    return p
-
-
 # --- plan ------------------------------------------------------------------------------------------------------
 
 def plan() -> None:
@@ -656,8 +587,7 @@ def plan() -> None:
 def main(argv=None) -> int:
     load_dotenv(find_dotenv(usecwd=True))
     ap = argparse.ArgumentParser()
-    ap.add_argument("stage", choices=["plan", "preflight", "freeze", "run", "vm-run", "hosted-run", "all", "report",
-                                      "score"])
+    ap.add_argument("stage", choices=["plan", "preflight", "freeze", "run", "vm-run", "hosted-run", "all", "report"])
     ap.add_argument("--systems", default=",".join(HOSTED_KINDS))
     ap.add_argument("--only", default=None, help="comma-separated system names to run")
     ap.add_argument("--retry-failed", action="store_true", help="send again only rows whose latest record failed")
@@ -686,10 +616,8 @@ def main(argv=None) -> int:
         hosted_run()
     elif a.stage == "all":
         return run_all()
-    elif a.stage == "report":
-        return report()
     else:
-        print(score(a.replicates))
+        return report()
     return 0
 
 

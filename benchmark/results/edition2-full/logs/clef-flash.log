@@ -1,13 +1,0 @@
-
-=== 2026-10-05T04:27:52Z run --systems clef-flash
-Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 2957.90it/s]
-Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 2304.95it/s]
-clef-flash           content/request            631 sent, 0 failed
-clef-flash           content/reply              756 sent, 0 failed
-clef-flash           prompt_attacks/direct             2655 sent, 0 failed
-clef-flash           denied_topics/topic              718 sent, 0 failed
-clef-flash           sensitive_info/entity_detection   720 sent, 0 failed
-clef-flash           grounding/grounding          724 sent, 0 failed
-clef-flash           word_filters/word               100 sent, 0 failed
-clef-flash           word_filters/profanity          704 sent, 0 failed
-clef-flash: 836s

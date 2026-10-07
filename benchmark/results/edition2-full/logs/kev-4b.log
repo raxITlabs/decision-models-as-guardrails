@@ -1,17 +1,0 @@
-
-=== 2026-10-05T04:31:56Z run --systems open,strands --only kev-4b
-Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 3353.17it/s]
-kev-4b               content/request            1731 sent, 0 failed
-kev-4b               content/reply              756 sent, 122 failed
-
-=== 2026-10-05T06:37:03Z run --systems open,strands --only kev-4b
-Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 1494.93it/s]
-kev-4b               content/request              0 sent, 0 failed
-kev-4b               content/reply                0 sent, 0 failed
-kev-4b               prompt_attacks/direct             2547 sent, 0 failed
-kev-4b               denied_topics/topic              718 sent, 0 failed
-kev-4b               sensitive_info/entity_detection   720 sent, 0 failed
-kev-4b               grounding/grounding          724 sent, 0 failed
-kev-4b               word_filters/word               100 sent, 0 failed
-kev-4b               word_filters/profanity          704 sent, 0 failed
-kev-4b: 5174s

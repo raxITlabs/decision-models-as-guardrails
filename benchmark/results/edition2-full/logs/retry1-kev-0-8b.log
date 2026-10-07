@@ -1,24 +1,0 @@
-
-=== 2026-10-05T08:19:27Z run --systems open,strands --only kev-0-8b --retry-failed
-Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 3504.91it/s]
-kev-0-8b             content/request              0 sent, 0 failed
-kev-0-8b             content/reply                0 sent, 0 failed
-kev-0-8b             prompt_attacks/direct               0 sent, 0 failed
-kev-0-8b             denied_topics/topic               35 sent, 9 failed
-kev-0-8b             sensitive_info/entity_detection   189 sent, 132 failed
-kev-0-8b             grounding/grounding            0 sent, 0 failed
-kev-0-8b             word_filters/word                 0 sent, 0 failed
-kev-0-8b             word_filters/profanity            0 sent, 0 failed
-kev-0-8b: 1498s
-
-=== 2026-10-05T08:51:36Z run --systems open,strands --only kev-0-8b --retry-failed
-Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 4436.61it/s]
-kev-0-8b             content/request              0 sent, 0 failed
-kev-0-8b             content/reply                0 sent, 0 failed
-kev-0-8b             prompt_attacks/direct               0 sent, 0 failed
-kev-0-8b             denied_topics/topic                9 sent, 0 failed
-kev-0-8b             sensitive_info/entity_detection   132 sent, 0 failed
-kev-0-8b             grounding/grounding            0 sent, 0 failed
-kev-0-8b             word_filters/word                 0 sent, 0 failed
-kev-0-8b             word_filters/profanity            0 sent, 0 failed
-kev-0-8b: 52s

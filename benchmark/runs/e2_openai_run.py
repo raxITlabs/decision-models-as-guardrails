@@ -4,7 +4,7 @@
     uv run python benchmark/runs/e2_openai_run.py freeze --source local     # extension manifest; commit it first
     uv run python benchmark/runs/e2_openai_run.py all --source local        # forecast, main pass, retry passes
     uv run python benchmark/runs/e2_openai_run.py report --source local     # run summary, public ledgers, privacy
-    uv run --with scikit-learn python benchmark/runs/e2_openai_run.py score --source local   # edition2-final/
+    uv run --with scikit-learn python benchmark/runs/e2_openai_run.py score --source local   # benchmark/results/final/
 
 The rows are exactly the eleven systems' rows: the five full-run suites (content, denied topics, word filters, PII,
 grounding; their test files hash as the primary freeze recorded) and the r26 prompt-attack suite (hashes as the r26
@@ -21,7 +21,7 @@ Data handling. The unpublished slice goes to OpenAI. Zero Data Retention is offe
 a separate agreement, so OpenAI's default API data retention applies. The owner waived the equivalent check for
 Perplexity (ruling 21); the coordinator's brief of 7 October 2026 treats that waiver as covering OpenAI.
 
-Raw ledgers (unpublished ids) stay in the git-ignored ``benchmark/results/edition2-openai/private/``; ``report`` and
+Raw ledgers (unpublished ids) stay in the git-ignored ``benchmark/results/final/ledgers/gpt-6-luna/private/``; ``report`` and
 ``score`` write committed ledgers with public test rows only and run the privacy checks.
 """
 from __future__ import annotations
@@ -44,7 +44,7 @@ import e2_smoke as smoke  # noqa: E402
 
 REPO = full.REPO
 SYSTEM = "gpt-6-luna"
-OUT = REPO / "benchmark" / "results" / "edition2-openai"
+OUT = full.FINAL / "ledgers" / "gpt-6-luna"
 WORK = OUT / "private"
 RUN_LOG = OUT / "run-log.json"
 MANIFEST = REPO / "benchmark" / "subsets" / "edition2" / "freeze-manifest-gpt-6-luna.json"
@@ -110,6 +110,8 @@ def forecast(sel: dict) -> dict:
     characters (the question set is a fixed overhead per subtask), applied to every selected row. High = 1.5 x."""
     import numpy as np
     from goldrails_bench import leaderboard as lb
+    if not SMOKE.exists():
+        return full.recorded_forecast()
     price = next(e for e in lb.load_tariffs()["entries"] if SYSTEM in e["match"].get("models", []))
     usd_m = price["prices"]["input_tokens"]["usd_per_million"]
     pts = defaultdict(list)

@@ -1,12 +1,0 @@
-
-=== 2026-10-05T04:27:52Z run --systems perplexity
-Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 3349.67it/s]
-pplx-decider-v1-27b  content/request            1731 sent, 0 failed
-pplx-decider-v1-27b  content/reply              756 sent, 0 failed
-pplx-decider-v1-27b  prompt_attacks/direct             2655 sent, 0 failed
-pplx-decider-v1-27b  denied_topics/topic              718 sent, 0 failed
-pplx-decider-v1-27b  sensitive_info/entity_detection   720 sent, 0 failed
-pplx-decider-v1-27b  grounding/grounding          724 sent, 0 failed
-pplx-decider-v1-27b  word_filters/word               100 sent, 0 failed
-pplx-decider-v1-27b  word_filters/profanity          704 sent, 0 failed
-pplx-decider-v1-27b: 1630s

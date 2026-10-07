@@ -1,20 +1,0 @@
-
-=== 2026-10-05T04:31:56Z run --systems open,strands --only kev-9b
-Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 1955.46it/s]
-kev-9b               content/request            1731 sent, 0 failed
-kev-9b               content/reply              756 sent, 0 failed
-kev-9b               prompt_attacks/direct             2655 sent, 0 failed
-kev-9b               denied_topics/topic              718 sent, 0 failed
-kev-9b               sensitive_info/entity_detection   720 sent, 0 failed
-
-=== 2026-10-05T06:37:03Z run --systems open,strands --only kev-9b
-Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Fetching 13 files: 100%|██████████| 13/13 [00:00<00:00, 1592.14it/s]
-kev-9b               content/request              0 sent, 0 failed
-kev-9b               content/reply                0 sent, 0 failed
-kev-9b               prompt_attacks/direct               0 sent, 0 failed
-kev-9b               denied_topics/topic                0 sent, 0 failed
-kev-9b               sensitive_info/entity_detection     0 sent, 0 failed
-kev-9b               grounding/grounding          284 sent, 0 failed
-kev-9b               word_filters/word               100 sent, 0 failed
-kev-9b               word_filters/profanity          704 sent, 0 failed
-kev-9b: 356s

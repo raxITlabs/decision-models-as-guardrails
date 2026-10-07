@@ -5,12 +5,12 @@
     uv run python benchmark/runs/e2_attacks_rerun.py all --source local         # hosted and VM runs, retry passes
     uv run python benchmark/runs/e2_attacks_rerun.py run --systems bedrock --source local   # after `aws sso login`
     uv run python benchmark/runs/e2_attacks_rerun.py report --source local      # run summary, public ledgers, privacy
-    uv run --with scikit-learn python benchmark/runs/e2_attacks_rerun.py score --source local   # edition2-final/
+    uv run --with scikit-learn python benchmark/runs/e2_attacks_rerun.py score --source local   # benchmark/results/final/
 
 Ruling 28 swapped the r26 suite in as the scored prompt-attack suite and added indirect attacks as a scored subtask.
 This script is ``e2_full`` pointed at prompt attacks: the same row guard, adapters, retry policy, resume, retry
 passes, VM session handling (make up, pause in ``finally``, TERMINATED check) and run log, with its own folder
-(``benchmark/results/edition2-attacks-r26/``, raw ledgers in its git-ignored ``private/``) and its own freeze.
+(``benchmark/results/final/ledgers/prompt-attacks/``, raw ledgers in its git-ignored ``private/``) and its own freeze.
 
 The freeze is an extension manifest (``goldrails_bench.freeze``): it extends the full run's committed manifest, lists
 one arm per system and question set on the r26 test rows (Noul models: ``e2-f2-attacks`` for direct rows,
@@ -21,8 +21,8 @@ send anything until it is committed. Nothing is fitted: every arm keeps the full
 The rows come from the rebuilt edition 2 build (``--source local``): the r26 suite is not on the Hugging Face copy
 yet. The five other suites' test files must hash exactly as the full run's freeze recorded them; ``score`` checks it.
 
-``score`` writes ``benchmark/results/edition2-final/``: the five unchanged suites from the full run's ledgers
-(``edition2-full/private/``) and the prompt attacks from this run, scored by ``leaderboard_v2`` in frozen mode against
+``score`` writes ``benchmark/results/final/``: the five unchanged suites from the full run's ledgers
+(``final/ledgers/main-run/private/``) and the prompt attacks from this run, scored by ``leaderboard_v2`` in frozen mode against
 the primary manifest plus this extension. No latency is reported (owner ruling 22): the leaderboard compares accuracy
 and cost.
 """
@@ -43,7 +43,7 @@ import e2_sample as sample  # noqa: E402
 import e2_smoke as smoke  # noqa: E402
 
 REPO = full.REPO
-OUT = REPO / "benchmark" / "results" / "edition2-attacks-r26"
+OUT = full.FINAL / "ledgers" / "prompt-attacks"
 WORK = OUT / "private"
 LOGS = OUT / "logs"
 RUN_LOG = OUT / "run-log.json"
@@ -51,7 +51,7 @@ MANIFEST = REPO / "benchmark" / "subsets" / "edition2" / "freeze-manifest-prompt
 PRIMARY = full.MANIFEST
 FULL = full.OUT                                   # the full run of 5 October 2026
 FULL_WORK = full.WORK
-FINAL = REPO / "benchmark" / "results" / "edition2-final"
+FINAL = full.FINAL
 SUITE, FEATURE = "prompt_attacks", "F2"
 GATE = REPO / "dataset" / "edition2" / "build" / "audit-report.json"
 LABEL = "edition 2 prompt-attack rerun: r26 test split and unpublished slice, contract v2.0 as amended by ruling 28"
@@ -80,6 +80,7 @@ def _spawn(args: list, log: Path):
 
 # e2_full's stages read these module globals; point them at this run.
 full.OUT, full.WORK, full.LOGS, full.RUN_LOG, full.MANIFEST, full.LABEL = OUT, WORK, LOGS, RUN_LOG, MANIFEST, LABEL
+full.PUBLIC_EXCLUDE = set()
 sample.OUT, sample.RUN_LOG = OUT, RUN_LOG
 full.select_all = select_attacks
 full._spawn = _spawn
@@ -96,6 +97,8 @@ def forecast(n_rows: int, mean_chars: float | None = None) -> dict:
     """USD forecast from the full run's measured prompt-attack cost per 1,000 rows per system (its leaderboard.json
     arms: hosted metered tariffs, allocated VM time), scaled by rows and by the mean characters per row against the
     full run's prompt-attack rows. High = 1.5 x."""
+    if not (FULL / "leaderboard.json").exists():
+        return full.recorded_forecast()
     lbd = json.loads((FULL / "leaderboard.json").read_text(encoding="utf-8"))
     per = {a["system"]: (a.get("cost") or {}).get("usd_per_1000") or 0.0 for a in lbd["arms"] if a["suite"] == SUITE}
     old_chars = None
@@ -217,7 +220,7 @@ def write_freeze(tr) -> dict:
 full.write_freeze = write_freeze
 
 
-# --- score: every suite, edition2-final/ -----------------------------------------------------------------------
+# --- score: every suite, benchmark/results/final/ -----------------------------------------------------------------------
 
 def implementations(records: list) -> dict:
     out = _word_filter_implementations(records)
@@ -467,9 +470,9 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
         "what": "every edition 2 test row and the unpublished slice sent to every system once, scored by leaderboard_v2 "
                 "in frozen mode at the contract v2.0 fixed rule against the committed freeze manifest (five suites) and "
                 "its extension manifest (prompt attacks)",
-        "runs": {"full_run": {"date": "2026-10-05", "folder": "benchmark/results/edition2-full", "suites": sorted(kept),
+        "runs": {"full_run": {"date": "2026-10-05", "folder": full._rel(FULL), "suites": sorted(kept),
                               "manifest": full._rel(PRIMARY), "source": json.loads(PRIMARY.read_text())["run"]["source"]},
-                 "attack_rerun": {"date": time.strftime("%Y-%m-%d", time.gmtime()), "folder": full._rel(OUT),
+                 "attack_rerun": {"date": "2026-10-06", "folder": full._rel(OUT),
                                   "suites": [SUITE], "manifest": full._rel(MANIFEST), "source": sample._source_label()}},
         "rows": by_feat, "rows_total": len(tr.rows), "rows_public": len(pub), "rows_unpublished": len(unp),
         "dataset_sha256": {full.FEATURE_SUITE[f]: tr.file_sha[f] for f in full.FEATURES},
@@ -560,9 +563,11 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
 
 
 def privacy(tr, extra=(), final: Path | None = None) -> dict:
-    """``e2_full.privacy_check`` over this run's committed files, edition2-final/ and the extension manifest."""
+    """``e2_full.privacy_check`` over this run's committed files, benchmark/results/final/ (private/ folders left out) and the extension manifest."""
     final = final or FINAL
-    files = full.committed_files() + sorted(q for q in final.rglob("*") if q.is_file()) + [MANIFEST, *map(Path, extra)]
+    files = full.committed_files() + sorted(q for q in final.rglob("*") if q.is_file() and "private" not in
+                                            q.relative_to(final).parts and q.name != ".run-log.lock")
+    files = sorted(set(files)) + [MANIFEST, *map(Path, extra)]
     return full.privacy_check(tr, [f for f in files if f.exists()])
 
 
