@@ -384,6 +384,17 @@ def attack_views(final_new: list, tr) -> dict:
     return out
 
 
+def floor_after_review(tr) -> str:
+    """The prompt-attack public test counts after the ruling 32 label review, beside the contract's floor exception
+    (which records the counts the owner accepted before it)."""
+    pub = tr.public_ids()
+    c = Counter((tr.rows[i]["subtask"], tr.rows[i]["expected"]) for i in pub if tr.feature[i] == FEATURE)
+    low = [f"{t} {c[(t, 'yes')]} attack and {c[(t, 'no')]} benign" for t in ("injection", "jailbreak", "leakage", "indirect")
+           if min(c[(t, 'yes')], c[(t, 'no')]) < 250]
+    return ("After the label review, prompt-attack subtasks under the 250-row floor have " + "; ".join(low)
+            + " public test rows. The floor exception above records the counts accepted before the review.")
+
+
 def ai_label_disclosure() -> str:
     p = REPO / "dataset" / "edition2" / "r26" / "prompt_attacks" / "label-agreement.json"
     o = json.loads(p.read_text(encoding="utf-8"))["overall"]
@@ -401,8 +412,9 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
     from goldrails_bench import leaderboard as lb
     from goldrails_bench import leaderboard_v2 as lv2
     tr = full.TestRows()
+    integ = full.frozen_integrity(tr)        # owner ruling 32: the extension manifests' files are the frozen copy
     pm, pident = lv2.load_freeze(PRIMARY, _primary_integrity())
-    xm, xident = lv2.load_freeze(MANIFEST)
+    xm, xident = lv2.load_freeze(MANIFEST, integ)
     kept = {su: d["sha256"] for su, d in pm["integrity"]["datasets"].items() if su != SUITE}
     for f, su in full.FEATURE_SUITE.items():
         if su in kept and tr.file_sha[f] != kept[su]:
@@ -411,15 +423,15 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
     sel_all = _select_all_tasks(tr)
     sel_old = {k: v for k, v in sel_all.items() if k[0] != SUITE}
     sel_new = select_attacks(tr)
-    old_raw = [d for d in sample.load_ledgers(FULL_WORK) if d["suite"] != SUITE]
-    new_raw = sample.load_ledgers(WORK)
+    old_raw = full.amend_ledgers([d for d in sample.load_ledgers(FULL_WORK) if d["suite"] != SUITE], tr)
+    new_raw = full.amend_ledgers(sample.load_ledgers(WORK), tr)
     old_log = json.loads((FULL / "run-log.json").read_text(encoding="utf-8"))
     new_log = json.loads(RUN_LOG.read_text(encoding="utf-8")) if RUN_LOG.exists() else {"systems": {}, "vm": []}
     old_sum = _with_log(FULL / "run-log.json", lambda: sample.run_summary(old_raw, sel_old))
     new_sum = _with_log(RUN_LOG, lambda: sample.run_summary(new_raw, sel_new))
     ext_raw, ext_sum, ext_logs, ext_manifests = [], {}, [], []
     for x in extra_runs:
-        raw = sample.load_ledgers(x["work"])
+        raw = full.amend_ledgers(sample.load_ledgers(x["work"]), tr)
         log = json.loads(Path(x["log"]).read_text(encoding="utf-8")) if Path(x["log"]).exists() else {"systems": {}}
         s = _with_log(Path(x["log"]), lambda: sample.run_summary(raw, sel_all))
         unfinished_x = {k for k, v in s.items() if v["never_logged"] or v["failed"] > 0.02 * max(1, v["rows"])}
@@ -429,7 +441,7 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
         ext_raw += raw
         ext_sum.update(s)
         ext_logs.append((x, log))
-        ext_manifests.append(lv2.load_freeze(x["manifest"]))
+        ext_manifests.append(lv2.load_freeze(x["manifest"], integ))
     ext_systems = set(ext_sum)
     blocked = full.blocked_systems()
     unfinished = {s for s in blocked if s not in new_sum or new_sum[s]["never_logged"]
@@ -443,7 +455,7 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
     tariffs = lb.load_tariffs()
     # the full run's VM time was shared by all six of its suites: allocate from its whole summary
     old_sum_vm = _with_log(FULL / "run-log.json", lambda: sample.run_summary(
-        [d for d in sample.load_ledgers(FULL_WORK)], sel_all))
+        full.amend_ledgers(sample.load_ledgers(FULL_WORK), tr), sel_all))
     serving, vm_info = serving_entries(tr, old_sum_vm, new_sum, old_log, new_log)
     arms_meta = {}
     for d in final:
@@ -456,7 +468,8 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
     doc = lv2.evaluate([dict(r) for r in records], lv2.load_contract(), implementations(records), None, "test",
                        None, replicates, None, tariffs, serving, arms_meta, {}, frozen=full.frozen_rows(tr),
                        manifest=pm, manifest_identity=pident, diagnostic=False, integrity=_primary_integrity(),
-                       extensions=[(xm, xident)] + ext_manifests, capture=cap)
+                       extensions=[(xm, xident)] + ext_manifests, capture=cap,
+                       extension_integrity=[integ] * (1 + len(ext_manifests)) if integ else None)
     for a in doc["arms"]:                     # owner ruling 22: no latency in the published results
         a.pop("latency", None)
     pub, unp = tr.public_ids(), tr.unpublished
@@ -480,6 +493,7 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
                                   "suites": [SUITE], "manifest": full._rel(MANIFEST), "source": sample._source_label()}},
         "rows": by_feat, "rows_total": len(tr.rows), "rows_public": len(pub), "rows_unpublished": len(unp),
         "dataset_sha256": {full.FEATURE_SUITE[f]: tr.file_sha[f] for f in full.FEATURES},
+        **({"amended_dataset_sha256": tr.amendment["amended_sha256"]} if tr.amendment else {}),
         "approval": APPROVAL + "".join(f"; {x['approval']}" for x in extra_runs),
         "forecast": (new_log.get("forecasts") or [None])[-1],
         "prompt_attack_note": ("Prompt attacks passed a confounds-only check: classifiers that see only a row's "
@@ -489,6 +503,7 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
                                f"every system as an {views.REFERENCE_NAME}, not a baseline a guardrail should clear."),
         "extra_disclosures": [
             exc["disclosure"],
+            *([floor_after_review(tr)] if tr.amendment else []),
             ai_label_disclosure(),
             "On indirect rows Bedrock's prompt-attack check reads the system prompt, the user's task and the document as "
             "three messages; the document is tagged as untrusted retrieved content because the API has no tool role.",
@@ -553,6 +568,9 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
         "public": full.slice_view(records, tr, pub, replicates),
         "unpublished": full.slice_view(records, tr, unp, replicates),
     }
+    # owner ruling 32: the label review, with the scores from before it (benchmark/results/final/before-relabel/)
+    if tr.amendment:
+        doc["label_amendment"] = views.label_amendment(tr.amendment, doc, final_dir / "before-relabel" / "leaderboard.json")
     # owner ruling 31: secondary views and disclosures on the same rows and bootstrap draws; no ranked number changes
     views.apply(doc, cap, tr, contract, final, old_raw + new_raw + ext_raw)
     final_dir.mkdir(parents=True, exist_ok=True)
@@ -561,6 +579,7 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
     if (final_dir / "README.md").exists():
         views.write_readme(final_dir / "README.md", doc, NAMES, tables(doc))
     full.write_public(tr)
+    full.write_public_ledgers(FULL_WORK, FULL, tr, {SUITE})     # the full run's committed ledgers, amended alike
     pc = privacy(tr, [f for x in extra_runs for f in x.get("public_files") or []] + [x["manifest"] for x in extra_runs],
                  final=final_dir)
     doc["privacy_check"] = pc

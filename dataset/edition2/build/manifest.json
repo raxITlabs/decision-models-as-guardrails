@@ -49,15 +49,15 @@
       "path": "F1.test.jsonl",
       "feature": "F1",
       "split": "test",
-      "n": 2109,
-      "sha256": "c506f7aac1a5c46ec31720df49f26cb3933b53efee232e2ac08b8845a6112dac"
+      "n": 2091,
+      "sha256": "03594cccf35b988af86fb1d5339f0893a4cf91d2e71b8bc7e0aec440a5fd328d"
     },
     {
       "path": "F2.test.jsonl",
       "feature": "F2",
       "split": "test",
-      "n": 3219,
-      "sha256": "c7899008aa1cad04b9624772232730b45643164197ae52246d0f2ff1fad535a3"
+      "n": 3173,
+      "sha256": "a76af88de126202fb32ce577b1ec7cf1feb3de5ce417a4ecbf9840b911d87041"
     },
     {
       "path": "F3.test.jsonl",
@@ -89,7 +89,7 @@
     }
   ],
   "private_slice": {
-    "rows": 2283,
+    "rows": 2269,
     "where": "build/private/ (git-ignored, never published)"
   },
   "needs_owner_review": {

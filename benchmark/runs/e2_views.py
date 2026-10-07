@@ -200,6 +200,60 @@ def provenance_disclosure(prov: dict) -> str:
             f"review: it agreed with the reference label on {p['agreement']:.1%} (kappa {p['kappa']:.2f}).")
 
 
+# Owner ruling 32 (7 October 2026): the label review of rows most systems got wrong. The decisions name unpublished
+# rows, so they stay outside the repository; these are their totals.
+LABEL_REVIEW = {"ruling": 32, "date": "2026-10-07", "threshold": UNANIMOUS_WRONG, "systems": 12, "reviewed": 379,
+                "right": 184, "corrected": 117, "removed": 78,
+                "reviewer": "the project lead, from an AI-assisted draft"}
+
+
+def _cell(t: dict, s: str, k: str) -> dict:
+    return ((t.get(s) or {}).get(k) or {})
+
+
+def label_amendment(amend: dict, doc: dict, before_path: Path) -> dict:
+    """The ``label_amendment`` block: what ruling 32 changed (counts and dataset hashes, from ``e2_full.TestRows``)
+    and, when the results from before it are on this machine, every system's overall score, tier, rank and suite
+    scores before and after."""
+    lr = LABEL_REVIEW
+    if (amend["relabelled"], amend["removed"]) != (lr["corrected"], lr["removed"]):
+        raise SystemExit(f"label amendment: {amend['relabelled']} relabelled and {amend['removed']} removed rows, the "
+                         f"review recorded {lr['corrected']} and {lr['removed']}")
+    out = {**lr, **{k: amend[k] for k in ("frozen_sha256", "amended_sha256", "by_suite_split")},
+           "what": ("labels corrected or rows removed after the runs, on content and prompt-attack test rows (public and "
+                    "unpublished) that at least 11 of the 12 systems got wrong; every system re-scored from its saved "
+                    "answers, no new model calls"),
+           "disclosure": label_review_disclosure()}
+    if not Path(before_path).exists():
+        return out
+    before = json.loads(Path(before_path).read_text(encoding="utf-8"))
+    tb, ta = before["table"], doc["table"]
+    rows = []
+    for s in [e["name"] for e in doc["overall"]["ranking"]] + [e["name"] for e in doc["overall"].get("unranked", [])]:
+        e = {"system": s}
+        for k in ("overall",) + SUITES:
+            b, a = _cell(tb, s, k).get("balanced_accuracy"), _cell(ta, s, k).get("balanced_accuracy")
+            e[k] = {"before": _r(b, 2), "after": _r(a, 2), "change": _r(a - b, 2) if a is not None and b is not None else None}
+        for k in ("tier", "rank"):
+            e[k] = {"before": _cell(tb, s, "overall").get(k), "after": _cell(ta, s, "overall").get(k)}
+        rows.append(e)
+    out["before_after"] = {"what": "balanced accuracy x 100 before and after the label review, same answers, same rule",
+                           "before_source": "the results as published before the review (benchmark/results/final/"
+                                            "before-relabel/leaderboard.json, kept locally)",
+                           "systems": rows}
+    return out
+
+
+def label_review_disclosure() -> str:
+    lr = LABEL_REVIEW
+    return (f"Label review after the runs. The project lead reviewed every content and prompt-attack test row that at "
+            f"least {lr['threshold']} of the {lr['systems']} systems got wrong ({lr['reviewed']} rows), working from an "
+            f"AI-assisted draft. {lr['right']} labels were right, {lr['corrected']} were corrected and {lr['removed']} "
+            "rows were removed as ambiguous. Only those rows were reviewed, so the corrections can only raise the "
+            "score of a system that got them wrong, and nearly every system did. That is why the scores from before "
+            "the review are published next to the new ones (label_amendment.before_after in leaderboard.json).")
+
+
 def top_disclosures(prov: dict, vendor: dict, taxonomy: dict, laya: dict) -> list:
     """The substantive disclosures, in reading order. Numbers come from the data files and the views."""
     out = [
@@ -210,6 +264,7 @@ def top_disclosures(prov: dict, vendor: dict, taxonomy: dict, laya: dict) -> lis
         "models get it through adapters. Some questions were first written while checking Jev on rows outside the "
         "test split.",
         provenance_disclosure(prov),
+        *([label_review_disclosure()] if prov.get("label_review") else []),
         "Fixed 0.5 rule. The headline flags a row when a model's probability is 0.5 or more, for every model, with "
         "no tuned threshold. The rule favours models whose probabilities are calibrated to this question format, "
         "mostly Jev. AUROC and the catch rate at a 5% false-block rate do not depend on the threshold; they sit "
@@ -549,6 +604,9 @@ def apply(doc: dict, cap: dict, tr, contract: dict, latest: list, raw: list) -> 
     order = [e["name"] for e in doc["overall"]["ranking"]] + [e["name"] for e in doc["overall"].get("not_ranked", [])]
     ctx = Ctx(cap, contract, tr, order)
     prov = label_provenance()
+    if doc.get("label_amendment"):
+        prov["label_review"] = {k: doc["label_amendment"][k] for k in ("ruling", "reviewed", "right", "corrected",
+                                                                         "removed", "reviewer", "date")}
     taxonomy = content_taxonomy(ctx, doc)
     laya = laya_flags(ctx, latest)
     doc["label_provenance"] = prov
@@ -605,6 +663,21 @@ def blocks(doc: dict, names: dict) -> dict:
 
     top = doc["disclosures"][:doc.get("substantive_disclosures", 0)]
     out["read-first"] = ("## Scores", "## Read this first\n\n" + "\n".join(f"- {d}" for d in top))
+    la = doc.get("label_amendment")
+    if la and la.get("before_after"):
+        cols = (("overall", "Overall"),) + tuple((k, SUITE_NAME[k]) for k in SUITES)
+        hb = ("| System | Tier | " + " | ".join(n for _, n in cols) + " |\n|" + "---|" * (len(cols) + 2) + "\n")
+        rb = []
+        for e in la["before_after"]["systems"]:
+            tier = e["tier"]["before"], e["tier"]["after"]
+            rb.append(f"| {nm(e['system'])} | {tier[0] or '-'} to {tier[1] or '-'} | " + " | ".join(
+                f"{_f(e[k]['before'])} to {_f(e[k]['after'])} ({e[k]['change']:+.1f})" if e[k]["change"] is not None
+                else "-" for k, _ in cols) + " |")
+        out["label-review"] = ("## Scores", "\n".join([
+            "## Label review after the runs", "",
+            la["disclosure"], "",
+            "Each cell is balanced accuracy before the review, after it, and the change. The answers are the same "
+            "saved answers, scored with the same rule.", "", hb + "\n".join(rb)]))
 
     pr = doc["practitioner"]
     f = pr["false_block_rates"]["systems"]

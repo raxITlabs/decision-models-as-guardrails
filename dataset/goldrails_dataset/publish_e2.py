@@ -773,7 +773,8 @@ def card(files: list, man: dict, reg: list, subtasks: dict, code_ref: str, root:
               "have seen the public rows. It is not a secret test set.",
               f"- **{tot('rows_local_only')} rows** held back while their labels are checked.",
               f"- **{n_excl} excluded rows**, listed with reasons in EXCLUDED.jsonl: text in a benchmarked model's "
-              "training or development data, text a benchmarked vendor published, and one row we dropped.", "",
+              "training or development data, text a benchmarked vendor published, rows too ambiguous to label after the "
+              "review of rows most systems got wrong, and one row we dropped.", "",
               "## Disclosures", "", disclosures(), "",
               "## Record schema", "",
               "`id`, `feature`, `subtask`, `split`, `visibility`, `group` (rows sharing a group share a split), `state` "

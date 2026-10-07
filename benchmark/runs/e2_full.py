@@ -85,17 +85,34 @@ def _rel(p: Path) -> str:
     return p.relative_to(REPO).as_posix() if p.is_relative_to(REPO) else str(p)
 
 
+# Owner ruling 32 (7 October 2026) corrected or removed labels after the runs, on rows at least 11 of the 12 systems
+# got wrong. The runs answered the build as it was; this git-ignored copy of that build's test files is the dataset
+# version the freeze manifests record (its paths mirror the repository's, so a manifest's integrity block is
+# recomputed from it). ``TestRows`` scores the current build's labels under that frozen version: see
+# ``label_amendment``.
+FROZEN = REPO / "dataset" / "edition2" / ".frozen" / "before-ruling32"
+FROZEN_BUILD = FROZEN / "dataset" / "edition2" / "build"
+AMENDMENT_RULING = 32
+
+
 class TestRows:
     """The edition 2 test rows (public test files plus the unpublished slice) and the guard that refuses the rest.
     Duck-types ``e2_sample.PublicDev`` (rows, feature, file_sha) so its scorer record can be reused; ``file_sha`` is
     each suite's dataset version: ``dataset_hash`` over its public and unpublished test rows together, the hash the
-    freeze manifest records."""
+    freeze manifest records.
+
+    After a label amendment (owner ruling 32) ``rows`` are the current build's rows, with the corrected labels and
+    without the removed rows, while ``file_sha`` stays the frozen version the systems answered (``FROZEN``);
+    ``amended_sha`` is the current build's hash, ``removed`` the ids taken out and ``relabelled`` {id: (old, new)}.
+    The amendment is refused unless every difference between the two versions is a ruling 32 correction or exclusion."""
 
     def __init__(self):
         from goldrails_dataset.records import dataset_hash, read_jsonl
         d = smoke.data_dir()
         self.dir = d
         self.rows, self.feature, self.file_sha, self.files, self.unpublished = {}, {}, {}, {}, set()
+        self.removed, self.removed_unpublished, self.removed_rows, self.relabelled = set(), set(), {}, {}
+        self.amended_sha, self.amendment = {}, None
         for f in FEATURES:
             files = [d / f"{f}.test.jsonl", d / "private" / f"{f}.test.jsonl"]
             self.files[f] = files
@@ -118,6 +135,8 @@ class TestRows:
         dev = {json.loads(x)["id"] for f in FEATURES for x in (d / f"{f}.dev.jsonl").open(encoding="utf-8")}
         if dev & set(self.rows):
             raise SystemExit("a dev id is also a test id")
+        if d.resolve() == smoke.BUILD.resolve() and FROZEN_BUILD.is_dir():
+            self.amendment = label_amendment(self, FROZEN_BUILD)
 
     def guard(self, r: dict) -> None:
         rid = r.get("id")
@@ -130,6 +149,103 @@ class TestRows:
 
     def public_ids(self) -> set:
         return set(self.rows) - self.unpublished
+
+
+def _same_but_label(a: dict, b: dict) -> bool:
+    """True when two rows differ only in what a ruling 32 correction changes: the label (``expected``, ``labels``,
+    ``expected_distribution``), its category, ``label_basis`` and the row's ``attribute.e2`` annotations."""
+    def strip(r):
+        r = json.loads(json.dumps(r))
+        for k in ("expected", "labels", "expected_distribution", "category", "attribute"):
+            r.pop(k, None)
+        r.get("provenance", {}).pop("label_basis", None)
+        return r
+    return strip(a) == strip(b)
+
+
+def label_amendment(tr: TestRows, frozen: Path) -> dict | None:
+    """Score the current build's labels under the frozen dataset version (owner ruling 32). Reads the frozen test
+    files, keeps ``tr.file_sha`` at their hashes (the version the freeze manifests record and the systems answered)
+    and records what changed. Refuses (SystemExit) unless the current rows are the frozen rows less the ruling 32
+    exclusions, with only ruling 32 corrections changing a label. None when the two versions are the same."""
+    from goldrails_dataset import edition2
+    from goldrails_dataset.records import dataset_hash, read_jsonl
+    old, old_feat, old_private, old_sha = {}, {}, set(), {}
+    for f in FEATURES:
+        files = [frozen / f"{f}.test.jsonl", frozen / "private" / f"{f}.test.jsonl"]
+        recs = [r for p in files for r in read_jsonl(p)]
+        old_sha[f] = dataset_hash(recs)
+        for p in files:
+            for x in p.open(encoding="utf-8"):
+                r = json.loads(x)
+                old[r["id"]], old_feat[r["id"]] = r, f
+                if p.parent.name == "private":
+                    old_private.add(r["id"])
+    if old_sha == tr.file_sha:
+        return None
+    new_ids = set(tr.rows) - set(old)
+    if new_ids:
+        raise SystemExit(f"label amendment: {len(new_ids)} test rows are not in the frozen version {_rel(frozen)}")
+    reason = edition2.RULING32["exclusion_reason"]
+    excl = edition2.excluded()
+    removed = set(old) - set(tr.rows)
+    bad = sorted(i for i in removed if excl.get(i) != reason)
+    if bad:
+        raise SystemExit(f"label amendment: {len(bad)} frozen test rows left the build without a ruling 32 exclusion")
+    relabelled, problems = {}, []
+    for i, r in tr.rows.items():
+        o = old[i]
+        if o == r:
+            continue
+        corr = ((r.get("attribute") or {}).get("e2") or {}).get("correction") or {}
+        if corr.get("ruling") != AMENDMENT_RULING or not _same_but_label(o, r) or o["expected"] == r["expected"] \
+                or (i in old_private) != (i in tr.unpublished) or old_feat[i] != tr.feature[i]:
+            problems.append(i)
+            continue
+        relabelled[i] = (o["expected"], r["expected"])
+    if problems:
+        raise SystemExit(f"label amendment: {len(problems)} test rows changed other than by a ruling 32 correction")
+    tr.amended_sha = dict(tr.file_sha)
+    tr.file_sha = old_sha
+    tr.removed, tr.removed_unpublished = removed, removed & old_private
+    tr.removed_rows = {i: old[i] for i in removed}
+    tr.relabelled = relabelled
+    by = Counter()
+    for i in removed:
+        by[f"{FEATURE_SUITE[old_feat[i]]}|{'unpublished' if i in old_private else 'public'}|removed"] += 1
+    for i, (a, b) in relabelled.items():
+        by[f"{FEATURE_SUITE[tr.feature[i]]}|{'unpublished' if i in tr.unpublished else 'public'}|{a}->{b}"] += 1
+    return {"ruling": AMENDMENT_RULING, "frozen_copy": _rel(frozen),
+            "frozen_sha256": {FEATURE_SUITE[f]: old_sha[f] for f in FEATURES},
+            "amended_sha256": {FEATURE_SUITE[f]: tr.amended_sha[f] for f in FEATURES},
+            "relabelled": len(relabelled), "removed": len(removed), "by_suite_split": dict(sorted(by.items()))}
+
+
+def frozen_integrity(tr: TestRows) -> dict | None:
+    """The ``integrity`` arguments that recompute a freeze manifest naming ``dataset/edition2/build`` files from the
+    frozen copy after a label amendment (None without one): the copy mirrors the repository's paths, and the
+    references are this repository's with the frozen dev rows."""
+    if not tr.amendment:
+        return None
+    from goldrails_bench import freeze as F
+    return {"repo": FROZEN, "references": F.default_references(dev_files=sorted(FROZEN_BUILD.glob("F*.dev.jsonl")))}
+
+
+def amend_ledgers(recs: list, tr: TestRows) -> list:
+    """Ledger records under the label amendment: records of removed rows left out, and on a relabelled row the
+    ``expected`` label and ``correct`` flag recomputed from the system's own decision (the files are not touched)."""
+    if not tr.amendment:
+        return recs
+    out = []
+    for d in recs:
+        rid = d.get("row_id")
+        if rid in tr.removed:
+            continue
+        if rid in tr.relabelled:
+            new = tr.relabelled[rid][1]
+            d = {**d, "expected": new, "correct": None if d.get("decision") is None else d["decision"] == (new == "yes")}
+        out.append(d)
+    return out
 
 
 def select_all(tr: TestRows) -> dict:
@@ -448,16 +564,32 @@ def load_work() -> list:
     return sample.load_ledgers(WORK)
 
 
-def write_public(tr: TestRows) -> list[Path]:
-    """Committed ledgers: every record of a public test row, nothing of the unpublished slice."""
+def write_public_ledgers(work: Path, out_dir: Path, tr: TestRows, exclude_suites=()) -> list[Path]:
+    """Committed ledgers from the raw ones in ``work``: every record of a public test row, nothing of the unpublished
+    slice, records of ``exclude_suites`` left out. Under a label amendment (owner ruling 32) a removed row's records
+    are left out and a relabelled row's record carries the corrected ``expected`` and ``correct``."""
     pub = tr.public_ids()
     out = []
-    for p in sorted(WORK.glob("*.jsonl")):
-        keep = [x for x in p.open(encoding="utf-8") if x.strip() and json.loads(x)["row_id"] in pub
-                and json.loads(x)["suite"] not in PUBLIC_EXCLUDE]
-        q = OUT / p.name
+    for p in sorted(Path(work).glob("*.jsonl")):
+        keep = []
+        for x in p.open(encoding="utf-8"):
+            if not x.strip():
+                continue
+            d = json.loads(x)
+            if d["row_id"] not in pub or d["suite"] in exclude_suites:
+                continue
+            if d["row_id"] in tr.relabelled:
+                x = json.dumps(amend_ledgers([d], tr)[0], ensure_ascii=False) + "\n"
+            keep.append(x)
+        q = Path(out_dir) / p.name
         q.write_text("".join(keep), encoding="utf-8")
         out.append(q)
+    return out
+
+
+def write_public(tr: TestRows) -> list[Path]:
+    """Committed ledgers: every record of a public test row, nothing of the unpublished slice."""
+    out = write_public_ledgers(WORK, OUT, tr, PUBLIC_EXCLUDE)
     for p in sorted(WORK.glob("*.blocked.json")):
         (OUT / p.name).write_text(p.read_text(encoding="utf-8"), encoding="utf-8")
     return out
@@ -471,7 +603,7 @@ def committed_files() -> list[Path]:
 def privacy_check(tr: TestRows, files=None) -> dict:
     """No unpublished id and no row text in any committed file; ``e2_local.tracked_leaks`` over the same files."""
     files = committed_files() if files is None else [Path(f) for f in files]
-    unp = tr.unpublished
+    unp = tr.unpublished | tr.removed_unpublished
     id_hits = {}
     for p in files:
         if p.suffix == ".png":
@@ -491,7 +623,7 @@ def privacy_check(tr: TestRows, files=None) -> dict:
             q.write_text(" ".join(re.findall(r"<text[^>]*>(.*?)</text>", p.read_text(encoding="utf-8"), re.S)),
                          encoding="utf-8")
             text_files.append(q)
-        leaks = sample.fast_leak_check(text_files, tr.rows)
+        leaks = sample.fast_leak_check(text_files, {**tr.removed_rows, **tr.rows})
     from goldrails_dataset import e2_local
     tl = e2_local.tracked_leaks(files=[_rel(p) for p in files if p.suffix != ".png"])
     return {"files": len(files), "unpublished_ids_found": id_hits, "rows_with_text_in_files": len(leaks),
@@ -520,6 +652,8 @@ def scorer_record(d: dict, tr: TestRows) -> dict | None:
     freeze stamp, the retry policy and the attempt times the frozen-mode scorer checks. A row the service refused
     as over its limits (``not_offered`` on one row, e.g. Bedrock's 1,000-character grounding query cap) is scored as
     a failure, wrong in its class, as the contract's frozen row list would score it unlogged."""
+    if d["row_id"] in tr.removed:          # taken out by the label amendment (owner ruling 32)
+        return None
     if d["outcome"] == "not_offered":
         d = {**d, "outcome": "failed", "error": f"not offered for this row: {d.get('error') or ''}"[:300]}
     x = sample.scorer_record(d, tr)

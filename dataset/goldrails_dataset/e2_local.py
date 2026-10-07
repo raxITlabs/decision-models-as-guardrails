@@ -60,9 +60,11 @@ DEFAULT_STYLE = {"ensure_ascii": False, "sort_keys": True}
 
 # Row files split by id: the row goes where its candidate lives.
 # resolutions.jsonl: the owner-ruling resolution of each disputed row (docs/benchmark/29-owner-rulings-2026-10-03.md).
-ROW_FILES = {"content": ("relabel.jsonl", "resolutions.jsonl"),
+# corrections.jsonl: an owner ruling applied to a row nobody disputed (ruling 5 on PII, ruling 32 on content and prompt
+# attacks).
+ROW_FILES = {"content": ("relabel.jsonl", "resolutions.jsonl", "corrections.jsonl"),
              "prompt_attacks": ("relabel.jsonl", "relabel-round2.jsonl", "relabel-round3.jsonl", "relabel-round5.jsonl",
-                                "relabel-round6.jsonl", "resolutions.jsonl"),
+                                "relabel-round6.jsonl", "resolutions.jsonl", "corrections.jsonl"),
              "denied_topics": ("relabel.jsonl", "resolutions.jsonl"),
              "pii": ("relabel.jsonl", "resolutions.jsonl", "corrections.jsonl"),
              "grounding": ("relabel.jsonl", "relabel-round3.jsonl", "first_labels.jsonl", "resolutions.jsonl"),

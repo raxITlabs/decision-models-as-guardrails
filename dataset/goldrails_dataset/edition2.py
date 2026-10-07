@@ -5,6 +5,7 @@
     uv run python -m goldrails_dataset.edition2 import-owner-review FILE   # owner decisions -> resolutions, rebuild
     uv run python -m goldrails_dataset.edition2 owner-review-html  # build/private/review.html (git-ignored)
     uv run python -m goldrails_dataset.edition2 ruling5            # ruling 5 on undisputed PII rows (corrections.jsonl)
+    uv run python -m goldrails_dataset.edition2 ruling32 FILE      # ruling 32 decisions -> corrections and exclusions
     uv run --with scikit-learn python -m goldrails_dataset.edition2 gate-heldback   # prompt_attacks/gate-heldback.json
 
 Owner ruling 28 (6 October 2026) swapped the ruling 26 candidate in as the scored prompt-attack suite: the build reads
@@ -345,6 +346,111 @@ def write_corrections(suite_name: str, lines: list, root: Path = E2) -> dict:
     return {"public": len(pub), "private": len(prv)}
 
 
+# Owner ruling 32 (7 October 2026): the project lead reviewed every content and prompt-attack test row (public and
+# unpublished) that at least 11 of the 12 benchmarked systems got wrong, from an AI-assisted draft. Each row is "right"
+# (no change), "flip" (the binary label is inverted: a correction, recorded with the note) or "drop" (ambiguous: an
+# exclusion). The decisions file lives outside the repository because it names unpublished-slice rows.
+RULING32 = {"ruling": 32, "reviewed_on": "2026-10-07", "label_basis": "human",
+            "basis": "owner review of rows most systems got wrong: the project lead, from an AI-assisted draft",
+            "exclusion_reason": "ambiguous after owner review of rows most systems got wrong (ruling 32)"}
+RULING32_SUITES = ("content", "prompt_attacks")
+
+
+def ruling32_ids(root: Path = E2) -> set:
+    """Ids ruling 32 changed: its corrections and its exclusions."""
+    ids = {i for i, d in excluded(root).items() if d == RULING32["exclusion_reason"]}
+    for s in SUITES:
+        if s.name in RULING32_SUITES and (_home(s, root) / s.name / "candidates.jsonl").exists():
+            for path in (e2_local.suite_dir(s.name, _home(s, root)) / CORRECTIONS,
+                         e2_local.private_dir(s.name, _home(s, root)) / CORRECTIONS):
+                ids |= {d["id"] for d in _jsonl(path) if d.get("ruling") == RULING32["ruling"]}
+    return ids
+
+
+def ruling32_apply(decisions: list, root: Path = E2) -> dict:
+    """Apply the ruling 32 decisions: corrections for "flip" (public ids to the tracked ``corrections.jsonl``,
+    unpublished-slice ids to the git-ignored part), exclusions for "drop" (public ids to ``EXCLUDED.jsonl``,
+    unpublished-slice ids to the git-ignored ``<suite>/private/EXCLUDED.jsonl``, the folder the build and the runners
+    read), and the excluded ids purged from every suite file. A content row flipped to harmful needs
+    ``harm_category`` (one of hate, insults, sexual, violence, misconduct). Every line is checked before anything is
+    written. Returns counts by suite, split and decision."""
+    from .e2_owner_review import HARM
+    root = Path(root)
+    lines, drops, tally = defaultdict(list), [], Counter()
+    by_suite = {s.name: s for s in SUITES}
+    seen = set()
+    for d in decisions:
+        if d["id"] in seen:
+            raise ValueError(f"{d['id']}: decided twice")
+        seen.add(d["id"])
+        if d.get("suite") not in RULING32_SUITES or d.get("decision") not in ("right", "flip", "drop"):
+            raise ValueError(f"{d['id']}: suite {d.get('suite')!r} / decision {d.get('decision')!r}")
+    cands = {}
+    for name in RULING32_SUITES:
+        suite = by_suite[name]
+        for c in candidates(suite, root):
+            cands[c["id"]] = (suite, c)
+        seconds, res, fixes = second_labels(suite, root), resolutions(suite, root), corrections(suite, root)
+        for d in decisions:
+            if d["suite"] != name:
+                continue
+            if d["id"] not in cands:
+                raise ValueError(f"{d['id']}: not a {name} candidate (already excluded?)")
+            _, c = cands[d["id"]]
+            if c["label"] != d["current_label"]:
+                raise ValueError(f"{d['id']}: decided on label {d['current_label']}, the candidate is {c['label']}")
+            if c["proposed_split"] == "dev":
+                raise ValueError(f"{d['id']}: a dev row; ruling 32 covers test and unpublished rows")
+            if d["id"] in res or d["id"] in fixes or compare(suite, c, seconds.get(d["id"]))[0] == "disagree":
+                raise ValueError(f"{d['id']}: already ruled on or disputed; rule on it in resolutions.jsonl")
+            split = "unpublished" if c["proposed_split"] == "private" else "public"
+            tally[f"{name}|{split}|{d['decision']}"] += 1
+            if d["decision"] == "right":
+                continue
+            if d["decision"] == "drop":
+                drops.append((name, c["proposed_split"] == "private", d["id"]))
+                continue
+            final = "no" if c["label"] == "yes" else "yes"
+            line = {"id": d["id"], "suite": name, "subtask": c.get("subtask"), "proposed_split": c["proposed_split"],
+                    "status": APPLIED, "ruling": RULING32["ruling"], "rulings_doc": "docs/benchmark/29-owner-rulings-2026-10-03.md",
+                    "first_label": c["label"], "final_label": final, "label_basis": RULING32["label_basis"],
+                    "basis": RULING32["basis"], "reviewed_on": RULING32["reviewed_on"], "note": d["note"],
+                    "reason": f"ruling 32: {d['note']}"}
+            if name == "content" and final == "yes":
+                h = d.get("harm_category")
+                if h not in HARM:
+                    raise ValueError(f"{d['id']}: a content row ruled harmful needs harm_category, one of {sorted(HARM)}")
+                ail, bed = HARM[h]
+                line["final_tags"] = {"harm_category": h, "harm_categories": [h], "harm_subcategories": [],
+                                      "in_bedrock_five": True}
+                line["final_category"] = {"ailuminate": ail, "bedrock": bed}
+            apply_resolution(suite, c, line)            # raises now, not at build time
+            lines[name].append(line)
+    for name, ls in lines.items():
+        home = _home(by_suite[name], root)
+        old = [d for p in (e2_local.suite_dir(name, home) / CORRECTIONS, e2_local.private_dir(name, home) / CORRECTIONS)
+               for d in _jsonl(p) if d.get("ruling") != RULING32["ruling"]]
+        write_corrections(name, sorted(old + ls, key=lambda d: d["id"]), home)
+    reason = RULING32["exclusion_reason"]
+    for name, private, i in drops:
+        # unpublished-slice ids go where the build and the runners read private exclusions (prompt attacks: the
+        # suite folder ruling 28 retired, as model_overlap and vendor_overlap write them)
+        path = (e2_local.private_dir(name, root) / EXCLUDED) if private else (root / EXCLUDED)
+        have = {d["id"] for d in _jsonl(path)}
+        if i not in have:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with path.open("a", encoding="utf-8") as fh:
+                fh.write(json.dumps({"id": i, "reason": reason}, ensure_ascii=False) + "\n")
+    ids = {i for _, _, i in drops}
+    purged = e2_local.purge(ids, root=root)
+    for name in RULING32_SUITES:
+        home = _home(by_suite[name], root)
+        if home != root:
+            for k, v in e2_local.purge(ids, suites=(name,), root=home).items():
+                purged[f"{k} ({home.name})"] = v
+    return {"by_suite_split_decision": dict(sorted(tally.items())), "purged_lines": purged}
+
+
 ATTACK_CATEGORY = {"yes": {"ailuminate": "injection", "bedrock": "PROMPT_ATTACK"}, "no": {"ailuminate": "benign", "bedrock": "NONE"}}
 
 
@@ -413,7 +519,10 @@ def _annotate(r: Record, suite: Suite, c: dict, status: str, reason, second, res
           "needs_owner_review": status == "disagree"}
     if fix is not None:
         e2["correction"] = {k: fix[k] for k in ("ruling", "first_label", "final_label", "first_entity_types",
-                                                "final_entity_types", "dropped_entity_types") if fix.get(k) is not None}
+                                                "final_entity_types", "dropped_entity_types", "basis", "reviewed_on",
+                                                "note") if fix.get(k) is not None}
+        if fix.get("label_basis"):          # ruling 32: the label now rests on the owner's review of the row
+            r.provenance.label_basis = fix["label_basis"]
     if reason:
         e2["disagreement"] = reason
     if second is not None:
@@ -901,6 +1010,11 @@ def sample_rows_unchanged(out: Path = BUILD, manifest: Path | None = None) -> bo
     if not manifest.exists():
         return False
     rows = json.loads(manifest.read_text(encoding="utf-8")).get("rows") or []
+    # Owner ruling 32 relabelled or removed some rows most systems got wrong, sampled rows among them. The sample was
+    # drawn and labelled against the labels it records, and its agreement rate is a statement about those labels, so a
+    # sampled row that ruling 32 changed (a correction in corrections.jsonl, or an exclusion) does not make it stale.
+    owner_review = ruling32_ids()
+    rows = [r for r in rows if r["id"] not in owner_review]
     cur = {}
     for split in ("dev", "test"):
         p = Path(out) / f"F1.{split}.jsonl"
@@ -1348,7 +1462,7 @@ REVIEW_PAGE = BUILD / "private" / "review.html"
 def _subcommand(argv: list) -> int | None:
     """``import-owner-review FILE [--no-build]``, ``owner-review-html``, ``ruling5`` or ``gate-heldback``; None when
     ``argv`` is the plain build."""
-    if not argv or argv[0] not in ("import-owner-review", "owner-review-html", "ruling5", "gate-heldback"):
+    if not argv or argv[0] not in ("import-owner-review", "owner-review-html", "ruling5", "ruling32", "gate-heldback"):
         return None
     from . import e2_owner_review
     cmd, rest = argv[0], argv[1:]
@@ -1366,6 +1480,10 @@ def _subcommand(argv: list) -> int | None:
     if cmd == "owner-review-html":
         parts, _ = build_parts()
         rep = e2_owner_review.write_html(REVIEW_PAGE, E2, parts)
+        print(json.dumps(rep, indent=1))
+        return 0
+    if cmd == "ruling32":
+        rep = ruling32_apply(_jsonl(Path(rest[0])))
         print(json.dumps(rep, indent=1))
         return 0
     if cmd == "ruling5":

@@ -18,7 +18,7 @@ Ruling 5 also binds rows nobody disputed. A PII row whose every ADDRESS span is 
 and a row with nothing else left becomes benign. Those changes are in `pii/corrections.jsonl` (private-slice ids in the
 git-ignored part).
 
-In all, 0 disputed rows wait: 0 public and 0 private. Ruling 5 changed 11 undisputed PII rows (8 public, 3 private); 1 of them became benign.
+In all, 0 disputed rows wait: 0 public and 0 private. Ruling 5 changed 128 undisputed PII rows (101 public, 27 private); 118 of them became benign.
 
 ## Counts, public rows
 

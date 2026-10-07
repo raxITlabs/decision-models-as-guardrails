@@ -49,3 +49,4 @@ benchmark/results/**/.run-log.lock
 # the published results (leaderboard, README, plots, per-row ledgers and run logs) are held back until release day;
 # benchmark/runs/e2_openai_run.py score rebuilds leaderboard.json from these ledgers
 benchmark/results/final/
+dataset/edition2/.frozen/

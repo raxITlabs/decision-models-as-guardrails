@@ -68,7 +68,7 @@ DISCLOSURES = [
     "The unpublished slice was sent to OpenAI. Zero Data Retention is available only to eligible customers under a "
     "separate agreement, so OpenAI's default API data retention applies to those rows. The owner's waiver of the "
     "data-retention check for Perplexity (ruling 21) is taken to cover OpenAI as well.",
-    "208 of the public content test rows (244 with the unpublished slice) come from OpenAI's own moderation evaluation "
+    "204 of the public content test rows (239 with the unpublished slice) come from OpenAI's own moderation evaluation "
     "set. "
     "OpenAI may have trained or tuned gpt-6-luna on them. Content is also reported without those rows "
     "(content view excluding_openai_owned).",
@@ -306,14 +306,7 @@ def run_all() -> int:
 # --- report, public ledgers, privacy ---------------------------------------------------------------------------
 
 def write_public(tr) -> list[Path]:
-    pub = tr.public_ids()
-    out = []
-    for p in sorted(WORK.glob("*.jsonl")):
-        keep = [x for x in p.open(encoding="utf-8") if x.strip() and json.loads(x)["row_id"] in pub]
-        q = OUT / p.name
-        q.write_text("".join(keep), encoding="utf-8")
-        out.append(q)
-    return out
+    return full.write_public_ledgers(WORK, OUT, tr)
 
 
 def committed_files() -> list[Path]:
