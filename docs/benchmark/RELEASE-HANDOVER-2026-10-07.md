@@ -5,30 +5,18 @@ nothing new is on the Hugging Face Hub, and the GPU VM is TERMINATED.
 
 ## Final results (12 systems, six suites, contract v2.0 as amended)
 
-`benchmark/results/edition2-final/` (leaderboard.json, README.md, plots). `valid_for_publication: true`, no blockers,
-privacy check passes, no latency anywhere (ruling 22). Site export written by `site_results.py --leaderboard-v2`.
-OpenAI's Decisions API (gpt-6-luna, public beta) was added on 7 October as the twelfth system (freeze `b2f4c09`,
-results `2037a42`, rescore `764355e`; USD 1.10; 10 rows answered with a `refusal`, counted wrong).
+The numbers are held back until release day and are not in the tracked tree. They live in the git-ignored
+`benchmark/results/final/`: `leaderboard.json`, `README.md`, `plots/`, and `ledgers/` with the per-row ledgers and
+run logs of the three runs behind them (`main-run/`: content, denied topics, word filters, PII and grounding for
+eleven systems, 5 October; `prompt-attacks/`: the r26 prompt-attack suite for the same eleven, 6 October;
+`gpt-6-luna/`: all six suites for OpenAI's Decisions API, 7 October). Each run folder keeps its raw ledgers, with
+unpublished-slice ids, in its own `private/`. A copy of that folder is in the backups.
 
-| Rank | System | Overall (95% CI) | Tier | Catch | False block | $ per 1,000 |
-|---|---|---|---|---|---|---|
-| 1 | pplx-decider-v1-27b | 89.5 (88.8–90.1) | 1 | 87.1% | 8.2% | 0.056 |
-| 2 | gpt-6-luna | 89.2 (88.5–89.8) | 1 | 91.0% | 12.6% | 0.110 |
-| 3 | Clef | 88.7 (87.9–89.3) | 1 | 90.1% | 12.8% | 0.202 |
-| 4 | Jev 1.13.0 | 87.5 (86.8–88.2) | 2 | 87.1% | 12.2% | 0.039 |
-| 5 | Clef-flash | 81.1 (80.2–81.9) | 3 | 79.3% | 17.1% | 0.076 |
-| 6 | Kev-4B | 80.6 (79.9–81.4) | 3 | 70.1% | 8.9% | 0.228 |
-| 7 | Kev-9B | 79.5 (78.7–80.3) | 4 | 68.8% | 9.7% | 0.123 |
-| 8 | Bedrock Guardrails | 78.3 (77.5–79.2) | 4 | 67.6% | 10.9% | 0.112 |
-| 9 | Strands Decider 2B | 74.8 (73.9–75.7) | 5 | 62.0% | 12.3% | 0.123 |
-| 10 | Open-Jev-2B | 66.3 (65.6–67.1) | 6 | 37.3% | 4.7% | 0.275 |
-| 11 | Kev-0.8B | 65.8 (64.9–66.7) | 6 | 52.0% | 20.5% | 0.140 |
-| 12 | Laya | 60.7 (59.7–61.6) | 7 | 44.6% | 23.2% | 0.149 |
-
-Prompt attacks (r26 suite, direct and indirect, confounds-only gate, ruling 26) are scored, not provisional. Headline
-findings for the post: on indirect injection Clef, pplx-decider and Jev score 84–89, and Clef is the only system
-above the n-gram baseline (88.7). On direct attacks the n-gram baseline (80–89) beats every system on almost every
-tag; hosted models block 45–52% of benign direct rows (over 90% of quoted jailbreaks).
+`uv run --with scikit-learn python benchmark/runs/e2_openai_run.py score --source local` rebuilds `leaderboard.json`
+from those ledgers, the three freeze manifests in `benchmark/subsets/edition2/` and the contract, and
+`uv run --with matplotlib python benchmark/runs/e2_final_plots.py` redraws the plots. The leaderboard reports
+`valid_for_publication: true` with no blocker, and the privacy check passes. There is no latency in it (ruling 22).
+gpt-6-luna answered 10 rows with a `refusal`; they count as wrong.
 
 ## Evidence trail
 
@@ -39,30 +27,41 @@ tag; hosted models block 45–52% of benign direct rows (over 90% of quoted jail
 - Disclosures to carry: injection floor exception (151 / 167 public test rows), AI second labels (content sample and
   prompt-attack sample, both done with an AI), n-gram baseline beside every prompt-attack score, Bedrock's indirect
   input mapping, independence statement, question format native to Jev, fixed 0.5 rule.
-- Prompt-attack rerun cost USD 6.06; full run USD 13.30.
 
 ## Release-day steps (ruling 29: first public release, version 1.0.0)
 
-1. Decide whether to squash the Hub history (internal uploads labelled 1.0.0 `bc1849e` and 1.0.1 `f88403e` are in it).
-2. Restage `dataset/publish/release-1.0.0` against the commit being pushed (the staged changelog names `c28bb7a`),
-   run the gates and the public-text check, upload to `raxITLabs/decision-models-as-guardrails`, then set
-   `E2_HF_REVISION` in `benchmark/goldrails_bench/e2_source.py` to the new Hub commit and verify byte parity.
-3. Public-text pass on everything that ships (card, results README, site, post): no editions, rulings, owner process
-   or earlier versions (ruling 20). The results README currently says "owner ruling 22" on one line.
+1. The repository was cleaned to what the first release ships on 7 October (see "Clean-up" below). The owner rewrites
+   the Git history so it starts at that state.
+2. `dataset/publish/release-1.0.0` is staged against the clean-up commit (its card, changelog and `canonical.json` name
+   it). If the commit being pushed differs, restage with `uv run python -m goldrails_dataset.publish_e2 stage
+   --code-ref <commit>`, rerun the gates, upload to `raxITLabs/decision-models-as-guardrails`, then set
+   `E2_HF_REVISION` in `benchmark/goldrails_bench/e2_source.py` to the new Hub commit and verify byte parity
+   (`publish_e2 parity`). The Hub history is not squashed (ruling 30).
+3. Publish the results: drop `benchmark/results/final/` from `.gitignore` and commit the folder (its README already
+   passed the public-text check), or copy it wherever the owner wants it to live.
 4. Push `main` to GitHub.
-5. Website (`site` repo, branch `feat/guardrails-leaderboard`): swap in the final numbers, apply the accuracy-and-cost
-   design (https://claude.ai/artifact/NiPNb3fNtMica9tBczddST), drop edition wording, open a PR for review.
+5. Website (`site` repo, branch `feat/guardrails-leaderboard`): its extractor still reads
+   `site/leaderboard/runs/edition2-dev-sample.json`, which this repository no longer has. Point it at
+   `benchmark/results/final/leaderboard.json`, swap in the final numbers, apply the accuracy-and-cost design
+   (https://claude.ai/artifact/NiPNb3fNtMica9tBczddST), drop edition wording, open a PR for review.
 6. Blog post in the Cloudflare Clef post's shape (ruling 19), numbers from this run.
-7. Retire `site/leaderboard` in this repo once the website page is live.
 
 ## Open, not blocking the release
-
-- Ruling 18 and OpenAI's own data: 208 content test rows come from OpenAI's moderation evaluation set and are kept
-  in the score (results are shown with and without them). Confirm ruling 18 does not apply to a vendor's published
-  dataset.
 
 - Tensor Trust written terms (would lift injection above the floor); SPML as the fallback.
 - BIPIA email licence call; recording source licence reviews in `dataset/release/redistribution.json`.
 - A person's label check (both samples were AI-labelled).
-- Local process stopped during the VM run: `python3 -m http.server 8791` serving
-  `~/Documents/Fertility/MyCocoon/scratchpad/pebbles` held a port the VM tunnel needed. Restart if wanted.
+
+## Clean-up (7 October)
+
+The tree now holds what the first release ships. Removed: the earlier benchmark runs and their subsets, contracts
+v1.1, smoke, pilot, diagnostic and dev-sample results, the r23 and r25 prompt-attack candidates, the 1k and pilot
+samples, `dataset/frozen/`, the v1.x release and publish records, the old dataset card, notebooks, `site/leaderboard`,
+the export records, research notes and reports not tied to the current method, and the code and tests that only
+served those. The full backups are in `~/.goldrails-private/backups/2026-10-07/`.
+
+`dataset/edition2/prior-use-ids.json` records the row ids those removed ledgers and lists held (examined, smoke,
+pilot, diagnostic and earlier result ledgers, plus the sha256 of dataset ids that were already public), so the freeze
+integrity check and the dataset build give the same result without them. The build's split files and manifests
+rebuild byte for byte, and `leaderboard.json` rescores with no change but its run folder paths and the prompt-attack
+run's date (now 6 October, as run). The v1 release builds the overlap checks read stay git-ignored on this machine.
