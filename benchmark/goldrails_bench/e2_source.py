@@ -35,7 +35,7 @@ ENV = "GOLDRAILS_E2_SOURCE"
 # The release (owner ruling 29: version 1.0.0, with the r26 prompt-attack suite of ruling 28) is staged and not
 # uploaded yet, so the runners read the staged folder until its Hub commit is filled in here. The internal upload
 # the full run of 5 October read was f88403efb827ba0c2771dd069ec545d35849ff8d.
-E2_HF_REVISION: str | None = None
+E2_HF_REVISION: str | None = "06db773e6b9f6598eaf62159b0e6ef01f26071c0"   # 1.0.0
 
 
 class E2SourceMissing(FileNotFoundError):
