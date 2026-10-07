@@ -62,3 +62,4 @@ dataset/edition2/r26/*/local/
 benchmark/results/edition2-attacks-r26/private/
 benchmark/results/edition2-openai/private/
 benchmark/results/edition2-attacks-r26/.run-log.lock
+benchmark/results/*/.run-log.lock

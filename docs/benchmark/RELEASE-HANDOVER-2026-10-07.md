@@ -3,24 +3,27 @@
 Written 6 October 2026, the night before release. Everything below is committed locally on `main`. Nothing is pushed,
 nothing new is on the Hugging Face Hub, and the GPU VM is TERMINATED.
 
-## Final results (all 11 systems, six suites, contract v2.0 as amended)
+## Final results (12 systems, six suites, contract v2.0 as amended)
 
 `benchmark/results/edition2-final/` (leaderboard.json, README.md, plots). `valid_for_publication: true`, no blockers,
 privacy check passes, no latency anywhere (ruling 22). Site export written by `site_results.py --leaderboard-v2`.
+OpenAI's Decisions API (gpt-6-luna, public beta) was added on 7 October as the twelfth system (freeze `b2f4c09`,
+results `2037a42`, rescore `764355e`; USD 1.10; 10 rows answered with a `refusal`, counted wrong).
 
 | Rank | System | Overall (95% CI) | Tier | Catch | False block | $ per 1,000 |
 |---|---|---|---|---|---|---|
 | 1 | pplx-decider-v1-27b | 89.5 (88.8–90.1) | 1 | 87.1% | 8.2% | 0.056 |
-| 2 | Clef | 88.7 (87.9–89.3) | 1 | 90.1% | 12.8% | 0.202 |
-| 3 | Jev 1.13.0 | 87.5 (86.8–88.2) | 2 | 87.1% | 12.2% | 0.039 |
-| 4 | Clef-flash | 81.1 (80.2–81.9) | 3 | 79.3% | 17.1% | 0.076 |
-| 5 | Kev-4B | 80.6 (79.9–81.4) | 3 | 70.1% | 8.9% | 0.228 |
-| 6 | Kev-9B | 79.5 (78.7–80.3) | 4 | 68.8% | 9.7% | 0.123 |
-| 7 | Bedrock Guardrails | 78.3 (77.5–79.2) | 4 | 67.6% | 10.9% | 0.112 |
-| 8 | Strands Decider 2B | 74.8 (73.9–75.7) | 5 | 62.0% | 12.3% | 0.123 |
-| 9 | Open-Jev-2B | 66.3 (65.6–67.1) | 6 | 37.3% | 4.7% | 0.275 |
-| 10 | Kev-0.8B | 65.8 (64.9–66.7) | 6 | 52.0% | 20.5% | 0.140 |
-| 11 | Laya | 60.7 (59.7–61.6) | 7 | 44.6% | 23.2% | 0.149 |
+| 2 | gpt-6-luna | 89.2 (88.5–89.8) | 1 | 91.0% | 12.6% | 0.110 |
+| 3 | Clef | 88.7 (87.9–89.3) | 1 | 90.1% | 12.8% | 0.202 |
+| 4 | Jev 1.13.0 | 87.5 (86.8–88.2) | 2 | 87.1% | 12.2% | 0.039 |
+| 5 | Clef-flash | 81.1 (80.2–81.9) | 3 | 79.3% | 17.1% | 0.076 |
+| 6 | Kev-4B | 80.6 (79.9–81.4) | 3 | 70.1% | 8.9% | 0.228 |
+| 7 | Kev-9B | 79.5 (78.7–80.3) | 4 | 68.8% | 9.7% | 0.123 |
+| 8 | Bedrock Guardrails | 78.3 (77.5–79.2) | 4 | 67.6% | 10.9% | 0.112 |
+| 9 | Strands Decider 2B | 74.8 (73.9–75.7) | 5 | 62.0% | 12.3% | 0.123 |
+| 10 | Open-Jev-2B | 66.3 (65.6–67.1) | 6 | 37.3% | 4.7% | 0.275 |
+| 11 | Kev-0.8B | 65.8 (64.9–66.7) | 6 | 52.0% | 20.5% | 0.140 |
+| 12 | Laya | 60.7 (59.7–61.6) | 7 | 44.6% | 23.2% | 0.149 |
 
 Prompt attacks (r26 suite, direct and indirect, confounds-only gate, ruling 26) are scored, not provisional. Headline
 findings for the post: on indirect injection Clef, pplx-decider and Jev score 84–89, and Clef is the only system
@@ -53,6 +56,10 @@ tag; hosted models block 45–52% of benign direct rows (over 90% of quoted jail
 7. Retire `site/leaderboard` in this repo once the website page is live.
 
 ## Open, not blocking the release
+
+- Ruling 18 and OpenAI's own data: 208 content test rows come from OpenAI's moderation evaluation set and are kept
+  in the score (results are shown with and without them). Confirm ruling 18 does not apply to a vendor's published
+  dataset.
 
 - Tensor Trust written terms (would lift injection above the floor); SPML as the fallback.
 - BIPIA email licence call; recording source licence reviews in `dataset/release/redistribution.json`.
