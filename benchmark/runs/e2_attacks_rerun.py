@@ -6,6 +6,7 @@
     uv run python benchmark/runs/e2_attacks_rerun.py run --systems bedrock --source local   # after `aws sso login`
     uv run python benchmark/runs/e2_attacks_rerun.py report --source local      # run summary, public ledgers, privacy
     uv run --with scikit-learn python benchmark/runs/e2_attacks_rerun.py score --source local   # benchmark/results/final/
+    uv run python benchmark/runs/e2_attacks_rerun.py readme --source local     # README's generated blocks only
 
 Ruling 28 swapped the r26 suite in as the scored prompt-attack suite and added indirect attacks as a scored subtask.
 This script is ``e2_full`` pointed at prompt attacks: the same row guard, adapters, retry policy, resume, retry
@@ -41,6 +42,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import e2_full as full  # noqa: E402
 import e2_sample as sample  # noqa: E402
 import e2_smoke as smoke  # noqa: E402
+import e2_views as views  # noqa: E402
 
 REPO = full.REPO
 OUT = full.FINAL / "ledgers" / "prompt-attacks"
@@ -361,7 +363,8 @@ def ngram_baselines() -> dict:
     g = rep["prompt_attack_gate"]
     pub = (g.get("ngram_baselines") or {}).get("published_ba_at_0_5") or {}
     full_text = ("char_ngram_logreg", "char_cross_logreg", "bow_logreg", "word13_logreg", "word14_logreg")
-    return {"what": "full-text n-gram baselines of the ruling 26 gate on the built r26 rows (dataset/edition2/build/"
+    return {"name": views.REFERENCE_NAME, "note": views.REFERENCE_NOTE,
+            "what": "full-text n-gram classifiers of the ruling 26 gate on the built r26 rows (dataset/edition2/build/"
                     "audit-report.json, prompt_attack_gate.ngram_baselines): balanced accuracy x 100 at probability 0.5, "
                     "grouped five-fold CV on test + unpublished rows. Reported beside every system as a reference, not "
                     "pass/fail (owner ruling 26). best = the highest full-text model per row tag",
@@ -384,8 +387,8 @@ def attack_views(final_new: list, tr) -> dict:
 def ai_label_disclosure() -> str:
     p = REPO / "dataset" / "edition2" / "r26" / "prompt_attacks" / "label-agreement.json"
     o = json.loads(p.read_text(encoding="utf-8"))["overall"]
-    return ("Prompt-attack labels have an AI second label, not a human review. A model with no tools and no file "
-            f"access labelled a {o['n']}-row blind sample from the policy and the rows alone and agreed with the "
+    return ("Prompt-attack labels have a sealed AI second label, not a human review. A sealed model with no tools and "
+            f"no file access labelled a {o['n']}-row blind sample from the policy and the rows alone and agreed with the "
             f"reference label on {o['agreement']:.1%} of them (Cohen's kappa {o['kappa']:.2f}).")
 
 
@@ -449,10 +452,11 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
         if x and ident.get("kind"):
             arms_meta[(x["system"], x["config_hash"], x["dataset"]["sha256"])] = {
                 "system": x["system"], "model": x["model"], "identity": ident}
+    cap = {}                                  # the scorer's rows and bootstrap draws, for the ruling 31 views
     doc = lv2.evaluate([dict(r) for r in records], lv2.load_contract(), implementations(records), None, "test",
                        None, replicates, None, tariffs, serving, arms_meta, {}, frozen=full.frozen_rows(tr),
                        manifest=pm, manifest_identity=pident, diagnostic=False, integrity=_primary_integrity(),
-                       extensions=[(xm, xident)] + ext_manifests)
+                       extensions=[(xm, xident)] + ext_manifests, capture=cap)
     for a in doc["arms"]:                     # owner ruling 22: no latency in the published results
         a.pop("latency", None)
     pub, unp = tr.public_ids(), tr.unpublished
@@ -482,7 +486,7 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
                                "source, platform, format, length or payload position stay at or under balanced "
                                "accuracy 0.70 and AUROC 0.75 on held-out groups. Direct and indirect attacks are two "
                                "equally weighted subtasks. The best full-text n-gram classifier's score sits beside "
-                               "every system as a reference."),
+                               f"every system as an {views.REFERENCE_NAME}, not a baseline a guardrail should clear."),
         "extra_disclosures": [
             exc["disclosure"],
             ai_label_disclosure(),
@@ -549,9 +553,13 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
         "public": full.slice_view(records, tr, pub, replicates),
         "unpublished": full.slice_view(records, tr, unp, replicates),
     }
+    # owner ruling 31: secondary views and disclosures on the same rows and bootstrap draws; no ranked number changes
+    views.apply(doc, cap, tr, contract, final, old_raw + new_raw + ext_raw)
     final_dir.mkdir(parents=True, exist_ok=True)
     p = final_dir / "leaderboard.json"
     p.write_text(json.dumps(doc, indent=1, ensure_ascii=False, default=float) + "\n", encoding="utf-8")
+    if (final_dir / "README.md").exists():
+        views.write_readme(final_dir / "README.md", doc, NAMES, tables(doc))
     full.write_public(tr)
     pc = privacy(tr, [f for x in extra_runs for f in x.get("public_files") or []] + [x["manifest"] for x in extra_runs],
                  final=final_dir)
@@ -603,13 +611,11 @@ def tables(doc: dict) -> dict:
                     + " | ".join(_f((t[s].get(k) or {}).get("balanced_accuracy")) for k, _ in SUITE_COLS)
                     + f" | {sc.get('result', '-')} ({_f(sc.get('balanced_accuracy'), 0)}) |")
     main = head + "\n".join(rows)
-    cost = doc["run"]["cost"]
     sm = doc["run"]["systems"]
-    h2 = ("| System | Catch rate | False-block rate | USD per 1,000 checks | USD total | First-pass failures | "
-          "Failed after retries | Truncated rows |\n|---|---|---|---|---|---|---|---|\n")
+    # cost (managed APIs and self-hosted apart) and failures have their own tables (e2_views, owner ruling 31)
+    h2 = "| System | Catch rate | False-block rate | Truncated rows |\n|---|---|---|---|\n"
     r2 = [f"| {NAMES[s]} | {_f(t[s]['overall'].get('catch_rate'), 3)} | {_f(t[s]['overall'].get('false_block_rate'), 3)} | "
-          f"{_f((cost.get(s) or {}).get('usd_per_1000'), 3)} | {_f((cost.get(s) or {}).get('usd_total'), 2)} | "
-          f"{sm[s]['first_pass_failed']} | {sm[s]['failed']} | {sm[s]['truncated']:,} |" for s in order]
+          f"{sm[s]['truncated']:,} |" for s in order]
     rates = h2 + "\n".join(r2)
     pa = doc["prompt_attacks"]
     nb = pa["ngram_baseline"]["by_tag"]
@@ -628,7 +634,7 @@ def tables(doc: dict) -> dict:
                   + " | ".join(_f((bt.get(k) or {}).get("balanced_accuracy")) for k in ("injection", "jailbreak", "leakage", "indirect"))
                   + f" | {_f(d.get('catch_rate'), 3)} / {_f(i.get('catch_rate'), 3)} | "
                     f"{_f(d.get('false_block_rate'), 3)} / {_f(i.get('false_block_rate'), 3)} |")
-    r3.append("| n-gram baseline (best full-text model) | - | - | - | "
+    r3.append(f"| {views.REFERENCE_NAME} | - | - | - | "
               + " | ".join(f"{nb[k]['best']:.1f}" for k in ("injection", "jailbreak", "leakage", "indirect")) + " | - | - |")
     return {"main": main, "rates": rates, "attacks": h3 + "\n".join(r3)}
 
@@ -690,6 +696,10 @@ def main(argv=None) -> int:
         doc = json.loads((FINAL / "leaderboard.json").read_text(encoding="utf-8"))
         for k, v in tables(doc).items():
             print(f"<!-- {k} -->\n{v}\n")
+        return 0
+    if a.stage == "readme":      # refresh the README's generated blocks from leaderboard.json
+        doc = json.loads((FINAL / "leaderboard.json").read_text(encoding="utf-8"))
+        print(views.write_readme(FINAL / "README.md", doc, NAMES, tables(doc)))
         return 0
     if a.stage == "wait-bedrock":
         return wait_bedrock(a.minutes)

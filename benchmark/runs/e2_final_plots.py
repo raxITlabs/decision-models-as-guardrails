@@ -5,7 +5,9 @@
 Writes PNG and SVG to ``benchmark/results/final/plots/``: overall score with intervals and tiers, the subtask heatmap,
 catch against false-block rate per suite, score against cost, the public-versus-unpublished check, and prompt attacks
 per row tag beside the full-text n-gram baseline. No latency (the leaderboard compares accuracy and cost). Colors are
-the dataviz reference palette (light surface); text uses ink tokens, never the series color. No row text or row id is
+the dataviz reference palette (light surface). The subtask heatmap uses a diverging scale centred at 50 (chance), so
+a score below 50 shows as worse than chance instead of being clipped; the false-block chart gives each suite's
+false-block rate with its interval; text uses ink tokens, never the series color. No row text or row id is
 read.
 """
 from __future__ import annotations
@@ -19,7 +21,7 @@ import matplotlib.ticker
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
-from matplotlib.colors import LinearSegmentedColormap  # noqa: E402
+from matplotlib.colors import LinearSegmentedColormap, TwoSlopeNorm  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[2]
 RES = REPO / "benchmark" / "results" / "final"
@@ -27,6 +29,9 @@ PLOTS = RES / "plots"
 SURFACE, INK, INK2, MUTED, GRID, AXIS = "#fcfcfb", "#0b0b0b", "#52514e", "#898781", "#e1e0d9", "#c3c2b7"
 S1, S2 = "#2a78d6", "#eb6834"   # categorical slots 1 and 2 (validated: adjacent CVD dE 24.7, normal 33.6)
 SEQ = ["#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5", "#256abf", "#184f95", "#0d366b"]   # blue 100..700
+ORANGE = ["#fde3d6", "#f9bd9f", "#f39568", "#eb6834", "#c4501f", "#933a14", "#64270c"]   # orange 100..700
+NEUTRAL = "#f1f0ec"
+REFERENCE = "in-distribution supervised reference (cross-validated on the evaluated rows)"
 SUITES = ["content", "prompt_attacks", "denied_topics", "word_filters", "sensitive_info", "grounding"]
 SUITE_NAME = {"content": "Content", "prompt_attacks": "Prompt attacks", "denied_topics": "Denied topics",
               "word_filters": "Word filters (profanity)", "sensitive_info": "Sensitive info (PII)",
@@ -165,8 +170,11 @@ def heatmap(doc):
         for e in doc["subtasks"][k].get("ranking", []):
             vals[(e["name"], k)] = e["balanced_accuracy"]
     words = doc["sanity_checks"]["checks"].get("word_filters/word", {}).get("systems", {})
-    cmap = LinearSegmentedColormap.from_list("blue", SEQ)
-    vmin, vmax = 50, 100
+    # diverging, centred at 50 (chance): orange below, blue above; nothing is clipped (owner ruling 31)
+    cmap = LinearSegmentedColormap.from_list("div", ORANGE[::-1][:-1] + [NEUTRAL] + SEQ[1:])
+    lo = min([v for v in vals.values() if v is not None] + [50.0])
+    vmin, vmax = min(40.0, math.floor(lo / 10) * 10), 100.0
+    norm = TwoSlopeNorm(vcenter=50.0, vmin=vmin, vmax=vmax)
     fig, ax = plt.subplots(figsize=(10.5, 0.5 * len(order) + 2.4))
     ax.grid(False)
     names = {"content/request": "Content\nrequest", "content/reply": "Content\nreply",
@@ -187,9 +195,10 @@ def heatmap(doc):
             if v is None:
                 ax.text(j, i, "n/a", ha="center", va="center", fontsize=8, color=MUTED)
                 continue
-            f = min(1, max(0, (v - vmin) / (vmax - vmin)))
+            f = float(norm(v))
             ax.add_patch(plt.Rectangle((j - 0.48, i - 0.46), 0.96, 0.92, facecolor=cmap(f), lw=0))
-            ax.text(j, i, f"{v:.1f}", ha="center", va="center", fontsize=9, color="#ffffff" if f > 0.45 else INK)
+            ax.text(j, i, f"{v:.1f}", ha="center", va="center", fontsize=9,
+                    color="#ffffff" if abs(f - 0.5) > 0.3 else INK)
     ax.set_xlim(-0.5, len(cols) + 0.5)
     ax.set_ylim(len(order) - 0.5, -0.5)
     ax.set_xticks(range(len(cols) + 1), labels[:len(cols)] + ["Custom words\n(sanity, pass >= 95)"], fontsize=8.5)
@@ -198,9 +207,10 @@ def heatmap(doc):
     for s in ax.spines.values():
         s.set_visible(False)
     ax.tick_params(length=0)
-    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin, vmax))
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
     cb = fig.colorbar(sm, ax=ax, fraction=0.025, pad=0.02)
-    cb.set_label("Balanced accuracy x 100 (scale clipped at 50)", color=INK2, fontsize=8)
+    cb.set_label("Balanced accuracy x 100 (diverging at 50 = chance; orange is worse than chance)", color=INK2,
+                 fontsize=8)
     cb.outline.set_visible(False)
     title(fig, f"Balanced accuracy by system and subtask ({TAG})",
           "Fixed 0.5 rule; rows sorted by overall rank. Custom words is a pass/fail check outside the score.")
@@ -290,21 +300,63 @@ def attack_tags(doc):
     for ax, t in zip(axs, tags):
         vals = [pa["by_tag"][s][t]["balanced_accuracy"] for s in order]
         ax.barh(ys, vals, color=S1, height=0.6, zorder=2)
+        cis = [(pa["by_tag"][s][t].get("ci") or {}) for s in order]
+        for y, v, c in zip(ys, vals, cis):
+            if c.get("low") is not None:
+                ax.plot([c["low"], c["high"]], [y, y], color=INK, lw=1, zorder=3)
         base = pa["ngram_baseline"]["by_tag"].get(t, {}).get("best")
         if base is not None:
             ax.axvline(base, color=S2, lw=1.6, zorder=3)
-            ax.text(base, len(order) - 0.35, f"n-gram {base:.1f}", color=INK2, fontsize=8, ha="center")
+            ax.text(base, len(order) - 0.35, f"reference {base:.1f}", color=INK2, fontsize=8, ha="center")
         ax.set_xlim(40, 100)
         ax.set_title(t.capitalize(), loc="left", fontsize=10, color=INK, fontweight="bold")
         ax.grid(axis="y", visible=False)
     axs[0].set_yticks(ys, [name(s) for s in order])
-    title(fig, f"Prompt attacks by row tag, with the full-text n-gram baseline ({TAG})",
-            "Balanced accuracy x 100 at the fixed rule over test and unpublished rows. Orange line: best word or "
-            "character n-gram classifier (grouped CV), a reference, not a system.")
+    title(fig, f"Prompt attacks by row tag ({TAG})",
+            "Balanced accuracy x 100 at the fixed rule over test and unpublished rows, 95% bootstrap interval. Orange "
+            f"line: {REFERENCE}, best n-gram model; a reference, not a system.")
     save(fig, "prompt-attacks-by-tag")
 
 
-def main():
+def false_blocks(doc):
+    """Per-suite false-block rate with its 95% interval, one panel per suite, plus the two benign slices people
+    complain about most (content over-refusal rows, benign direct prompt-attack rows)."""
+    fb = (doc.get("practitioner") or {}).get("false_block_rates", {}).get("systems")
+    if not fb:
+        return
+    order = [e["name"] for e in doc["overall"]["ranking"]] + [e["name"] for e in doc["overall"].get("unranked", [])]
+    panels = SUITES + ["content_over_refusal_benign", "prompt_attacks_benign_direct"]
+    pname = {**SUITE_NAME, "content_over_refusal_benign": "Content: over-refusal rows",
+             "prompt_attacks_benign_direct": "Prompt attacks: benign direct rows"}
+    fig, axs = plt.subplots(2, 4, figsize=(15, 0.36 * len(order) * 2 + 2.6), sharey=True)
+    ys = list(range(len(order)))[::-1]
+    for ax, k in zip(axs.flat, panels):
+        vals = [100 * ((fb.get(s) or {}).get(k) or {}).get("false_block_rate", float("nan")) for s in order]
+        ax.barh(ys, vals, color=S1, height=0.6, zorder=2)
+        for y, s in zip(ys, order):
+            c = ((fb.get(s) or {}).get(k) or {}).get("ci") or {}
+            if c.get("low") is not None:
+                ax.plot([100 * c["low"], 100 * c["high"]], [y, y], color=INK, lw=1, zorder=3)
+        ax.set_xlim(0, max(10, math.ceil(max(v for v in vals if v == v) / 10) * 10 + 5))
+        ax.set_title(pname[k], loc="left", fontsize=10, color=INK, fontweight="bold")
+        ax.grid(axis="y", visible=False)
+        ax.set_xlabel("False-block rate, %", fontsize=8.5)
+    axs[0][0].set_yticks(ys, [name(s) for s in order])
+    axs[1][0].set_yticks(ys, [name(s) for s in order])
+    title(fig, f"False blocks per suite ({TAG})",
+          "Share of benign rows blocked at the fixed 0.5 rule, 95% group bootstrap interval. Lower is better. "
+          "Each panel has its own axis range.")
+    fig.subplots_adjust(hspace=0.35, wspace=0.08)
+    save(fig, "false-blocks-by-suite")
+
+
+def main(argv=None):
+    import sys
+    global RES, PLOTS
+    argv = sys.argv[1:] if argv is None else argv
+    if argv:                      # another results folder (default benchmark/results/final)
+        RES = Path(argv[0]).resolve()
+        PLOTS = RES / "plots"
     doc = json.loads((RES / "leaderboard.json").read_text(encoding="utf-8"))
     global SPLIT_NOTE
     SPLIT_NOTE = f"{SPLIT_NOTE}, {doc['full_run']['rows_total']:,} rows"
@@ -314,6 +366,7 @@ def main():
     score_cost(doc)
     slice_chart(doc)
     attack_tags(doc)
+    false_blocks(doc)
     print(sorted(p.name for p in PLOTS.iterdir()))
 
 

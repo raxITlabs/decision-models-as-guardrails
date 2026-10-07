@@ -690,7 +690,7 @@ def evaluate(records: list[dict], contract: dict | None = None, implementations:
              serving: list | None = None, arms_meta: dict | None = None, not_offered: dict | None = None,
              frozen: dict | None = None, manifest: dict | None = None, manifest_identity: dict | None = None,
              diagnostic: bool = False, integrity: dict | None = None, extensions: list | None = None,
-             extension_integrity: list | None = None) -> dict:
+             extension_integrity: list | None = None, capture: dict | None = None) -> dict:
     """The v2.0 leaderboard document for exploded ledger records.
 
     ``implementations``: {name: {suite: selector}} as ``leaderboard.declared_implementations`` returns, where a
@@ -707,7 +707,12 @@ def evaluate(records: list[dict], contract: dict | None = None, implementations:
     run outside diagnostic mode an arm with no frozen row list, or not listed in the manifest, or whose rule differs
     from the manifest's, is an invalid run. ``diagnostic`` results, and any report split other than test, are labelled
     not valid for publication. ``extensions``: [(manifest, identity)] of committed extension manifests of the
-    primary (see the module notes); ``extension_integrity`` their ``integrity`` arguments, in the same order."""
+    primary (see the module notes); ``extension_integrity`` their ``integrity`` arguments, in the same order.
+
+    ``capture``: a dict that receives the scorer's internal state (``ev``: per arm key, its rows by subtask and unit,
+    rule and subtask results; ``boots``: the shared group draws per suite; ``picks``: (name, suite, subtask) -> (arm
+    key, status, reason); ``level``), so secondary views reuse the same rows and bootstrap draws. It never changes the
+    returned document."""
     strict = report_split == "test" and not diagnostic
     extensions = list(extensions or [])
     if manifest is None and strict:
@@ -889,6 +894,8 @@ def evaluate(records: list[dict], contract: dict | None = None, implementations:
             spec = contract["suites"][suite]
             for st in list(spec.get("subtasks", {})) + list(spec.get("optional_subtasks", {})):
                 picks[(name, suite, st)] = choose(name, d.get(suite) or {}, suite, st)
+    if capture is not None:
+        capture.update({"ev": ev, "boots": boots, "picks": picks, "level": level, "replicates": B, "seed": seed})
 
     def part(name, suite, st):
         k, status, reason = picks[(name, suite, st)]
