@@ -90,7 +90,10 @@
   "command": "uv run python -m goldrails_dataset.content_sample draw"
  },
  "result": {
-  "labeller": "Codex",
+  "labeller": "the project lead personally, with an AI assistant (Codex)",
+  "label_files_labeller": "Codex",
+  "provenance_ruling": 31,
+  "disputed_rows_decided_by": "the project lead personally, with an AI assistant (Codex)",
   "coverage": "400/400",
   "complete": true,
   "overall": {

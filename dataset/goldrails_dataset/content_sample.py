@@ -239,6 +239,11 @@ def bootstrap_ci(by_stratum: dict, seed: int, reps: int = BOOTSTRAP) -> dict:
     return {"method": f"stratified bootstrap, {reps} reps, seed {seed}", "agreement_95": ci(ag), "kappa_95": ci(ka)}
 
 
+# Owner ruling 31: the sample (and the disputed-row review) was labelled by the project lead personally, working with
+# an AI assistant; the label files name the assistant's session, kept as label_files_labeller.
+LABELLED_BY = "the project lead personally, with an AI assistant (Codex)"
+
+
 def score(paths: list, manifest_path: Path = SAMPLE_DIR / "manifest.json") -> dict:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     ref = {c["id"]: c for c in e2_local.candidates("content", private=False, text=False)}
@@ -271,7 +276,8 @@ def score(paths: list, manifest_path: Path = SAMPLE_DIR / "manifest.json") -> di
     overall = summary(list(items.values()))
     overall |= {"agreement_population_weighted": _rnd(wag), "kappa_population_weighted": _rnd(kappa(wpairs, w))}
     overall |= bootstrap_ci(decided_by_stratum, manifest["seed"])
-    result = {"labeller": labeller, "coverage": f"{len(items)}/{manifest['n']}",
+    result = {"labeller": LABELLED_BY, "label_files_labeller": labeller, "provenance_ruling": 31,
+              "disputed_rows_decided_by": LABELLED_BY, "coverage": f"{len(items)}/{manifest['n']}",
               "complete": len(items) == manifest["n"], "overall": overall,
               "by_stratum": per.get("stratum", {}), "by_subtask": per.get("subtask", {}),
               "by_source": per.get("source", {}), "by_split": per.get("split", {}),

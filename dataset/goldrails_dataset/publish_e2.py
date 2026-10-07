@@ -534,7 +534,7 @@ def _write_docs(out: Path, man: dict, files: list, pol: dict, code_ref: str, roo
         doc = json.loads(agr.read_text(encoding="utf-8").replace(
             "the owner-ruling final label of a resolved dispute", "the final label of a resolved dispute"))
         (out / "content-label-agreement.json").write_text(
-            json.dumps({"labeller": "project lead with an AI assistant (Codex)", "design": doc.get("design"),
+            json.dumps({"labeller": "the project lead personally, with an AI assistant (Codex)", "design": doc.get("design"),
                         "result": doc.get("result")}, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     pa = prompt_attack_agreement(root)
     if pa:
@@ -562,8 +562,9 @@ def prompt_attack_agreement(root: Path = E2) -> dict | None:
     if not p.exists():
         return None
     d = json.loads(p.read_text(encoding="utf-8"))
-    return {"what": "AI second label of a 400-row blind sample of the prompt-attack rows: a model with no tools and "
-                    "no file access, given only the labelling policy and the rows. Not a human review.",
+    return {"what": "Sealed AI second label of a 400-row blind sample of the prompt-attack rows: a model with no tools "
+                    "and no file access, given only the labelling policy and the rows. Not a human review.",
+            "labelled_by": "a sealed AI second labeller",
             **{k: d[k] for k in ("overall", "confusion_reference_to_ai", "by_subtask", "by_stratum", "by_source")
                if k in d}}
 
@@ -708,10 +709,10 @@ def _label_notes(review: dict, root: Path) -> list:
         n = (doc.get("design") or {}).get("n", 400)
         notes.append(f"- **How the labels were checked.** Every row has a first label from its source or our "
                      "labelling rules. Rows outside the content and prompt-attack suites also have a blind second "
-                     "label. The project lead "
-                     "decided every disagreement, working with an AI assistant (Codex). For the content suite, the "
-                     f"project lead, with the same assistant, labelled a stratified sample of {n} rows blind, without seeing the first "
-                     f"label or the source. They agreed with the first label on {o['agreement_population_weighted']:.1%} "
+                     "label. The project lead personally decided every disagreement, with an AI assistant (Codex). "
+                     f"For the content suite, the project lead personally labelled a stratified sample of {n} rows "
+                     "blind, with the same AI assistant, without seeing the first label or the source. That second "
+                     f"label agreed with the first on {o['agreement_population_weighted']:.1%} "
                      f"of rows (Cohen's kappa {o['kappa_population_weighted']:.2f}, weighted to the population). "
                      "`content-label-agreement.json` breaks this down by subtask and source.")
     else:
@@ -720,8 +721,8 @@ def _label_notes(review: dict, root: Path) -> list:
     pa = prompt_attack_agreement(root)
     if pa:
         o = pa["overall"]
-        notes.append(f"- **Prompt-attack labels have an AI second label.** A model with no tools and no file access, "
-                     f"given only the labelling policy, labelled a blind sample of {o['n']} prompt-attack rows. It agreed "
+        notes.append(f"- **Prompt-attack labels have a sealed AI second label.** A sealed model with no tools and no "
+                     f"file access, given only the labelling policy, labelled a blind sample of {o['n']} prompt-attack rows. It agreed "
                      f"with the reference label on {o['agreement']:.1%} of them (Cohen's kappa {o['kappa']:.2f}). This "
                      "is an AI cross-check, not a human review. `prompt-attack-label-agreement.json` breaks it down by "
                      "subtask and source.")

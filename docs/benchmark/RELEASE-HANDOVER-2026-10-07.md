@@ -24,9 +24,12 @@ gpt-6-luna answered 10 rows with a `refusal`; they count as wrong.
 - Prompt-attack suite: `dataset/edition2/r26/prompt_attacks/` (DESIGN.md, gate.json, counts.json,
   label-agreement.json: sealed AI second label, 95.0% agreement, kappa 0.88, n = 400).
 - Freeze before calls: `benchmark/subsets/edition2/freeze-manifest-prompt-attacks-r26.json`.
-- Disclosures to carry: injection floor exception (151 / 167 public test rows), AI second labels (content sample and
-  prompt-attack sample, both done with an AI), n-gram baseline beside every prompt-attack score, Bedrock's indirect
-  input mapping, independence statement, question format native to Jev, fixed 0.5 rule.
+- Disclosures to carry: injection floor exception (151 / 167 public test rows), label provenance (ruling 31: the
+  content sample and the disputed rows were labelled by the project lead personally, with an AI assistant; the
+  prompt-attack sample has a sealed AI second label), the in-distribution supervised reference beside every
+  prompt-attack score, Bedrock's indirect input mapping, independence statement, question format native to Jev, fixed
+  0.5 rule, vendor-owned rows. `score` now writes them at the top of `leaderboard.json`'s `disclosures` and the
+  README's "Read this first" block, with the ruling 31 views (`benchmark/runs/e2_views.py`).
 
 ## Release-day steps (ruling 29: first public release, version 1.0.0)
 
@@ -50,7 +53,8 @@ gpt-6-luna answered 10 rows with a `refusal`; they count as wrong.
 
 - Tensor Trust written terms (would lift injection above the floor); SPML as the fallback.
 - BIPIA email licence call; recording source licence reviews in `dataset/release/redistribution.json`.
-- A person's label check (both samples were AI-labelled).
+- An independent person's label check: the content sample was labelled by the project lead with an AI assistant, and
+  the prompt-attack sample by a sealed AI second labeller (ruling 31).
 
 ## Clean-up (7 October)
 

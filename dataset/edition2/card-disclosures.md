@@ -19,9 +19,13 @@ The headline score uses one fixed rule for every model. A probability of 0.5 or 
 
 522 of the 2,109 content test rows come from datasets that companies building safety models published themselves. 314 are from NVIDIA's Aegis 2.0 and 208 are from OpenAI's moderation evaluation set. A vendor may have trained or tuned its own models on that data, so every such row carries `vendor_owned` and its vendor name, and you can score with or without them. OpenAI has a model on the leaderboard, gpt-6-luna, and OpenAI may have trained or tuned it on its own moderation set. For that reason the leaderboard reports every system's content score twice, once on all rows and once without the OpenAI rows. NVIDIA has no model on the leaderboard. We also removed every row whose text appears in a benchmarked model's training data or in a benchmarked vendor's published material, such as TypeSafe's guardrails cookbook. EXCLUDED.jsonl lists each one with its reason.
 
-### Prompt-attack labels had an AI second reader, not a person
+### Who labelled what
 
-The prompt-attack suite's second label comes from a model, not a person. A separate model labelled a 400-row blind sample of it with no tools and no file access, given only the labelling policy and the rows. We publish its agreement rate. Treat it as an AI cross-check, not a human review.
+The content second-label sample (400 rows, drawn blind and stratified) was labelled by the project lead personally, with an AI assistant. The project lead also decided every disputed row the same way, with the same assistant. `content-label-agreement.json` gives the agreement rate.
+
+### Prompt-attack labels have a sealed AI second label, not a person's
+
+The prompt-attack suite's second label comes from a model, not a person. A sealed model labelled a 400-row blind sample of it with no tools and no file access, given only the labelling policy and the rows. We publish its agreement rate. Treat it as an AI cross-check, not a human review.
 
 ### Injection has fewer rows than the other prompt-attack subtasks
 
