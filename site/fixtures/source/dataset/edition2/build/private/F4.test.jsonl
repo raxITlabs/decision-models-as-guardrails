@@ -1,0 +1,1 @@
+{"id":"fx-profanity-held-06","feature":"F4","subtask":"profanity","split":"test","visibility":"private","expected":"yes","provenance":{"source":"synthetic_licensed","licence":"custom"},"state":{"role":"user","text":"SECRET-HELD-BACK text for fx-profanity-held-06. This sentence must never reach the site.","context":[],"query":null,"source":null,"tool_call":null}}

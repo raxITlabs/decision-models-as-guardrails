@@ -1,0 +1,17 @@
+{
+ "default": "ids_only",
+ "sources": {
+  "synthetic_open": {
+   "mode": "text",
+   "reviewed": true
+  },
+  "synthetic_licensed": {
+   "mode": "ids_only",
+   "reviewed": true
+  },
+  "synthetic_unreviewed": {
+   "mode": "text",
+   "reviewed": false
+  }
+ }
+}

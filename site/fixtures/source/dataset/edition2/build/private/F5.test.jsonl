@@ -1,0 +1,1 @@
+{"id":"fx-pii-held-06","feature":"F5","subtask":"pii","split":"test","visibility":"private","expected":"yes","provenance":{"source":"synthetic_unreviewed","licence":"custom"},"state":{"role":"user","text":"SECRET-HELD-BACK text for fx-pii-held-06. This sentence must never reach the site.","context":[],"query":null,"source":null,"tool_call":null}}

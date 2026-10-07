@@ -1,0 +1,1219 @@
+{
+ "schema": "synthetic-fixture",
+ "note": "Synthetic fixture. Every name and number here is made up.",
+ "display": {
+  "fixture-alpha": {
+   "name": "Example Alpha",
+   "provider": "Synthetic Labs",
+   "mono": "Ea"
+  },
+  "fixture-bravo": {
+   "name": "Example Bravo",
+   "provider": "Synthetic Labs",
+   "mono": "Eb"
+  },
+  "fixture-charlie": {
+   "name": "Example Charlie",
+   "provider": "Placeholder Inc.",
+   "mono": "Ec"
+  },
+  "fixture-delta": {
+   "name": "Example Delta",
+   "provider": "Open weights (fake)",
+   "mono": "Ed"
+  },
+  "fixture-echo": {
+   "name": "Example Echo",
+   "provider": "Open weights (fake)",
+   "mono": "Ee"
+  }
+ },
+ "rules": {
+  "headline": {
+   "operating_point": 0.5
+  }
+ },
+ "arms": [
+  {
+   "arm_id": "fixture-bravo|fixture-indirect",
+   "system": "fixture-bravo",
+   "cost": {
+    "implementation_type": "hosted_api",
+    "usd_per_1000": 0.1,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-alpha|fixture-indirect",
+   "system": "fixture-alpha",
+   "cost": {
+    "implementation_type": "hosted_api",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-delta|fixture-indirect",
+   "system": "fixture-delta",
+   "cost": {
+    "implementation_type": "self_hosted",
+    "usd_per_1000": 0.3,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-charlie|fixture-indirect",
+   "system": "fixture-charlie",
+   "cost": {
+    "implementation_type": "managed_service",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-echo|fixture-indirect",
+   "system": "fixture-echo",
+   "cost": {
+    "implementation_type": "self_hosted",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-alpha|fixture-direct",
+   "system": "fixture-alpha",
+   "cost": {
+    "implementation_type": "hosted_api",
+    "usd_per_1000": 0.1,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-charlie|fixture-direct",
+   "system": "fixture-charlie",
+   "cost": {
+    "implementation_type": "managed_service",
+    "usd_per_1000": 0.1,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-bravo|fixture-direct",
+   "system": "fixture-bravo",
+   "cost": {
+    "implementation_type": "hosted_api",
+    "usd_per_1000": 0,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-delta|fixture-direct",
+   "system": "fixture-delta",
+   "cost": {
+    "implementation_type": "self_hosted",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-echo|fixture-direct",
+   "system": "fixture-echo",
+   "cost": {
+    "implementation_type": "self_hosted",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-alpha|fixture-input",
+   "system": "fixture-alpha",
+   "cost": {
+    "implementation_type": "hosted_api",
+    "usd_per_1000": 0,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-bravo|fixture-input",
+   "system": "fixture-bravo",
+   "cost": {
+    "implementation_type": "hosted_api",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-charlie|fixture-input",
+   "system": "fixture-charlie",
+   "cost": {
+    "implementation_type": "managed_service",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-delta|fixture-input",
+   "system": "fixture-delta",
+   "cost": {
+    "implementation_type": "self_hosted",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-echo|fixture-input",
+   "system": "fixture-echo",
+   "cost": {
+    "implementation_type": "self_hosted",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-alpha|fixture-output",
+   "system": "fixture-alpha",
+   "cost": {
+    "implementation_type": "hosted_api",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-charlie|fixture-output",
+   "system": "fixture-charlie",
+   "cost": {
+    "implementation_type": "managed_service",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-bravo|fixture-output",
+   "system": "fixture-bravo",
+   "cost": {
+    "implementation_type": "hosted_api",
+    "usd_per_1000": 0.1,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-delta|fixture-output",
+   "system": "fixture-delta",
+   "cost": {
+    "implementation_type": "self_hosted",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-echo|fixture-output",
+   "system": "fixture-echo",
+   "cost": {
+    "implementation_type": "self_hosted",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-alpha|fixture-topics",
+   "system": "fixture-alpha",
+   "cost": {
+    "implementation_type": "hosted_api",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-bravo|fixture-topics",
+   "system": "fixture-bravo",
+   "cost": {
+    "implementation_type": "hosted_api",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-charlie|fixture-topics",
+   "system": "fixture-charlie",
+   "cost": {
+    "implementation_type": "managed_service",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-delta|fixture-topics",
+   "system": "fixture-delta",
+   "cost": {
+    "implementation_type": "self_hosted",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-echo|fixture-topics",
+   "system": "fixture-echo",
+   "cost": {
+    "implementation_type": "self_hosted",
+    "usd_per_1000": 0.3,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-alpha|fixture-pii",
+   "system": "fixture-alpha",
+   "cost": {
+    "implementation_type": "hosted_api",
+    "usd_per_1000": 0.1,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-charlie|fixture-pii",
+   "system": "fixture-charlie",
+   "cost": {
+    "implementation_type": "managed_service",
+    "usd_per_1000": 0.1,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-bravo|fixture-pii",
+   "system": "fixture-bravo",
+   "cost": {
+    "implementation_type": "hosted_api",
+    "usd_per_1000": 0.1,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-delta|fixture-pii",
+   "system": "fixture-delta",
+   "cost": {
+    "implementation_type": "self_hosted",
+    "usd_per_1000": 0.3,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-echo|fixture-pii",
+   "system": "fixture-echo",
+   "cost": {
+    "implementation_type": "self_hosted",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-bravo|fixture-grounding",
+   "system": "fixture-bravo",
+   "cost": {
+    "implementation_type": "hosted_api",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-alpha|fixture-grounding",
+   "system": "fixture-alpha",
+   "cost": {
+    "implementation_type": "hosted_api",
+    "usd_per_1000": 0.1,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-charlie|fixture-grounding",
+   "system": "fixture-charlie",
+   "cost": {
+    "implementation_type": "managed_service",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-delta|fixture-grounding",
+   "system": "fixture-delta",
+   "cost": {
+    "implementation_type": "self_hosted",
+    "usd_per_1000": 0.3,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-echo|fixture-grounding",
+   "system": "fixture-echo",
+   "cost": {
+    "implementation_type": "self_hosted",
+    "usd_per_1000": 0.3,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-alpha|fixture-profanity",
+   "system": "fixture-alpha",
+   "cost": {
+    "implementation_type": "hosted_api",
+    "usd_per_1000": 0.1,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-charlie|fixture-profanity",
+   "system": "fixture-charlie",
+   "cost": {
+    "implementation_type": "managed_service",
+    "usd_per_1000": 0,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-delta|fixture-profanity",
+   "system": "fixture-delta",
+   "cost": {
+    "implementation_type": "self_hosted",
+    "usd_per_1000": 0.2,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-bravo|fixture-profanity",
+   "system": "fixture-bravo",
+   "cost": {
+    "implementation_type": "hosted_api",
+    "usd_per_1000": 0.1,
+    "subtasks": {}
+   }
+  },
+  {
+   "arm_id": "fixture-echo|fixture-profanity",
+   "system": "fixture-echo",
+   "cost": {
+    "implementation_type": "self_hosted",
+    "usd_per_1000": 0.3,
+    "subtasks": {}
+   }
+  }
+ ],
+ "subtasks": {
+  "prompt_attacks/indirect": {
+   "ranking": [
+    {
+     "name": "fixture-bravo",
+     "balanced_accuracy": 86.8,
+     "ci": {
+      "low": 85.3,
+      "high": 88.3
+     },
+     "catch_rate": 0.833,
+     "false_block_rate": 0.309,
+     "status": "complete",
+     "rank": 1,
+     "tier": 1,
+     "arm_id": "fixture-bravo|fixture-indirect"
+    },
+    {
+     "name": "fixture-alpha",
+     "balanced_accuracy": 84.7,
+     "ci": {
+      "low": 82.8,
+      "high": 86.6
+     },
+     "catch_rate": 0.881,
+     "false_block_rate": 0.282,
+     "status": "complete",
+     "rank": 2,
+     "tier": 1,
+     "arm_id": "fixture-alpha|fixture-indirect"
+    },
+    {
+     "name": "fixture-delta",
+     "balanced_accuracy": 77.1,
+     "ci": {
+      "low": 76.2,
+      "high": 78
+     },
+     "catch_rate": 0.77,
+     "false_block_rate": 0.286,
+     "status": "complete",
+     "rank": 3,
+     "tier": 2,
+     "arm_id": "fixture-delta|fixture-indirect"
+    },
+    {
+     "name": "fixture-charlie",
+     "balanced_accuracy": 74.6,
+     "ci": {
+      "low": 73.8,
+      "high": 75.4
+     },
+     "catch_rate": 0.756,
+     "false_block_rate": 0.292,
+     "status": "complete",
+     "rank": 4,
+     "tier": 2,
+     "arm_id": "fixture-charlie|fixture-indirect"
+    },
+    {
+     "name": "fixture-echo",
+     "balanced_accuracy": 67.7,
+     "ci": {
+      "low": 66.7,
+      "high": 68.7
+     },
+     "catch_rate": 0.636,
+     "false_block_rate": 0.071,
+     "status": "complete",
+     "rank": 5,
+     "tier": 3,
+     "arm_id": "fixture-echo|fixture-indirect"
+    }
+   ],
+   "not_ranked": []
+  },
+  "prompt_attacks/direct": {
+   "ranking": [
+    {
+     "name": "fixture-alpha",
+     "balanced_accuracy": 80.7,
+     "ci": {
+      "low": 78.8,
+      "high": 82.6
+     },
+     "catch_rate": 0.78,
+     "false_block_rate": 0.196,
+     "status": "complete",
+     "rank": 1,
+     "tier": 1,
+     "arm_id": "fixture-alpha|fixture-direct"
+    },
+    {
+     "name": "fixture-charlie",
+     "balanced_accuracy": 77.8,
+     "ci": {
+      "low": 76.6,
+      "high": 79
+     },
+     "catch_rate": 0.777,
+     "false_block_rate": 0.21,
+     "status": "complete",
+     "rank": 2,
+     "tier": 1,
+     "arm_id": "fixture-charlie|fixture-direct"
+    },
+    {
+     "name": "fixture-bravo",
+     "balanced_accuracy": 76.1,
+     "ci": {
+      "low": 74.1,
+      "high": 78.1
+     },
+     "catch_rate": 0.744,
+     "false_block_rate": 0.049,
+     "status": "complete",
+     "rank": 3,
+     "tier": 2,
+     "arm_id": "fixture-bravo|fixture-direct"
+    },
+    {
+     "name": "fixture-delta",
+     "balanced_accuracy": 69.2,
+     "ci": {
+      "low": 67.2,
+      "high": 71.2
+     },
+     "catch_rate": 0.667,
+     "false_block_rate": 0.2,
+     "status": "complete",
+     "rank": 4,
+     "tier": 3,
+     "arm_id": "fixture-delta|fixture-direct"
+    },
+    {
+     "name": "fixture-echo",
+     "balanced_accuracy": 57.9,
+     "ci": {
+      "low": 55.8,
+      "high": 60
+     },
+     "catch_rate": 0.541,
+     "false_block_rate": 0.094,
+     "status": "complete",
+     "rank": 5,
+     "tier": 4,
+     "arm_id": "fixture-echo|fixture-direct"
+    }
+   ],
+   "not_ranked": []
+  },
+  "content/request": {
+   "ranking": [
+    {
+     "name": "fixture-alpha",
+     "balanced_accuracy": 92,
+     "ci": {
+      "low": 89.9,
+      "high": 94.1
+     },
+     "catch_rate": 0.965,
+     "false_block_rate": 0.134,
+     "status": "complete",
+     "rank": 1,
+     "tier": 1,
+     "arm_id": "fixture-alpha|fixture-input"
+    },
+    {
+     "name": "fixture-bravo",
+     "balanced_accuracy": 76.1,
+     "ci": {
+      "low": 74.2,
+      "high": 78
+     },
+     "catch_rate": 0.731,
+     "false_block_rate": 0.212,
+     "status": "complete",
+     "rank": 2,
+     "tier": 2,
+     "arm_id": "fixture-bravo|fixture-input"
+    },
+    {
+     "name": "fixture-charlie",
+     "balanced_accuracy": 76.1,
+     "ci": {
+      "low": 74.4,
+      "high": 77.8
+     },
+     "catch_rate": 0.716,
+     "false_block_rate": 0.25,
+     "status": "complete",
+     "rank": 3,
+     "tier": 2,
+     "arm_id": "fixture-charlie|fixture-input"
+    },
+    {
+     "name": "fixture-delta",
+     "balanced_accuracy": 73.8,
+     "ci": {
+      "low": 72.9,
+      "high": 74.7
+     },
+     "catch_rate": 0.786,
+     "false_block_rate": 0.289,
+     "status": "complete",
+     "rank": 4,
+     "tier": 2,
+     "arm_id": "fixture-delta|fixture-input"
+    },
+    {
+     "name": "fixture-echo",
+     "balanced_accuracy": 65.9,
+     "ci": {
+      "low": 64.7,
+      "high": 67.1
+     },
+     "catch_rate": 0.663,
+     "false_block_rate": 0.282,
+     "status": "complete",
+     "rank": 5,
+     "tier": 3,
+     "arm_id": "fixture-echo|fixture-input"
+    }
+   ],
+   "not_ranked": []
+  },
+  "content/reply": {
+   "ranking": [
+    {
+     "name": "fixture-alpha",
+     "balanced_accuracy": 86.8,
+     "ci": {
+      "low": 86,
+      "high": 87.6
+     },
+     "catch_rate": 0.836,
+     "false_block_rate": 0.308,
+     "status": "complete",
+     "rank": 1,
+     "tier": 1,
+     "arm_id": "fixture-alpha|fixture-output"
+    },
+    {
+     "name": "fixture-charlie",
+     "balanced_accuracy": 78.5,
+     "ci": {
+      "low": 76.9,
+      "high": 80.1
+     },
+     "catch_rate": 0.745,
+     "false_block_rate": 0.12,
+     "status": "complete",
+     "rank": 2,
+     "tier": 2,
+     "arm_id": "fixture-charlie|fixture-output"
+    },
+    {
+     "name": "fixture-bravo",
+     "balanced_accuracy": 77.6,
+     "ci": {
+      "low": 76,
+      "high": 79.2
+     },
+     "catch_rate": 0.737,
+     "false_block_rate": 0.318,
+     "status": "complete",
+     "rank": 3,
+     "tier": 2,
+     "arm_id": "fixture-bravo|fixture-output"
+    },
+    {
+     "name": "fixture-delta",
+     "balanced_accuracy": 73.7,
+     "ci": {
+      "low": 72,
+      "high": 75.4
+     },
+     "catch_rate": 0.71,
+     "false_block_rate": 0.222,
+     "status": "complete",
+     "rank": 4,
+     "tier": 3,
+     "arm_id": "fixture-delta|fixture-output"
+    },
+    {
+     "name": "fixture-echo",
+     "balanced_accuracy": 56.6,
+     "ci": {
+      "low": 55.2,
+      "high": 58
+     },
+     "catch_rate": 0.536,
+     "false_block_rate": 0.135,
+     "status": "complete",
+     "rank": 5,
+     "tier": 4,
+     "arm_id": "fixture-echo|fixture-output"
+    }
+   ],
+   "not_ranked": []
+  },
+  "denied_topics/topic": {
+   "ranking": [
+    {
+     "name": "fixture-alpha",
+     "balanced_accuracy": 94.8,
+     "ci": {
+      "low": 93,
+      "high": 96.6
+     },
+     "catch_rate": 0.953,
+     "false_block_rate": 0.315,
+     "status": "complete",
+     "rank": 1,
+     "tier": 1,
+     "arm_id": "fixture-alpha|fixture-topics"
+    },
+    {
+     "name": "fixture-bravo",
+     "balanced_accuracy": 88.5,
+     "ci": {
+      "low": 86.7,
+      "high": 90.3
+     },
+     "catch_rate": 0.926,
+     "false_block_rate": 0.235,
+     "status": "complete",
+     "rank": 2,
+     "tier": 2,
+     "arm_id": "fixture-bravo|fixture-topics"
+    },
+    {
+     "name": "fixture-charlie",
+     "balanced_accuracy": 76.2,
+     "ci": {
+      "low": 74.7,
+      "high": 77.7
+     },
+     "catch_rate": 0.792,
+     "false_block_rate": 0.082,
+     "status": "complete",
+     "rank": 3,
+     "tier": 3,
+     "arm_id": "fixture-charlie|fixture-topics"
+    },
+    {
+     "name": "fixture-delta",
+     "balanced_accuracy": 75.1,
+     "ci": {
+      "low": 73.9,
+      "high": 76.3
+     },
+     "catch_rate": 0.723,
+     "false_block_rate": 0.069,
+     "status": "complete",
+     "rank": 4,
+     "tier": 3,
+     "arm_id": "fixture-delta|fixture-topics"
+    },
+    {
+     "name": "fixture-echo",
+     "balanced_accuracy": 57.3,
+     "ci": {
+      "low": 55.6,
+      "high": 59
+     },
+     "catch_rate": 0.527,
+     "false_block_rate": 0.035,
+     "status": "complete",
+     "rank": 5,
+     "tier": 4,
+     "arm_id": "fixture-echo|fixture-topics"
+    }
+   ],
+   "not_ranked": []
+  },
+  "sensitive_info/entity_detection": {
+   "ranking": [
+    {
+     "name": "fixture-alpha",
+     "balanced_accuracy": 87.3,
+     "ci": {
+      "low": 85.2,
+      "high": 89.4
+     },
+     "catch_rate": 0.841,
+     "false_block_rate": 0.118,
+     "status": "complete",
+     "rank": 1,
+     "tier": 1,
+     "arm_id": "fixture-alpha|fixture-pii"
+    },
+    {
+     "name": "fixture-charlie",
+     "balanced_accuracy": 80.7,
+     "ci": {
+      "low": 78.6,
+      "high": 82.8
+     },
+     "catch_rate": 0.761,
+     "false_block_rate": 0.137,
+     "status": "complete",
+     "rank": 2,
+     "tier": 2,
+     "arm_id": "fixture-charlie|fixture-pii"
+    },
+    {
+     "name": "fixture-bravo",
+     "balanced_accuracy": 77.2,
+     "ci": {
+      "low": 75.1,
+      "high": 79.3
+     },
+     "catch_rate": 0.815,
+     "false_block_rate": 0.224,
+     "status": "complete",
+     "rank": 3,
+     "tier": 3,
+     "arm_id": "fixture-bravo|fixture-pii"
+    },
+    {
+     "name": "fixture-delta",
+     "balanced_accuracy": 70.5,
+     "ci": {
+      "low": 69,
+      "high": 72
+     },
+     "catch_rate": 0.686,
+     "false_block_rate": 0.236,
+     "status": "complete",
+     "rank": 4,
+     "tier": 4,
+     "arm_id": "fixture-delta|fixture-pii"
+    },
+    {
+     "name": "fixture-echo",
+     "balanced_accuracy": 63.5,
+     "ci": {
+      "low": 61.5,
+      "high": 65.5
+     },
+     "catch_rate": 0.639,
+     "false_block_rate": 0.277,
+     "status": "complete",
+     "rank": 5,
+     "tier": 5,
+     "arm_id": "fixture-echo|fixture-pii"
+    }
+   ],
+   "not_ranked": []
+  },
+  "grounding/grounding": {
+   "ranking": [
+    {
+     "name": "fixture-bravo",
+     "balanced_accuracy": 91.6,
+     "ci": {
+      "low": 90.2,
+      "high": 93
+     },
+     "catch_rate": 0.873,
+     "false_block_rate": 0.167,
+     "status": "complete",
+     "rank": 1,
+     "tier": 1,
+     "arm_id": "fixture-bravo|fixture-grounding"
+    },
+    {
+     "name": "fixture-alpha",
+     "balanced_accuracy": 90.3,
+     "ci": {
+      "low": 88.5,
+      "high": 92.1
+     },
+     "catch_rate": 0.928,
+     "false_block_rate": 0.15,
+     "status": "complete",
+     "rank": 2,
+     "tier": 1,
+     "arm_id": "fixture-alpha|fixture-grounding"
+    },
+    {
+     "name": "fixture-charlie",
+     "balanced_accuracy": 71.1,
+     "ci": {
+      "low": 69.9,
+      "high": 72.3
+     },
+     "catch_rate": 0.721,
+     "false_block_rate": 0.253,
+     "status": "complete",
+     "rank": 3,
+     "tier": 2,
+     "arm_id": "fixture-charlie|fixture-grounding"
+    },
+    {
+     "name": "fixture-delta",
+     "balanced_accuracy": 69,
+     "ci": {
+      "low": 67.9,
+      "high": 70.1
+     },
+     "catch_rate": 0.652,
+     "false_block_rate": 0.146,
+     "status": "complete",
+     "rank": 4,
+     "tier": 2,
+     "arm_id": "fixture-delta|fixture-grounding"
+    },
+    {
+     "name": "fixture-echo",
+     "balanced_accuracy": 66.7,
+     "ci": {
+      "low": 65.2,
+      "high": 68.2
+     },
+     "catch_rate": 0.619,
+     "false_block_rate": 0.254,
+     "status": "complete",
+     "rank": 5,
+     "tier": 3,
+     "arm_id": "fixture-echo|fixture-grounding"
+    }
+   ],
+   "not_ranked": []
+  },
+  "word_filters/profanity": {
+   "ranking": [
+    {
+     "name": "fixture-alpha",
+     "balanced_accuracy": 86.7,
+     "ci": {
+      "low": 84.9,
+      "high": 88.5
+     },
+     "catch_rate": 0.915,
+     "false_block_rate": 0.17,
+     "status": "complete",
+     "rank": 1,
+     "tier": 1,
+     "arm_id": "fixture-alpha|fixture-profanity"
+    },
+    {
+     "name": "fixture-charlie",
+     "balanced_accuracy": 83.1,
+     "ci": {
+      "low": 80.9,
+      "high": 85.3
+     },
+     "catch_rate": 0.804,
+     "false_block_rate": 0.309,
+     "status": "complete",
+     "rank": 2,
+     "tier": 2,
+     "arm_id": "fixture-charlie|fixture-profanity"
+    },
+    {
+     "name": "fixture-delta",
+     "balanced_accuracy": 80.6,
+     "ci": {
+      "low": 78.7,
+      "high": 82.5
+     },
+     "catch_rate": 0.838,
+     "false_block_rate": 0.215,
+     "status": "complete",
+     "rank": 3,
+     "tier": 2,
+     "arm_id": "fixture-delta|fixture-profanity"
+    },
+    {
+     "name": "fixture-bravo",
+     "balanced_accuracy": 76.9,
+     "ci": {
+      "low": 75.3,
+      "high": 78.5
+     },
+     "catch_rate": 0.817,
+     "false_block_rate": 0.205,
+     "status": "complete",
+     "rank": 4,
+     "tier": 3,
+     "arm_id": "fixture-bravo|fixture-profanity"
+    },
+    {
+     "name": "fixture-echo",
+     "balanced_accuracy": 59,
+     "ci": {
+      "low": 57.2,
+      "high": 60.8
+     },
+     "catch_rate": 0.545,
+     "false_block_rate": 0.239,
+     "status": "complete",
+     "rank": 5,
+     "tier": 4,
+     "arm_id": "fixture-echo|fixture-profanity"
+    }
+   ],
+   "not_ranked": []
+  }
+ },
+ "overall": {
+  "ranking": [
+   {
+    "name": "fixture-alpha",
+    "balanced_accuracy": 87.9,
+    "ci": {
+     "low": 87,
+     "high": 88.8
+    },
+    "catch_rate": 0.846,
+    "false_block_rate": 0.024,
+    "status": "complete",
+    "rank": 1,
+    "tier": 1,
+    "rank_interval": {
+     "low": 1,
+     "high": 1
+    }
+   },
+   {
+    "name": "fixture-bravo",
+    "balanced_accuracy": 81.4,
+    "ci": {
+     "low": 80.1,
+     "high": 82.7
+    },
+    "catch_rate": 0.83,
+    "false_block_rate": 0.094,
+    "status": "complete",
+    "rank": 2,
+    "tier": 2,
+    "rank_interval": {
+     "low": 2,
+     "high": 2
+    }
+   },
+   {
+    "name": "fixture-charlie",
+    "balanced_accuracy": 77.3,
+    "ci": {
+     "low": 75.6,
+     "high": 79
+    },
+    "catch_rate": 0.784,
+    "false_block_rate": 0.161,
+    "status": "complete",
+    "rank": 3,
+    "tier": 3,
+    "rank_interval": {
+     "low": 3,
+     "high": 3
+    }
+   },
+   {
+    "name": "fixture-delta",
+    "balanced_accuracy": 73.6,
+    "ci": {
+     "low": 71.7,
+     "high": 75.5
+    },
+    "catch_rate": 0.776,
+    "false_block_rate": 0.038,
+    "status": "complete",
+    "rank": 4,
+    "tier": 4,
+    "rank_interval": {
+     "low": 4,
+     "high": 4
+    }
+   },
+   {
+    "name": "fixture-echo",
+    "balanced_accuracy": 61.8,
+    "ci": {
+     "low": 60.2,
+     "high": 63.4
+    },
+    "catch_rate": 0.644,
+    "false_block_rate": 0.316,
+    "status": "complete",
+    "rank": 5,
+    "tier": 5,
+    "rank_interval": {
+     "low": 5,
+     "high": 5
+    }
+   }
+  ]
+ },
+ "run": {
+  "cost": {
+   "fixture-alpha": {
+    "checks": 60,
+    "usd_per_1000": 0.051
+   },
+   "fixture-bravo": {
+    "checks": 60,
+    "usd_per_1000": 0.07
+   },
+   "fixture-charlie": {
+    "checks": 60,
+    "usd_per_1000": 0.173
+   },
+   "fixture-delta": {
+    "checks": 60,
+    "usd_per_1000": 0.268
+   },
+   "fixture-echo": {
+    "checks": 60,
+    "usd_per_1000": 0.34
+   }
+  }
+ },
+ "full_run": {
+  "rows_total": 60,
+  "rows_public": 52,
+  "rows_unpublished": 8,
+  "runs": {
+   "a": {
+    "date": "2026-01-01"
+   }
+  }
+ },
+ "prompt_attacks": {
+  "ngram_baseline": {
+   "by_tag": {
+    "injection": {
+     "keyword_regex": 51,
+     "best": 70
+    },
+    "jailbreak": {
+     "keyword_regex": 52,
+     "best": 71
+    },
+    "leakage": {
+     "keyword_regex": 60,
+     "best": 75
+    },
+    "indirect": {
+     "keyword_regex": 50,
+     "best": 72
+    }
+   }
+  }
+ },
+ "unpublished_slice_view": {
+  "public": {
+   "fixture-alpha": {
+    "overall": {
+     "balanced_accuracy": 88
+    }
+   },
+   "fixture-bravo": {
+    "overall": {
+     "balanced_accuracy": 84
+    }
+   },
+   "fixture-charlie": {
+    "overall": {
+     "balanced_accuracy": 79
+    }
+   },
+   "fixture-delta": {
+    "overall": {
+     "balanced_accuracy": 73
+    }
+   },
+   "fixture-echo": {
+    "overall": {
+     "balanced_accuracy": 61
+    }
+   }
+  },
+  "unpublished": {
+   "fixture-alpha": {
+    "overall": {
+     "balanced_accuracy": 86.5
+    }
+   },
+   "fixture-bravo": {
+    "overall": {
+     "balanced_accuracy": 82.5
+    }
+   },
+   "fixture-charlie": {
+    "overall": {
+     "balanced_accuracy": 77.5
+    }
+   },
+   "fixture-delta": {
+    "overall": {
+     "balanced_accuracy": 71.5
+    }
+   },
+   "fixture-echo": {
+    "overall": {
+     "balanced_accuracy": 59.5
+    }
+   }
+  }
+ },
+ "label_provenance": {
+  "content_sample": {
+   "rows": 20,
+   "agreement_population_weighted": 0.9
+  },
+  "prompt_attack_sample": {
+   "rows": 20,
+   "agreement": 0.85
+  }
+ },
+ "label_amendment": {
+  "threshold": 4,
+  "systems": 5,
+  "reviewed": 3,
+  "corrected": 1,
+  "removed": 1,
+  "date": "2026-01-02"
+ }
+}

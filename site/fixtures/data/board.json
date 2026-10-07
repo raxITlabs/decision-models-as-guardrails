@@ -1,0 +1,610 @@
+{
+ "source": "fixture",
+ "release": {
+  "version": "1.0.0",
+  "date": "2026-01-02"
+ },
+ "stats": {
+  "checks": 60,
+  "publicRows": 52,
+  "heldBackRows": 8,
+  "systems": 5,
+  "suites": 6,
+  "jobs": 8,
+  "threshold": 0.5
+ },
+ "systems": [
+  {
+   "id": "fixture-alpha",
+   "name": "Example Alpha",
+   "provider": "Synthetic Labs",
+   "mono": "Ea",
+   "hosting": "managed"
+  },
+  {
+   "id": "fixture-bravo",
+   "name": "Example Bravo",
+   "provider": "Synthetic Labs",
+   "mono": "Eb",
+   "hosting": "managed"
+  },
+  {
+   "id": "fixture-charlie",
+   "name": "Example Charlie",
+   "provider": "Placeholder Inc.",
+   "mono": "Ec",
+   "hosting": "managed"
+  },
+  {
+   "id": "fixture-delta",
+   "name": "Example Delta",
+   "provider": "Open weights (fake)",
+   "mono": "Ed",
+   "hosting": "self-hosted"
+  },
+  {
+   "id": "fixture-echo",
+   "name": "Example Echo",
+   "provider": "Open weights (fake)",
+   "mono": "Ee",
+   "hosting": "self-hosted"
+  }
+ ],
+ "overall": [
+  {
+   "system": "fixture-alpha",
+   "rank": 1,
+   "tier": 1,
+   "score": 87.9,
+   "ciLow": 87,
+   "ciHigh": 88.8,
+   "catchRate": 0.846,
+   "falseBlockRate": 0.024,
+   "cost": 0.051
+  },
+  {
+   "system": "fixture-bravo",
+   "rank": 2,
+   "tier": 2,
+   "score": 81.4,
+   "ciLow": 80.1,
+   "ciHigh": 82.7,
+   "catchRate": 0.83,
+   "falseBlockRate": 0.094,
+   "cost": 0.07
+  },
+  {
+   "system": "fixture-charlie",
+   "rank": 3,
+   "tier": 3,
+   "score": 77.3,
+   "ciLow": 75.6,
+   "ciHigh": 79,
+   "catchRate": 0.784,
+   "falseBlockRate": 0.161,
+   "cost": 0.173
+  },
+  {
+   "system": "fixture-delta",
+   "rank": 4,
+   "tier": 4,
+   "score": 73.6,
+   "ciLow": 71.7,
+   "ciHigh": 75.5,
+   "catchRate": 0.776,
+   "falseBlockRate": 0.038,
+   "cost": 0.268
+  },
+  {
+   "system": "fixture-echo",
+   "rank": 5,
+   "tier": 5,
+   "score": 61.8,
+   "ciLow": 60.2,
+   "ciHigh": 63.4,
+   "catchRate": 0.644,
+   "falseBlockRate": 0.316,
+   "cost": 0.34
+  }
+ ],
+ "jobs": {
+  "indirect": [
+   {
+    "system": "fixture-bravo",
+    "rank": 1,
+    "tier": 1,
+    "score": 86.8,
+    "ciLow": 85.3,
+    "ciHigh": 88.3,
+    "catchRate": 0.833,
+    "falseBlockRate": 0.309,
+    "cost": 0.1
+   },
+   {
+    "system": "fixture-alpha",
+    "rank": 2,
+    "tier": 1,
+    "score": 84.7,
+    "ciLow": 82.8,
+    "ciHigh": 86.6,
+    "catchRate": 0.881,
+    "falseBlockRate": 0.282,
+    "cost": 0.2
+   },
+   {
+    "system": "fixture-delta",
+    "rank": 3,
+    "tier": 2,
+    "score": 77.1,
+    "ciLow": 76.2,
+    "ciHigh": 78,
+    "catchRate": 0.77,
+    "falseBlockRate": 0.286,
+    "cost": 0.3
+   },
+   {
+    "system": "fixture-charlie",
+    "rank": 4,
+    "tier": 2,
+    "score": 74.6,
+    "ciLow": 73.8,
+    "ciHigh": 75.4,
+    "catchRate": 0.756,
+    "falseBlockRate": 0.292,
+    "cost": 0.2
+   },
+   {
+    "system": "fixture-echo",
+    "rank": 5,
+    "tier": 3,
+    "score": 67.7,
+    "ciLow": 66.7,
+    "ciHigh": 68.7,
+    "catchRate": 0.636,
+    "falseBlockRate": 0.071,
+    "cost": 0.2
+   }
+  ],
+  "direct": [
+   {
+    "system": "fixture-alpha",
+    "rank": 1,
+    "tier": 1,
+    "score": 80.7,
+    "ciLow": 78.8,
+    "ciHigh": 82.6,
+    "catchRate": 0.78,
+    "falseBlockRate": 0.196,
+    "cost": 0.1
+   },
+   {
+    "system": "fixture-charlie",
+    "rank": 2,
+    "tier": 1,
+    "score": 77.8,
+    "ciLow": 76.6,
+    "ciHigh": 79,
+    "catchRate": 0.777,
+    "falseBlockRate": 0.21,
+    "cost": 0.1
+   },
+   {
+    "system": "fixture-bravo",
+    "rank": 3,
+    "tier": 2,
+    "score": 76.1,
+    "ciLow": 74.1,
+    "ciHigh": 78.1,
+    "catchRate": 0.744,
+    "falseBlockRate": 0.049,
+    "cost": 0
+   },
+   {
+    "system": "fixture-delta",
+    "rank": 4,
+    "tier": 3,
+    "score": 69.2,
+    "ciLow": 67.2,
+    "ciHigh": 71.2,
+    "catchRate": 0.667,
+    "falseBlockRate": 0.2,
+    "cost": 0.2
+   },
+   {
+    "system": "fixture-echo",
+    "rank": 5,
+    "tier": 4,
+    "score": 57.9,
+    "ciLow": 55.8,
+    "ciHigh": 60,
+    "catchRate": 0.541,
+    "falseBlockRate": 0.094,
+    "cost": 0.2
+   }
+  ],
+  "input": [
+   {
+    "system": "fixture-alpha",
+    "rank": 1,
+    "tier": 1,
+    "score": 92,
+    "ciLow": 89.9,
+    "ciHigh": 94.1,
+    "catchRate": 0.965,
+    "falseBlockRate": 0.134,
+    "cost": 0
+   },
+   {
+    "system": "fixture-bravo",
+    "rank": 2,
+    "tier": 2,
+    "score": 76.1,
+    "ciLow": 74.2,
+    "ciHigh": 78,
+    "catchRate": 0.731,
+    "falseBlockRate": 0.212,
+    "cost": 0.2
+   },
+   {
+    "system": "fixture-charlie",
+    "rank": 3,
+    "tier": 2,
+    "score": 76.1,
+    "ciLow": 74.4,
+    "ciHigh": 77.8,
+    "catchRate": 0.716,
+    "falseBlockRate": 0.25,
+    "cost": 0.2
+   },
+   {
+    "system": "fixture-delta",
+    "rank": 4,
+    "tier": 2,
+    "score": 73.8,
+    "ciLow": 72.9,
+    "ciHigh": 74.7,
+    "catchRate": 0.786,
+    "falseBlockRate": 0.289,
+    "cost": 0.2
+   },
+   {
+    "system": "fixture-echo",
+    "rank": 5,
+    "tier": 3,
+    "score": 65.9,
+    "ciLow": 64.7,
+    "ciHigh": 67.1,
+    "catchRate": 0.663,
+    "falseBlockRate": 0.282,
+    "cost": 0.2
+   }
+  ],
+  "output": [
+   {
+    "system": "fixture-alpha",
+    "rank": 1,
+    "tier": 1,
+    "score": 86.8,
+    "ciLow": 86,
+    "ciHigh": 87.6,
+    "catchRate": 0.836,
+    "falseBlockRate": 0.308,
+    "cost": 0.2
+   },
+   {
+    "system": "fixture-charlie",
+    "rank": 2,
+    "tier": 2,
+    "score": 78.5,
+    "ciLow": 76.9,
+    "ciHigh": 80.1,
+    "catchRate": 0.745,
+    "falseBlockRate": 0.12,
+    "cost": 0.2
+   },
+   {
+    "system": "fixture-bravo",
+    "rank": 3,
+    "tier": 2,
+    "score": 77.6,
+    "ciLow": 76,
+    "ciHigh": 79.2,
+    "catchRate": 0.737,
+    "falseBlockRate": 0.318,
+    "cost": 0.1
+   },
+   {
+    "system": "fixture-delta",
+    "rank": 4,
+    "tier": 3,
+    "score": 73.7,
+    "ciLow": 72,
+    "ciHigh": 75.4,
+    "catchRate": 0.71,
+    "falseBlockRate": 0.222,
+    "cost": 0.2
+   },
+   {
+    "system": "fixture-echo",
+    "rank": 5,
+    "tier": 4,
+    "score": 56.6,
+    "ciLow": 55.2,
+    "ciHigh": 58,
+    "catchRate": 0.536,
+    "falseBlockRate": 0.135,
+    "cost": 0.2
+   }
+  ],
+  "topics": [
+   {
+    "system": "fixture-alpha",
+    "rank": 1,
+    "tier": 1,
+    "score": 94.8,
+    "ciLow": 93,
+    "ciHigh": 96.6,
+    "catchRate": 0.953,
+    "falseBlockRate": 0.315,
+    "cost": 0.2
+   },
+   {
+    "system": "fixture-bravo",
+    "rank": 2,
+    "tier": 2,
+    "score": 88.5,
+    "ciLow": 86.7,
+    "ciHigh": 90.3,
+    "catchRate": 0.926,
+    "falseBlockRate": 0.235,
+    "cost": 0.2
+   },
+   {
+    "system": "fixture-charlie",
+    "rank": 3,
+    "tier": 3,
+    "score": 76.2,
+    "ciLow": 74.7,
+    "ciHigh": 77.7,
+    "catchRate": 0.792,
+    "falseBlockRate": 0.082,
+    "cost": 0.2
+   },
+   {
+    "system": "fixture-delta",
+    "rank": 4,
+    "tier": 3,
+    "score": 75.1,
+    "ciLow": 73.9,
+    "ciHigh": 76.3,
+    "catchRate": 0.723,
+    "falseBlockRate": 0.069,
+    "cost": 0.2
+   },
+   {
+    "system": "fixture-echo",
+    "rank": 5,
+    "tier": 4,
+    "score": 57.3,
+    "ciLow": 55.6,
+    "ciHigh": 59,
+    "catchRate": 0.527,
+    "falseBlockRate": 0.035,
+    "cost": 0.3
+   }
+  ],
+  "pii": [
+   {
+    "system": "fixture-alpha",
+    "rank": 1,
+    "tier": 1,
+    "score": 87.3,
+    "ciLow": 85.2,
+    "ciHigh": 89.4,
+    "catchRate": 0.841,
+    "falseBlockRate": 0.118,
+    "cost": 0.1
+   },
+   {
+    "system": "fixture-charlie",
+    "rank": 2,
+    "tier": 2,
+    "score": 80.7,
+    "ciLow": 78.6,
+    "ciHigh": 82.8,
+    "catchRate": 0.761,
+    "falseBlockRate": 0.137,
+    "cost": 0.1
+   },
+   {
+    "system": "fixture-bravo",
+    "rank": 3,
+    "tier": 3,
+    "score": 77.2,
+    "ciLow": 75.1,
+    "ciHigh": 79.3,
+    "catchRate": 0.815,
+    "falseBlockRate": 0.224,
+    "cost": 0.1
+   },
+   {
+    "system": "fixture-delta",
+    "rank": 4,
+    "tier": 4,
+    "score": 70.5,
+    "ciLow": 69,
+    "ciHigh": 72,
+    "catchRate": 0.686,
+    "falseBlockRate": 0.236,
+    "cost": 0.3
+   },
+   {
+    "system": "fixture-echo",
+    "rank": 5,
+    "tier": 5,
+    "score": 63.5,
+    "ciLow": 61.5,
+    "ciHigh": 65.5,
+    "catchRate": 0.639,
+    "falseBlockRate": 0.277,
+    "cost": 0.2
+   }
+  ],
+  "grounding": [
+   {
+    "system": "fixture-bravo",
+    "rank": 1,
+    "tier": 1,
+    "score": 91.6,
+    "ciLow": 90.2,
+    "ciHigh": 93,
+    "catchRate": 0.873,
+    "falseBlockRate": 0.167,
+    "cost": 0.2
+   },
+   {
+    "system": "fixture-alpha",
+    "rank": 2,
+    "tier": 1,
+    "score": 90.3,
+    "ciLow": 88.5,
+    "ciHigh": 92.1,
+    "catchRate": 0.928,
+    "falseBlockRate": 0.15,
+    "cost": 0.1
+   },
+   {
+    "system": "fixture-charlie",
+    "rank": 3,
+    "tier": 2,
+    "score": 71.1,
+    "ciLow": 69.9,
+    "ciHigh": 72.3,
+    "catchRate": 0.721,
+    "falseBlockRate": 0.253,
+    "cost": 0.2
+   },
+   {
+    "system": "fixture-delta",
+    "rank": 4,
+    "tier": 2,
+    "score": 69,
+    "ciLow": 67.9,
+    "ciHigh": 70.1,
+    "catchRate": 0.652,
+    "falseBlockRate": 0.146,
+    "cost": 0.3
+   },
+   {
+    "system": "fixture-echo",
+    "rank": 5,
+    "tier": 3,
+    "score": 66.7,
+    "ciLow": 65.2,
+    "ciHigh": 68.2,
+    "catchRate": 0.619,
+    "falseBlockRate": 0.254,
+    "cost": 0.3
+   }
+  ],
+  "profanity": [
+   {
+    "system": "fixture-alpha",
+    "rank": 1,
+    "tier": 1,
+    "score": 86.7,
+    "ciLow": 84.9,
+    "ciHigh": 88.5,
+    "catchRate": 0.915,
+    "falseBlockRate": 0.17,
+    "cost": 0.1
+   },
+   {
+    "system": "fixture-charlie",
+    "rank": 2,
+    "tier": 2,
+    "score": 83.1,
+    "ciLow": 80.9,
+    "ciHigh": 85.3,
+    "catchRate": 0.804,
+    "falseBlockRate": 0.309,
+    "cost": 0
+   },
+   {
+    "system": "fixture-delta",
+    "rank": 3,
+    "tier": 2,
+    "score": 80.6,
+    "ciLow": 78.7,
+    "ciHigh": 82.5,
+    "catchRate": 0.838,
+    "falseBlockRate": 0.215,
+    "cost": 0.2
+   },
+   {
+    "system": "fixture-bravo",
+    "rank": 4,
+    "tier": 3,
+    "score": 76.9,
+    "ciLow": 75.3,
+    "ciHigh": 78.5,
+    "catchRate": 0.817,
+    "falseBlockRate": 0.205,
+    "cost": 0.1
+   },
+   {
+    "system": "fixture-echo",
+    "rank": 5,
+    "tier": 4,
+    "score": 59,
+    "ciLow": 57.2,
+    "ciHigh": 60.8,
+    "catchRate": 0.545,
+    "falseBlockRate": 0.239,
+    "cost": 0.3
+   }
+  ]
+ },
+ "baseline": [
+  {
+   "tag": "injection",
+   "job": "direct",
+   "keyword": 51,
+   "best": 70
+  },
+  {
+   "tag": "jailbreak",
+   "job": "direct",
+   "keyword": 52,
+   "best": 71
+  },
+  {
+   "tag": "leakage",
+   "job": "direct",
+   "keyword": 60,
+   "best": 75
+  },
+  {
+   "tag": "indirect",
+   "job": "indirect",
+   "keyword": 50,
+   "best": 72
+  }
+ ],
+ "facts": {
+  "sliceGapMax": 1.5,
+  "labelReview": {
+   "minWrong": 4,
+   "systems": 5,
+   "reviewed": 3,
+   "corrected": 1,
+   "removed": 1
+  },
+  "labelAgreement": {
+   "contentRows": 20,
+   "content": 0.9,
+   "attackRows": 20,
+   "attacks": 0.85
+  }
+ }
+}

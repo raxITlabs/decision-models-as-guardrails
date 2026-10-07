@@ -1,0 +1,3 @@
+{
+  "rewrites": [{ "source": "/data/rows/:id", "destination": "/data/rows/view.html" }]
+}
