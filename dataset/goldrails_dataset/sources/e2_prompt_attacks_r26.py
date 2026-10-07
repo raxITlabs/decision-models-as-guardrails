@@ -1336,10 +1336,22 @@ def write(fetch_pools: bool = True) -> dict:
     return {"rows": len(rows), "held_back_shared": held, "info": info, "split": rep.get(SUITE)}
 
 
+def edition_private() -> tuple[set, set]:
+    """Ids in any current suite's private/ file, and the normalised texts of every unpublished-slice row of edition 2.
+    e2_local.split on this root only sees this folder, so it cannot know that a public row repeats another suite's
+    unpublished text; the current edition already holds such rows in private/."""
+    ids, texts = set(), set()
+    for s in e2_local.SUITES:
+        for c in e2_local._jsonl(e2_local.private_dir(s) / "candidates.jsonl"):
+            ids.add(c["id"])
+            if c["proposed_split"] == "private":
+                texts |= e2_local._texts(c)
+    return ids, texts
+
+
 def hold_back_shared() -> int:
     """Move every public row whose text is an unpublished row's text in any current edition 2 suite, or whose id a
     current private/ file holds, into this candidate's private/ with its pair."""
-    from .e2_prompt_attacks_r23_build import edition_private
     ids, texts = edition_private()
     pub = e2_local._raw_rows(OUT / "candidates.jsonl")
     cache = {e["id"]: e for e in e2_local._jsonl(e2_local.text_cache(SUITE, ROOT))}

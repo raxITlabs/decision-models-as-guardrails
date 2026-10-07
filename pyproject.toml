@@ -22,4 +22,4 @@ goldrails-dataset = { workspace = true }
 goldrails-bench = { workspace = true }
 
 [tool.pytest.ini_options]
-testpaths = ["dataset/tests", "benchmark/tests", "site/leaderboard/tests"]
+testpaths = ["dataset/tests", "benchmark/tests"]

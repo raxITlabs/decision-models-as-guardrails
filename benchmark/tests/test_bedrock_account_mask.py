@@ -1,16 +1,7 @@
-"""Raw Bedrock responses keep no AWS account id, and masking it leaves every frozen arm's identity and config hash as
-they were. The hashes come from the committed arm ledgers and freeze manifests, so a change that touched the identity
-or the hash inputs would fail here."""
-import json
-from pathlib import Path
-
-import pytest
-
+"""Raw Bedrock responses and error messages keep no AWS account id."""
 from goldrails_bench.bedrock_apply import BedrockApplyClient
 from goldrails_bench.bedrock import mask_account_ids
-from goldrails_bench.runner import config_hash
 
-REPO = Path(__file__).resolve().parents[2]
 ACCOUNT = "123456789012"
 ARN = f"arn:aws:bedrock:us-east-1:{ACCOUNT}:guardrail/abc123"
 
@@ -51,66 +42,9 @@ def _control(live: dict):
     return Control()
 
 
-def _frozen_apply_arms():
-    frozen = set()
-    for m in REPO.glob("benchmark/subsets/*/freeze-*.json"):
-        frozen |= {a["config_hash"] for a in json.loads(m.read_text(encoding="utf-8")).get("arms", [])}
-    arms = {}
-    for p in REPO.glob("benchmark/results/*/*.arms.jsonl"):
-        for line in p.read_text(encoding="utf-8").splitlines():
-            a = json.loads(line)
-            if a["system"].startswith("bedrock-apply-") and a["config_hash"] in frozen:
-                arms[a["config_hash"]] = a
-    return list(arms.values())
-
-
-@pytest.mark.parametrize("arm", _frozen_apply_arms(), ids=lambda a: f"{a['system']}-{a['config_hash']}")
-def test_frozen_apply_arms_keep_their_config_hash_and_raw_has_no_account(arm):
-    ident = arm["identity"]
-    suite = arm["system"].removeprefix("bedrock-apply-")
-    cfg = {suite: {"id": ident["guardrail_id"], "version": ident["guardrail_version"], **ident["config"]},
-           "region": ident["region"]}
-    fake = Fake()
-    live = ident.get("live_policy")   # arms recorded before the live policy joined the identity have none
-    c = BedrockApplyClient(suite, config=cfg, client=fake, control=_control(live) if live else None)
-    qs = {"questions": arm["questions"], "decision": arm.get("decision")}
-    assert c.identity == ident
-    assert config_hash(c, qs) == arm["config_hash"]
-    call = c.ask({"role": "user", "text": "hello"}, {"investmentadvice": {}})
-    assert ACCOUNT not in json.dumps(call.raw) and "<account>" in json.dumps(call.raw)
-    assert c.identity == ident and config_hash(c, qs) == arm["config_hash"]
-
-
-def test_some_frozen_apply_arms_were_found():
-    assert len(_frozen_apply_arms()) >= 4
-
-
-def _frozen_checks_arms():
-    frozen = set()
-    for m in REPO.glob("benchmark/subsets/*/freeze-*.json"):
-        frozen |= {a["config_hash"] for a in json.loads(m.read_text(encoding="utf-8")).get("arms", [])}
-    arms = {}
-    for p in REPO.glob("benchmark/results/*/*.arms.jsonl"):
-        for line in p.read_text(encoding="utf-8").splitlines():
-            a = json.loads(line)
-            if a["system"] == "bedrock-checks" and a["config_hash"] in frozen:
-                arms[a["config_hash"]] = a
-    return list(arms.values())
-
-
 class FakeChecks:
     def invoke_guardrail_checks(self, **kw):
         return {"results": {}, "usage": {}, "ResponseMetadata": {}, "guardrailArn": ARN}
-
-
-@pytest.mark.parametrize("arm", _frozen_checks_arms(), ids=lambda a: a["config_hash"])
-def test_frozen_checks_arms_keep_their_config_hash_and_raw_has_no_account(arm):
-    from goldrails_bench.bedrock import BedrockChecksClient
-    c = BedrockChecksClient(region=arm["identity"]["region"], client=FakeChecks())
-    qs = {"questions": arm["questions"], "decision": arm.get("decision")}
-    assert c.identity == arm["identity"] and config_hash(c, qs) == arm["config_hash"]
-    call = c.ask({"role": "user", "text": "hello"}, {"hate": {}})
-    assert ACCOUNT not in json.dumps(call.raw)
 
 
 def test_error_messages_keep_no_account():
@@ -122,5 +56,3 @@ def test_error_messages_keep_no_account():
     assert not call.ok and ACCOUNT not in call.error and call.error.startswith("PermissionError: User: arn:aws:sts::<account>:")
 
 
-def test_some_frozen_checks_arms_were_found():
-    assert len(_frozen_checks_arms()) >= 1

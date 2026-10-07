@@ -43,8 +43,14 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from . import e2_local
-from .publish import BRAND, HF_DATASET, INTENDED_USE, PUBLIC_REPO
 
+BRAND = "decision-models-as-guardrails"
+PUBLIC_REPO = "https://github.com/raxITlabs/decision-models-as-guardrails"
+HF_DATASET = "https://huggingface.co/datasets/raxITLabs/decision-models-as-guardrails"
+INTENDED_USE = (f"{BRAND} is a non-commercial research benchmark by raxIT Labs. It compares guardrail systems and "
+                "publishes the results for research, with credit to every upstream source. It is not a commercial product "
+                "or deployment. Publishing it changes no source's licence: each row stays under its source's own terms, "
+                "listed in SOURCES.md.")
 ROOT = Path(__file__).resolve().parents[1]          # dataset/
 REPO = ROOT.parent
 E2 = ROOT / "edition2"
@@ -64,7 +70,7 @@ WITHHELD_REASON = ("licence: the source's licence review is not finished, so its
 DISCLOSURES = E2 / "card-disclosures.md"
 # Public files describe this dataset as a first release: no internal history, owner process or open placeholders.
 PUBLIC_TEXT_BANNED = re.compile(r"\bedition\b|release candidate|\bTODO\b|\bruling\b|\bowner\b|\btune split\b|"
-                                r"\bv1\.\d\b", re.I)
+                                r"\bv1\.\d\b|\bprovisional\b|\blatency\b", re.I)
 PLACEHOLDER = re.compile(r"\[[^\]\n]*\](?!\()")   # an unfilled [bracket] in Markdown, not a [link](url)
 
 

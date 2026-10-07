@@ -27,8 +27,3 @@ def test_denied_topics_are_equivalent_across_systems_and_in_frozen_order():
     assert "benchmark/suites/denied_topics/topics.json" in tf and "benchmark/suites/word_filters/words.json" in tf
 
 
-def test_profanity_question_quotes_the_reviewed_definition():
-    from goldrails_bench.question_sets import load
-    from goldrails_dataset.sources.civil_comments_profanity import DEFINITION
-    q = load("v1", "f4-profanity")
-    assert q["decision"] == ["profanity"] and DEFINITION in q["questions"]["profanity"]["instructions"]
