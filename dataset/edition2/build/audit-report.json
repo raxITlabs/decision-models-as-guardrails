@@ -480,22 +480,29 @@
         },
         "accepted_shortfalls": [
           {
+            "class": "yes",
+            "have": 143,
+            "floor": 250,
+            "missing": 107,
+            "ruling": 33
+          },
+          {
             "class": "no",
             "have": 174,
             "floor": 250,
             "missing": 76,
-            "ruling": 28
+            "ruling": 33
           }
         ],
         "exception": {
-          "ruling": 28,
+          "ruling": 33,
           "accepted_public_test": {
-            "yes": 151,
-            "no": 167
+            "yes": 143,
+            "no": 174
           },
-          "disclosure": "The injection subtask has 151 attack and 167 benign public test rows, under the 250-row floor for each class (owner ruling 28 accepted the shortfall for this release). Its interval is wider than the other prompt-attack subtasks'."
+          "disclosure": "The injection subtask has 143 attack and 174 benign public test rows, under the 250-row floor for each class (accepted for this release). Its interval is wider than the other prompt-attack subtasks'."
         },
-        "pass": false
+        "pass": true
       },
       {
         "feature": "F2",
@@ -555,7 +562,24 @@
             "neuralchemy_injection"
           ]
         },
-        "pass": false
+        "accepted_shortfalls": [
+          {
+            "class": "yes",
+            "have": 247,
+            "floor": 250,
+            "missing": 3,
+            "ruling": 33
+          }
+        ],
+        "exception": {
+          "ruling": 33,
+          "accepted_public_test": {
+            "yes": 247,
+            "no": 250
+          },
+          "disclosure": "The leakage subtask has 247 attack public test rows, under the 250-row floor (accepted for this release). Its interval is slightly wider."
+        },
+        "pass": true
       },
       {
         "feature": "F3",
@@ -693,25 +717,17 @@
         "pass": true
       }
     ],
-    "shortfalls": [
+    "shortfalls": [],
+    "accepted_shortfalls": [
       {
         "feature": "F2",
         "subtask": "injection",
         "class": "yes",
         "have": 143,
         "floor": 250,
-        "missing": 107
+        "missing": 107,
+        "ruling": 33
       },
-      {
-        "feature": "F2",
-        "subtask": "leakage",
-        "class": "yes",
-        "have": 247,
-        "floor": 250,
-        "missing": 3
-      }
-    ],
-    "accepted_shortfalls": [
       {
         "feature": "F2",
         "subtask": "injection",
@@ -719,10 +735,19 @@
         "have": 174,
         "floor": 250,
         "missing": 76,
-        "ruling": 28
+        "ruling": 33
+      },
+      {
+        "feature": "F2",
+        "subtask": "leakage",
+        "class": "yes",
+        "have": 247,
+        "floor": 250,
+        "missing": 3,
+        "ruling": 33
       }
     ],
-    "pass": false
+    "pass": true
   },
   "pii_entity_floors": {
     "floor": 30,
@@ -936,7 +961,7 @@
       "pool_to_dev": "fit on test + unpublished, score dev"
     },
     "run_settings": {
-      "workers": 8,
+      "workers": 1,
       "workers_env": "GOLDRAILS_GATE_WORKERS",
       "solver": "liblinear (L2), class_weight balanced",
       "c_grid": [
@@ -33762,15 +33787,11 @@
     },
     "pass": true
   },
-  "status": "fail",
-  "failed": [
-    "floors"
-  ],
+  "status": "pass",
+  "failed": [],
   "publication": {
-    "ready": false,
-    "blockers": [
-      "build status fail: floors"
-    ],
+    "ready": true,
+    "blockers": [],
     "awaiting_owner": {
       "public": 0,
       "private": 0

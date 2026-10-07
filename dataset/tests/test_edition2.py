@@ -461,8 +461,12 @@ def test_committed_contract_names_the_ruling_26_gate_and_the_indirect_subtask():
     assert "announced_subtasks" not in spec
     assert spec["acceptance"]["gate_result"]["pass"] is True
     exc = spec["acceptance"]["floor_exception"]
-    assert exc["ruling"] == 28 and exc["public_test"] == e2.FLOOR_EXCEPTIONS[("F2", "injection")]["accepted_public_test"]
-    assert exc["disclosure"] == e2.FLOOR_EXCEPTIONS[("F2", "injection")]["disclosure"]
+    # The frozen contract records ruling 28's exception (151/167). Ruling 33 (after the ruling 32 label review) accepts
+    # lower counts in the build only, disclosed beside the scores; the contract text is frozen with the results.
+    assert exc["ruling"] == 28 and exc["public_test"] == {"yes": 151, "no": 167}
+    cur = e2.FLOOR_EXCEPTIONS[("F2", "injection")]
+    assert cur["ruling"] == 33 and all(cur["accepted_public_test"][k] <= 250 for k in ("yes", "no"))
+    assert "151 attack and 167 benign" in exc["disclosure"]
     acc = spec["acceptance"]
     assert "ruling 26" in acc["ruling"] and acc["gate"].startswith("dataset/goldrails_dataset/sources/"
                                                                      "e2_prompt_attacks_confounds.py")
@@ -776,7 +780,7 @@ def test_a_floor_exception_passes_only_at_or_above_its_accepted_counts(monkeypat
             out.append(r)
         return out
     monkeypatch.setattr(e2, "SCORED", {("F2", "injection"): (250, 250)})
-    ok = e2.floors({"test": rows(151, 167)})
-    assert ok["pass"] and len(ok["accepted_shortfalls"]) == 2 and ok["cells"][0]["exception"]["ruling"] == 28
-    low = e2.floors({"test": rows(150, 167)})
+    ok = e2.floors({"test": rows(143, 174)})
+    assert ok["pass"] and len(ok["accepted_shortfalls"]) == 2 and ok["cells"][0]["exception"]["ruling"] == 33
+    low = e2.floors({"test": rows(142, 174)})
     assert not low["pass"] and low["shortfalls"][0]["class"] == "yes"
