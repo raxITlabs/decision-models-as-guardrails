@@ -122,12 +122,12 @@ export function Leaderboard({ board }: { board: Board }) {
                   key={s.system}
                   onClick={() => setSelected(s.system)}
                   className={`cursor-pointer transition-colors ${newTier ? "border-t border-line-strong" : "border-t border-line"} ${
-                    on ? "bg-selected" : "hover:bg-raised/60"
+                    on ? "bg-selected" : m?.kind === "service" ? "bg-raised hover:bg-raised" : "hover:bg-raised/60"
                   }`}
                 >
                   <td className="num hidden py-2.5 pl-5 text-muted sm:table-cell">{s.rank}</td>
                   {/* On a phone the name column stays put while the numbers scroll under it. */}
-                  <th scope="row" className={`sticky left-0 z-[1] py-2.5 pl-3 pr-3 text-left font-normal sm:static sm:pl-0 ${on ? "bg-selected" : "bg-surface"}`}>
+                  <th scope="row" className={`sticky left-0 z-[1] py-2.5 pl-3 pr-3 text-left font-normal sm:static sm:pl-0 ${on ? "bg-selected" : m?.kind === "service" ? "bg-raised" : "bg-surface"}`}>
                     <button
                       type="button"
                       onClick={() => setSelected(s.system)}
@@ -138,11 +138,7 @@ export function Leaderboard({ board }: { board: Board }) {
                       <span className="flex flex-col items-start">
                         <span className="font-semibold text-fg">{m?.name ?? s.system}</span>
                         <span className="hidden text-[12px] text-muted sm:block">{m?.provider}</span>
-                        {m?.kind === "service" && (
-                          <span className="mt-1 sm:hidden">
-                            <KindTag kind="service" />
-                          </span>
-                        )}
+                        {m?.kind === "service" && <span className="text-[12px] text-fg-2 sm:hidden">Guardrail service</span>}
                       </span>
                     </button>
                   </th>
@@ -175,7 +171,8 @@ export function Leaderboard({ board }: { board: Board }) {
       </WallpaperFrame>
 
       <p className="m-0 text-[13px] leading-relaxed text-muted">
-        Every system answers the same {board.stats.checks.toLocaleString("en-US")} checks under one fixed rule: a probability of{" "}
+        The shaded row is a guardrail service, not a decision model (<a href="#kinds">see the difference</a>). Every system answers the
+        same {board.stats.checks.toLocaleString("en-US")} checks under one fixed rule: a probability of{" "}
         {board.stats.threshold} or more blocks. <a
           href="#fixed-rule"
           onClick={() => {
@@ -209,13 +206,9 @@ function ScoreBar({ s }: { s: Score }) {
   );
 }
 
-/** Decision model or guardrail service, as a small label. The service one is a pill so it stands out in the list, in a neutral ink (it is a kind, not a judgement). */
+/** Decision model or guardrail service, as plain text in the Type column. The service row itself is shaded. */
 export function KindTag({ kind }: { kind?: "decision" | "service" }) {
-  return kind === "service" ? (
-    <span className="inline-flex items-center rounded-full border border-fg/25 bg-raised px-2 py-0.5 text-[12px] font-medium text-fg">Guardrail service</span>
-  ) : (
-    <span className="text-[13px] text-fg-2">Decision model</span>
-  );
+  return <span className={`text-[13px] ${kind === "service" ? "font-medium text-fg" : "text-fg-2"}`}>{kind === "service" ? "Guardrail service" : "Decision model"}</span>;
 }
 
 interface Placed {

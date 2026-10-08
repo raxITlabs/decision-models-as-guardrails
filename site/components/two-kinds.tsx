@@ -39,8 +39,8 @@ export function TwoKinds({ board }: { board: Board }) {
           A decision model is not a guardrail service
         </h2>
         <p className="m-0 text-[16px] leading-relaxed text-fg-2">
-          {decision.length} of the {board.systems.length} systems are decision models. Amazon Bedrock Guardrails is a managed
-          guardrail service. Both block harmful traffic, but you set them up and tune them in different ways.
+          {decision.length} of the {board.systems.length} systems are decision models, including the hosted Perplexity Decisions API
+          and OpenAI Decisions API. Amazon Bedrock Guardrails is a managed guardrail service. Both block harmful traffic, but you set them up and tune them in different ways.
         </p>
       </div>
 
@@ -70,7 +70,7 @@ export function TwoKinds({ board }: { board: Board }) {
               {col.systems.map((s) => (
                 <span key={s.id} className="inline-flex items-center gap-1.5 rounded-full border border-line bg-bg py-1 pl-1 pr-2.5 text-[12px] text-fg-2">
                   <SystemMark m={s} />
-                  {s.short ?? s.name}
+                  {s.name}
                 </span>
               ))}
             </div>
