@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Changelog",
   description: "Releases of the decision-models-as-guardrails benchmark.",
   alternates: { canonical: "/changelog" },
+  openGraph: { url: "/changelog", siteName: "decision-models-as-guardrails", type: "website", images: [{ url: "/opengraph-image", width: 1200, height: 630 }] },
 };
 
 export default function Changelog() {

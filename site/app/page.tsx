@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Chevron } from "@/components/icons";
 import { HashOpen } from "@/components/hash-open";
@@ -9,6 +10,11 @@ import { faqItems } from "@/lib/copy";
 import { loadBoard, loadRowsIndex } from "@/lib/data";
 import { REPO_URL, int, listNames, longDate, pct, score1, systemMap } from "@/lib/format";
 import { JOBS } from "@/lib/jobs";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+  openGraph: { url: "/", siteName: "decision-models-as-guardrails", type: "website" },
+};
 
 export default function Home() {
   const board = loadBoard();

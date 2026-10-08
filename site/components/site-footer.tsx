@@ -15,7 +15,7 @@ export function SiteFooter() {
         </div>
         <nav aria-label="Footer">
           <ul className="grid grid-cols-2 gap-x-8 sm:grid-cols-3">
-            <li><Link className="inline-flex min-h-11 items-center" href="/">Results</Link></li>
+            <li><Link className="inline-flex min-h-11 items-center" href="/" prefetch={false}>Results</Link></li>
             <li><Link className="inline-flex min-h-11 items-center" href="/reproduce">Reproduce</Link></li>
             <li><Link className="inline-flex min-h-11 items-center" href="/data">Data</Link></li>
             <li><Link className="inline-flex min-h-11 items-center" href="/changelog">Changelog</Link></li>

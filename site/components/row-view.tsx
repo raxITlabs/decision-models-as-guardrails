@@ -185,7 +185,7 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
             <span className="num text-fg">{right}</span> of {answered} right · a score of {t} or more blocks
           </p>
         </div>
-        <div className="-mx-4 overflow-x-auto sm:mx-0" tabIndex={0} role="region" aria-label="Answers from every system">
+        <div className="-mx-4 scroll-mt-20 overflow-x-auto sm:mx-0" tabIndex={0} role="region" aria-label="Answers from every system">
           <table className="w-full min-w-[560px] border-collapse text-[14px]">
             <caption className="sr-only">Each system&apos;s score, decision and whether it matched the label for this row.</caption>
             <thead>

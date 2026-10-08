@@ -7,7 +7,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg">
       <div className="mx-auto flex h-[72px] max-w-[1200px] items-center gap-3 px-4 sm:px-6">
-        <Link href="/" className="flex min-h-11 shrink-0 items-center gap-2 text-fg no-underline hover:text-fg">
+        <Link href="/" prefetch={false} className="flex min-h-11 shrink-0 items-center gap-2 text-fg no-underline hover:text-fg">
           {/* eslint-disable-next-line @next/next/no-img-element -- static export, one small SVG */}
           <img src="/brand/raxit-wordmark.svg" alt="raxIT" width={75} height={30} className="h-[30px] w-auto" />
           <span className="hidden text-[14px] text-muted md:inline">/ Labs / decision-models-as-guardrails</span>

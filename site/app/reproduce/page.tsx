@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Reproduce",
   description: "Run the benchmark, see how we score it, and add your own guardrail through an adapter.",
   alternates: { canonical: "/reproduce", types: { "text/markdown": "/reproduce.md" } },
+  openGraph: { url: "/reproduce", siteName: "decision-models-as-guardrails", type: "website", images: [{ url: "/opengraph-image", width: 1200, height: 630 }] },
 };
 
 const SITE = "https://decision-models-as-guardrails.raxitlabs.com";

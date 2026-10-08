@@ -201,6 +201,9 @@ interface Placed {
   s: Score;
   x: number;
   y: number;
+  /** the exact data position; x/y may sit up to MAX_SHIFT px away from it */
+  tx: number;
+  ty: number;
   label?: { x: number; y: number; w: number; anchor: "left" | "right" };
 }
 
@@ -235,7 +238,7 @@ function Scatter({
   }, []);
   const compact = w < 560;
   const h = compact ? 340 : 380;
-  const pad = { l: 40, r: 28, t: 16, b: 34 };
+  const pad = { l: 40, r: 28, t: 40, b: 34 };
   const xv = (s: Score) => (axis === "cost" ? s.cost ?? 0 : s.falseBlockRate);
   const xMax = niceMax(Math.max(...scores.map(xv), axis === "cost" ? 0.05 : 0.05) * 1.08);
   const yMinRaw = Math.min(...scores.map((s) => s.ciLow), 90);
@@ -251,11 +254,22 @@ function Scatter({
   // Greedy label placement: right of the dot, else left, else nudged; dropped when nothing fits.
   const placed: Placed[] = [];
   // The "better" hint sits top left, where the strongest systems land: reserve it first.
-  const rects: { x: number; y: number; w: number; h: number }[] = [{ x: 44, y: 6, w: 70, h: 18 }];
+  const rects: { x: number; y: number; w: number; h: number }[] = [{ x: 44, y: 4, w: 70, h: 22 }];
   const order = [...scores].sort((a, b) => (a.system === selected ? -1 : b.system === selected ? 1 : b.score - a.score));
   // Half the square's size plus its ring, per system.
-  const half = (s: Score) => (s.system === selected ? (compact ? 16 : 19) : compact ? 13 : 15);
-  for (const s of order) placed.push({ s, x: px(xv(s)), y: py(s.score) });
+  const half = (s: Score) => (s.system === selected ? (compact ? 14 : 19) : compact ? 11 : 15);
+  for (const s of order) {
+    const x = px(xv(s));
+    const y = py(s.score);
+    placed.push({ s, x, y, tx: x, ty: y });
+  }
+  // A square may move at most this far from its exact value to make room; beyond that, squares overlap (the selected
+  // one on top) rather than misstate a score. A dot marks the exact value whenever a square moved.
+  const MAX_SHIFT = compact ? 10 : 12;
+  const bound = (p: Placed) => {
+    p.x = Math.min(p.tx + MAX_SHIFT, Math.max(p.tx - MAX_SHIFT, p.x));
+    p.y = Math.min(p.ty + MAX_SHIFT, Math.max(p.ty - MAX_SHIFT, p.y));
+  };
   // Squares that would overlap are pushed apart a few pixels, mostly vertically, and kept inside the plot, so every
   // square stays visible and can be selected. The table below has the exact numbers.
   const clampX = (p: Placed) => Math.min(w - pad.r - half(p.s), Math.max(pad.l + half(p.s) + 2, p.x));
@@ -280,12 +294,16 @@ function Scatter({
         b.y += dir * push;
         a.y = clampY(a);
         b.y = clampY(b);
+        bound(a);
+        bound(b);
         // Pinned against the top or bottom edge, the pair cannot separate vertically: spread it sideways instead.
         if (Math.abs(b.y - a.y) < need && (Math.abs(dx) < need / 2 || a.y === clampY({ ...a, y: -1e9 }) || a.y === clampY({ ...a, y: 1e9 }))) {
           const sx = dx !== 0 ? Math.sign(dx) : 1;
           const spread = Math.max(2, (need - Math.abs(dx)) / 2 + 0.5);
           a.x = clampX({ ...a, x: a.x - sx * spread });
           b.x = clampX({ ...b, x: b.x + sx * spread });
+          bound(a);
+          bound(b);
         }
         moved = true;
       }
@@ -301,7 +319,8 @@ function Scatter({
     const lw = Math.ceil(textWidth(name, measure)) + 4;
     const off = p.s.system === selected ? (compact ? 20 : 24) : compact ? 17 : 20;
     const tries: { x: number; y: number; anchor: "left" | "right" }[] = [];
-    for (const dy of [0, -14, 14, -26, 26, -38, 38]) {
+    // Labels stay beside their square; one that cannot is listed under the chart instead of floating away from it.
+    for (const dy of [0, -12, 12]) {
       tries.push({ x: p.x + off, y: p.y + dy, anchor: "right" });
       tries.push({ x: p.x - off - lw, y: p.y + dy, anchor: "left" });
     }
@@ -341,11 +360,22 @@ function Scatter({
           <line x1={pad.l} x2={pad.l} y1={pad.t} y2={h - pad.b} stroke="var(--line-strong)" />
           {placed.map((p) => {
             const s = p.s;
-            const half = (py(s.ciLow) - py(s.ciHigh)) / 2;
-            return <line key={`ci${s.system}`} x1={p.x} x2={p.x} y1={p.y - half} y2={p.y + half} stroke={tierVar(s.tier)} strokeOpacity="0.45" strokeWidth="2" />;
+            // The interval and the exact-value dot are drawn at the true position, whatever the square's offset.
+            const moved = Math.hypot(p.x - p.tx, p.y - p.ty) > 2;
+            return (
+              <g key={`ci${s.system}`}>
+                <line x1={p.tx} x2={p.tx} y1={py(s.ciHigh)} y2={py(s.ciLow)} stroke={tierVar(s.tier)} strokeOpacity="0.45" strokeWidth="2" />
+                {moved && (
+                  <>
+                    <line x1={p.tx} y1={p.ty} x2={p.x} y2={p.y} stroke={tierVar(s.tier)} strokeOpacity="0.6" strokeWidth="1" />
+                    <circle cx={p.tx} cy={p.ty} r="2.5" fill={tierVar(s.tier)} />
+                  </>
+                )}
+              </g>
+            );
           })}
         </svg>
-        <div className="pointer-events-none absolute left-12 top-3 flex items-center gap-1.5 text-[12px] font-medium text-link">
+        <div className="pointer-events-none absolute left-12 top-2 flex items-center gap-1.5 text-[12px] font-medium text-link">
           <ArrowUpLeft className="size-3.5" />
           better
         </div>
@@ -368,7 +398,7 @@ function Scatter({
             >
               {/* A square per system: the maker's mark inside, tier colour on the border and as a wash behind it. */}
               <span
-                className={`grid place-items-center rounded-md ${on ? (compact ? "size-7" : "size-[34px]") : compact ? "size-6" : "size-7"}`}
+                className={`grid place-items-center rounded-md ${on ? (compact ? "size-6" : "size-[34px]") : compact ? "size-5" : "size-7"}`}
                 style={{
                   background: `color-mix(in srgb, ${tierVar(p.s.tier)} 14%, var(--surface))`,
                   border: `2px ${self && axis === "cost" ? "dashed" : "solid"} ${tierVar(p.s.tier)}`,
@@ -377,7 +407,7 @@ function Scatter({
               >
                 {m?.logo ? (
                   // eslint-disable-next-line @next/next/no-img-element -- static export, tiny SVGs
-                  <img src={m.logo} alt="" className={on && !compact ? "size-5" : compact ? "size-3.5" : "size-4"} />
+                  <img src={m.logo} alt="" className={on && !compact ? "size-5" : compact ? "size-3" : "size-4"} />
                 ) : (
                   <span className="text-[11px] font-semibold leading-none text-fg-2">{m?.mono}</span>
                 )}
@@ -407,7 +437,7 @@ function Scatter({
       )}
       <figcaption className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[12px] text-muted">
         <span>
-          Score is balanced accuracy, where 50 is a coin flip. The horizontal axis is {axis === "cost" ? "USD per 1,000 checks" : "the share of safe rows blocked"}. Lines show the 95% interval. Squares that would overlap are moved apart slightly; the table below gives every number.
+          Score is balanced accuracy, where 50 is a coin flip. The horizontal axis is {axis === "cost" ? "USD per 1,000 checks" : "the share of safe rows blocked"}. Lines show the 95% interval. Where squares would overlap, they move at most a few pixels and a dot marks the exact value. The table below gives every number.
         </span>
         <span className="flex flex-wrap items-center gap-3" aria-label="Tier colours">
           {present.map((t) => (

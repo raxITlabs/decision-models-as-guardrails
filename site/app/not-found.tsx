@@ -11,8 +11,8 @@ export default function NotFound() {
         No page or public row has that address. We never list rows from the held-back slice.
       </p>
       <p className="m-0 flex gap-4 text-[15px]">
-        <Link href="/">Results</Link>
-        <Link href="/data">Browse the data</Link>
+        <Link href="/" prefetch={false} className="inline-flex min-h-11 items-center">Results</Link>
+        <Link href="/data" className="inline-flex min-h-11 items-center">Browse the data</Link>
       </p>
     </div>
   );
