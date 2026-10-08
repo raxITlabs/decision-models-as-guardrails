@@ -74,7 +74,7 @@ export default function Home() {
 
   return (
     <>
-    <HeroPlate src="/plates/hero.webp">
+    <HeroPlate src="/plates/hero-fork.webp">
           {/* One column on the left: the question, then one message the systems disagree on, then the way in. */}
           <div className="flex max-w-[720px] flex-col gap-7">
             <h1 id="hero-h" className="rise rise-1 over-art plate-title m-0 text-[clamp(2.25rem,5.2vw,4rem)] font-semibold leading-[1.05] tracking-[-0.025em] text-balance">
@@ -212,7 +212,7 @@ export default function Home() {
       </section>
 
       <section id="notify" aria-labelledby="notify-h">
-        <Plate src="/plates/lake.webp" minH="min-h-[360px] sm:min-h-[400px]">
+        <Plate src="/plates/estuary.webp" minH="min-h-[360px] sm:min-h-[400px]">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div className="flex max-w-[620px] flex-col gap-3">
               <h2 id="notify-h" className="over-art plate-title m-0 text-[clamp(1.75rem,3.4vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.02em]">
