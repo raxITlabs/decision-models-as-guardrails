@@ -52,3 +52,6 @@ benchmark/results/final/
 dataset/edition2/.frozen/
 
 # site: the generated results data (site/scripts/build-data.ts) is held until release day; fixtures/data/ is committed
+
+# Vercel CLI link (local only)
+.vercel
