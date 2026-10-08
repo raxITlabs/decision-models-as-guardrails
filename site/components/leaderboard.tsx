@@ -328,6 +328,21 @@ function Scatter({
     const rr = half(p.s);
     rects.push({ x: p.x - rr, y: p.y - rr, w: 2 * rr, h: 2 * rr });
   }
+  // The selected system's distance to the guardrail service: a dashed reference line at the service's score and a
+  // thin connector from the selected system's exact value, labelled with the gap in score points.
+  const ref = scores.find((s) => sys[s.system]?.kind === "service");
+  const selP = placed.find((p) => p.s.system === selected);
+  const gap = ref && selP && selP.s.system !== ref.system ? selP.s.score - ref.score : null;
+  let gapLabel: { x: number; y: number; text: string } | null = null;
+  if (gap !== null && selP && ref) {
+    const text = `${gap >= 0 ? "+" : "−"}${Math.abs(gap).toFixed(1)} vs Bedrock`;
+    const gw = Math.ceil(textWidth(text, measure)) + 6;
+    const mid = (selP.ty + py(ref.score)) / 2;
+    const gx = selP.tx + 6 + gw <= w - pad.r ? selP.tx + 6 : selP.tx - 6 - gw;
+    gapLabel = { x: gx, y: mid, text };
+    rects.push({ x: gx, y: mid - 8, w: gw, h: 16 });
+  }
+
   for (const p of placed) {
     const name = sys[p.s.system]?.short ?? sys[p.s.system]?.name ?? p.s.system;
     const lw = Math.ceil(textWidth(name, measure)) + 4;
@@ -337,6 +352,12 @@ function Scatter({
     for (const dy of [0, -12, 12]) {
       tries.push({ x: p.x + off, y: p.y + dy, anchor: "right" });
       tries.push({ x: p.x - off - lw, y: p.y + dy, anchor: "left" });
+    }
+    // The selected system is always annotated: it may also sit centred above or below its square, or further out.
+    if (p.s.system === selected) {
+      const v = half(p.s) + 10;
+      tries.push({ x: p.x - lw / 2, y: p.y - v, anchor: "right" }, { x: p.x - lw / 2, y: p.y + v, anchor: "right" });
+      for (const dy of [-24, 24]) tries.push({ x: p.x + off, y: p.y + dy, anchor: "right" }, { x: p.x - off - lw, y: p.y + dy, anchor: "left" });
     }
     for (const t of tries) {
       const r = { x: t.x, y: t.y - 8, w: lw, h: 16 };
@@ -372,6 +393,13 @@ function Scatter({
           ))}
           <line x1={pad.l} x2={w - pad.r} y1={h - pad.b} y2={h - pad.b} stroke="var(--line-strong)" />
           <line x1={pad.l} x2={pad.l} y1={pad.t} y2={h - pad.b} stroke="var(--line-strong)" />
+          {gap !== null && ref && selP && (
+            <g aria-hidden="true">
+              <line x1={pad.l} x2={w - pad.r} y1={py(ref.score)} y2={py(ref.score)} stroke="var(--fg-2)" strokeOpacity="0.45" strokeDasharray="2 4" />
+              <line x1={selP.tx} x2={selP.tx} y1={selP.ty} y2={py(ref.score)} stroke="var(--fg)" strokeOpacity="0.55" strokeWidth="1.25" />
+              <line x1={selP.tx - 4} x2={selP.tx + 4} y1={py(ref.score)} y2={py(ref.score)} stroke="var(--fg)" strokeOpacity="0.55" strokeWidth="1.25" />
+            </g>
+          )}
           {placed.map((p) => {
             const s = p.s;
             // The interval and the exact-value dot are drawn at the true position, whatever the square's offset.
@@ -429,6 +457,15 @@ function Scatter({
             </button>
           );
         })}
+        {gapLabel && (
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -translate-y-1/2 whitespace-nowrap rounded-full bg-surface/90 px-1.5 text-[12px] font-semibold leading-[16px] text-fg"
+            style={{ left: gapLabel.x, top: gapLabel.y }}
+          >
+            {gapLabel.text}
+          </span>
+        )}
         {placed.map((p) =>
           p.label ? (
             <span
@@ -479,6 +516,20 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
     { label: "Statistical tier", value: `${s.tier} of ${tiers}` },
   ];
   const pos = (v: number) => `${Math.max(0, Math.min(100, ((v - 50) / 50) * 100))}%`;
+  // The same system set against the guardrail service, on the job in view.
+  const refMeta = board.systems.find((x) => x.kind === "service");
+  const ref = refMeta ? (job === "overall" ? board.overall : board.jobs[job]).find((x) => x.system === refMeta.id) : undefined;
+  const vs =
+    ref && m?.kind !== "service"
+      ? [
+          { label: "Score", value: s.score - ref.score, unit: "points", better: s.score >= ref.score },
+          { label: "Catches harmful", value: (s.catchRate - ref.catchRate) * 100, unit: "points", better: s.catchRate >= ref.catchRate },
+          { label: "Blocks safe", value: (s.falseBlockRate - ref.falseBlockRate) * 100, unit: "points", better: s.falseBlockRate <= ref.falseBlockRate },
+          ...(s.cost !== null && ref.cost
+            ? [{ label: "Cost", value: s.cost / ref.cost, unit: "ratio", better: s.cost <= ref.cost }]
+            : []),
+        ]
+      : null;
   return (
     <section aria-label={`Details for ${m?.name ?? s.system}`} className="grid gap-8 rounded-xl border border-line bg-surface p-5 sm:p-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <div className="flex flex-col gap-4">
@@ -501,6 +552,23 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
             </div>
           ))}
         </dl>
+        {vs && (
+          <div className="flex flex-col gap-2 border-t border-line pt-4">
+            <span className="text-[12px] font-medium uppercase tracking-[0.12em] text-muted">Against Amazon Bedrock Guardrails</span>
+            <dl className="m-0 grid grid-cols-2 gap-x-4 gap-y-2.5">
+              {vs.map((x) => (
+                <div key={x.label} className="flex flex-col">
+                  <dt className="text-[12px] text-muted">{x.label}</dt>
+                  <dd className={`num m-0 whitespace-nowrap text-[16px] font-semibold ${x.better ? "text-good" : "text-warn"}`}>
+                    {x.unit === "ratio"
+                      ? `${x.value < 1 ? (1 / x.value).toFixed(1) + "× cheaper" : x.value.toFixed(1) + "× the cost"}`
+                      : `${x.value >= 0 ? "+" : "−"}${Math.abs(x.value).toFixed(1)}`}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        )}
         <Link href={`/data?system=${encodeURIComponent(s.system)}${job === "overall" ? "" : `&job=${job}`}#rows`} className="inline-flex min-h-11 items-center gap-1.5 self-start text-[14px]">
           See the rows it got wrong <ArrowRight />
         </Link>
