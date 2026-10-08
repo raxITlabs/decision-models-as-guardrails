@@ -4,7 +4,7 @@ import { ArrowRight, Chevron } from "@/components/icons";
 import { HashOpen } from "@/components/hash-open";
 import { PillLink } from "@/components/pill-link";
 import { Podium } from "@/components/podium";
-import { Plate } from "@/components/plate";
+import { HeroPlate, Plate } from "@/components/plate";
 import { Faq } from "@/components/faq";
 import { Leaderboard } from "@/components/leaderboard";
 import { faqItems } from "@/lib/copy";
@@ -50,15 +50,8 @@ export default function Home() {
   ];
 
   return (
-    <div className="mx-auto flex max-w-[1200px] flex-col gap-24 px-4 pt-6 sm:gap-28 sm:px-6">
-      {board.source === "fixture" && (
-        <p role="note" className="m-0 rounded-lg border border-warn/50 px-4 py-3 text-[14px] text-warn">
-          Preview build. The systems and numbers on this page are synthetic placeholders. They are not results.
-        </p>
-      )}
-
-      <section aria-labelledby="hero-h" className="flex flex-col gap-5">
-        <Plate src="/plates/hero.webp" priority>
+    <>
+    <HeroPlate src="/plates/hero.webp">
           <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] items-end gap-6 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-12">
           <div className="flex max-w-[760px] flex-col items-start gap-4 sm:gap-5">
             <span className="rise over-art plate-title text-[12px] font-medium uppercase tracking-[0.2em]">
@@ -78,8 +71,14 @@ export default function Home() {
           </div>
           <Podium board={board} />
           </div>
-        </Plate>
-      </section>
+    </HeroPlate>
+    <div className="mx-auto flex max-w-[1200px] flex-col gap-24 px-4 pt-20 sm:gap-28 sm:px-6 sm:pt-24">
+      {board.source === "fixture" && (
+        <p role="note" className="m-0 rounded-lg border border-warn/50 px-4 py-3 text-[14px] text-warn">
+          Preview build. The systems and numbers on this page are synthetic placeholders. They are not results.
+        </p>
+      )}
+
 
       <section id="leaderboard" aria-labelledby="lb-h" className="flex scroll-mt-24 flex-col gap-6">
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
@@ -219,5 +218,6 @@ export default function Home() {
         </Plate>
       </section>
     </div>
+    </>
   );
 }

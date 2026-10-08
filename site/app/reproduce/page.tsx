@@ -21,7 +21,7 @@ const NEEDS: [string, string, string, string][] = [
   ["Tests and dataset", "None", "None", "Free"],
   ["Jev 1.13.0", "TypeSafe API key", "TYPESAFE_API_KEY", "$0.38"],
   ["pplx-decider v1 27B", "Perplexity API key", "PERPLEXITY_API_KEY", "$0.56"],
-  ["GPT-6 Luna", "OpenAI key with Decisions API access (public beta)", "OPENAI_API_KEY", "$1.10"],
+  ["OpenAI Decisions API (gpt-6-luna)", "OpenAI key with Decisions API access (public beta)", "OPENAI_API_KEY", "$1.10"],
   ["Clef, Clef Flash", "Cloudflare Workers AI. In practice you need the Workers Paid plan ($5 a month), because the free daily allowance ran out mid-run", "CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN", "$2.76 + plan"],
   ["Amazon Bedrock Guardrails", "AWS account with Bedrock, a CLI profile (we used SSO), Terraform to create the guardrails", "AWS_PROFILE, AWS_REGION", "$1.12"],
   ["Six self-hosted models", "Google Cloud project with billing and quota for 2 NVIDIA L4 GPUs, gcloud, Terraform", "GOLDRAILS_PROJECT, GOLDRAILS_ZONE (optional)", "$10.44 VM time"],
@@ -190,7 +190,7 @@ uv run python -m goldrails_dataset.publish_e2 stage`}
             <tbody className="text-fg-2">
               <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_full.py</td><td className="py-2.5 pr-4 sm:pr-0">Content, off-topic, profanity, personal data and grounding, for the hosted APIs and the self-hosted models</td></tr>
               <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_attacks_rerun.py</td><td className="py-2.5 pr-4 sm:pr-0">Direct and indirect prompt attacks for the same systems</td></tr>
-              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_openai_run.py</td><td className="py-2.5 pr-4 sm:pr-0">gpt-6-luna on all jobs, and <C>score</C>, which rebuilds the leaderboard from the ledgers</td></tr>
+              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_openai_run.py</td><td className="py-2.5 pr-4 sm:pr-0">The OpenAI Decisions API (gpt-6-luna) on all jobs, and <C>score</C>, which rebuilds the leaderboard from the ledgers</td></tr>
             </tbody>
           </table>
         </div>

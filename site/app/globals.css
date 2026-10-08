@@ -107,6 +107,7 @@ details[open] > summary .chev {
   background-image: linear-gradient(to top, rgb(var(--smoky) / 0.86) 0%, rgb(var(--smoky) / 0.74) 45%, rgb(var(--smoky) / 0.6) 78%, rgb(var(--smoky) / 0.3) 92%, rgb(var(--smoky) / 0) 100%);
 }
 .over-art { color: var(--over-art); }
+
 .over-art-86 { color: color-mix(in srgb, var(--over-art) 86%, transparent); }
 .plate-title { text-shadow: 0 1px 2px rgb(var(--smoky) / 0.25); }
 
@@ -157,4 +158,22 @@ details[open] > summary .chev {
     animation-duration: 0.01ms !important;
     animation-delay: 0ms !important;
   }
+}
+
+/* Outside any layer so these win over utility classes. */
+
+/* Header over the home hero painting: transparent, paper ink, light hover (the raxIT landing page). */
+.site-header[data-over-art] { background-color: transparent; border-color: transparent; }
+.site-header[data-over-art] a,
+.site-header[data-over-art] a:hover { color: var(--over-art); }
+.site-header[data-over-art] a:hover { background-color: rgb(255 255 255 / 0.1); }
+.site-header[data-over-art] .text-muted { color: color-mix(in srgb, var(--over-art) 80%, transparent); }
+
+/* Full-screen hero: a wash under the header, the painting clear in the middle, a deep scrim under the title,
+   and a soft shade from the left behind the text column. */
+.hero-wash {
+  background-image:
+    linear-gradient(to bottom, rgb(var(--smoky) / 0.7) 0%, rgb(var(--smoky) / 0.35) 12%, rgb(var(--smoky) / 0) 28%),
+    linear-gradient(to top, rgb(var(--smoky) / 0.94) 0%, rgb(var(--smoky) / 0.84) 34%, rgb(var(--smoky) / 0.5) 60%, rgb(var(--smoky) / 0) 82%),
+    linear-gradient(to right, rgb(var(--smoky) / 0.5) 0%, rgb(var(--smoky) / 0) 60%);
 }

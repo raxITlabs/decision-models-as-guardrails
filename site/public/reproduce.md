@@ -41,7 +41,7 @@ Dataset: https://huggingface.co/datasets/raxITLabs/decision-models-as-guardrails
 | Steps 1 and 2 (tests, dataset) | None | None | Free |
 | Jev 1.13.0 | TypeSafe API key | `TYPESAFE_API_KEY` | USD 0.38 |
 | pplx-decider v1 27B | Perplexity API key (Decisions API) | `PERPLEXITY_API_KEY` | USD 0.56 |
-| GPT-6 Luna | OpenAI API key with access to the Decisions API (public beta). A 403 or 404 means you do not have access yet | `OPENAI_API_KEY` | USD 1.10 |
+| OpenAI Decisions API (gpt-6-luna) | OpenAI API key with access to the Decisions API (public beta). A 403 or 404 means you do not have access yet | `OPENAI_API_KEY` | USD 1.10 |
 | Clef, Clef Flash | Cloudflare account with Workers AI. In practice you need the Workers Paid plan (USD 5 a month). The free allowance of 10,000 neurons a day ran out partway through our run. Use a token scoped to Workers AI read and run | `CLOUDFLARE_ACCOUNT_ID` (the 32-character id), `CLOUDFLARE_API_TOKEN` | USD 2.76 for both, plus the plan |
 | Amazon Bedrock Guardrails | AWS account with Bedrock in your region, an AWS CLI profile (we used AWS SSO) and Terraform. Your role must be able to create guardrails and guardrail versions, and to call ApplyGuardrail | `AWS_PROFILE`, `AWS_REGION` (default `us-east-1`) | USD 1.12 |
 | Kev 0.8B, 4B, 9B, Open-Jev 2B, Strands Decider 2B, Laya | Google Cloud project with billing, quota for at least 2 NVIDIA L4 GPUs in your zone, the `gcloud` CLI and Terraform | Optional: `GOLDRAILS_PROJECT`, `GOLDRAILS_ZONE`, `GOLDRAILS_INSTANCE` | USD 10.44 of VM time |
@@ -127,14 +127,14 @@ uv run python benchmark/runs/e2_full.py all            # content, topics, profan
 uv run python benchmark/runs/e2_attacks_rerun.py freeze
 uv run python benchmark/runs/e2_attacks_rerun.py all    # direct and indirect prompt attacks
 uv run python benchmark/runs/e2_openai_run.py freeze
-uv run python benchmark/runs/e2_openai_run.py all       # GPT-6 Luna
+uv run python benchmark/runs/e2_openai_run.py all       # OpenAI Decisions API
 make pause                                              # stop paying for the VM
 ```
 
 To run only some systems, use `uv run python benchmark/runs/e2_full.py run --systems jev,clef`. To send again only
 the rows that failed, for example after a rate limit, add `--retry-failed`.
 
-Times on our run: Jev about 4 minutes, GPT-6 Luna about 17 minutes, pplx-decider about 27 minutes, Bedrock about
+Times on our run: Jev about 4 minutes, the OpenAI Decisions API about 17 minutes, pplx-decider about 27 minutes, Bedrock about
 67 minutes, and each self-hosted model about 1.5 hours per pass. The hosted runs and the VM runs go in parallel.
 
 ### 6. Score

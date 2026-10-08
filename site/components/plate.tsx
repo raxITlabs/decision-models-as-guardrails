@@ -47,8 +47,32 @@ export function WallpaperFrame({ src, children }: { src: string; children: React
   return (
     <div className="relative grid overflow-hidden rounded-[4px]">
       <img src={src} srcSet={srcSet(src)} sizes={SIZES} alt="" loading="lazy" className="col-start-1 row-start-1 size-full object-cover brightness-90" />
-      <div aria-hidden="true" className="col-start-1 row-start-1 bg-black/[0.05]" />
+      <div aria-hidden="true" className="relative col-start-1 row-start-1 bg-black/[0.05]" />
       <div className="relative col-start-1 row-start-1 flex min-w-0 flex-col gap-4 p-3 sm:gap-5 sm:p-8 lg:p-12">{children}</div>
     </div>
+  );
+}
+
+/**
+ * The home hero: the painting fills the whole first screen, edge to edge, and slides under the transparent header
+ * (the raxIT landing page treatment). A light wash at the top keeps the header ink readable; the bottom scrim carries
+ * the title. Content sits on the page's 1200px rail.
+ */
+export function HeroPlate({ src, children }: { src: string; children: React.ReactNode }) {
+  return (
+    <section aria-labelledby="hero-h" className="relative -mt-[73px] grid min-h-[100svh] grid-cols-[minmax(0,1fr)] overflow-hidden">
+      <img
+        src={src}
+        srcSet={srcSet(src)}
+        sizes="100vw"
+        alt=""
+        loading="eager"
+        className="col-start-1 row-start-1 size-full object-cover brightness-90"
+      />
+      <div aria-hidden="true" className="hero-wash relative col-start-1 row-start-1" />
+      <div className="relative col-start-1 row-start-1 mx-auto w-full max-w-[1200px] self-end px-4 pb-10 pt-32 sm:px-6 sm:pb-16 lg:pb-20">
+        {children}
+      </div>
+    </section>
   );
 }

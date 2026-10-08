@@ -36,7 +36,7 @@ export const RELEASE_VERSION = "1.0.0";
  *  `short` labels the chart dots. `logo` is a file in public/logos; systems without one show `mono`, the maker's initials. */
 export const SYSTEM_DISPLAY: Record<string, { name: string; short?: string; provider: string; mono: string; logo?: string }> = {
   "pplx-decider-v1-27b": { name: "pplx-decider v1 27B", short: "pplx-decider", provider: "Perplexity", mono: "Px", logo: "/logos/perplexity.svg" },
-  "gpt-6-luna": { name: "GPT-6 Luna", provider: "OpenAI · Decisions API", mono: "Oa", logo: "/logos/openai.svg" },
+  "gpt-6-luna": { name: "OpenAI Decisions API", short: "Decisions API", provider: "OpenAI · runs gpt-6-luna", mono: "Oa", logo: "/logos/openai.svg" },
   clef: { name: "Clef", provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg" },
   "jev-1.13.0": { name: "Jev 1.13.0", provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg" },
   "clef-flash": { name: "Clef Flash", provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg" },

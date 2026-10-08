@@ -25,9 +25,10 @@
   },
   {
    "id": "gpt-6-luna",
-   "name": "GPT-6 Luna",
-   "provider": "OpenAI · Decisions API",
+   "name": "OpenAI Decisions API",
+   "provider": "OpenAI · runs gpt-6-luna",
    "mono": "Oa",
+   "short": "Decisions API",
    "logo": "/logos/openai.svg",
    "hosting": "managed"
   },
