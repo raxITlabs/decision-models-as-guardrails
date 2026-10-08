@@ -38,17 +38,17 @@ export function DecisionSpace({ examples, systems }: { examples: Example[]; syst
   );
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-baseline justify-between gap-4 text-[13px]">
+    <div className="flex flex-col gap-3.5 lg:gap-4">
+      <div className="flex items-baseline justify-between gap-4 text-[13px] lg:text-[15px]">
         <span className="over-art font-medium">{JOB_BY_ID[ex.job].title}</span>
         <span className="over-art-86 num">
           Example {i + 1} of {examples.length}
         </span>
       </div>
-      <p key={ex.id} className="fade over-art m-0 min-h-[2.7em] text-[clamp(1.125rem,2vw,1.3125rem)] font-medium leading-[1.35] tracking-[-0.015em]">
+      <p key={ex.id} className="fade over-art m-0 min-h-[2.7em] text-[clamp(1.1875rem,2.2vw,1.75rem)] font-medium leading-[1.35] tracking-[-0.015em]">
         &ldquo;{ex.text}&rdquo;
       </p>
-      <p className="over-art-86 m-0 text-[14px]">
+      <p className="over-art-86 m-0 text-[15px] lg:text-[17px]">
         The right call is to <b className="over-art font-semibold">{block ? "block it" : "let it through"}</b>.
       </p>
 
@@ -71,7 +71,7 @@ export function DecisionSpace({ examples, systems }: { examples: Example[]; syst
         <div className="grid grid-cols-1 pb-2 min-[400px]:grid-cols-2">{lists}</div>
       </details>
 
-      <p className="over-art-86 num m-0 border-t border-[var(--over-line)] pt-3 text-[14px]">
+      <p className="over-art-86 num m-0 border-t border-[var(--over-line)] pt-3 text-[15px] lg:text-[16px]">
         {right} of {systems.length} got it right
         {wrong.length > 0 && (
           <>
@@ -93,7 +93,7 @@ export function DecisionSpace({ examples, systems }: { examples: Example[]; syst
             <span key={e.id} className={`h-0.5 w-4 transition-colors ${n === i ? "bg-[var(--over-art)]" : "bg-[var(--over-line)]"}`} />
           ))}
         </div>
-        <div className="flex gap-5 text-[14px] font-medium">
+        <div className="flex gap-5 text-[15px] font-medium lg:text-[16px]">
           <button type="button" onClick={() => go(-1)} className="art-link min-h-11">
             Previous
           </button>
@@ -109,24 +109,24 @@ export function DecisionSpace({ examples, systems }: { examples: Example[]; syst
 function Side({ title, items, wrong, border = false }: { title: string; items: SystemMeta[]; wrong: boolean; border?: boolean }) {
   return (
     <div className={`min-w-0 pt-3 ${border ? "min-[400px]:border-l min-[400px]:border-[var(--over-line)] min-[400px]:pl-4 sm:pl-5" : "pr-4 sm:pr-5"}`}>
-      <h3 className="over-art-86 m-0 mb-1.5 flex items-baseline justify-between text-[13px] font-medium">
+      <h3 className="over-art-86 m-0 mb-1.5 flex items-baseline justify-between text-[13px] font-medium lg:text-[15px]">
         {title} <span className="num">{items.length}</span>
       </h3>
-      <ul className="m-0 flex list-none flex-col p-0 sm:min-h-[12.5rem]">
+      <ul className="m-0 flex list-none flex-col p-0 sm:min-h-[12rem] lg:min-h-[13rem]">
         {items.length === 0 && <li className="over-art-86 py-1 text-[14px]">No system</li>}
         {items.map((s) => (
-          <li key={s.id} className={`flex items-center gap-2.5 py-[3px] text-[14px] ${wrong ? "text-[var(--warn-art)]" : "over-art"}`}>
+          <li key={s.id} className={`flex items-center gap-2.5 py-[3px] text-[15px] lg:py-1 lg:text-[16px] ${wrong ? "text-[var(--warn-art)]" : "over-art"}`}>
             <span className="grid size-[18px] shrink-0 place-items-center" aria-hidden="true">
               {s.logo ? (
                 // eslint-disable-next-line @next/next/no-img-element -- static export, tiny SVGs
-                <img src={s.logo} alt="" className="logo-on-art size-4" />
+                <img src={s.logo} alt="" className="logo-on-art size-4 lg:size-[18px]" />
               ) : (
                 <span className="size-2 rounded-full border border-current opacity-80" />
               )}
             </span>
             <span className="min-w-0 break-words">{oneLine(s, s.id)}</span>
             {wrong && (
-              <span className="ml-auto shrink-0 pl-2 text-[12px]">
+              <span className="ml-auto shrink-0 pl-2 text-[13px]">
                 <span aria-hidden="true">✕</span>
                 <span className="sr-only">, wrong call</span>
               </span>

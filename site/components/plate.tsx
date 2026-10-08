@@ -69,7 +69,7 @@ export function HeroPlate({ src, children }: { src: string; children: React.Reac
         <div className="hero-wash absolute inset-0" />
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[rgb(var(--smoky))]" />
       </div>
-      <div className="relative mx-auto w-full max-w-[1200px] px-4 pb-10 pt-32 sm:px-6 sm:pb-16 lg:pb-20">
+      <div className="relative mx-auto w-full max-w-[1200px] px-4 pb-10 pt-28 sm:px-6 sm:pb-12 lg:pb-12">
         {children}
       </div>
     </section>

@@ -76,8 +76,8 @@ export default function Home() {
     <>
     <HeroPlate src="/plates/hero.webp">
           {/* One column on the left: the question, then one message the systems disagree on, then the way in. */}
-          <div className="flex max-w-[620px] flex-col gap-8">
-            <h1 id="hero-h" className="rise rise-1 over-art plate-title m-0 text-[clamp(2.25rem,5.2vw,3.5rem)] font-semibold leading-[1.05] tracking-[-0.025em] text-balance">
+          <div className="flex max-w-[720px] flex-col gap-7">
+            <h1 id="hero-h" className="rise rise-1 over-art plate-title m-0 text-[clamp(2.25rem,5.2vw,4rem)] font-semibold leading-[1.05] tracking-[-0.025em] text-balance">
               Can a decision model replace your guardrail?
             </h1>
             {examples.length > 0 && (
