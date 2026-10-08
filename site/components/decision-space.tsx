@@ -19,6 +19,8 @@ export interface Example {
  *  it chose. The reader steps through the examples; nothing advances on its own. */
 export function DecisionSpace({ examples, systems }: { examples: Example[]; systems: SystemMeta[] }) {
   const [i, setI] = useState(0);
+  // Phones: the names start open; the reader can fold them away and that choice holds across examples.
+  const [namesOpen, setNamesOpen] = useState(true);
   const ex = examples[i];
   const block = ex.label === "yes";
   const allowed = systems.filter((s) => ex.verdicts[s.id] === false);
@@ -55,12 +57,16 @@ export function DecisionSpace({ examples, systems }: { examples: Example[]; syst
         {lists}
       </div>
       {/* Phones: the counts, with the names one tap away. */}
-      <details className="border-t border-[var(--over-line)] sm:hidden">
+      <details
+        open={namesOpen}
+        onToggle={(e) => setNamesOpen((e.currentTarget as HTMLDetailsElement).open)}
+        className="border-t border-[var(--over-line)] sm:hidden"
+      >
         <summary className="over-art flex min-h-11 items-center justify-between gap-3 text-[14px]">
           <span className="num">
             {allowed.length} allowed · {blocked.length} blocked
           </span>
-          <span className="font-medium underline decoration-[var(--over-line)] underline-offset-4">Who decided what</span>
+          <span className="font-medium underline decoration-[var(--over-line)] underline-offset-4">{namesOpen ? "Hide names" : "Who decided what"}</span>
         </summary>
         <div className="grid grid-cols-1 pb-2 min-[400px]:grid-cols-2">{lists}</div>
       </details>
