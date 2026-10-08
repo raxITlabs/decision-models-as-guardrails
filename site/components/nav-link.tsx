@@ -12,8 +12,8 @@ export function NavLink({ href, children }: { href: string; children: React.Reac
       // Prefetching / pulls in its hero-image preload on every page.
       prefetch={href === "/" ? false : undefined}
       aria-current={active ? "page" : undefined}
-      className={`inline-flex min-h-11 items-center rounded-md px-3 font-medium no-underline transition-colors hover:bg-raised hover:text-fg ${
-        active ? "text-fg" : "text-fg-2"
+      className={`inline-flex min-h-11 items-center px-3 font-medium underline-offset-[6px] transition-colors hover:text-fg hover:underline ${
+        active ? "text-fg underline decoration-accent decoration-2" : "text-fg-2 no-underline"
       }`}
     >
       {children}

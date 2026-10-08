@@ -100,10 +100,10 @@ export default function Reproduce() {
           Each system needs its own account. Run only the systems that you can access. The costs show what our run spent at list
           prices in October 2026. All runs together cost about $16.40.
         </P>
-        {/* Phones get one card per system: four columns do not fit at 375px. */}
-        <ul className="m-0 flex list-none flex-col gap-2 p-0 sm:hidden">
+        {/* Phones get a ruled list, one entry per system: four columns do not fit at 375px. */}
+        <ul className="m-0 flex list-none flex-col border-t border-line-strong p-0 sm:hidden">
           {NEEDS.map(([what, account, env, cost]) => (
-            <li key={what} className="flex flex-col gap-1.5 rounded-xl border border-line bg-surface px-4 py-3.5">
+            <li key={what} className="flex flex-col gap-1.5 border-b border-line py-3.5">
               <span className="flex items-baseline justify-between gap-3">
                 <span className="text-[15px] font-semibold text-fg">{what}</span>
                 <span className="num shrink-0 text-[14px] text-fg">{cost}</span>

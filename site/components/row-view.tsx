@@ -77,7 +77,7 @@ export function RowView({ board }: { board: Board }) {
         </div>
       )}
       {state.kind === "error" && (
-        <p role="alert" className="m-0 rounded-lg border border-warn/50 px-4 py-3 text-[14px] text-warn">
+        <p role="alert" className="m-0 border-y border-warn/50 py-3 text-[14px] text-warn">
           This row did not load. Reload the page, or find it on the <Link href="/data">Data</Link> page.
         </p>
       )}
@@ -128,7 +128,7 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
       <section aria-labelledby="text-h" className="flex flex-col gap-4">
         <h2 id="text-h" className="m-0 text-[20px] font-semibold tracking-[-0.01em]">What the systems saw</h2>
         {row.withheld ? (
-          <div className="flex flex-col gap-2 rounded-lg border border-dashed border-line-strong bg-surface px-5 py-5 text-[14px] text-fg-2">
+          <div className="flex flex-col gap-2 border-y border-line py-5 text-[14px] text-fg-2">
             <p className="m-0 inline-flex items-center gap-2 font-medium text-fg"><Lock /> Text not shown here</p>
             <p className="m-0 max-w-[68ch] leading-relaxed">
               {row.withheldReason === "adult"
@@ -220,9 +220,11 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
                         <span className="text-muted">none</span>
                       ) : (
                         <span className="flex items-center gap-3">
-                          <span className="relative h-1.5 w-24 rounded-full bg-raised" aria-hidden="true">
-                            <span className="absolute inset-y-0 left-0 rounded-full bg-fg-2" style={{ width: `${Math.min(1, Math.max(0, p)) * 100}%` }} />
-                            <span className="absolute -top-1 h-3.5 w-px bg-muted" style={{ left: `${t * 100}%` }} />
+                          {/* 0 to 1 on a hairline: the tick is the blocking threshold, the dot is this system's probability. */}
+                          <span className="relative h-3 w-24" aria-hidden="true">
+                            <span className="absolute inset-x-0 top-1/2 h-px bg-line-strong" />
+                            <span className="absolute top-1/2 h-3 w-px -translate-y-1/2 bg-muted" style={{ left: `${t * 100}%` }} />
+                            <span className="absolute top-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-fg-2" style={{ left: `${Math.min(1, Math.max(0, p)) * 100}%` }} />
                           </span>
                           <span className="num">{p.toFixed(3)}</span>
                         </span>

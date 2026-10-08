@@ -1,6 +1,5 @@
 import type { Board } from "@/lib/types";
-import { oneLine } from "@/lib/format";
-import { SystemMark } from "./system-mark";
+import { listNames, oneLine } from "@/lib/format";
 
 /**
  * Two kinds of system share this board, and buyers need to know which is which: decision models answer policy
@@ -35,7 +34,6 @@ export function TwoKinds({ board }: { board: Board }) {
   return (
     <section id="kinds" aria-labelledby="kinds-h" className="flex scroll-mt-24 flex-col gap-8">
       <div className="flex max-w-[760px] flex-col gap-2.5">
-        <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-muted">Two kinds of guardrail</span>
         <h2 id="kinds-h" className="m-0 text-[clamp(1.75rem,3.4vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-balance">
           A decision model is not a guardrail service
         </h2>
@@ -45,39 +43,47 @@ export function TwoKinds({ board }: { board: Board }) {
         </p>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-2">
-        {[
-          { title: "Decision model", tag: "Your policy, in your words", systems: decision, key: "model" as const, accent: false },
-          { title: "Guardrail service", tag: "The service's safeguards, configured", systems: service, key: "svc" as const, accent: true },
-        ].map((col) => (
-          <div
-            key={col.title}
-            className={`flex flex-col gap-5 rounded-xl border bg-surface p-5 sm:p-6 ${col.accent ? "border-line-strong" : "border-line"}`}
-          >
-            <div className="flex flex-col gap-1">
-              <h3 className="m-0 text-[20px] font-semibold tracking-[-0.01em]">{col.title}</h3>
-              <span className="text-[14px] text-muted">{col.tag}</span>
+      {/* One ruled comparison, read across: the same question, answered for each kind. No boxes. */}
+      <div className="border-t border-line-strong">
+        <div className="hidden grid-cols-[minmax(0,13rem)_minmax(0,1fr)_minmax(0,1fr)] gap-x-10 border-b border-line py-4 md:grid">
+          <span />
+          <ColHead title="Decision model" tag="Your policy, in your words" />
+          <span className="border-l border-line pl-10">
+            <ColHead title="Guardrail service" tag="The service's safeguards, configured" />
+          </span>
+        </div>
+        <dl className="m-0">
+          {rows.map((r) => (
+            <div key={r.label} className="grid gap-x-10 gap-y-2 border-b border-line py-5 md:grid-cols-[minmax(0,13rem)_minmax(0,1fr)_minmax(0,1fr)]">
+              <dt className="text-[15px] font-semibold">{r.label}</dt>
+              <dd className="m-0 text-[15px] leading-relaxed text-fg-2">
+                <span className="mb-0.5 block text-[13px] font-medium text-muted md:hidden">Decision model</span>
+                {r.model}
+              </dd>
+              <dd className="m-0 text-[15px] leading-relaxed text-fg-2 md:border-l md:border-line md:pl-10">
+                <span className="mb-0.5 block text-[13px] font-medium text-muted md:hidden">Guardrail service</span>
+                {r.svc}
+              </dd>
             </div>
-            <dl className="m-0 flex flex-col">
-              {rows.map((r) => (
-                <div key={r.label} className="flex flex-col gap-1 border-t border-line py-3.5">
-                  <dt className="text-[12px] font-medium uppercase tracking-[0.12em] text-muted">{r.label}</dt>
-                  <dd className="m-0 text-[15px] leading-relaxed text-fg-2">{r[col.key]}</dd>
-                </div>
-              ))}
-            </dl>
-            <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-line pt-4">
-              <span className="sr-only">Systems on this board:</span>
-              {col.systems.map((s) => (
-                <span key={s.id} className="inline-flex items-center gap-1.5 rounded-full border border-line bg-bg py-1 pl-1 pr-2.5 text-[12px] text-fg-2">
-                  <SystemMark m={s} />
-                  {oneLine(s, s.id)}
-                </span>
-              ))}
-            </div>
+          ))}
+          <div className="grid gap-x-10 gap-y-2 py-5 md:grid-cols-[minmax(0,13rem)_minmax(0,1fr)_minmax(0,1fr)]">
+            <dt className="text-[15px] font-semibold">On this board</dt>
+            <dd className="m-0 text-[14px] leading-relaxed text-fg-2">{names(decision)}</dd>
+            <dd className="m-0 text-[14px] leading-relaxed text-fg-2 md:border-l md:border-line md:pl-10">{names(service)}</dd>
           </div>
-        ))}
+        </dl>
       </div>
     </section>
   );
 }
+
+function ColHead({ title, tag }: { title: string; tag: string }) {
+  return (
+    <span className="flex flex-col">
+      <span className="text-[18px] font-semibold tracking-[-0.01em]">{title}</span>
+      <span className="text-[14px] text-muted">{tag}</span>
+    </span>
+  );
+}
+
+const names = (xs: { id: string; name: string; label?: string }[]) => listNames(xs.map((s) => oneLine(s, s.id))) + ".";

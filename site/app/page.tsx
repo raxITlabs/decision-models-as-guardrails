@@ -3,14 +3,14 @@ import Link from "next/link";
 import { ArrowRight, Chevron } from "@/components/icons";
 import { HashOpen } from "@/components/hash-open";
 import { PillLink } from "@/components/pill-link";
-import { Podium } from "@/components/podium";
+import { DecisionSpace, type Example } from "@/components/decision-space";
 import { TwoKinds } from "@/components/two-kinds";
 import { CostCalculator } from "@/components/cost-calculator";
 import { HeroPlate, Plate } from "@/components/plate";
 import { Faq } from "@/components/faq";
 import { Leaderboard } from "@/components/leaderboard";
 import { faqItems } from "@/lib/copy";
-import { loadBoard, loadRowsIndex } from "@/lib/data";
+import { loadBoard, loadRowDetails, loadRowsIndex } from "@/lib/data";
 import { REPO_URL, int, listNames, longDate, oneLine, pct, score1, systemMap } from "@/lib/format";
 import { JOBS } from "@/lib/jobs";
 
@@ -19,10 +19,31 @@ export const metadata: Metadata = {
   openGraph: { url: "/", siteName: "decision-models-as-guardrails", type: "website" },
 };
 
+/** Hero examples: published rows, mild enough for a first screen, chosen because the systems disagree on them. */
+const HERO_EXAMPLES = [
+  "f1-e2_content_xstest-e90bdeb302",
+  "f3-e2_denied_topics-562f7db27d",
+  "f2-lakera_mosscap-54ec17149d",
+  "f5-e2_pii_controls-4a5261be86",
+  "f2-e2_attack_controls-7eee9c9a91",
+  "f3-e2_denied_topics-0e521b9985",
+  "f5-e2_pii_controls-ff89af5c10",
+];
+
 export default function Home() {
   const board = loadBoard();
   const index = loadRowsIndex();
   const sys = systemMap(board);
+  const details = loadRowDetails();
+  const examples: Example[] = HERO_EXAMPLES.map((id) => details[id])
+    .filter((r) => r && !r.withheld && r.text)
+    .map((r) => ({
+      id: r.id,
+      job: r.job,
+      label: r.label,
+      text: r.text as string,
+      verdicts: Object.fromEntries(r.results.map((x) => [x.system, x.outcome === "decided" ? x.decision : null])),
+    }));
   const rowsPerJob = JOBS.map((_, i) => index.rows.filter((r) => r[1] === i).length);
   const kw = board.baseline.map((b) => b.keyword);
   const best = board.baseline.map((b) => b.best);
@@ -54,12 +75,17 @@ export default function Home() {
   return (
     <>
     <HeroPlate src="/plates/hero.webp">
-          <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] items-end gap-6 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-12">
-          <div className="flex max-w-[760px] flex-col items-start gap-4 sm:gap-5">
-            <h1 id="hero-h" className="rise rise-1 over-art plate-title m-0 text-[clamp(2.25rem,5.6vw,3.75rem)] font-semibold leading-[1.05] tracking-[-0.025em] text-balance">
+          {/* One column on the left: the question, then one message the systems disagree on, then the way in. */}
+          <div className="flex max-w-[620px] flex-col gap-8">
+            <h1 id="hero-h" className="rise rise-1 over-art plate-title m-0 text-[clamp(2.25rem,5.2vw,3.5rem)] font-semibold leading-[1.05] tracking-[-0.025em] text-balance">
               Can a decision model replace your guardrail?
             </h1>
-            <div className="rise rise-1 mt-2 flex flex-wrap gap-3">
+            {examples.length > 0 && (
+              <div className="rise rise-2">
+                <DecisionSpace examples={examples} systems={board.systems} />
+              </div>
+            )}
+            <div className="rise rise-2 flex flex-wrap gap-3">
               <PillLink href="#leaderboard" variant="paper">
                 See the leaderboard <ArrowRight />
               </PillLink>
@@ -68,12 +94,10 @@ export default function Home() {
               </PillLink>
             </div>
           </div>
-          <Podium board={board} />
-          </div>
     </HeroPlate>
     <div className="mx-auto flex max-w-[1200px] flex-col gap-24 px-4 pt-20 sm:gap-28 sm:px-6 sm:pt-24">
       {board.source === "fixture" && (
-        <p role="note" className="m-0 rounded-lg border border-warn/50 px-4 py-3 text-[14px] text-warn">
+        <p role="note" className="m-0 border-y border-warn/50 py-3 text-[14px] text-warn">
           Preview build. The systems and numbers on this page are synthetic placeholders. They are not results.
         </p>
       )}
@@ -102,34 +126,26 @@ export default function Home() {
         <details className="group border-y border-line-strong">
           <summary className="flex min-h-[72px] flex-wrap items-center justify-between gap-x-6 gap-y-3 py-5">
             <span className="flex flex-col gap-2">
-              <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-muted">Method</span>
               <span id="claims-h" className="text-[clamp(1.375rem,2.6vw,1.75rem)] font-semibold leading-[1.15] tracking-[-0.02em]">
                 How we test every system the same way
               </span>
             </span>
-            <span className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line-strong px-4 text-[14px] font-medium text-fg">
+            <span className="inline-flex min-h-11 items-center gap-2 text-[15px] font-medium text-link">
               <span className="group-open:hidden">Show the method</span>
               <span className="hidden group-open:inline">Hide the method</span>
               <Chevron className="size-3.5 rotate-90 transition-transform duration-150 ease-out group-open:-rotate-90" />
             </span>
           </summary>
           <div className="flex flex-col gap-5 pb-8 pt-2">
-            <ol className="m-0 flex list-none flex-wrap items-stretch gap-3 p-0">
+            {/* Four steps in order, as ruled columns: the sequence is real, so the numbers stay. */}
+            <ol className="m-0 grid list-none gap-0 p-0 sm:grid-cols-2 lg:grid-cols-4">
               {steps.map((st, i) => (
-                <li key={st.title} className="flex min-w-[220px] flex-1 items-stretch gap-3">
-                  <div className="flex flex-1 flex-col gap-2.5 rounded-xl border border-line bg-surface p-[18px]">
-                    <span className="flex items-center gap-2.5">
-                      <span className="num grid size-7 place-items-center rounded-md bg-fg text-[13px] text-bg">{i + 1}</span>
-                      <span className="text-[16px] font-semibold">{st.title}</span>
-                    </span>
-                    <span className="num text-[22px] tracking-[-0.02em]">{st.big}</span>
-                    <span className="text-[14px] leading-relaxed text-fg-2">{st.body}</span>
-                  </div>
-                  {i < steps.length - 1 && (
-                    <span aria-hidden="true" className="self-center text-link">
-                      <ArrowRight />
-                    </span>
-                  )}
+                <li key={st.title} className="flex flex-col gap-2 border-t border-line py-5 sm:pr-6 lg:border-l lg:border-t-0 lg:py-1 lg:pl-6 lg:first:border-l-0 lg:first:pl-0">
+                  <span className="text-[14px] text-muted">
+                    <span className="num">{i + 1}</span> · {st.title}
+                  </span>
+                  <span className="num text-[24px] font-medium tracking-[-0.02em]">{st.big}</span>
+                  <span className="text-[14px] leading-relaxed text-fg-2">{st.body}</span>
                 </li>
               ))}
             </ol>
@@ -148,7 +164,6 @@ export default function Home() {
       <section aria-labelledby="jobs-h" className="flex flex-col gap-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="flex flex-col gap-2.5">
-            <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-muted">By use case</span>
             <h2 id="jobs-h" className="m-0 text-[clamp(1.75rem,3.4vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.02em]">The leader changes with the use case</h2>
           </div>
           <Link href="/data" className="inline-flex min-h-11 items-center gap-1.5 text-[14px]">
@@ -191,7 +206,6 @@ export default function Home() {
 
       <section aria-labelledby="faq-h" className="grid gap-8 md:grid-cols-[minmax(0,4fr)_minmax(0,7fr)]">
         <div className="flex flex-col gap-2.5">
-          <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-muted">Questions</span>
           <h2 id="faq-h" className="m-0 text-[clamp(1.75rem,3.4vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.02em]">Can you trust these numbers?</h2>
         </div>
         <Faq items={faqItems(board)} />

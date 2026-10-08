@@ -7,7 +7,8 @@ export interface SegOption<T extends string> {
   short?: string;
 }
 
-/** A group of toggle buttons; exactly one is pressed. */
+/** A group of toggle buttons; exactly one is pressed. Plain words on the paper: the pressed one is in black ink with a
+ *  blue rule under it. No pill, no box. */
 export function Segmented<T extends string>({
   label,
   options,
@@ -20,7 +21,7 @@ export function Segmented<T extends string>({
   onChange: (v: T) => void;
 }) {
   return (
-    <div role="group" aria-label={label} className="inline-flex max-w-full overflow-x-auto rounded-full border border-line-strong bg-surface p-[3px] [scrollbar-width:none]">
+    <div role="group" aria-label={label} className="flex max-w-full flex-wrap gap-x-5 gap-y-1">
       {options.map((o) => {
         const on = o.value === value;
         return (
@@ -29,8 +30,8 @@ export function Segmented<T extends string>({
             type="button"
             aria-pressed={on}
             onClick={() => onChange(o.value)}
-            className={`min-h-11 whitespace-nowrap rounded-full px-4 text-[14px] transition-colors lg:min-h-[38px] ${
-              on ? "bg-fg font-medium text-bg" : "text-fg-2 hover:text-fg"
+            className={`min-h-11 whitespace-nowrap border-b-2 text-[14px] transition-colors ${
+              on ? "border-accent font-medium text-fg" : "border-transparent text-muted hover:text-fg"
             }`}
           >
             {o.short ? (
@@ -71,7 +72,7 @@ export function Select<T extends string>({
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value as T)}
-          className="min-h-11 appearance-none rounded-full border border-line-strong bg-surface py-1.5 pl-4 pr-9 text-[14px] text-fg hover:border-fg/40"
+          className="min-h-11 appearance-none rounded-none border-0 border-b border-line-strong bg-transparent py-1.5 pl-0 pr-7 text-[15px] text-fg hover:border-fg/60 focus-visible:border-accent"
         >
           {options.map((o) => (
             <option key={o.value} value={o.value}>
@@ -79,7 +80,7 @@ export function Select<T extends string>({
             </option>
           ))}
         </select>
-        <svg viewBox="0 0 16 16" aria-hidden="true" className="pointer-events-none absolute right-3.5 top-1/2 size-3.5 -translate-y-1/2 text-muted" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <svg viewBox="0 0 16 16" aria-hidden="true" className="pointer-events-none absolute right-1 top-1/2 size-3.5 -translate-y-1/2 text-muted" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
           <path d="M4 6l4 4 4-4" />
         </svg>
       </span>

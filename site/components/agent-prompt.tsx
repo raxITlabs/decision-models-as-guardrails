@@ -7,11 +7,11 @@ import { Check, Copy, External } from "./icons";
 export function AgentPrompt({ prompt, mdUrl }: { prompt: string; mdUrl: string }) {
   const [copied, setCopied] = useState(false);
   const q = encodeURIComponent(prompt);
-  const link = "inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line-strong px-4 text-[14px] font-medium text-fg no-underline hover:border-fg/40 hover:text-fg";
+  const link = "inline-flex min-h-11 items-center gap-1.5 text-[15px] font-medium text-link underline underline-offset-4 hover:text-link-hover";
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-line bg-surface p-5 sm:p-6">
-      <p className="m-0 rounded-lg bg-code px-4 py-3 text-[15px] leading-relaxed text-fg">{prompt}</p>
-      <div className="flex flex-wrap gap-2">
+    <div className="flex flex-col gap-4 border-y border-line-strong py-5">
+      <p className="m-0 max-w-[68ch] text-[17px] leading-relaxed text-fg">{prompt}</p>
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
         <button
           type="button"
           onClick={async () => {

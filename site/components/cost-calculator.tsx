@@ -33,7 +33,6 @@ export function CostCalculator({ board }: { board: Board }) {
   return (
     <section id="cost" aria-labelledby="cost-h" className="flex scroll-mt-24 flex-col gap-6">
       <div className="flex max-w-[760px] flex-col gap-2.5">
-        <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-muted">Cost at your volume</span>
         <h2 id="cost-h" className="m-0 text-[clamp(1.75rem,3.4vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-balance">
           What it costs in production
         </h2>
@@ -42,17 +41,17 @@ export function CostCalculator({ board }: { board: Board }) {
         </p>
       </div>
 
-      <div className="flex flex-col gap-5 rounded-xl border border-line bg-surface p-4 sm:p-6">
+      <div className="flex flex-col gap-5 border-t border-line-strong pt-5">
         <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
-          <div role="group" aria-label="Checks a month" className="flex flex-wrap gap-2">
+          <div role="group" aria-label="Checks a month" className="flex flex-wrap gap-x-5">
             {PRESETS.map((p) => (
               <button
                 key={p}
                 type="button"
                 aria-pressed={volume === p}
                 onClick={() => setVolume(p)}
-                className={`min-h-11 rounded-full border px-4 text-[14px] font-medium lg:min-h-[38px] ${
-                  volume === p ? "border-fg bg-fg text-bg" : "border-line-strong text-fg-2 hover:border-fg/40 hover:text-fg"
+                className={`num min-h-11 border-b-2 text-[15px] transition-colors ${
+                  volume === p ? "border-accent font-medium text-fg" : "border-transparent text-muted hover:text-fg"
                 }`}
               >
                 {compact(p)}
@@ -68,7 +67,7 @@ export function CostCalculator({ board }: { board: Board }) {
               step={1000}
               value={volume}
               onChange={(e) => setVolume(Math.max(1, Math.round(Number(e.target.value) || 1)))}
-              className="num min-h-11 w-36 rounded-full border border-line-strong bg-bg px-4 text-[14px] text-fg lg:min-h-[38px]"
+              className="num min-h-11 w-32 rounded-none border-0 border-b border-line-strong bg-transparent px-0 text-[15px] text-fg focus-visible:border-accent"
               aria-label="Checks a month"
             />
             <span>checks a month</span>
@@ -95,7 +94,7 @@ export function CostCalculator({ board }: { board: Board }) {
               <li
                 key={s.system}
                 className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1.5 border-t border-line px-2 py-3 first:border-t-0 sm:grid-cols-[minmax(0,15rem)_minmax(0,1fr)_auto] ${
-                  isRef ? "rounded-md bg-raised" : ""
+                  isRef ? "bg-raised" : ""
                 }`}
               >
                 <span className="flex min-w-0 items-center gap-2.5">
@@ -119,8 +118,8 @@ export function CostCalculator({ board }: { board: Board }) {
                     </span>
                   </span>
                 </span>
-                <span className="col-span-2 row-start-2 h-1.5 overflow-hidden rounded-full bg-raised sm:col-span-1 sm:row-start-1 sm:col-start-2" aria-hidden="true">
-                  <span className="block h-full rounded-full bg-fg/70" style={{ width: `${Math.max(1.5, (month / max) * 100)}%` }} />
+                <span className="col-span-2 row-start-2 h-1 sm:col-span-1 sm:row-start-1 sm:col-start-2" aria-hidden="true">
+                  <span className="block h-full bg-fg/70" style={{ width: `${Math.max(1, (month / max) * 100)}%` }} />
                 </span>
                 <span className="flex flex-col items-end text-right">
                   <span className="num text-[16px] font-semibold">

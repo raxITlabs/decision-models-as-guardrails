@@ -6,15 +6,14 @@ import { JOBS, JOB_BY_ID, type JobId } from "@/lib/jobs";
 import { halfCi, maxTier, money, pct, score1, tierVar, oneLine } from "@/lib/format";
 import type { Board, Score, SystemMeta } from "@/lib/types";
 import { ArrowRight, ArrowUpLeft, External } from "./icons";
-import { Segmented, Select } from "./segmented";
+import { Segmented } from "./segmented";
 import { SystemMark } from "./system-mark";
-import { WallpaperFrame } from "./plate";
 
 type JobPick = "overall" | JobId;
 type Axis = "cost" | "fbr";
 type Scope = "managed" | "all";
 
-const JOB_OPTIONS = [{ value: "overall" as JobPick, label: "Overall, all use cases" }, ...JOBS.map((j) => ({ value: j.id as JobPick, label: j.title }))];
+const JOB_OPTIONS = [{ value: "overall" as JobPick, label: "All use cases", short: "All" }, ...JOBS.map((j) => ({ value: j.id as JobPick, label: j.title, short: j.short }))];
 
 // Label widths measured with the real font, so placement does not drop labels that fit.
 let measureCtx: CanvasRenderingContext2D | null = null;
@@ -61,9 +60,12 @@ export function Leaderboard({ board }: { board: Board }) {
   const sel = scores.find((s) => s.system === selected) ?? scores[0];
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <Select id="lb-job" label="Use case" options={JOB_OPTIONS} value={job} onChange={setJob} hideLabel />
+    <div className="flex flex-col gap-6">
+      {/* The use case leads: the board answers "which system for my job", so picking it comes first. */}
+      <div className="border-b border-line-strong">
+        <Segmented label="Use case" options={JOB_OPTIONS} value={job} onChange={setJob} />
+      </div>
+      <div className="flex flex-wrap items-center gap-x-10 gap-y-2">
         <Segmented
           label="Horizontal axis"
           value={axis}
@@ -92,10 +94,9 @@ export function Leaderboard({ board }: { board: Board }) {
           : ""}
       </p>
 
-      <WallpaperFrame src="/plates/headland.webp">
       <Scatter scores={shown} sys={sys} axis={axis} tiers={tiers} selected={sel?.system} onSelect={setSelected} />
 
-      <div className="overflow-x-auto rounded-xl border border-line bg-surface">
+      <div className="overflow-x-auto border-t border-line-strong">
         <table className="w-full sm:min-w-[860px] border-collapse text-[14px]">
           <caption className="sr-only">
             {job === "overall" ? "Overall" : JOB_BY_ID[job].title}: rank, score with 95% interval, tier, catch rate, false-block rate, cost and hosting for every system.
@@ -103,7 +104,7 @@ export function Leaderboard({ board }: { board: Board }) {
           <thead>
             <tr className="border-b border-line text-left text-[12px] text-muted">
               <th scope="col" className="hidden w-10 py-3 pl-5 font-medium sm:table-cell">#</th>
-              <th scope="col" className="sticky left-0 z-[1] bg-surface py-2.5 pl-3 pr-3 font-medium sm:static sm:pl-0">System</th>
+              <th scope="col" className="sticky left-0 z-[1] bg-bg py-2.5 pl-3 pr-3 font-medium sm:static sm:pl-0">System</th>
               <th scope="col" className="py-2.5 pr-3 text-right font-medium sm:text-left">Score <span className="font-normal">±95% CI</span></th>
               <th scope="col" className="hidden py-2.5 pr-3 font-medium sm:table-cell">Tier</th>
               <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">Catch rate</th>
@@ -127,7 +128,7 @@ export function Leaderboard({ board }: { board: Board }) {
                 >
                   <td className="num hidden py-2.5 pl-5 text-muted sm:table-cell">{s.rank}</td>
                   {/* On a phone the name column stays put while the numbers scroll under it. */}
-                  <th scope="row" className={`sticky left-0 z-[1] py-2.5 pl-3 pr-3 text-left font-normal sm:static sm:pl-0 ${on ? "bg-selected" : m?.kind === "service" ? "bg-raised" : "bg-surface"}`}>
+                  <th scope="row" className={`sticky left-0 z-[1] py-2.5 pl-3 pr-3 text-left font-normal sm:static sm:pl-0 ${on ? "bg-selected" : m?.kind === "service" ? "bg-raised" : "bg-bg"}`}>
                     <button
                       type="button"
                       onClick={() => setSelected(s.system)}
@@ -168,7 +169,6 @@ export function Leaderboard({ board }: { board: Board }) {
           </tbody>
         </table>
       </div>
-      </WallpaperFrame>
 
       <p className="m-0 text-[13px] leading-relaxed text-muted">
         The shaded row is a guardrail service, not a decision model (<a href="#kinds">see the difference</a>). Every system answers the
@@ -194,9 +194,11 @@ function ScoreBar({ s }: { s: Score }) {
   const pos = (v: number) => `${Math.max(0, Math.min(100, ((v - 50) / 50) * 100))}%`;
   return (
     <div className="flex items-center justify-end gap-3 sm:justify-start">
-      <span className="relative hidden h-2 w-28 rounded-full bg-raised sm:block" aria-hidden="true">
-        <span className="grow absolute inset-y-0 left-0 rounded-full" style={{ width: pos(s.score), background: tierVar(s.tier), animationDelay: `${s.rank * 40}ms` }} />
-        <span className="absolute -top-1 h-4 rounded-sm bg-fg/70" style={{ left: pos(s.ciLow), width: `max(2px, calc(${pos(s.ciHigh)} - ${pos(s.ciLow)}))`, opacity: 0.55 }} />
+      {/* A dot plot from 50 (a coin flip) to 100: a hairline axis, the 95% interval as a short bar, the score as a dot. */}
+      <span className="relative hidden h-3 w-28 sm:block" aria-hidden="true">
+        <span className="absolute inset-x-0 top-1/2 h-px bg-line-strong" />
+        <span className="absolute top-1/2 h-[3px] -translate-y-1/2" style={{ left: pos(s.ciLow), width: `max(2px, calc(${pos(s.ciHigh)} - ${pos(s.ciLow)}))`, background: tierVar(s.tier), opacity: 0.45 }} />
+        <span className="pop absolute top-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full" style={{ left: pos(s.score), background: tierVar(s.tier), animationDelay: `${s.rank * 40}ms` }} />
       </span>
       <span className="num whitespace-nowrap">
         <span className="text-[15px] text-fg">{score1(s.score)}</span>
@@ -375,7 +377,7 @@ function Scatter({
   const present = [...new Set(scores.map((s) => Math.min(s.tier, 5)))].sort((a, b) => a - b);
   const unlabelled = placed.filter((p) => !p.label).sort((a, b) => a.s.rank - b.s.rank);
   return (
-    <figure className="m-0 flex flex-col gap-3 rounded-xl border border-line bg-surface p-3 sm:p-5">
+    <figure className="m-0 flex flex-col gap-3">
       <div ref={box} className="relative w-full select-none overflow-hidden" style={{ height: h }}>
         <svg width={w} height={h} className="absolute inset-0 max-w-full" aria-hidden="true">
           {yTicks.map((v) => (
@@ -442,9 +444,9 @@ function Scatter({
               <span
                 className={`grid place-items-center rounded-md ${on ? (compact ? "size-6" : "size-[34px]") : compact ? "size-5" : "size-7"}`}
                 style={{
-                  background: `color-mix(in srgb, ${tierVar(p.s.tier)} 14%, var(--surface))`,
+                  background: `color-mix(in srgb, ${tierVar(p.s.tier)} 14%, var(--bg))`,
                   border: `2px ${self && axis === "cost" ? "dashed" : "solid"} ${tierVar(p.s.tier)}`,
-                  boxShadow: on ? "0 0 0 2px var(--surface), 0 0 0 4px var(--fg)" : "0 0 0 2px var(--surface)",
+                  boxShadow: on ? "0 0 0 2px var(--bg), 0 0 0 4px var(--fg)" : "0 0 0 2px var(--bg)",
                 }}
               >
                 {m?.logo ? (
@@ -460,7 +462,7 @@ function Scatter({
         {gapLabel && (
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -translate-y-1/2 whitespace-nowrap rounded-full bg-surface/90 px-1.5 text-[12px] font-semibold leading-[16px] text-fg"
+            className="pointer-events-none absolute -translate-y-1/2 whitespace-nowrap bg-bg/90 px-1 text-[12px] font-semibold leading-[16px] text-fg"
             style={{ left: gapLabel.x, top: gapLabel.y }}
           >
             {gapLabel.text}
@@ -531,7 +533,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
         ]
       : null;
   return (
-    <section aria-label={`Details for ${oneLine(m, s.system)}`} className="grid gap-8 rounded-xl border border-line bg-surface p-5 sm:p-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <section aria-label={`Details for ${oneLine(m, s.system)}`} className="grid gap-x-12 gap-y-8 border-t border-line-strong pt-8 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <SystemMark m={m} size="lg" />
@@ -558,9 +560,9 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
             )}
           </span>
         </div>
-        <dl className="m-0 grid grid-cols-2 gap-2">
+        <dl className="m-0 grid grid-cols-2 gap-x-6">
           {stats.map((x) => (
-            <div key={x.label} className="rounded-lg bg-raised px-3.5 py-3">
+            <div key={x.label} className="border-t border-line py-3">
               <dt className="text-[12px] text-muted">{x.label}</dt>
               <dd className="num m-0 mt-1 text-[17px]">{x.value}</dd>
             </div>
@@ -568,7 +570,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
         </dl>
         {vs && (
           <div className="flex flex-col gap-2 border-t border-line pt-4">
-            <span className="text-[12px] font-medium uppercase tracking-[0.12em] text-muted">Against Bedrock Guardrails</span>
+            <span className="text-[14px] font-semibold">Against Bedrock Guardrails</span>
             <dl className="m-0 grid grid-cols-2 gap-x-4 gap-y-2.5">
               {vs.map((x) => (
                 <div key={x.label} className="flex flex-col">
@@ -598,16 +600,17 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
                   <span className="sm:hidden">{j.short}</span>
                   <span className="hidden sm:inline">{j.title}</span>
                 </span>
-                <span className="relative h-2 rounded-full bg-raised" aria-hidden="true">
-                  {js && <span className="grow absolute inset-y-0 left-0 rounded-full bg-accent" style={{ width: pos(js.score) }} />}
-                  <span className="absolute -top-1 h-4 w-0.5 bg-fg" style={{ left: pos(best[j.id]) }} />
+                <span className="relative h-3" aria-hidden="true">
+                  <span className="absolute inset-x-0 top-1/2 h-px bg-line-strong" />
+                  <span className="absolute top-1/2 h-3 w-px -translate-y-1/2 bg-fg/60" style={{ left: pos(best[j.id]) }} />
+                  {js && <span className="absolute top-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent" style={{ left: pos(js.score) }} />}
                 </span>
                 <span className="num text-right text-[13px]">{js ? score1(js.score) : "n/a"}</span>
               </li>
             );
           })}
         </ul>
-        <p className="m-0 text-[12px] text-muted">Bars start at 50, which is a coin flip. The thin mark shows the best score on that use case. Select a system in the chart or the table to see its details.</p>
+        <p className="m-0 text-[12px] text-muted">The line runs from 50, a coin flip, to 100. The dot is this system; the tick is the best score on that use case. Select a system in the chart or the table to see its details.</p>
       </div>
     </section>
   );

@@ -43,12 +43,12 @@ export function SiteHeader() {
             <li><NavLink href="/reproduce">Reproduce</NavLink></li>
             <li><NavLink href="/data">Data</NavLink></li>
             <li className="hidden sm:block">
-              <a href={HF_URL} className="inline-flex min-h-11 items-center gap-1 rounded-md px-2.5 text-fg-2 no-underline hover:bg-raised hover:text-fg">
+              <a href={HF_URL} className="inline-flex min-h-11 items-center gap-1 px-2.5 text-fg-2 no-underline underline-offset-[6px] hover:text-fg hover:underline">
                 Dataset<span className="sr-only"> on Hugging Face</span> <External />
               </a>
             </li>
             <li className="hidden sm:block">
-              <a href={REPO_URL} className="inline-flex min-h-11 items-center gap-1 rounded-md px-2.5 text-fg-2 no-underline hover:bg-raised hover:text-fg">
+              <a href={REPO_URL} className="inline-flex min-h-11 items-center gap-1 px-2.5 text-fg-2 no-underline underline-offset-[6px] hover:text-fg hover:underline">
                 GitHub <External />
               </a>
             </li>

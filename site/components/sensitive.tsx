@@ -19,7 +19,7 @@ export function Sensitive({ children, hide = true, compact = false }: { children
       </div>
     );
   return (
-    <div className={`flex flex-wrap items-center gap-x-3 gap-y-1 ${compact ? "text-[14px]" : "rounded-lg border border-dashed border-line-strong bg-surface px-5 py-4 text-[14px]"}`}>
+    <div className={`flex flex-wrap items-center gap-x-3 gap-y-1 ${compact ? "text-[14px]" : "border-y border-line py-4 text-[14px]"}`}>
       <span className="inline-flex items-center gap-1.5 text-muted">
         <Lock className="size-3.5 shrink-0" />
         Harmful example hidden.
@@ -34,7 +34,7 @@ export function Sensitive({ children, hide = true, compact = false }: { children
 /** The notice at the top of every page that shows dataset rows. */
 export function ContentWarning() {
   return (
-    <p role="note" className="m-0 rounded-lg border border-warn/40 bg-surface px-4 py-3 text-[14px] leading-relaxed text-fg-2">
+    <p role="note" className="m-0 max-w-[80ch] border-t-2 border-warn/60 pt-3 text-[14px] leading-relaxed text-fg-2">
       <strong className="font-semibold text-warn">Content warning.</strong> The rows are real examples, and many are harmful:
       violence, hate, self-harm, crime, attacks and profanity. We show the full text of 100 example rows only. Harmful examples
       stay hidden until you choose to show them, and we never show sexual or adult content. Every other row links to its
