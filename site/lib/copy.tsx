@@ -19,7 +19,7 @@ export function faqItems(board: Board): QA[] {
       a: (
         <p className="m-0">
           No one funded it. raxIT Labs has no commercial relationship with {managedVendors || "any vendor"} or any other company on
-          this page. No vendor saw the data, the questions or the results before publication.
+          this page. No vendor saw the data, the questions or the results before we published them.
         </p>
       ),
     },
@@ -27,9 +27,9 @@ export function faqItems(board: Board): QA[] {
       q: "Doesn't the question format favour TypeSafe's Jev?",
       a: (
         <p className="m-0">
-          It may. Every decision model gets the same yes/no questions in the format Jev&apos;s API takes, and Jev was trained on that
-          format. The others receive it through our adapters. We disclose that home advantage instead of removing it, since any other
-          format would favour someone else.
+          It may. Every decision model gets the same yes/no questions in the format that Jev&apos;s API uses. Jev was trained on that
+          format. The other models get the questions through our adapters. We disclose this home advantage and do not remove it,
+          because any other format would favour a different system.
           {qf ? ` ${sys[qf.system]?.name ?? qf.system} finishes in tier ${qf.tier} of ${qf.tiers} overall.` : ""}
         </p>
       ),
@@ -38,9 +38,10 @@ export function faqItems(board: Board): QA[] {
       q: "Did you tune thresholds for anyone?",
       a: (
         <p className="m-0">
-          No. Every system uses the same fixed rule, a probability of {board.stats.threshold} or more blocks, which is how each one
-          behaves out of the box. Some models rank risk well but sit at a poor default. Tuning on your own labelled data can add several
-          points, most of all for the smaller models. The results files report AUROC so you can see that headroom.
+          No. Every system uses the same fixed rule: a probability of {board.stats.threshold} or more blocks. This shows how each
+          system behaves by default. Some models rank risk well but have a poor default threshold. If you tune on your own labelled
+          data, you can gain several points. The smaller models gain the most. The results files report AUROC, so you can see how much
+          room each model has.
         </p>
       ),
     },
@@ -48,12 +49,12 @@ export function faqItems(board: Board): QA[] {
       q: "Who labelled the data, and how good are the labels?",
       a: (
         <p className="m-0">
-          Labels come from each source and our written labelling rules.
+          Labels come from each source and from our written labelling rules.
           {la
-            ? ` Our lead, working with an AI assistant, labelled a ${int(la.contentRows)}-row content sample a second time without seeing the first label, and agreed with it on ${pct(la.content, 0)} of rows. A ${int(la.attackRows)}-row prompt-attack sample was second-labelled by an AI model with no access to the answers and agreed on ${pct(la.attacks, 0)}.`
+            ? ` Our lead, with an AI assistant, labelled a ${int(la.contentRows)}-row content sample a second time without seeing the first label. The two labels agreed on ${pct(la.content, 0)} of rows. An AI model with no access to the answers labelled a ${int(la.attackRows)}-row prompt-attack sample a second time. It agreed on ${pct(la.attacks, 0)}.`
             : ""}
           {lr
-            ? ` After the runs we re-checked every row that at least ${lr.minWrong} of the ${lr.systems} systems got wrong. ${int(lr.corrected)} labels were corrected and ${int(lr.removed)} ambiguous rows were removed.`
+            ? ` After the runs, we checked again every row that at least ${lr.minWrong} of the ${lr.systems} systems got wrong. We corrected ${int(lr.corrected)} labels and removed ${int(lr.removed)} ambiguous rows.`
             : ""}
         </p>
       ),
@@ -62,13 +63,13 @@ export function faqItems(board: Board): QA[] {
       q: "Could a model have trained on the test rows?",
       a: (
         <p className="m-0">
-          We screened every row against the published training data of the models on the board and removed matches. We also kept a
-          held-back slice of {int(board.stats.heldBackRows)} rows that is not published.
-          {typeof f.sliceGapMax === "number" ? ` Overall scores on it stay within ${f.sliceGapMax} points of the public rows.` : ""}
+          We compared every row with the published training data of the models on the board. We removed the matches. We also keep a
+          held-back slice of {int(board.stats.heldBackRows)} rows that we do not publish.
+          {typeof f.sliceGapMax === "number" ? ` Overall scores on that slice are within ${f.sliceGapMax} points of the public rows.` : ""}
           {own
-            ? ` Some content rows come from datasets the vendors published themselves; content is also scored without them. ${sys[own.system]?.name ?? own.system} scores ${own.allRows} on all content rows and ${own.withoutOwnRows} without ${own.vendor}'s own rows, so it did ${own.withoutOwnRows >= own.allRows ? "worse, not better," : "better"} on its vendor's data.`
+            ? ` Some content rows come from datasets that the vendors published themselves. We also score content without those rows. ${sys[own.system]?.name ?? own.system} scores ${own.allRows} on all content rows and ${own.withoutOwnRows} without ${own.vendor}'s own rows. So it did ${own.withoutOwnRows >= own.allRows ? "worse, not better," : "better"} on its vendor's data.`
             : ""}{" "}
-          We cannot rule out training data a vendor has not disclosed.
+          We cannot rule out training data that a vendor has not disclosed.
         </p>
       ),
     },
@@ -76,8 +77,8 @@ export function faqItems(board: Board): QA[] {
       q: "Can I reproduce this?",
       a: (
         <p className="m-0">
-          Yes. The dataset is on Hugging Face, and the code, scoring rules and per-row results are on GitHub. Some sources ship ids only
-          because of their licences. A script rebuilds that text from the original publishers. The <a href="/reproduce">Reproduce</a>{" "}
+          Yes. The dataset is on Hugging Face. The code, the scoring rules and the per-row results are on GitHub. Because of their
+          licences, some sources ship only the row ids. A script rebuilds that text from the original publishers. The <a href="/reproduce">Reproduce</a>{" "}
           page has the commands.
         </p>
       ),
@@ -86,9 +87,9 @@ export function faqItems(board: Board): QA[] {
       q: "What does a tier mean?",
       a: (
         <p className="m-0">
-          Systems in one tier cannot be told apart statistically from the tier&apos;s leader. We resample the rows 2,000 times, test
-          each system against its tier&apos;s leader and correct for the number of comparisons. Two systems in one tier can still differ a
-          lot in what they block and what they cost, so choose between them on those.
+          Our statistical tests cannot tell the systems in one tier apart from that tier&apos;s leader. We resample the rows 2,000
+          times. We test each system against its tier&apos;s leader. Then we correct for the number of comparisons. Two systems in one
+          tier can still differ a lot in what they block and what they cost. Use those two points to choose between them.
         </p>
       ),
     },
@@ -96,8 +97,8 @@ export function faqItems(board: Board): QA[] {
       q: "Does it cover images, multi-turn chats or my own policies?",
       a: (
         <p className="m-0">
-          Not yet. The benchmark is text only, one message with its context. Custom policies are covered only through the off-topic job
-          and an exact-word check. Multimodal and multi-turn tests are not part of this release.
+          Not yet. The benchmark tests text only: one message and its context. Only the off-topic job and an exact-word check cover
+          custom policies. Multimodal and multi-turn tests are not part of this release.
         </p>
       ),
     },
@@ -105,8 +106,8 @@ export function faqItems(board: Board): QA[] {
       q: "What happens to the data I send these APIs?",
       a: (
         <p className="m-0">
-          We did not evaluate retention or compliance. It depends on each vendor&apos;s terms and your contract. Some offer zero data
-          retention or HIPAA support to eligible customers. Check before you send regulated data.
+          We did not evaluate data retention or compliance. These depend on each vendor&apos;s terms and on your contract. Some vendors
+          offer zero data retention or HIPAA support to eligible customers. Check the terms before you send regulated data.
         </p>
       ),
     },

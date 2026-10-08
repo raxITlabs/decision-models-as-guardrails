@@ -1,34 +1,38 @@
 @import "tailwindcss";
 
-/* raxIT palette: warm paper, ink and one blue accent. The site has a single light theme. */
+/* raxIT palette, from the raxIT site's DESIGN.md: warm off-white ground, pure black ink, royal blue as the
+   one saturated note. Warm-tinted borders, never grey. The site has a single light theme. */
 :root {
   color-scheme: light;
-  --bg: #f7f4ef;
-  --surface: #fdfcfa;
-  --raised: #efebe4;
-  --line: #e1dbd1;
-  --line-strong: #c4bcaf;
-  --fg: #14120b;
-  --fg-2: #3b372f;
-  --muted: #645d53;
-  --accent: #3f5bc8;
-  --accent-hover: #2d47a6;
-  --accent-ink: #fdfcfa;
-  --link: #3550b8;
-  --link-hover: #1f3690;
-  --selected: #e4e9f8;
-  --warn: #b0521c;
+  --bg: #f2efea;
+  --surface: #faf8f4;
+  --raised: #ebe4da;
+  --line: #e3d9cc;
+  --line-strong: #c9bfb3;
+  --fg: #000000;
+  --fg-2: #33302b;
+  --muted: #6b5440;
+  --accent: #3457d5;
+  --accent-hover: #2442ad;
+  --accent-ink: #faf8f4;
+  --link: #3457d5;
+  --link-hover: #2442ad;
+  --selected: #eef1fb;
+  --warn: #a8461a;
   --good: #2f7a45;
-  --tier-1: #3f5bc8;
+  --tier-1: #3457d5;
   --tier-2: #8a6fb8;
   --tier-3: #a8742f;
-  --tier-4: #8a8276;
-  --tier-5: #b9b1a4;
-  --code-bg: #f1ede6;
-  --heat-accent: #3f5bc8;
-  --heat-warn: #b0521c;
-  --heat-ink: #14120b;
+  --tier-4: #6f675c;
+  --tier-5: #9a9184;
+  --code-bg: #f6f3ee;
+  --heat-accent: #3457d5;
+  --heat-warn: #a8461a;
+  --heat-ink: #000000;
   --heat-max: 0.7;
+  /* Over a painting: paper ink on a smoky-black scrim, the raxIT hero-plate treatment. */
+  --over-art: #f2efea;
+  --smoky: 16 12 8;
 }
 
 @theme inline {
@@ -49,7 +53,7 @@
   --color-warn: var(--warn);
   --color-good: var(--good);
   --color-code: var(--code-bg);
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
@@ -64,7 +68,6 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-sans);
-  font-feature-settings: "ss01";
   text-rendering: optimizeLegibility;
 }
 
@@ -98,6 +101,14 @@ summary::-webkit-details-marker {
 details[open] > summary .chev {
   transform: rotate(90deg);
 }
+
+/* Bottom scrim for type set over a painting (raxIT .hero-plate-scrim). */
+.plate-scrim {
+  background-image: linear-gradient(to top, rgb(var(--smoky) / 0.86) 0%, rgb(var(--smoky) / 0.74) 45%, rgb(var(--smoky) / 0.6) 78%, rgb(var(--smoky) / 0.3) 92%, rgb(var(--smoky) / 0) 100%);
+}
+.over-art { color: var(--over-art); }
+.over-art-86 { color: color-mix(in srgb, var(--over-art) 86%, transparent); }
+.plate-title { text-shadow: 0 1px 2px rgb(var(--smoky) / 0.25); }
 
 .num {
   font-family: var(--font-mono);

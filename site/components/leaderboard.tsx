@@ -8,12 +8,26 @@ import type { Board, Score, SystemMeta } from "@/lib/types";
 import { ArrowRight, ArrowUpLeft } from "./icons";
 import { Segmented, Select } from "./segmented";
 import { SystemMark } from "./system-mark";
+import { WallpaperFrame } from "./plate";
 
 type JobPick = "overall" | JobId;
 type Axis = "cost" | "fbr";
 type Scope = "managed" | "all";
 
 const JOB_OPTIONS = [{ value: "overall" as JobPick, label: "Overall, all jobs" }, ...JOBS.map((j) => ({ value: j.id as JobPick, label: j.title }))];
+
+// Label widths measured with the real font, so placement does not drop labels that fit.
+let measureCtx: CanvasRenderingContext2D | null = null;
+function textWidth(text: string, measure: boolean): number {
+  if (measure) {
+    measureCtx ??= document.createElement("canvas").getContext("2d");
+    if (measureCtx) {
+      measureCtx.font = `500 12px ${getComputedStyle(document.body).fontFamily}`;
+      return measureCtx.measureText(text).width;
+    }
+  }
+  return text.length * 6.6;
+}
 
 function niceMax(v: number): number {
   if (v <= 0) return 1;
@@ -60,7 +74,7 @@ export function Leaderboard({ board }: { board: Board }) {
           ]}
         />
         <Segmented
-          label="Systems on the chart"
+          label="Systems to show"
           value={scope}
           onChange={setScope}
           options={[
@@ -71,30 +85,31 @@ export function Leaderboard({ board }: { board: Board }) {
       </div>
       <p className="m-0 max-w-[64ch] text-[14px] leading-relaxed text-muted">
         {job === "overall"
-          ? `The plain average of the ${board.stats.suites} guardrail types. The leaders change a lot from job to job, so pick yours above.`
-          : `${JOB_BY_ID[job].sub}. Score is balanced accuracy on this job; 50 is a coin flip.`}
+          ? `The overall score is the plain average of the ${board.stats.suites} guardrail types. The leaders change a lot from job to job. Select your job above.`
+          : `${JOB_BY_ID[job].sub}. The score is balanced accuracy on this job. A score of 50 is a coin flip.`}
         {axis === "cost" && scope === "all"
-          ? " Hollow dots are self-hosted models; their cost is our shared GPU time and says more about our setup than about the model."
+          ? " Hollow dots are self-hosted models. Their cost is our shared GPU time, so it tells you more about our setup than about the model."
           : ""}
       </p>
 
+      <WallpaperFrame src="/plates/headland.webp">
       <Scatter scores={shown} sys={sys} axis={axis} tiers={tiers} selected={sel?.system} onSelect={setSelected} />
 
-      <div className="-mx-4 overflow-x-auto sm:mx-0">
-        <table className="w-full min-w-[860px] border-collapse text-[14px]">
+      <div className="overflow-x-auto rounded-xl border border-line bg-surface">
+        <table className="w-full min-w-[560px] sm:min-w-[860px] border-collapse text-[14px]">
           <caption className="sr-only">
             {job === "overall" ? "Overall" : JOB_BY_ID[job].title}: rank, score with 95% interval, tier, catch rate, false-block rate, cost and hosting for every system.
           </caption>
           <thead>
             <tr className="border-b border-line text-left text-[12px] text-muted">
-              <th scope="col" className="w-10 py-2.5 pl-4 font-medium sm:pl-2">#</th>
+              <th scope="col" className="w-10 py-3 pl-4 font-medium sm:pl-5">#</th>
               <th scope="col" className="py-2.5 pr-3 font-medium">System</th>
               <th scope="col" className="py-2.5 pr-3 font-medium">Score <span className="font-normal">±95% CI</span></th>
-              <th scope="col" className="py-2.5 pr-3 font-medium">Tier</th>
-              <th scope="col" className="py-2.5 pr-3 text-right font-medium">Catch rate</th>
+              <th scope="col" className="hidden py-2.5 pr-3 font-medium sm:table-cell">Tier</th>
+              <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">Catch rate</th>
               <th scope="col" className="py-2.5 pr-3 text-right font-medium">False-block rate</th>
               <th scope="col" className="py-2.5 pr-3 text-right font-medium">$ per 1,000 checks</th>
-              <th scope="col" className="py-2.5 pr-4 font-medium sm:pr-2">Hosting</th>
+              <th scope="col" className="hidden py-3 pr-4 font-medium sm:table-cell sm:pr-5">Hosting</th>
             </tr>
           </thead>
           <tbody>
@@ -110,7 +125,7 @@ export function Leaderboard({ board }: { board: Board }) {
                     on ? "bg-selected" : "hover:bg-raised/60"
                   }`}
                 >
-                  <td className="num py-2.5 pl-4 text-muted sm:pl-2">{s.rank}</td>
+                  <td className="num py-2.5 pl-4 text-muted sm:pl-5">{s.rank}</td>
                   <th scope="row" className="py-2.5 pr-3 text-left font-normal">
                     <button
                       type="button"
@@ -128,27 +143,28 @@ export function Leaderboard({ board }: { board: Board }) {
                   <td className="py-2.5 pr-3">
                     <ScoreBar s={s} />
                   </td>
-                  <td className="py-2.5 pr-3">
+                  <td className="hidden py-2.5 pr-3 sm:table-cell">
                     <span className="inline-flex items-center gap-2 whitespace-nowrap">
                       <span className="size-2.5 rounded-full" style={{ background: tierVar(s.tier) }} aria-hidden="true" />
                       <span className="num text-[13px]">{s.tier}</span>
                     </span>
                   </td>
-                  <td className="num py-2.5 pr-3 text-right">{pct(s.catchRate)}</td>
+                  <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{pct(s.catchRate)}</td>
                   <td className={`num py-2.5 pr-3 text-right ${s.falseBlockRate >= 0.25 ? "text-warn" : ""}`}>{pct(s.falseBlockRate)}</td>
                   <td className="num py-2.5 pr-3 text-right">{money(s.cost)}</td>
-                  <td className="py-2.5 pr-4 text-[13px] text-fg-2 sm:pr-2">{m?.hosting === "managed" ? "Managed API" : "Self-hosted"}</td>
+                  <td className="hidden py-2.5 pr-4 text-[13px] text-fg-2 sm:table-cell sm:pr-5">{m?.hosting === "managed" ? "Managed API" : "Self-hosted"}</td>
                 </tr>
               );
             })}
           </tbody>
         </table>
       </div>
+      </WallpaperFrame>
 
       <p className="m-0 max-w-[72ch] text-[13px] leading-relaxed text-muted">
         Every system answers the same {board.stats.checks.toLocaleString("en-US")} checks under one fixed rule: a probability of{" "}
-        {board.stats.threshold} or more blocks. <Link href="/#fixed-rule">Read why.</Link> Systems in one tier cannot be told apart
-        statistically from the tier&apos;s leader. Self-hosted cost is our shared GPU time.
+        {board.stats.threshold} or more blocks. <Link href="/#fixed-rule">Read why.</Link> Our statistical tests cannot tell the
+        systems in one tier apart from that tier&apos;s leader. Self-hosted cost is our shared GPU time.
       </p>
 
       {sel && <SystemPanel board={board} s={sel} m={sys[sel.system]} tiers={tiers} job={job} />}
@@ -197,16 +213,19 @@ function Scatter({
   const box = useRef<HTMLDivElement>(null);
   // Start narrow and grow to the measured width, so the chart never pushes a phone page wider than the screen.
   const [w, setW] = useState(320);
+  // Measure label widths only after mount, so the first client render matches the server HTML.
+  const [measure, setMeasure] = useState(false);
   useLayoutEffect(() => {
     const el = box.current;
     if (!el) return;
     setW(el.clientWidth);
+    setMeasure(true);
     const ro = new ResizeObserver(([e]) => setW(e.contentRect.width));
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
   const h = w < 560 ? 300 : 380;
-  const pad = { l: 40, r: 16, t: 16, b: 34 };
+  const pad = { l: 40, r: 28, t: 16, b: 34 };
   const xv = (s: Score) => (axis === "cost" ? s.cost ?? 0 : s.falseBlockRate);
   const xMax = niceMax(Math.max(...scores.map(xv), axis === "cost" ? 0.05 : 0.05) * 1.08);
   const yMinRaw = Math.min(...scores.map((s) => s.ciLow), 90);
@@ -221,26 +240,29 @@ function Scatter({
 
   // Greedy label placement: right of the dot, else left, else nudged; dropped when nothing fits.
   const placed: Placed[] = [];
-  const rects: { x: number; y: number; w: number; h: number }[] = [];
+  // The "better" hint sits top left, where the strongest systems land: reserve it first.
+  const rects: { x: number; y: number; w: number; h: number }[] = [{ x: 44, y: 6, w: 70, h: 18 }];
   const order = [...scores].sort((a, b) => (a.system === selected ? -1 : b.system === selected ? 1 : b.score - a.score));
   for (const s of order) {
     const x = px(xv(s));
     const y = py(s.score);
-    rects.push({ x: x - 8, y: y - 8, w: 16, h: 16 });
+    const rr = s.system === selected ? 13 : 8;
+    rects.push({ x: x - rr, y: y - rr, w: 2 * rr, h: 2 * rr });
     placed.push({ s, x, y });
   }
   for (const p of placed) {
     const name = sys[p.s.system]?.short ?? sys[p.s.system]?.name ?? p.s.system;
-    const lw = name.length * 6.9 + 6;
+    const lw = Math.ceil(textWidth(name, measure)) + 4;
+    const off = p.s.system === selected ? 20 : 14;
     const tries: { x: number; y: number; anchor: "left" | "right" }[] = [];
-    for (const dy of [0, -14, 14, -26, 26]) {
-      tries.push({ x: p.x + 15, y: p.y + dy, anchor: "right" });
-      tries.push({ x: p.x - 15 - lw, y: p.y + dy, anchor: "left" });
+    for (const dy of [0, -14, 14, -26, 26, -38, 38]) {
+      tries.push({ x: p.x + off, y: p.y + dy, anchor: "right" });
+      tries.push({ x: p.x - off - lw, y: p.y + dy, anchor: "left" });
     }
     for (const t of tries) {
       const r = { x: t.x, y: t.y - 8, w: lw, h: 16 };
       const inside = r.x >= pad.l - 4 && r.x + r.w <= w - 2 && r.y >= 0 && r.y + r.h <= h - pad.b + 4;
-      const hit = rects.some((o) => o !== rects[placed.indexOf(p)] && r.x < o.x + o.w && r.x + r.w > o.x && r.y < o.y + o.h && r.y + r.h > o.y);
+      const hit = rects.some((o) => o !== rects[placed.indexOf(p) + 1] && r.x < o.x + o.w && r.x + r.w > o.x && r.y < o.y + o.h && r.y + r.h > o.y);
       if (inside && !hit) {
         rects.push(r);
         p.label = { x: t.x, y: t.y, w: lw, anchor: t.anchor };
@@ -249,10 +271,12 @@ function Scatter({
     }
   }
 
-  const present = [...new Set(scores.map((s) => s.tier))].sort((a, b) => a - b);
+  // Tiers 5 and below share one colour, so the legend shows them as one entry.
+  const present = [...new Set(scores.map((s) => Math.min(s.tier, 5)))].sort((a, b) => a - b);
+  const unlabelled = placed.filter((p) => !p.label).sort((a, b) => a.s.rank - b.s.rank);
   return (
-    <figure className="m-0 flex flex-col gap-3">
-      <div ref={box} className="relative w-full select-none overflow-hidden rounded-xl border border-line bg-surface" style={{ height: h }}>
+    <figure className="m-0 flex flex-col gap-3 rounded-xl border border-line bg-surface p-3 sm:p-5">
+      <div ref={box} className="relative w-full select-none overflow-hidden" style={{ height: h }}>
         <svg width={w} height={h} className="absolute inset-0 max-w-full" aria-hidden="true">
           {yTicks.map((v) => (
             <g key={`y${v}`}>
@@ -292,13 +316,12 @@ function Scatter({
               aria-pressed={on}
               aria-label={`${m?.name ?? p.s.system}: score ${score1(p.s.score)}, ${axis === "cost" ? `${money(p.s.cost)} per 1,000 checks` : `${pct(p.s.falseBlockRate)} false blocks`}, tier ${p.s.tier}`}
               title={`${m?.name ?? p.s.system} · ${score1(p.s.score)} · ${axis === "cost" ? money(p.s.cost) : pct(p.s.falseBlockRate)}`}
-              className="absolute grid size-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full"
+              className="absolute grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full"
               style={{ left: p.x, top: p.y }}
             >
               <span
-                className="block size-3 rounded-full transition-transform duration-150 ease-out"
+                className={`block rounded-full ${on ? "size-4" : "size-3"}`}
                 style={{
-                  transform: on ? "scale(1.34)" : undefined,
                   background: self && axis === "cost" ? "var(--surface)" : tierVar(p.s.tier),
                   border: `2px solid ${tierVar(p.s.tier)}`,
                   boxShadow: on ? "0 0 0 3px var(--surface), 0 0 0 5px var(--fg)" : "0 0 0 2px var(--surface)",
@@ -322,15 +345,21 @@ function Scatter({
           ) : null,
         )}
       </div>
+      {unlabelled.length > 0 && (
+        <p className="m-0 text-[12px] text-muted">
+          No room for a label: {unlabelled.map((p) => sys[p.s.system]?.name ?? p.s.system).join(", ")}. Tap a dot to select it.
+        </p>
+      )}
       <figcaption className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[12px] text-muted">
         <span>
-          Score (balanced accuracy, 50 is a coin flip) against {axis === "cost" ? "USD per 1,000 checks" : "the share of safe rows blocked"}. Lines show the 95% interval. The table below has every number.
+          Score is balanced accuracy, where 50 is a coin flip. The horizontal axis is {axis === "cost" ? "USD per 1,000 checks" : "the share of safe rows blocked"}. Lines show the 95% interval. The table below gives every number.
         </span>
         <span className="flex flex-wrap items-center gap-3" aria-label="Tier colours">
           {present.map((t) => (
             <span key={t} className="inline-flex items-center gap-1.5">
               <span className="size-2.5 rounded-full" style={{ background: tierVar(t) }} aria-hidden="true" />
               Tier {t}
+              {t === 5 && tiers > 5 ? "+" : ""}
             </span>
           ))}
           <span className="sr-only">of {tiers}</span>
@@ -352,7 +381,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
   ];
   const pos = (v: number) => `${Math.max(0, Math.min(100, ((v - 50) / 50) * 100))}%`;
   return (
-    <section aria-label={`${m?.name ?? s.system} in detail`} className="grid gap-8 rounded-xl border border-line bg-surface p-5 sm:p-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <section aria-label={`Details for ${m?.name ?? s.system}`} className="grid gap-8 rounded-xl border border-line bg-surface p-5 sm:p-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <SystemMark m={m} size="lg" />
@@ -396,7 +425,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
             );
           })}
         </ul>
-        <p className="m-0 text-[12px] text-muted">Bars start at 50, a coin flip. The thin mark is the best score on that job. Pick any system in the chart or table.</p>
+        <p className="m-0 text-[12px] text-muted">Bars start at 50, which is a coin flip. The thin mark shows the best score on that job. Select a system in the chart or the table to see its details.</p>
       </div>
     </section>
   );

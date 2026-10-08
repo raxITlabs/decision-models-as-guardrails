@@ -18,7 +18,7 @@ export function Segmented<T extends string>({
   onChange: (v: T) => void;
 }) {
   return (
-    <div role="group" aria-label={label} className="inline-flex rounded-lg border border-line bg-surface p-0.5">
+    <div role="group" aria-label={label} className="inline-flex rounded-full border border-line-strong bg-surface p-[3px]">
       {options.map((o) => {
         const on = o.value === value;
         return (
@@ -27,8 +27,8 @@ export function Segmented<T extends string>({
             type="button"
             aria-pressed={on}
             onClick={() => onChange(o.value)}
-            className={`min-h-11 whitespace-nowrap rounded-md px-3 text-[13px] transition-colors sm:min-h-9 ${
-              on ? "bg-raised font-medium text-fg shadow-[0_1px_2px_color-mix(in_oklab,var(--fg)_10%,transparent)]" : "text-muted hover:text-fg"
+            className={`min-h-11 whitespace-nowrap rounded-full px-4 text-[14px] transition-colors lg:min-h-[38px] ${
+              on ? "bg-fg font-medium text-bg" : "text-fg-2 hover:text-fg"
             }`}
           >
             {o.label}
@@ -62,7 +62,7 @@ export function Select<T extends string>({
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value as T)}
-          className="min-h-11 appearance-none sm:min-h-9 rounded-lg border border-line bg-surface py-1.5 pl-3 pr-8 text-[13px] text-fg hover:border-line-strong"
+          className="min-h-11 appearance-none rounded-full border border-line-strong bg-surface py-1.5 pl-4 pr-9 text-[14px] text-fg hover:border-fg/40"
         >
           {options.map((o) => (
             <option key={o.value} value={o.value}>
@@ -70,7 +70,7 @@ export function Select<T extends string>({
             </option>
           ))}
         </select>
-        <svg viewBox="0 0 16 16" aria-hidden="true" className="pointer-events-none absolute right-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <svg viewBox="0 0 16 16" aria-hidden="true" className="pointer-events-none absolute right-3.5 top-1/2 size-3.5 -translate-y-1/2 text-muted" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
           <path d="M4 6l4 4 4-4" />
         </svg>
       </span>

@@ -7,7 +7,7 @@ import { HF_REVISION, HF_URL, REPO_URL, int } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Reproduce",
-  description: "Run the benchmark, check how it is scored, and add your own guardrail through an adapter.",
+  description: "Run the benchmark, see how we score it, and add your own guardrail through an adapter.",
 };
 
 const ISSUE_URL = `${REPO_URL}/issues/new?${new URLSearchParams({
@@ -47,16 +47,17 @@ export default function Reproduce() {
     <div className="mx-auto grid max-w-[1200px] gap-12 px-4 pt-10 sm:px-6 sm:pt-16 lg:grid-cols-[minmax(0,1fr)_14rem]">
       <article className="flex min-w-0 max-w-[820px] flex-col gap-6">
         <header className="flex flex-col gap-4">
+          <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-muted">Reproduce</span>
           <h1 className="m-0 text-[clamp(2rem,5vw,3rem)] font-semibold leading-[1.05] tracking-[-0.03em]">Reproduce the board</h1>
           <p className="m-0 max-w-[60ch] text-[18px] leading-relaxed text-fg-2">
-            Run the benchmark yourself, see how a score is computed, or put your own guardrail through the same checks.
+            Run the benchmark yourself. See how we calculate a score. Or put your own guardrail through the same checks.
           </p>
         </header>
 
         <H2 id="quickstart">Quickstart</H2>
         <P>
-          The code is Python and uses <a href="https://docs.astral.sh/uv/">uv</a>. Clone the repository, install it and run the tests.
-          The tests need no API keys.
+          The code is Python and uses <a href="https://docs.astral.sh/uv/">uv</a>. Clone the repository and install it. Then run the
+          tests. The tests do not need API keys.
         </P>
         <CodeBlock
           label="clone and install"
@@ -69,15 +70,15 @@ cp .env.example .env    # API keys for the hosted systems you want to run`}
 
         <H2 id="dataset">Get the dataset</H2>
         <P>
-          The run scripts read the dataset from <a href={HF_URL}>Hugging Face</a> at a pinned commit, so every run sees the same rows.
-          Set <C>GOLDRAILS_E2_SOURCE</C> to read another copy.
+          The run scripts read the dataset from <a href={HF_URL}>Hugging Face</a> at a pinned commit. So every run uses the same rows.
+          To read a different copy, set <C>GOLDRAILS_E2_SOURCE</C>.
         </P>
         <CodeBlock label="dataset source" code={`export GOLDRAILS_E2_SOURCE=hf:raxITLabs/decision-models-as-guardrails@${HF_REVISION}`} />
         <h3 id="withheld" className="m-0 mt-2 text-[17px] font-semibold">Rebuild the withheld text</h3>
         <P>
-          Some sources do not allow their text to be republished. For those rows the dataset ships the id, the label and the pinned
-          source revision, and the site shows &quot;text withheld&quot;. These commands fetch the text from the original publishers,
-          rebuild the dataset from the committed candidate files and stage the Hugging Face layout.
+          The licences of some sources do not let us republish their text. For those rows, the dataset ships the id, the label and the
+          pinned source revision. The site shows &quot;text withheld&quot;. These commands get the text from the original publishers.
+          They rebuild the dataset from the committed candidate files and stage the Hugging Face layout.
         </P>
         <CodeBlock
           label="rebuild withheld text"
@@ -88,8 +89,8 @@ uv run python -m goldrails_dataset.publish_e2 stage`}
 
         <H2 id="run">Run the systems</H2>
         <P>
-          Three scripts in <C>benchmark/runs/</C> sent every row to every system. Each one plans offline first, writes a freeze manifest,
-          and refuses to send a row until that manifest is committed, so the configuration provably predates the results.
+          Three scripts in <C>benchmark/runs/</C> sent every row to every system. Each script first makes a plan offline and writes a freeze
+          manifest. It does not send a row until that manifest is committed. This proves that the configuration came before the results.
         </P>
         <div className="-mx-4 overflow-x-auto sm:mx-0">
           <table className="w-full min-w-[560px] border-collapse text-[14px]">
@@ -115,54 +116,57 @@ uv run python benchmark/runs/e2_full.py run --systems jev,clef
 uv run python benchmark/runs/e2_full.py report      # run summary, public ledgers, privacy checks`}
         />
         <P>
-          The self-hosted models run on a GPU VM: <C>make up</C> starts it and <C>make pause</C> stops it. The Terraform is in{" "}
-          <C>infra/gcp/</C>. Score the ledgers into <C>leaderboard.json</C> with:
+          The self-hosted models run on a GPU VM. <C>make up</C> starts it and <C>make pause</C> stops it. The Terraform is in{" "}
+          <C>infra/gcp/</C>. To score the ledgers into <C>leaderboard.json</C>, run this command:
         </P>
         <CodeBlock label="score" code={`uv run --with scikit-learn python benchmark/runs/e2_openai_run.py score --source local`} />
         <P>
-          The held-back slice ({int(board.stats.heldBackRows)} rows) is not published. A run from a fresh clone covers the public rows, so
-          expect scores close to the board but not identical.
+          We do not publish the held-back slice of {int(board.stats.heldBackRows)} rows. A run from a fresh clone covers only the public
+          rows. Expect scores that are close to the board but not identical.
         </P>
 
         <H2 id="scoring">How scoring works</H2>
         <ul className="m-0 flex max-w-[64ch] flex-col gap-3 pl-5 text-[16px] leading-[1.7] text-fg-2 marker:text-muted">
           <li>
-            <strong className="font-semibold text-fg">One rule.</strong> A decision model answers yes/no questions with a probability. A
-            row is blocked when any of its questions reaches {t}. Verdict APIs use their own flag, and Bedrock Guardrails runs at one
-            documented setting. Nothing is tuned per system.
+            <strong className="font-semibold text-fg">One rule.</strong> A decision model answers yes/no questions with a probability. We
+            block a row when any of its questions reaches {t}. Verdict APIs use their own flag. Bedrock Guardrails runs at one
+            documented setting. We tune nothing per system.
           </li>
           <li>
-            <strong className="font-semibold text-fg">Balanced accuracy.</strong> The score is 100 × (catch rate + 1 − false-block rate) / 2, so
-            50 is a coin flip and a system cannot score well by blocking everything. Equal scores are ordered by the lower false-block rate.
+            <strong className="font-semibold text-fg">Balanced accuracy.</strong> The score is 100 × (catch rate + 1 − false-block rate) / 2.
+            So 50 is a coin flip, and a system cannot score well if it blocks everything. When two scores are equal, the system with
+            the lower false-block rate ranks first.
           </li>
           <li>
-            <strong className="font-semibold text-fg">Jobs and the overall score.</strong> Each job is scored on its own rows. The overall
+            <strong className="font-semibold text-fg">Jobs and the overall score.</strong> We score each job on its own rows. The overall
             score is the plain average of the {board.stats.suites} guardrail types: content (user input and model replies), prompt attacks
-            (direct and indirect), off-topic, profanity, personal data and grounding. Personal data is scored per entity type, then
-            averaged. A custom-words check runs beside the score as a pass or fail sanity test.
+            (direct and indirect), off-topic, profanity, personal data and grounding. We score personal data per entity type, then
+            take the average. A custom-words check runs next to the score as a pass-or-fail sanity test.
           </li>
           <li>
-            <strong className="font-semibold text-fg">Failures count.</strong> A call that fails or returns no decision is wrong in both
-            directions. A system with more than 2% failures on a job is not ranked on it.
+            <strong className="font-semibold text-fg">Failures count.</strong> A call that fails or gives no decision counts as wrong in
+            both directions. We do not rank a system on a job if it has more than 2% failures on that job.
           </li>
           <li>
-            <strong className="font-semibold text-fg">Intervals and tiers.</strong> 95% intervals come from 2,000 bootstrap resamples of row
-            groups, the same draws for every system. Tiers come from paired tests against each tier&apos;s leader, Holm-adjusted.
+            <strong className="font-semibold text-fg">Intervals and tiers.</strong> The 95% intervals come from 2,000 bootstrap resamples of
+            row groups. Every system gets the same draws. Tiers come from paired tests against each tier&apos;s leader, with a Holm
+            adjustment.
           </li>
           <li>
-            <strong className="font-semibold text-fg">Cost.</strong> Managed APIs are priced at measured usage times the dated list price.
-            Self-hosted models are priced at the GPU time they used on our on-demand VM, which describes our setup more than the model.
+            <strong className="font-semibold text-fg">Cost.</strong> For managed APIs, cost is the measured usage times the dated list
+            price. For self-hosted models, cost is the GPU time they used on our on-demand VM. That number describes our setup more than
+            the model.
           </li>
         </ul>
         <P>
-          The scorer&apos;s full rules are in <a href={`${REPO_URL}/blob/main/benchmark/contracts/v2.0.json`}>benchmark/contracts/v2.0.json</a>, and
-          each job&apos;s written policy is in <a href={`${REPO_URL}/tree/main/benchmark/policies`}>benchmark/policies/</a>.
+          The scorer&apos;s full rules are in <a href={`${REPO_URL}/blob/main/benchmark/contracts/v2.0.json`}>benchmark/contracts/v2.0.json</a>.
+          Each job&apos;s written policy is in <a href={`${REPO_URL}/tree/main/benchmark/policies`}>benchmark/policies/</a>.
         </P>
 
         <H2 id="adapters">Add a system</H2>
         <P>
-          The benchmark defines the task. Each system brings an adapter that turns one row into one verdict: a decision, a score where the
-          system returns one, what it said per question, and the serving details (endpoint, model id, revision, date).
+          The benchmark defines the task. Each system has an adapter that turns one row into one verdict. A verdict holds a decision, a
+          score if the system returns one, the answer to each question, and the serving details: endpoint, model id, revision and date.
         </P>
         <div className="-mx-4 overflow-x-auto sm:mx-0">
           <table className="w-full min-w-[560px] border-collapse text-[14px]">
@@ -182,9 +186,9 @@ uv run python benchmark/runs/e2_full.py report      # run summary, public ledger
         </div>
         <P>
           A vendor that answers the same questions at its own URL needs a <C>HostedDecisionClient</C> subclass in{" "}
-          <C>benchmark/goldrails_bench/hosted.py</C>. A vendor with its own categories subclasses <C>VerdictAPIAdapter</C>, maps each
-          job&apos;s policy to its categories and leaves out the jobs it cannot do. Write tests against a fake client, then run the
-          compatibility check on 20 public dev rows per job before any full run.
+          <C>benchmark/goldrails_bench/hosted.py</C>. For a vendor with its own categories, subclass <C>VerdictAPIAdapter</C>. Map each
+          job&apos;s policy to the vendor&apos;s categories. Leave out the jobs that the vendor cannot do. Write tests against a fake
+          client. Before any full run, run the compatibility check on 20 public dev rows per job.
         </P>
         <CodeBlock
           label="compatibility check"
@@ -193,17 +197,18 @@ uv run python benchmark/runs/e2_smoke.py run --systems <your-system>
 uv run python benchmark/runs/e2_smoke.py report`}
         />
         <P>
-          The adapter guide, with outcomes, serving fields and sandboxing rules for Hugging Face models, is in{" "}
+          The adapter guide is in{" "}
           <a href={`${REPO_URL}/blob/main/benchmark/goldrails_bench/adapters/README.md`}>benchmark/goldrails_bench/adapters/README.md</a>.
+          It covers outcomes, serving fields and sandboxing rules for Hugging Face models.
         </P>
 
         <H2 id="submit">Add your system to the board</H2>
         <P>
-          Open an issue with the system&apos;s name, how to call it and the jobs it covers. Include your compatibility check output so
-          we can reproduce it before a full run under the same rule.
+          Open an issue. Give the system&apos;s name, how to call it and the jobs it covers. Include the output of your compatibility
+          check. We reproduce that check before we do a full run under the same rule.
         </P>
         <div>
-          <a href={ISSUE_URL} className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-accent px-4 text-[15px] font-medium text-accent-ink no-underline hover:bg-accent-hover hover:text-accent-ink">
+          <a href={ISSUE_URL} className="inline-flex min-h-12 items-center gap-2 rounded-full bg-fg px-6 text-[16px] font-medium text-bg no-underline hover:bg-fg-2 hover:text-bg">
             Open an issue on GitHub <External />
           </a>
         </div>

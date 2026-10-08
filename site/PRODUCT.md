@@ -33,7 +33,7 @@ One fixed rule for every system (a probability of 0.5 or more blocks), the same 
 
 ## Brand Commitments
 
-raxIT. Dark ground #14120b, cream text #f5f1ec, muted #a69e94, primary blue #5673dc (hover #8fa6ec). Geist and Geist Mono. A light theme as well. Structure follows deepswe.datacurve.ai.
+raxIT, matched to the raxIT Labs site (its DESIGN.md is the source of truth). Light theme only. Warm off-white ground #f2efea, paper surfaces #faf8f4, pure black ink, muted #6b5440, warm borders. Royal blue #3457d5 for links, focus and the top tier only, never a button fill; buttons are ink or paper pills. Inter, with Geist Mono for numbers. Oil-painting plates (public/plates) carry the hero and the closing call to action, with paper type over a smoky-black bottom scrim; the leaderboard chart and table sit on paper cards in a painted WallpaperFrame. raxIT wordmark in the header and footer. Vendor logos beside each system; initials tiles where a maker has none. Page structure (home + leaderboard, reproduce, data explorer, changelog) follows deepswe.datacurve.ai.
 
 ## Evidence on Hand
 

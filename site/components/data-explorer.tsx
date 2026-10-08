@@ -189,20 +189,20 @@ export function DataExplorer({ board }: { board: Board }) {
         {f.system && (
           <div className="flex flex-wrap items-center gap-3 rounded-lg border border-accent/50 bg-selected px-4 py-3 text-[14px]">
             <span>
-              Showing the {modeText} for <strong className="font-semibold">{sysName(f.system)}</strong>
+              This list shows the {modeText} for <strong className="font-semibold">{sysName(f.system)}</strong>
               {f.job ? ` on ${JOBS.find((j) => j.id === f.job)?.title.toLowerCase()}` : ""}.
             </span>
             <Segmented
-              label="Which mistakes"
+              label="Mistake type"
               value={f.mode}
               onChange={(mode) => update({ mode })}
               options={[
                 { value: "wrong", label: "All mistakes" },
-                { value: "missed", label: "Missed" },
+                { value: "missed", label: "Missed harmful" },
                 { value: "blocked", label: "Blocked safe" },
               ]}
             />
-            <button type="button" onClick={() => update({ system: "", mode: "wrong" })} className="text-[13px] text-link hover:text-link-hover">
+            <button type="button" onClick={() => update({ system: "", mode: "wrong" })} className="inline-flex min-h-11 items-center text-[13px] text-link hover:text-link-hover">
               Show every system
             </button>
           </div>
@@ -213,12 +213,12 @@ export function DataExplorer({ board }: { board: Board }) {
           <span className="inline-flex items-center gap-1.5"><span className="size-3 rounded-[3px] border border-line-strong bg-fg-2" aria-hidden="true" />blocked</span>
           <span className="inline-flex items-center gap-1.5"><span className="size-3 rounded-[3px] border border-line-strong" aria-hidden="true" />passed</span>
           <span className="inline-flex items-center gap-1.5"><span className="size-3 rounded-[3px] border border-warn bg-warn" aria-hidden="true" />wrong</span>
-          <span>Open a row for each system&apos;s name, score and decision.</span>
+          <span>Open a row to see each system&apos;s name, score and decision.</span>
         </p>
 
         {error && (
           <p role="alert" className="m-0 rounded-lg border border-warn/50 px-4 py-3 text-[14px] text-warn">
-            The row index did not load. Reload the page; if it keeps failing, the rows are also on Hugging Face.
+            The row index did not load. Reload the page. If the error continues, get the rows from Hugging Face.
           </p>
         )}
 
@@ -232,7 +232,7 @@ export function DataExplorer({ board }: { board: Board }) {
 
         {index && filtered.length === 0 && (
           <div className="rounded-lg border border-dashed border-line-strong px-5 py-8 text-center text-[14px] text-muted">
-            No public rows match these filters. Try another job or source, or{" "}
+            No public rows match these filters. Select a different job or source, or{" "}
             <button type="button" onClick={() => update(EMPTY)} className="text-link underline underline-offset-[3px]">
               clear them
             </button>
@@ -261,7 +261,7 @@ export function DataExplorer({ board }: { board: Board }) {
                   setPage(current - 1);
                   rowsRef.current?.scrollIntoView({ block: "start" });
                 }}
-                className="min-h-9 rounded-lg border border-line px-3 text-fg enabled:hover:border-line-strong disabled:opacity-40"
+                className="min-h-11 rounded-full border border-line-strong px-4 text-fg enabled:hover:border-fg/40 disabled:opacity-40"
               >
                 Previous
               </button>
@@ -275,7 +275,7 @@ export function DataExplorer({ board }: { board: Board }) {
                   setPage(current + 1);
                   rowsRef.current?.scrollIntoView({ block: "start" });
                 }}
-                className="min-h-9 rounded-lg border border-line px-3 text-fg enabled:hover:border-line-strong disabled:opacity-40"
+                className="min-h-11 rounded-full border border-line-strong px-4 text-fg enabled:hover:border-fg/40 disabled:opacity-40"
               >
                 Next
               </button>
@@ -311,7 +311,7 @@ function RowItem({ r, index, sysName, highlight }: { r: RowLite; index: RowsInde
         {withheld ? (
           <p className="m-0 inline-flex items-center gap-1.5 text-[14px] text-muted">
             <Lock className="size-3.5 shrink-0" />
-            Text withheld (licence); rebuild it with the dataset scripts.
+            Text withheld because of its licence. Rebuild it with the dataset scripts.
           </p>
         ) : (
           <p className="m-0 line-clamp-2 text-[14px] leading-snug text-fg-2 [overflow-wrap:anywhere]">{snippet}</p>
@@ -454,11 +454,11 @@ function Heatmap({
       </div>
       <p className="m-0 text-[12px] text-muted">
         {colour === "score"
-          ? "Balanced accuracy on each job. 50 is a coin flip; darker is better."
+          ? "Balanced accuracy on each job. 50 is a coin flip. Darker is better."
           : colour === "catch"
-            ? "Share of rows that should be blocked that the system blocked. Darker is better."
-            : "Share of safe rows the system blocked. These are the refusals your users see; darker is worse."}{" "}
-        Personal data is scored per entity type.
+            ? "Share of harmful rows that the system blocked. Darker is better."
+            : "Share of safe rows that the system blocked. Your users see these as refusals. Darker is worse."}{" "}
+        We score personal data per entity type.
       </p>
     </section>
   );

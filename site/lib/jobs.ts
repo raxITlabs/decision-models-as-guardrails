@@ -32,7 +32,7 @@ export const JOBS: Job[] = [
     suite: "prompt_attacks",
     ledgerSubtask: "direct",
     title: "Stop jailbreaks and injection",
-    sub: "Attacks typed straight into the chat",
+    sub: "Attacks typed directly into the chat",
     short: "Chat attacks",
   },
   {
@@ -59,7 +59,7 @@ export const JOBS: Job[] = [
     suite: "denied_topics",
     ledgerSubtask: "topic",
     title: "Keep the bot on topic",
-    sub: "Off-limits subjects like investment or legal advice",
+    sub: "Off-limits subjects, such as investment or legal advice",
     short: "Off-topic",
   },
   {
@@ -68,7 +68,7 @@ export const JOBS: Job[] = [
     suite: "sensitive_info",
     ledgerSubtask: "entity_detection",
     title: "Catch personal data",
-    sub: "Names, emails, card and ID numbers",
+    sub: "Names, email addresses, card numbers and ID numbers",
     short: "Personal data",
   },
   {
@@ -77,7 +77,7 @@ export const JOBS: Job[] = [
     suite: "grounding",
     ledgerSubtask: "grounding",
     title: "Catch unsupported answers",
-    sub: "Claims the source document does not back up",
+    sub: "Claims that the source document does not support",
     short: "Grounding",
   },
   {

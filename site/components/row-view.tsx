@@ -68,8 +68,8 @@ export function RowView({ board }: { board: Board }) {
         <div className="flex flex-col gap-4">
           <h1 className="m-0 text-[32px] font-semibold tracking-[-0.02em]">Row not found</h1>
           <p className="m-0 max-w-[60ch] text-[16px] text-fg-2">
-            {state.id ? <><span className="num">{state.id}</span> is not a public test row.</> : "No row id was given."} Rows from the
-            held-back slice are never listed.
+            {state.id ? <><span className="num">{state.id}</span> is not a public test row.</> : "The address has no row id."} We never
+            list rows from the held-back slice.
           </p>
           <p className="m-0"><Link href="/data">Browse the data</Link></p>
         </div>
@@ -107,6 +107,7 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
       </nav>
 
       <header className="flex flex-col gap-5">
+        <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-muted">Row</span>
         <h1 className="num m-0 text-[clamp(1.25rem,3.5vw,2rem)] font-medium tracking-[-0.02em] [overflow-wrap:anywhere]">{row.id}</h1>
         <dl className="m-0 grid grid-cols-2 gap-x-8 gap-y-3 text-[14px] sm:grid-cols-4">
           <div><dt className="text-[12px] text-muted">Job</dt><dd className="m-0 mt-0.5">{job.title}</dd></div>
@@ -125,8 +126,8 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
           <div className="flex flex-col gap-2 rounded-lg border border-dashed border-line-strong bg-surface px-5 py-5 text-[14px] text-fg-2">
             <p className="m-0 inline-flex items-center gap-2 font-medium text-fg"><Lock /> Text withheld (licence)</p>
             <p className="m-0 max-w-[68ch] leading-relaxed">
-              This source&apos;s licence does not let us republish its text. The dataset ships the row&apos;s id, label and pinned source
-              revision. Rebuild the text from the original publisher with the dataset scripts.{" "}
+              The licence of this source does not let us republish its text. The dataset ships the row&apos;s id, label and pinned
+              source revision. Use the dataset scripts to rebuild the text from the original publisher.{" "}
               <Link href="/reproduce#withheld">How to rebuild it</Link>
             </p>
           </div>
@@ -218,8 +219,8 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
           </table>
         </div>
         <p className="m-0 max-w-[72ch] text-[13px] text-muted">
-          A decision model&apos;s score is its highest probability across the job&apos;s questions. Bedrock Guardrails reports a severity
-          or confidence step instead, and verdict APIs report their own flag. A failed call counts as wrong.
+          A decision model&apos;s score is its highest probability across the job&apos;s questions. Bedrock Guardrails reports a
+          severity or confidence step instead. Verdict APIs report their own flag. A failed call counts as wrong.
         </p>
       </section>
     </>

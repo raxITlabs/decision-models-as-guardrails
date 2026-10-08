@@ -5,7 +5,7 @@ import { int } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Data",
-  description: "Every public test row of the benchmark and every system's answer to it, with a heatmap of scores by job.",
+  description: "Every public test row in the benchmark, each system's answer to it, and a heatmap of scores by job.",
 };
 
 export default function DataPage() {
@@ -13,11 +13,12 @@ export default function DataPage() {
   return (
     <div className="mx-auto flex max-w-[1200px] flex-col gap-10 px-4 pt-10 sm:px-6 sm:pt-16">
       <header className="flex flex-col gap-4">
+        <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-muted">Data</span>
         <h1 className="m-0 text-[clamp(2rem,5vw,3rem)] font-semibold leading-[1.05] tracking-[-0.03em]">Browse the data</h1>
         <p className="m-0 max-w-[68ch] text-[17px] leading-relaxed text-fg-2">
-          Every public test row and every system&apos;s answer to it. Start from the heatmap to find where a system struggles, then open
-          the rows behind the number. Scores also include a held-back slice of {int(board.stats.heldBackRows)} rows, which stays private
-          and is not listed here.
+          Every public test row and every system&apos;s answer to it. Start at the heatmap to find where a system is weak. Then open the
+          rows behind the number. The scores also include a held-back slice of {int(board.stats.heldBackRows)} rows. We keep that slice
+          private and do not list it here.
         </p>
       </header>
       <DataExplorer board={board} />
