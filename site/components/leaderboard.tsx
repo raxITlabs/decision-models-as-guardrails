@@ -139,7 +139,6 @@ export function Leaderboard({ board }: { board: Board }) {
                       <span className="flex flex-col items-start">
                         <span className="font-semibold text-fg">{m?.name ?? s.system}</span>
                         <span className="text-[12px] text-muted">{m?.provider}</span>
-                        {m?.kind === "service" && <span className="text-[12px] text-fg-2 sm:hidden">Guardrail service</span>}
                       </span>
                     </button>
                   </th>
@@ -210,7 +209,7 @@ function ScoreBar({ s }: { s: Score }) {
 
 /** Decision model or guardrail service, as plain text in the Type column. The service row itself is shaded. */
 export function KindTag({ kind }: { kind?: "decision" | "service" }) {
-  return <span className={`text-[13px] ${kind === "service" ? "font-medium text-fg" : "text-fg-2"}`}>{kind === "service" ? "Guardrail service" : "Decision model"}</span>;
+  return <span className={`text-[13px] ${kind === "service" ? "font-medium text-fg" : "text-fg-2"}`}>{kind === "service" ? "Not a decision model" : "Decision model"}</span>;
 }
 
 interface Placed {
