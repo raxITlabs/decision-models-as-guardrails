@@ -108,6 +108,7 @@ export function CostCalculator({ board }: { board: Board }) {
                     <span className="text-[12px] text-muted">
                       score {score1(s.score)}
                       {m?.hosting === "self-hosted" ? " · our GPU time" : ""}
+                      {m?.kind === "service" ? " · not a decision model" : ""}
                       {m?.pricing ? (
                         <>
                           {" · "}

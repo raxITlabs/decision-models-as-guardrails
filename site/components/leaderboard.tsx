@@ -540,7 +540,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
             <span className="text-[13px] text-muted">
               {m?.provider}
               {m ? (m.hosting === "managed" ? " · managed API" : " · self-hosted on our GPUs") : ""}
-              {m ? (m.kind === "service" ? " · guardrail service" : " · decision model") : ""}
+              {m && m.kind !== "service" ? " · decision model" : ""}
             </span>
             {(m?.docs || m?.pricing) && (
               <span className="flex flex-wrap gap-x-3 text-[13px]">
