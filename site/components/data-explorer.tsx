@@ -5,7 +5,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { JOBS, type JobId } from "@/lib/jobs";
 import { int, score1 } from "@/lib/format";
 import type { Board, RowLite, RowsIndex, Score } from "@/lib/types";
-import { Lock } from "./icons";
+import { External, Lock } from "./icons";
+import { SOURCES } from "@/lib/sources";
 import { SystemMark } from "./system-mark";
 import { Segmented, Select } from "./segmented";
 
@@ -317,9 +318,14 @@ function RowItem({ r, index, sysName, highlight }: { r: RowLite; index: RowsInde
           <span className={label === 1 ? "text-warn" : "text-good"}>{label === 1 ? "Should block" : "Should pass"}</span>
         </div>
         {withheld ? (
-          <p className="m-0 inline-flex items-center gap-1.5 text-[14px] text-muted">
+          <p className="m-0 flex flex-wrap items-center gap-x-1.5 text-[14px] text-muted">
             <Lock className="size-3.5 shrink-0" />
-            Text withheld because of its licence. Rebuild it with the dataset scripts.
+            Text not shown here.
+            {SOURCES[index.sources[srcI]] ? (
+              <a href={SOURCES[index.sources[srcI]].url} className="inline-flex min-h-11 items-center gap-1 sm:min-h-0">
+                View it at {SOURCES[index.sources[srcI]].name} <External className="size-3" />
+              </a>
+            ) : null}
           </p>
         ) : (
           <p className="m-0 line-clamp-2 text-[14px] leading-snug text-fg-2 [overflow-wrap:anywhere]">{snippet}</p>

@@ -12,3 +12,14 @@ describe("reproduce.md", () => {
     expect(fs.readFileSync(siteCopy, "utf8")).toBe(fs.readFileSync(repoCopy, "utf8"));
   });
 });
+
+describe("source links", () => {
+  it("cover every source with withheld rows", async () => {
+    const { SOURCES } = await import("../lib/sources");
+    const dataDir = fs.existsSync(path.resolve(__dirname, "../data/rows-index.json")) ? "../data" : "../fixtures/data";
+    const index = JSON.parse(fs.readFileSync(path.resolve(__dirname, dataDir, "rows-index.json"), "utf8"));
+    if (dataDir === "../fixtures/data") return; // synthetic sources have no upstream
+    const withheld = new Set<string>(index.rows.filter((r: unknown[]) => r[5] === 1).map((r: number[]) => index.sources[r[2]]));
+    expect([...withheld].filter((s) => !SOURCES[s])).toEqual([]);
+  });
+});

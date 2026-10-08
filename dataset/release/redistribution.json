@@ -268,6 +268,30 @@
    "basis": "authored by raxIT (AI-assisted drafting), CC-BY-4.0",
    "reviewed": true
   },
+  "e2_profanity_rtp": {
+   "mode": "text",
+   "basis": "Apache-2.0",
+   "reviewed": false,
+   "evidence": "allenai/real-toxicity-prompts at f2162971",
+   "licence_check": "Claude, 2026-10-08: declared licence recorded from dataset/edition2/word_filters/SOURCES.md",
+   "note": "pending owner review; until then ids, labels and hashes ship and the text stays local"
+  },
+  "e2_profanity_oasst2": {
+   "mode": "text",
+   "basis": "Apache-2.0",
+   "reviewed": false,
+   "evidence": "OpenAssistant/oasst2 at 179dd21f, same repo and revision as e2_oasst2",
+   "licence_check": "Claude, 2026-10-08: declared licence recorded from dataset/edition2/word_filters/SOURCES.md",
+   "note": "pending owner review; until then ids, labels and hashes ship and the text stays local"
+  },
+  "e2_profanity_civil_comments": {
+   "mode": "text",
+   "basis": "CC0-1.0",
+   "reviewed": false,
+   "evidence": "google/civil_comments at f2970eb3, validation and test",
+   "licence_check": "Claude, 2026-10-08: declared licence recorded from dataset/edition2/word_filters/SOURCES.md",
+   "note": "pending owner review; until then ids, labels and hashes ship and the text stays local"
+  },
   "e2_oasst2": {
    "mode": "text",
    "basis": "Apache-2.0",

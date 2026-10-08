@@ -5,8 +5,9 @@ import { useEffect, useState } from "react";
 import { JOB_BY_ID } from "@/lib/jobs";
 import { shardUrl } from "@/lib/shard";
 import type { Board, RowDetail, RowResult } from "@/lib/types";
+import { SOURCES, REASON_TEXT } from "@/lib/sources";
 import { SystemMark } from "./system-mark";
-import { Check, Cross, Lock } from "./icons";
+import { Check, Cross, External, Lock } from "./icons";
 
 function rowIdFromLocation(): string {
   const parts = window.location.pathname.replace(/\/+$/, "").split("/");
@@ -87,6 +88,7 @@ export function RowView({ board }: { board: Board }) {
 function RowBody({ board, row }: { board: Board; row: RowDetail }) {
   const sys = Object.fromEntries(board.systems.map((s) => [s.id, s]));
   const job = JOB_BY_ID[row.job];
+  const src = SOURCES[row.source];
   const results = board.overall.map((o) => row.results.find((r) => r.system === o.system)).filter(Boolean) as RowResult[];
   const judged = results.map((r) => verdict(r, row.label));
   const answered = judged.filter((v) => v.right !== null).length;
@@ -124,10 +126,22 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
         <h2 id="text-h" className="m-0 text-[20px] font-semibold tracking-[-0.01em]">What the systems saw</h2>
         {row.withheld ? (
           <div className="flex flex-col gap-2 rounded-lg border border-dashed border-line-strong bg-surface px-5 py-5 text-[14px] text-fg-2">
-            <p className="m-0 inline-flex items-center gap-2 font-medium text-fg"><Lock /> Text withheld (licence)</p>
+            <p className="m-0 inline-flex items-center gap-2 font-medium text-fg"><Lock /> Text not shown here</p>
             <p className="m-0 max-w-[68ch] leading-relaxed">
-              The licence of this source does not let us republish its text. The dataset ships the row&apos;s id, label and pinned
-              source revision. Use the dataset scripts to rebuild the text from the original publisher.{" "}
+              {src ? REASON_TEXT[src.reason] : "We do not republish this source's text."} You can read the original at the source.
+            </p>
+            {src && (
+              <p className="m-0 flex flex-wrap items-center gap-x-3 gap-y-1">
+                <a href={src.url} className="inline-flex min-h-11 items-center gap-1.5 font-medium">
+                  View {src.name} at the source <External />
+                </a>
+                <span className="num text-[12px] text-muted">
+                  revision {src.revision} · {src.licence}
+                </span>
+              </p>
+            )}
+            <p className="m-0 max-w-[68ch] text-[13px] leading-relaxed text-muted">
+              The dataset ships this row&apos;s id, label and pinned revision. To rebuild the exact text locally, use the dataset scripts.{" "}
               <Link href="/reproduce#withheld">How to rebuild it</Link>
             </p>
           </div>
