@@ -15,7 +15,10 @@ export function generateStaticParams() {
 
 export const metadata: Metadata = {
   title: "Row",
-  description: "One benchmark row: its text where the licence allows, its label, and every system's answer.",
+  description: "One benchmark row: its label, every system's answer, and its text if it is one of the example rows.",
+  // One shell serves every row, so its server title and description are the same for all of them: keep rows out of
+  // search results. The Data page is the indexable entry point.
+  robots: { index: false, follow: true },
 };
 
 export default function RowPage() {

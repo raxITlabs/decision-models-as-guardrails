@@ -1,3 +1,12 @@
 {
-  "rewrites": [{ "source": "/data/rows/:id", "destination": "/data/rows/view.html" }]
+  "rewrites": [
+    {
+      "source": "/data/rows/:id/:file",
+      "destination": "/data/rows/view/:file"
+    },
+    {
+      "source": "/data/rows/:id",
+      "destination": "/data/rows/view.html"
+    }
+  ]
 }

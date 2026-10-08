@@ -3,20 +3,86 @@
   "routes": [
     {
       "src": "/(.*)",
-      "has": [{ "type": "host", "value": "decision-models-as-guardrails.vercel.app" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "decision-models-as-guardrails.vercel.app"
+        }
+      ],
       "status": 308,
-      "headers": { "Location": "https://decision-models-as-guardrails.raxitlabs.com/$1" }
+      "headers": {
+        "Location": "https://decision-models-as-guardrails.raxitlabs.com/$1"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "headers": {
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "X-Frame-Options": "DENY"
+      },
+      "continue": true
     },
     {
       "src": "/reproduce/?",
-      "has": [{ "type": "header", "key": "accept", "value": "(.*)text/markdown(.*)" }],
-      "dest": "/reproduce.md",
-      "headers": { "Content-Type": "text/markdown; charset=utf-8", "Vary": "Accept" }
+      "headers": {
+        "Vary": "Accept"
+      },
+      "continue": true
     },
-    { "src": "/(.*)\\.md", "headers": { "Content-Type": "text/markdown; charset=utf-8" }, "continue": true },
-    { "src": "/llms\\.txt", "headers": { "Content-Type": "text/plain; charset=utf-8" }, "continue": true },
-    { "src": "/opengraph-image", "headers": { "Content-Type": "image/png" }, "continue": true },
-    { "handle": "filesystem" },
-    { "src": "/data/rows/([^/]+)/?", "dest": "/data/rows/view" }
+    {
+      "src": "/reproduce/?",
+      "has": [
+        {
+          "type": "header",
+          "key": "accept",
+          "value": "(.*)text/markdown(.*)"
+        }
+      ],
+      "dest": "/reproduce.md",
+      "headers": {
+        "Content-Type": "text/markdown; charset=utf-8",
+        "Vary": "Accept"
+      }
+    },
+    {
+      "src": "/(.*)\\.md",
+      "headers": {
+        "Content-Type": "text/markdown; charset=utf-8"
+      },
+      "continue": true
+    },
+    {
+      "src": "/llms\\.txt",
+      "headers": {
+        "Content-Type": "text/plain; charset=utf-8"
+      },
+      "continue": true
+    },
+    {
+      "src": "/opengraph-image",
+      "headers": {
+        "Content-Type": "image/png"
+      },
+      "continue": true
+    },
+    {
+      "src": "/favicon\\.ico",
+      "status": 308,
+      "headers": {
+        "Location": "/icon.svg"
+      }
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/data/rows/[^/]+/(__next\\..+)",
+      "dest": "/data/rows/view/$1"
+    },
+    {
+      "src": "/data/rows/([^/]+)/?",
+      "dest": "/data/rows/view"
+    }
   ]
 }

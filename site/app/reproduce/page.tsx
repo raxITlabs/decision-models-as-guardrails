@@ -3,13 +3,13 @@ import Link from "next/link";
 import { AgentPrompt } from "@/components/agent-prompt";
 import { CodeBlock } from "@/components/code-block";
 import { ArrowRight, External } from "@/components/icons";
-import { loadBoard } from "@/lib/data";
+import { loadBoard, loadRowsIndex } from "@/lib/data";
 import { HF_REVISION, HF_URL, REPO_URL, int } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Reproduce",
   description: "Run the benchmark, see how we score it, and add your own guardrail through an adapter.",
-  alternates: { types: { "text/markdown": "/reproduce.md" } },
+  alternates: { canonical: "/reproduce", types: { "text/markdown": "/reproduce.md" } },
 };
 
 const SITE = "https://decision-models-as-guardrails.raxitlabs.com";
@@ -60,6 +60,7 @@ function C({ children }: { children: React.ReactNode }) {
 export default function Reproduce() {
   const board = loadBoard();
   const t = board.stats.threshold;
+  const scoredRows = loadRowsIndex().rows.length;
   return (
     <div className="mx-auto grid max-w-[1200px] gap-12 px-4 pt-10 sm:px-6 sm:pt-16 lg:grid-cols-[minmax(0,1fr)_14rem]">
       <article className="flex min-w-0 max-w-[820px] flex-col gap-6">
@@ -81,14 +82,14 @@ export default function Reproduce() {
         <H2 id="scope">What you can reproduce</H2>
         <ul className="m-0 flex max-w-[64ch] flex-col gap-3 pl-5 text-[16px] leading-[1.7] text-fg-2 marker:text-muted">
           <li>
-            The board scores {int(board.stats.checks)} checks per system. {int(board.stats.publicRows)} are public test rows. We do not
+            Each system answers {int(board.stats.checks)} checks. {int(board.stats.publicRows)} are public test rows. We do not
             publish the other {int(board.stats.heldBackRows)}. A rerun from a fresh clone covers the public rows only. Expect scores
             that are close to the board but not identical.
           </li>
           <li>
-            The <Link href="/data">Data</Link> page already shows every system&apos;s answer to the public rows of the eight scored
-            jobs. You can check any number without calling a model. The other 100 public rows are a custom-words sanity check that
-            sits outside the score.
+            The <Link href="/data">Data</Link> page already shows every system&apos;s answer to the {int(scoredRows)} public rows of the
+            eight scored jobs. You can check any number without calling a model. The other {int(board.stats.publicRows - scoredRows)}{" "}
+            public rows are a custom-words sanity check that sits outside the score.
           </li>
           <li>The hosted APIs do not pin a model version. For that reason alone, a rerun months later can differ.</li>
         </ul>
@@ -177,7 +178,7 @@ uv run python -m goldrails_dataset.publish_e2 stage`}
           Three scripts in <C>benchmark/runs/</C> sent every row to every system. Each script first makes a plan offline and writes a freeze
           manifest. It does not send a row until that manifest is committed. This proves that the configuration came before the results.
         </P>
-        <div className="-mx-4 overflow-x-auto sm:mx-0">
+        <div className="-mx-4 overflow-x-auto sm:mx-0" tabIndex={0} role="region" aria-label="Run scripts">
           <table className="w-full min-w-[560px] border-collapse text-[14px]">
             <thead>
               <tr className="border-b border-line text-left text-[12px] text-muted">
@@ -253,7 +254,7 @@ uv run python benchmark/runs/e2_full.py report      # run summary, public ledger
           The benchmark defines the task. Each system has an adapter that turns one row into one verdict. A verdict holds a decision, a
           score if the system returns one, the answer to each question, and the serving details: endpoint, model id, revision and date.
         </P>
-        <div className="-mx-4 overflow-x-auto sm:mx-0">
+        <div className="-mx-4 overflow-x-auto sm:mx-0" tabIndex={0} role="region" aria-label="Adapters">
           <table className="w-full min-w-[560px] border-collapse text-[14px]">
             <thead>
               <tr className="border-b border-line text-left text-[12px] text-muted">

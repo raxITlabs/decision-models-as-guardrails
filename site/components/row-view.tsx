@@ -57,7 +57,7 @@ export function RowView({ board }: { board: Board }) {
   }, []);
 
   return (
-    <div className="mx-auto flex max-w-[1200px] flex-col gap-10 px-4 pt-10 sm:px-6 sm:pt-14">
+    <div className="mx-auto flex min-h-[100svh] max-w-[1200px] flex-col gap-10 px-4 pt-10 sm:px-6 sm:pt-14">
       {state.kind === "loading" && (
         <div className="flex flex-col gap-6" aria-busy="true" aria-label="Loading row">
           <div className="h-5 w-48 animate-pulse rounded bg-surface" />
@@ -101,9 +101,9 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
     <>
       <nav aria-label="Breadcrumb" className="text-[13px] text-muted">
         <ol className="m-0 flex list-none flex-wrap items-center gap-1.5 p-0">
-          <li><Link href="/data">Data</Link></li>
+          <li><Link href="/data" className="inline-flex min-h-11 items-center sm:min-h-6">Data</Link></li>
           <li aria-hidden="true">/</li>
-          <li><Link href={`/data?job=${row.job}#rows`}>{job.title}</Link></li>
+          <li><Link href={`/data?job=${row.job}#rows`} className="inline-flex min-h-11 items-center sm:min-h-6">{job.title}</Link></li>
           <li aria-hidden="true">/</li>
           <li aria-current="page" className="num text-fg-2">{row.id}</li>
         </ol>
@@ -185,7 +185,7 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
             <span className="num text-fg">{right}</span> of {answered} right · a score of {t} or more blocks
           </p>
         </div>
-        <div className="-mx-4 overflow-x-auto sm:mx-0">
+        <div className="-mx-4 overflow-x-auto sm:mx-0" tabIndex={0} role="region" aria-label="Answers from every system">
           <table className="w-full min-w-[560px] border-collapse text-[14px]">
             <caption className="sr-only">Each system&apos;s score, decision and whether it matched the label for this row.</caption>
             <thead>

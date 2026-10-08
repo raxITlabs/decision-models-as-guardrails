@@ -3,7 +3,11 @@ import Link from "next/link";
 import { loadBoard, loadRowsIndex } from "@/lib/data";
 import { HF_URL, REPO_URL, int, longDate } from "@/lib/format";
 
-export const metadata: Metadata = { title: "Changelog", description: "Releases of the decision-models-as-guardrails benchmark." };
+export const metadata: Metadata = {
+  title: "Changelog",
+  description: "Releases of the decision-models-as-guardrails benchmark.",
+  alternates: { canonical: "/changelog" },
+};
 
 export default function Changelog() {
   const board = loadBoard();

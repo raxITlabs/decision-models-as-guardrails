@@ -1,19 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Lock } from "./icons";
 
 /** Hides a harmful example until the reader asks to see it (ruling 34). */
 export function Sensitive({ children, hide = true, compact = false }: { children: React.ReactNode; hide?: boolean; compact?: boolean }) {
   const [shown, setShown] = useState(false);
-  if (!hide || shown) return <>{children}</>;
+  const revealed = useRef<HTMLDivElement>(null);
+  // After "Show text", keyboard focus moves to the text instead of falling back to the page.
+  useEffect(() => {
+    if (shown) revealed.current?.focus();
+  }, [shown]);
+  if (!hide) return <>{children}</>;
+  if (shown)
+    return (
+      <div ref={revealed} tabIndex={-1} className="outline-none focus-visible:outline-2">
+        {children}
+      </div>
+    );
   return (
     <div className={`flex flex-wrap items-center gap-x-3 gap-y-1 ${compact ? "text-[14px]" : "rounded-lg border border-dashed border-line-strong bg-surface px-5 py-4 text-[14px]"}`}>
       <span className="inline-flex items-center gap-1.5 text-muted">
         <Lock className="size-3.5 shrink-0" />
         Harmful example hidden.
       </span>
-      <button type="button" onClick={() => setShown(true)} className="inline-flex min-h-11 items-center font-medium text-link hover:text-link-hover sm:min-h-0">
+      <button type="button" onClick={() => setShown(true)} className="inline-flex min-h-11 items-center font-medium text-link hover:text-link-hover sm:min-h-6">
         Show text
       </button>
     </div>

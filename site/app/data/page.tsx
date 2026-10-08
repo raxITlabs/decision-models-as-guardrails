@@ -7,6 +7,7 @@ import { int } from "@/lib/format";
 export const metadata: Metadata = {
   title: "Data",
   description: "Every public test row in the benchmark, each system's answer to it, and a heatmap of scores by job.",
+  alternates: { canonical: "/data" },
 };
 
 export default function DataPage() {

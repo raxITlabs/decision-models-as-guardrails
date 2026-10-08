@@ -31,7 +31,6 @@ export function Plate({
         srcSet={srcSet(src)}
         sizes={SIZES}
         alt=""
-        fetchPriority={priority ? "high" : undefined}
         loading={priority ? "eager" : "lazy"}
         className="col-start-1 row-start-1 size-full object-cover brightness-90"
       />

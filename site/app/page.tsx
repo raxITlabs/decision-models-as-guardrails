@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Chevron } from "@/components/icons";
+import { HashOpen } from "@/components/hash-open";
 import { PillLink } from "@/components/pill-link";
 import { Plate } from "@/components/plate";
 import { Faq } from "@/components/faq";
@@ -85,6 +86,7 @@ export default function Home() {
       </section>
 
       <section id="fixed-rule" aria-labelledby="claims-h" className="scroll-mt-24">
+        <HashOpen id="fixed-rule" />
         <details className="group border-y border-line-strong">
           <summary className="flex min-h-[72px] flex-wrap items-center justify-between gap-x-6 gap-y-3 py-5">
             <span className="flex flex-col gap-2">

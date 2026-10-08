@@ -26,7 +26,7 @@ interface Filters {
 }
 const EMPTY: Filters = { job: "", source: "", label: "", hard: false, text: false, system: "", mode: "wrong" };
 
-function readUrl(): Filters {
+function readUrl(systems: Set<string>): Filters {
   const q = new URLSearchParams(window.location.search);
   const job = q.get("job") ?? "";
   const label = q.get("label") ?? "";
@@ -37,12 +37,12 @@ function readUrl(): Filters {
     label: label === "yes" || label === "no" ? label : "",
     hard: q.get("hard") === "1",
     text: q.get("text") === "1",
-    system: q.get("system") ?? "",
+    system: systems.has(q.get("system") ?? "") ? (q.get("system") as string) : "",
     mode: mode === "missed" || mode === "blocked" ? mode : "wrong",
   };
 }
 
-function writeUrl(f: Filters) {
+function writeUrl(f: Filters, page: number) {
   const q = new URLSearchParams();
   if (f.job) q.set("job", f.job);
   if (f.source) q.set("source", f.source);
@@ -53,6 +53,7 @@ function writeUrl(f: Filters) {
     q.set("system", f.system);
     if (f.mode !== "wrong") q.set("mode", f.mode);
   }
+  if (page > 0) q.set("page", String(page + 1));
   const s = q.toString();
   window.history.replaceState(null, "", `${window.location.pathname}${s ? `?${s}` : ""}${window.location.hash}`);
 }
@@ -76,12 +77,13 @@ export function DataExplorer({ board }: { board: Board }) {
   useEffect(() => {
     // Sync filters from the URL once on mount (static export: no server-side search params).
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setF(readUrl());
+    setF(readUrl(new Set(board.systems.map((s) => s.id))));
+    setPage(Math.max(0, (Number(new URLSearchParams(window.location.search).get("page")) || 1) - 1));
     fetch("/data/rows-index.json")
       .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
       .then(setIndex)
       .catch(() => setError(true));
-  }, []);
+  }, [board]);
 
   const update = useCallback((patch: Partial<Filters>) => {
     setF((prev) => ({ ...prev, ...patch }));
@@ -97,8 +99,8 @@ export function DataExplorer({ board }: { board: Board }) {
       urlReady.current = true;
       return;
     }
-    writeUrl(f);
-  }, [f]);
+    writeUrl(f, page);
+  }, [f, page]);
 
   const filtered = useMemo(() => {
     if (!index) return [];
@@ -311,7 +313,7 @@ function RowItem({ r, index, sysName, highlight }: { r: RowLite; index: RowsInde
     <li className="grid gap-x-6 gap-y-3 rounded-lg border border-line bg-surface px-4 py-3.5 transition-colors hover:border-line-strong md:grid-cols-[minmax(0,1fr)_auto]">
       <div className="flex min-w-0 flex-col gap-1.5">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-muted">
-          <Link href={`/data/rows/${id}`} className="num -my-2 inline-flex min-h-11 items-center text-[13px] font-medium">
+          <Link href={`/data/rows/${id}`} className="num inline-flex min-h-11 items-center text-[13px] font-medium sm:min-h-6">
             {id}
           </Link>
           <span>{job?.title}</span>
@@ -323,7 +325,7 @@ function RowItem({ r, index, sysName, highlight }: { r: RowLite; index: RowsInde
             <Lock className="size-3.5 shrink-0" />
             {withheld === 2 ? "Sexual or adult content, not shown here." : "Text not shown here."}
             {SOURCES[index.sources[srcI]] ? (
-              <a href={SOURCES[index.sources[srcI]].url} className="inline-flex min-h-11 items-center gap-1 sm:min-h-0">
+              <a href={SOURCES[index.sources[srcI]].url} className="inline-flex min-h-11 items-center gap-1 sm:min-h-6">
                 View it at {SOURCES[index.sources[srcI]].name} <External className="size-3" />
               </a>
             ) : null}

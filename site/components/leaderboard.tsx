@@ -164,7 +164,15 @@ export function Leaderboard({ board }: { board: Board }) {
 
       <p className="m-0 text-[13px] leading-relaxed text-muted">
         Every system answers the same {board.stats.checks.toLocaleString("en-US")} checks under one fixed rule: a probability of{" "}
-        {board.stats.threshold} or more blocks. <Link href="/#fixed-rule">Read why.</Link> Our statistical tests cannot tell the
+        {board.stats.threshold} or more blocks. <a
+          href="#fixed-rule"
+          onClick={() => {
+            const d = document.querySelector<HTMLDetailsElement>("#fixed-rule details");
+            if (d) d.open = true;
+          }}
+        >
+          Read why.
+        </a> Our statistical tests cannot tell the
         systems in one tier apart from that tier&apos;s leader. Self-hosted cost is our shared GPU time.
       </p>
 
@@ -245,12 +253,48 @@ function Scatter({
   // The "better" hint sits top left, where the strongest systems land: reserve it first.
   const rects: { x: number; y: number; w: number; h: number }[] = [{ x: 44, y: 6, w: 70, h: 18 }];
   const order = [...scores].sort((a, b) => (a.system === selected ? -1 : b.system === selected ? 1 : b.score - a.score));
-  for (const s of order) {
-    const x = px(xv(s));
-    const y = py(s.score);
-    const rr = s.system === selected ? (compact ? 16 : 19) : compact ? 13 : 15;
-    rects.push({ x: x - rr, y: y - rr, w: 2 * rr, h: 2 * rr });
-    placed.push({ s, x, y });
+  // Half the square's size plus its ring, per system.
+  const half = (s: Score) => (s.system === selected ? (compact ? 16 : 19) : compact ? 13 : 15);
+  for (const s of order) placed.push({ s, x: px(xv(s)), y: py(s.score) });
+  // Squares that would overlap are pushed apart a few pixels, mostly vertically, and kept inside the plot, so every
+  // square stays visible and can be selected. The table below has the exact numbers.
+  const clampX = (p: Placed) => Math.min(w - pad.r - half(p.s), Math.max(pad.l + half(p.s) + 2, p.x));
+  const clampY = (p: Placed) => Math.min(h - pad.b - half(p.s), Math.max(pad.t + half(p.s), p.y));
+  for (const p of placed) {
+    p.x = clampX(p);
+    p.y = clampY(p);
+  }
+  for (let round = 0; round < 60; round++) {
+    let moved = false;
+    for (let i = 0; i < placed.length; i++) {
+      for (let j = i + 1; j < placed.length; j++) {
+        const a = placed[i];
+        const b = placed[j];
+        const need = half(a.s) + half(b.s) + 2;
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        if (Math.abs(dx) >= need || Math.abs(dy) >= need) continue;
+        const push = (need - Math.abs(dy)) / 2 + 0.5;
+        const dir = dy !== 0 ? Math.sign(dy) : a.s.score >= b.s.score ? 1 : -1;
+        a.y -= dir * push;
+        b.y += dir * push;
+        a.y = clampY(a);
+        b.y = clampY(b);
+        // Pinned against the top or bottom edge, the pair cannot separate vertically: spread it sideways instead.
+        if (Math.abs(b.y - a.y) < need && (Math.abs(dx) < need / 2 || a.y === clampY({ ...a, y: -1e9 }) || a.y === clampY({ ...a, y: 1e9 }))) {
+          const sx = dx !== 0 ? Math.sign(dx) : 1;
+          const spread = Math.max(2, (need - Math.abs(dx)) / 2 + 0.5);
+          a.x = clampX({ ...a, x: a.x - sx * spread });
+          b.x = clampX({ ...b, x: b.x + sx * spread });
+        }
+        moved = true;
+      }
+    }
+    if (!moved) break;
+  }
+  for (const p of placed) {
+    const rr = half(p.s);
+    rects.push({ x: p.x - rr, y: p.y - rr, w: 2 * rr, h: 2 * rr });
   }
   for (const p of placed) {
     const name = sys[p.s.system]?.short ?? sys[p.s.system]?.name ?? p.s.system;
@@ -318,8 +362,9 @@ function Scatter({
               aria-pressed={on}
               aria-label={`${m?.name ?? p.s.system}: score ${score1(p.s.score)}, ${axis === "cost" ? `${money(p.s.cost)} per 1,000 checks` : `${pct(p.s.falseBlockRate)} false blocks`}, tier ${p.s.tier}`}
               title={`${m?.name ?? p.s.system} · ${score1(p.s.score)} · ${axis === "cost" ? money(p.s.cost) : pct(p.s.falseBlockRate)}`}
-              className="absolute grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full"
-              style={{ left: p.x, top: p.y }}
+              className={`absolute grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-md ${on ? "z-10" : ""}`}
+              // The hit area is the square plus its ring (half() each way), the same box the layout keeps apart.
+              style={{ left: p.x, top: p.y, width: 2 * half(p.s), height: 2 * half(p.s) }}
             >
               {/* A square per system: the maker's mark inside, tier colour on the border and as a wash behind it. */}
               <span
@@ -362,7 +407,7 @@ function Scatter({
       )}
       <figcaption className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[12px] text-muted">
         <span>
-          Score is balanced accuracy, where 50 is a coin flip. The horizontal axis is {axis === "cost" ? "USD per 1,000 checks" : "the share of safe rows blocked"}. Lines show the 95% interval. The table below gives every number.
+          Score is balanced accuracy, where 50 is a coin flip. The horizontal axis is {axis === "cost" ? "USD per 1,000 checks" : "the share of safe rows blocked"}. Lines show the 95% interval. Squares that would overlap are moved apart slightly; the table below gives every number.
         </span>
         <span className="flex flex-wrap items-center gap-3" aria-label="Tier colours">
           {present.map((t) => (
