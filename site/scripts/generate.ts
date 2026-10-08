@@ -37,7 +37,7 @@ export const SYSTEM_DISPLAY: Record<string, { name: string; short?: string; prov
   "pplx-decider-v1-27b": { name: "pplx-decider v1 27B", short: "pplx-decider", provider: "Perplexity", mono: "Px", logo: "/logos/perplexity.svg" },
   "gpt-6-luna": { name: "GPT-6 Luna", provider: "OpenAI · Decisions API", mono: "Oa", logo: "/logos/openai.svg" },
   clef: { name: "Clef", provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg" },
-  "jev-1.13.0": { name: "Jev 1.13", provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg" },
+  "jev-1.13.0": { name: "Jev 1.13.0", provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg" },
   "clef-flash": { name: "Clef Flash", provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg" },
   "kev-4b": { name: "Kev 4B", provider: "Jared Palmer · open weights", mono: "JP" },
   "kev-9b": { name: "Kev 9B", provider: "Jared Palmer · open weights", mono: "JP" },

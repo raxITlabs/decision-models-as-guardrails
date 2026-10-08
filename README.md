@@ -54,7 +54,7 @@ The short version:
 | To run | You need | Our cost (Oct 2026) |
 |---|---|---|
 | Tests, dataset, cost forecast | Python 3.12+, `uv`, git | Free |
-| Jev 1.13 | TypeSafe API key | USD 0.38 |
+| Jev 1.13.0 | TypeSafe API key | USD 0.38 |
 | pplx-decider v1 27B | Perplexity API key | USD 0.56 |
 | GPT-6 Luna | OpenAI key with Decisions API access (public beta) | USD 1.10 |
 | Clef, Clef Flash | Cloudflare Workers AI. In practice you need the Workers Paid plan (USD 5 a month) | USD 2.76 |

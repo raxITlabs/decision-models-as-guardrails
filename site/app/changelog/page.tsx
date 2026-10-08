@@ -28,6 +28,7 @@ export default function Changelog() {
               <li>{board.stats.systems} systems scored on {int(board.stats.checks)} checks across {board.stats.jobs} guardrail jobs, under one fixed rule: a probability of {board.stats.threshold} or more blocks.</li>
               <li>Accuracy and cost for every system, with 95% intervals and statistical tiers, overall and per job.</li>
               <li>{int(rows)} public test rows with every system&apos;s answer on the <Link href="/data">Data</Link> page, plus a held-back slice of {int(board.stats.heldBackRows)} rows.</li>
+              <li>Jev results are for Jev 1.13.0. Every call asked TypeSafe&apos;s API for that version, and the API reported it on every call (5 and 6 October 2026).</li>
               <li>The dataset on <a href={HF_URL}>Hugging Face</a>. The code, scoring rules and run records on <a href={REPO_URL}>GitHub</a>.</li>
             </ul>
           </div>

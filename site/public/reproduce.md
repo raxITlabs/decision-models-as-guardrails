@@ -23,13 +23,15 @@ Dataset: https://huggingface.co/datasets/raxITLabs/decision-models-as-guardrails
 
 ## What you can and cannot reproduce
 
-- The board scores 9,975 checks per system. 7,706 are public test rows. The other 2,269 are a held-back slice. We
+- Each system answers 9,975 checks. 7,706 are public test rows. The other 2,269 are a held-back slice. We
   do not publish that slice, so nobody outside raxIT Labs can send those rows.
 - A rerun from a fresh clone covers the 7,706 public rows only. Expect scores that are close to the board but not
   identical, because the board also includes the held-back slice. On that slice, overall scores are within 2.6
   points of the public rows.
-- We already publish every system's answer to every public row. Find them on the Data page of the site, or in
-  `site/data/rows-index.json` in this repository. You can check any number without calling a model.
+- We already publish every system's answer to the 7,606 public rows in the eight scored jobs. Find them on the Data
+  page of the site, or in `site/data/rows-index.json` in this repository. You can check any number without calling a
+  model. The other 100 public rows are a custom-words sanity check. It is pass or fail, outside the score, and not on
+  the Data page.
 - The hosted APIs do not pin a model version. For that reason alone, a rerun months later can differ.
 
 ## What you need
@@ -37,7 +39,7 @@ Dataset: https://huggingface.co/datasets/raxITLabs/decision-models-as-guardrails
 | To run | Account and access | Environment variables | Our cost (Oct 2026) |
 |---|---|---|---|
 | Steps 1 and 2 (tests, dataset) | None | None | Free |
-| Jev 1.13 | TypeSafe API key | `TYPESAFE_API_KEY` | USD 0.38 |
+| Jev 1.13.0 | TypeSafe API key | `TYPESAFE_API_KEY` | USD 0.38 |
 | pplx-decider v1 27B | Perplexity API key (Decisions API) | `PERPLEXITY_API_KEY` | USD 0.56 |
 | GPT-6 Luna | OpenAI API key with access to the Decisions API (public beta). A 403 or 404 means you do not have access yet | `OPENAI_API_KEY` | USD 1.10 |
 | Clef, Clef Flash | Cloudflare account with Workers AI. In practice you need the Workers Paid plan (USD 5 a month). The free allowance of 10,000 neurons a day ran out partway through our run. Use a token scoped to Workers AI read and run | `CLOUDFLARE_ACCOUNT_ID` (the 32-character id), `CLOUDFLARE_API_TOKEN` | USD 2.76 for both, plus the plan |

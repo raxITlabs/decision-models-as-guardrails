@@ -18,7 +18,7 @@ const AGENT_PROMPT = `Read ${SITE}/reproduce.md and help me reproduce the decisi
 /** Accounts and cost per system, from the 1.0.0 run. Kept in step with REPRODUCE.md at the repository root. */
 const NEEDS: [string, string, string, string][] = [
   ["Tests and dataset", "None", "None", "Free"],
-  ["Jev 1.13", "TypeSafe API key", "TYPESAFE_API_KEY", "$0.38"],
+  ["Jev 1.13.0", "TypeSafe API key", "TYPESAFE_API_KEY", "$0.38"],
   ["pplx-decider v1 27B", "Perplexity API key", "PERPLEXITY_API_KEY", "$0.56"],
   ["GPT-6 Luna", "OpenAI key with Decisions API access (public beta)", "OPENAI_API_KEY", "$1.10"],
   ["Clef, Clef Flash", "Cloudflare Workers AI. In practice you need the Workers Paid plan ($5 a month), because the free daily allowance ran out mid-run", "CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN", "$2.76 + plan"],
@@ -86,8 +86,9 @@ export default function Reproduce() {
             that are close to the board but not identical.
           </li>
           <li>
-            The <Link href="/data">Data</Link> page already shows every system&apos;s answer to every public row. You can check any
-            number without calling a model.
+            The <Link href="/data">Data</Link> page already shows every system&apos;s answer to the public rows of the eight scored
+            jobs. You can check any number without calling a model. The other 100 public rows are a custom-words sanity check that
+            sits outside the score.
           </li>
           <li>The hosted APIs do not pin a model version. For that reason alone, a rerun months later can differ.</li>
         </ul>
