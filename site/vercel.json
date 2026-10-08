@@ -78,7 +78,8 @@
     },
     {
       "src": "/data/rows/[^/]+/(__next\\..+)",
-      "dest": "/data/rows/view/$1"
+      "dest": "/data/rows/view/$1",
+      "check": true
     },
     {
       "src": "/data/rows/([^/]+)/?",
