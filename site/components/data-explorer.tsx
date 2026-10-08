@@ -370,7 +370,18 @@ function RowItem({
           </p>
         ) : (
           <Sensitive hide={label === 1} compact>
-            <p className="m-0 line-clamp-2 text-[14px] leading-snug text-fg-2 [overflow-wrap:anywhere]">{snippet}</p>
+            {/* The index carries at most 200 characters of each row, so the whole snippet is shown, never clamped. */}
+            <p className="m-0 text-[14px] leading-snug text-fg-2 [overflow-wrap:anywhere]">
+              {snippet}
+              {snippet?.endsWith("…") && (
+                <>
+                  {" "}
+                  <Link href={`/data/rows/${id}`} className="whitespace-nowrap">
+                    Full text<span className="sr-only"> of row {id}</span>
+                  </Link>
+                </>
+              )}
+            </p>
           </Sensitive>
         )}
       </div>
