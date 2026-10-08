@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "@/components/icons";
+import { ArrowRight, Chevron } from "@/components/icons";
 import { PillLink } from "@/components/pill-link";
 import { Plate } from "@/components/plate";
 import { Faq } from "@/components/faq";
@@ -18,6 +18,29 @@ export default function Home() {
   const best = board.baseline.map((b) => b.best);
   const range = (xs: number[]) => (xs.length ? (Math.min(...xs) === Math.max(...xs) ? `${Math.min(...xs)}` : `${Math.min(...xs)} to ${Math.max(...xs)}`) : "");
 
+  const steps = [
+    {
+      title: "Clean test rows",
+      big: `${int(board.stats.checks)} checks`,
+      body: `${board.stats.jobs} guardrail jobs. We remove rows that match a model's published training data. We keep ${int(board.stats.heldBackRows)} rows private as a held-back slice.`,
+    },
+    {
+      title: "Same checks for all",
+      big: `${int(board.stats.systems)} systems`,
+      body: "Every system answers every row. A failed call counts as wrong. We do not rank a run with more than 2% failures.",
+    },
+    {
+      title: "One fixed rule",
+      big: `≥ ${board.stats.threshold} blocks`,
+      body: "We tune no threshold on the test rows, so you see each system's default. Verdict APIs use their own flag. Amazon Bedrock Guardrails runs at one documented setting.",
+    },
+    {
+      title: "Score and cost",
+      big: "accuracy and $",
+      body: "Balanced accuracy with 95% intervals and tiers, catch rate, false blocks, and dollars per 1,000 checks.",
+    },
+  ];
+
   return (
     <div className="mx-auto flex max-w-[1200px] flex-col gap-24 px-4 pt-6 sm:gap-28 sm:px-6">
       {board.source === "fixture" && (
@@ -35,10 +58,6 @@ export default function Home() {
             <h1 id="hero-h" className="over-art plate-title m-0 text-[clamp(2.25rem,5.6vw,3.75rem)] font-semibold leading-[1.05] tracking-[-0.025em] text-balance">
               Can a decision model replace your guardrail?
             </h1>
-            <p className="over-art-86 m-0 max-w-[40ch] text-[clamp(1.0625rem,1.8vw,1.25rem)] leading-relaxed text-balance">
-              {int(board.stats.systems)} systems answered the same {int(board.stats.checks)} guardrail checks under one fixed rule. See how
-              accurate each one is and what it costs.
-            </p>
             <div className="mt-2 flex flex-wrap gap-3">
               <PillLink href="#leaderboard" variant="paper">
                 See the leaderboard <ArrowRight />
@@ -49,18 +68,13 @@ export default function Home() {
             </div>
           </div>
         </Plate>
-        <p className="m-0 text-[15px] leading-relaxed text-fg-2">
-          <span className="num text-fg">{int(board.stats.systems)}</span> systems · <span className="num text-fg">{int(board.stats.checks)}</span> checks ·{" "}
-          <span className="num text-fg">{board.stats.jobs}</span> guardrail jobs · one fixed rule: block at a probability of{" "}
-          <span className="num text-fg">{board.stats.threshold}</span> or more · accuracy and cost only
-        </p>
       </section>
 
       <section id="leaderboard" aria-labelledby="lb-h" className="flex scroll-mt-24 flex-col gap-6">
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
           <div className="flex flex-col gap-2.5">
             <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-muted">Leaderboard</span>
-            <h2 id="lb-h" className="m-0 text-[clamp(1.75rem,3.4vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.02em]">Overall, all {board.stats.jobs} jobs</h2>
+            <h2 id="lb-h" className="m-0 text-[clamp(1.75rem,3.4vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.02em]">Overall ranking</h2>
           </div>
           <p className="m-0 text-[14px] text-muted">
             {board.stats.systems} systems · version {board.release.version} · {longDate(board.release.date)} ·{" "}
@@ -70,49 +84,51 @@ export default function Home() {
         <Leaderboard board={board} />
       </section>
 
-      <section aria-labelledby="claims-h" className="grid gap-10 md:grid-cols-[minmax(0,4fr)_minmax(0,7fr)]">
-        <div className="flex flex-col gap-4">
-          <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-muted">Method</span>
-          <h2 id="claims-h" className="m-0 text-[clamp(1.75rem,3.4vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.02em]">One method for every system</h2>
-          <p className="m-0 max-w-[60ch] text-[16px] leading-relaxed text-fg-2">
-            Published guardrail numbers rarely compare. Each vendor picks its own threshold and its own test set. Those test sets often
-            overlap with the model&apos;s training data. We sent the same checks to every system and used one method for all of them. So
-            the differences you see come from the systems, not from the method.
-          </p>
-        </div>
-        <ul className="m-0 grid list-none gap-x-8 gap-y-8 p-0 sm:grid-cols-2">
-          <li id="fixed-rule" className="flex flex-col gap-2 border-t-2 border-fg pt-4">
-            <h3 className="m-0 text-[17px] font-semibold">One fixed rule, no tuning.</h3>
-            <p className="m-0 text-[15px] leading-relaxed text-fg-2">
-              Every model blocks at a probability of {board.stats.threshold} or more. No system gets a threshold fitted to the test rows.
-              You see how each system behaves by default. Verdict APIs use their own flag. Amazon Bedrock Guardrails runs at
-              one documented setting.
+      <section id="fixed-rule" aria-labelledby="claims-h" className="scroll-mt-24">
+        <details className="group border-y border-line-strong">
+          <summary className="flex min-h-[72px] flex-wrap items-center justify-between gap-x-6 gap-y-3 py-5">
+            <span className="flex flex-col gap-2">
+              <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-muted">Method</span>
+              <span id="claims-h" className="text-[clamp(1.375rem,2.6vw,1.75rem)] font-semibold leading-[1.15] tracking-[-0.02em]">
+                How we test every system the same way
+              </span>
+            </span>
+            <span className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line-strong px-4 text-[14px] font-medium text-fg">
+              <span className="group-open:hidden">Show the method</span>
+              <span className="hidden group-open:inline">Hide the method</span>
+              <Chevron className="size-3.5 rotate-90 transition-transform duration-150 ease-out group-open:-rotate-90" />
+            </span>
+          </summary>
+          <div className="flex flex-col gap-5 pb-8 pt-2">
+            <ol className="m-0 flex list-none flex-wrap items-stretch gap-3 p-0">
+              {steps.map((st, i) => (
+                <li key={st.title} className="flex min-w-[220px] flex-1 items-stretch gap-3">
+                  <div className="flex flex-1 flex-col gap-2.5 rounded-xl border border-line bg-surface p-[18px]">
+                    <span className="flex items-center gap-2.5">
+                      <span className="num grid size-7 place-items-center rounded-md bg-fg text-[13px] text-bg">{i + 1}</span>
+                      <span className="text-[16px] font-semibold">{st.title}</span>
+                    </span>
+                    <span className="num text-[22px] tracking-[-0.02em]">{st.big}</span>
+                    <span className="text-[14px] leading-relaxed text-fg-2">{st.body}</span>
+                  </div>
+                  {i < steps.length - 1 && (
+                    <span aria-hidden="true" className="self-center text-link">
+                      <ArrowRight />
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ol>
+            <p className="m-0 max-w-[72ch] text-[14px] leading-relaxed text-muted">
+              Published guardrail numbers rarely compare. Each vendor picks its own threshold and its own test set. Here every system
+              gets the same rows and the same rule, so the differences come from the systems.
+              {kw.length
+                ? ` Each prompt attack has safe rows in the same style. A keyword classifier scores ${range(kw)} on them. Word and character n-gram classifiers that we trained and tested on these rows score ${range(best)}.`
+                : ""}{" "}
+              <Link href="/reproduce">Read the full method.</Link>
             </p>
-          </li>
-          <li className="flex flex-col gap-2 border-t-2 border-fg pt-4">
-            <h3 className="m-0 text-[17px] font-semibold">The same checks for every system.</h3>
-            <p className="m-0 text-[15px] leading-relaxed text-fg-2">
-              All {board.stats.systems} systems answered the same {int(board.stats.checks)} checks across {board.stats.jobs} jobs. A
-              call that fails or gives no decision counts as wrong. We do not rank a run with more than 2% failures.
-            </p>
-          </li>
-          <li className="flex flex-col gap-2 border-t-2 border-fg pt-4">
-            <h3 className="m-0 text-[17px] font-semibold">Screened for contamination.</h3>
-            <p className="m-0 text-[15px] leading-relaxed text-fg-2">
-              We compared every row with the training data that the model makers published. We removed the matches. Some rows come from
-              datasets that a vendor released itself. We keep and flag those rows, and we also score content without them.{" "}
-              {int(board.stats.heldBackRows)} of the checks are a held-back slice that we do not publish
-              {typeof board.facts.sliceGapMax === "number" ? `. Overall scores on that slice are within ${board.facts.sliceGapMax} points of the scores on the public rows` : ""}.
-            </p>
-          </li>
-          <li className="flex flex-col gap-2 border-t-2 border-fg pt-4">
-            <h3 className="m-0 text-[17px] font-semibold">Prompt attacks tested for shortcuts.</h3>
-            <p className="m-0 text-[15px] leading-relaxed text-fg-2">
-              Each direct and indirect attack has safe rows in the same style. A system that reacts to scary words blocks both.
-              {kw.length ? ` A keyword classifier scores ${range(kw)} on these rows. We also publish word and character n-gram classifiers that we trained and tested on these same rows. They score ${range(best)}. That shows how far wording alone gets on rows that a classifier has already seen.` : ""}
-            </p>
-          </li>
-        </ul>
+          </div>
+        </details>
       </section>
 
       <section aria-labelledby="jobs-h" className="flex flex-col gap-8">

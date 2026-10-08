@@ -85,10 +85,10 @@ export function Leaderboard({ board }: { board: Board }) {
       </div>
       <p className="m-0 max-w-[64ch] text-[14px] leading-relaxed text-muted">
         {job === "overall"
-          ? `The overall score is the plain average of the ${board.stats.suites} guardrail types. The leaders change a lot from job to job. Select your job above.`
+          ? `The overall score is the plain average of ${board.stats.suites} guardrail suites, which together cover the ${board.stats.jobs} jobs. The leaders change a lot from job to job. Select your job above.`
           : `${JOB_BY_ID[job].sub}. The score is balanced accuracy on this job. A score of 50 is a coin flip.`}
         {axis === "cost" && scope === "all"
-          ? " Hollow dots are self-hosted models. Their cost is our shared GPU time, so it tells you more about our setup than about the model."
+          ? " Dashed squares are self-hosted models. Their cost is our shared GPU time, so it tells you more about our setup than about the model."
           : ""}
       </p>
 
@@ -246,14 +246,14 @@ function Scatter({
   for (const s of order) {
     const x = px(xv(s));
     const y = py(s.score);
-    const rr = s.system === selected ? 13 : 8;
+    const rr = s.system === selected ? 19 : 15;
     rects.push({ x: x - rr, y: y - rr, w: 2 * rr, h: 2 * rr });
     placed.push({ s, x, y });
   }
   for (const p of placed) {
     const name = sys[p.s.system]?.short ?? sys[p.s.system]?.name ?? p.s.system;
     const lw = Math.ceil(textWidth(name, measure)) + 4;
-    const off = p.s.system === selected ? 20 : 14;
+    const off = p.s.system === selected ? 24 : 20;
     const tries: { x: number; y: number; anchor: "left" | "right" }[] = [];
     for (const dy of [0, -14, 14, -26, 26, -38, 38]) {
       tries.push({ x: p.x + off, y: p.y + dy, anchor: "right" });
@@ -319,14 +319,22 @@ function Scatter({
               className="absolute grid size-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full"
               style={{ left: p.x, top: p.y }}
             >
+              {/* A square per system: the maker's mark inside, tier colour on the border and as a wash behind it. */}
               <span
-                className={`block rounded-full ${on ? "size-4" : "size-3"}`}
+                className={`grid place-items-center rounded-md ${on ? "size-[34px]" : "size-7"}`}
                 style={{
-                  background: self && axis === "cost" ? "var(--surface)" : tierVar(p.s.tier),
-                  border: `2px solid ${tierVar(p.s.tier)}`,
-                  boxShadow: on ? "0 0 0 3px var(--surface), 0 0 0 5px var(--fg)" : "0 0 0 2px var(--surface)",
+                  background: `color-mix(in srgb, ${tierVar(p.s.tier)} 14%, var(--surface))`,
+                  border: `2px ${self && axis === "cost" ? "dashed" : "solid"} ${tierVar(p.s.tier)}`,
+                  boxShadow: on ? "0 0 0 2px var(--surface), 0 0 0 4px var(--fg)" : "0 0 0 2px var(--surface)",
                 }}
-              />
+              >
+                {m?.logo ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- static export, tiny SVGs
+                  <img src={m.logo} alt="" className={on ? "size-5" : "size-4"} />
+                ) : (
+                  <span className="text-[11px] font-semibold leading-none text-fg-2">{m?.mono}</span>
+                )}
+              </span>
             </button>
           );
         })}
@@ -347,7 +355,7 @@ function Scatter({
       </div>
       {unlabelled.length > 0 && (
         <p className="m-0 text-[12px] text-muted">
-          No room for a label: {unlabelled.map((p) => sys[p.s.system]?.name ?? p.s.system).join(", ")}. Tap a dot to select it.
+          No room for a label: {unlabelled.map((p) => sys[p.s.system]?.name ?? p.s.system).join(", ")}. Select its square to see it.
         </p>
       )}
       <figcaption className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[12px] text-muted">

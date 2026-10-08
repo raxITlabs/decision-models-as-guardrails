@@ -10,8 +10,9 @@ export function faqItems(board: Board): QA[] {
   const own = f.ownRows;
   const la = f.labelAgreement;
   const lr = f.labelReview;
+  // Company names only: the maker before any " · product" suffix, for the managed systems.
   const managedVendors = listNames(
-    [...new Set(board.systems.map((s) => s.provider).filter((p) => p && !/open weights/i.test(p)))].sort(),
+    [...new Set(board.systems.filter((s) => s.hosting === "managed").map((s) => s.provider.split(" · ")[0]).filter(Boolean))].sort(),
   );
   return [
     {
