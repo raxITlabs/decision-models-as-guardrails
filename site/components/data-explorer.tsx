@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { JOBS, type JobId } from "@/lib/jobs";
+import { JOBS, JOB_BY_ID, type JobId } from "@/lib/jobs";
 import { int, oneLine, score1 } from "@/lib/format";
 import type { Board, RowLite, RowsIndex, Score } from "@/lib/types";
-import { External, Lock } from "./icons";
+import { Chevron, External, Lock } from "./icons";
 import { SOURCES } from "@/lib/sources";
 import { Sensitive } from "./sensitive";
 import { SystemMark } from "./system-mark";
@@ -71,6 +71,7 @@ export function DataExplorer({ board }: { board: Board }) {
   const [f, setF] = useState<Filters>(EMPTY);
   const [page, setPage] = useState(0);
   const [colour, setColour] = useState<Colour>("score");
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const rowsRef = useRef<HTMLElement>(null);
   const sys = useMemo(() => Object.fromEntries(board.systems.map((s) => [s.id, s])), [board]);
 
@@ -129,9 +130,10 @@ export function DataExplorer({ board }: { board: Board }) {
         if (f.mode === "blocked" && r[3] !== 0) return false;
       }
       return true;
-    });
+    }).sort((a, b) => (a[5] === 0 ? 0 : 1) - (b[5] === 0 ? 0 : 1));
   }, [index, f]);
 
+  const activeCount = [f.job, f.source, f.label, f.hard, f.text, f.system].filter(Boolean).length;
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE));
   const current = Math.min(page, pages - 1);
   const slice = filtered.slice(current * PAGE, current * PAGE + PAGE);
@@ -157,7 +159,19 @@ export function DataExplorer({ board }: { board: Board }) {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        {/* Phones: the filters fold behind one button, so the rows are on the first screen. */}
+        <button
+          type="button"
+          aria-expanded={filtersOpen}
+          aria-controls="row-filters"
+          onClick={() => setFiltersOpen((o) => !o)}
+          className="inline-flex min-h-11 w-fit items-center gap-2 rounded-full border border-line-strong px-4 text-[14px] font-medium text-fg sm:hidden"
+        >
+          Filters
+          {activeCount > 0 && <span className="num rounded-full bg-fg px-1.5 text-[12px] text-bg">{activeCount}</span>}
+          <Chevron className={`size-3.5 transition-transform ${filtersOpen ? "-rotate-90" : "rotate-90"}`} />
+        </button>
+        <div id="row-filters" className={`${filtersOpen ? "flex" : "hidden"} flex-wrap items-center gap-x-3 gap-y-2 sm:flex`}>
           <Select
             id="f-job"
             label="Use case"
@@ -381,6 +395,7 @@ function Heatmap({
   onPick: (job: JobId, system: string) => void;
   active: { system: string; job: string } | null;
 }) {
+  const [phoneJob, setPhoneJob] = useState<JobId>(JOBS[0].id);
   const lookup = useMemo(() => {
     const m: Record<string, Record<string, Score>> = {};
     for (const j of JOBS) for (const s of board.jobs[j.id]) (m[s.system] ??= {})[j.id] = s;
@@ -397,7 +412,10 @@ function Heatmap({
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-col gap-1.5">
           <h2 id="heat-h" className="m-0 text-[24px] font-semibold tracking-[-0.02em]">Systems by use case</h2>
-          <p className="m-0 max-w-[62ch] text-[14px] text-muted">Select a cell to list the {what} for that system and job.</p>
+          <p className="m-0 max-w-[62ch] text-[14px] text-muted">
+            <span className="sm:hidden">Pick a use case, then tap a system to list the {what}.</span>
+            <span className="hidden sm:inline">Select a cell to list the {what} for that system and use case.</span>
+          </p>
         </div>
         <Segmented
           label="Colour cells by"
@@ -410,7 +428,51 @@ function Heatmap({
           ]}
         />
       </div>
-      <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+      {/* Phones: one use case at a time, systems ranked, instead of an eight-column grid that runs off-screen. */}
+      <div className="flex flex-col gap-3 sm:hidden">
+        <Select
+          id="heat-job"
+          label="Use case"
+          value={phoneJob}
+          onChange={(v) => setPhoneJob(v as JobId)}
+          options={JOBS.map((j) => ({ value: j.id, label: j.title }))}
+        />
+        <ol className="m-0 flex list-none flex-col gap-1.5 p-0">
+          {board.overall
+            .map((o) => ({ o, v: cellValue(lookup[o.system]?.[phoneJob], colour) }))
+            .filter((x): x is { o: Score; v: number } => x.v !== null)
+            .sort((a, b) => (colour === "fbr" ? a.v - b.v : b.v - a.v))
+            .map(({ o, v }) => {
+              const m = board.systems.find((s) => s.id === o.system);
+              const a = Math.max(0.05, Math.min(1, intensity(v)));
+              return (
+                <li key={o.system}>
+                  <button
+                    type="button"
+                    onClick={() => onPick(phoneJob, o.system)}
+                    aria-label={`${oneLine(m, o.system)}, ${JOB_BY_ID[phoneJob].title}: ${fmt(v)}. List the ${what}.`}
+                    className="grid min-h-12 w-full grid-cols-[minmax(0,1fr)_4rem] items-center gap-3 rounded-lg border border-line bg-surface px-3 py-2 text-left"
+                  >
+                    <span className="flex min-w-0 items-center gap-2.5">
+                      <SystemMark m={m} />
+                      <span className="flex min-w-0 flex-col">
+                        <span className="truncate text-[14px] font-semibold text-fg">{m?.name ?? o.system}</span>
+                        <span className="truncate text-[12px] text-muted">{m?.provider}</span>
+                      </span>
+                    </span>
+                    <span
+                      className="num grid h-9 place-items-center rounded-md text-[14px]"
+                      style={{ background: `color-mix(in oklab, ${hue} calc(var(--heat-max) * ${Math.round(a * 100)}%), var(--surface))`, color: "var(--heat-ink)" }}
+                    >
+                      {fmt(v)}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+        </ol>
+      </div>
+      <div className="-mx-4 hidden overflow-x-auto px-4 sm:mx-0 sm:block sm:px-0">
         <table className="w-full min-w-[880px] border-separate border-spacing-1 text-[13px]">
           <caption className="sr-only">
             {colour === "score" ? "Score" : colour === "catch" ? "Catch rate" : "False-block rate"} for every system on every use case. Each cell is a button that lists the {what}.
