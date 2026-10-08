@@ -223,9 +223,9 @@ export function DataExplorer({ board }: { board: Board }) {
               value={f.mode}
               onChange={(mode) => update({ mode })}
               options={[
-                { value: "wrong", label: "All mistakes" },
-                { value: "missed", label: "Missed harmful" },
-                { value: "blocked", label: "Blocked safe" },
+                { value: "wrong", label: "All mistakes", short: "All" },
+                { value: "missed", label: "Missed harmful", short: "Missed" },
+                { value: "blocked", label: "Blocked safe", short: "Blocked safe" },
               ]}
             />
             <button type="button" onClick={() => update({ system: "", mode: "wrong" })} className="inline-flex min-h-11 items-center text-[13px] text-link hover:text-link-hover">
@@ -235,7 +235,10 @@ export function DataExplorer({ board }: { board: Board }) {
         )}
 
         <p className="m-0 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] text-muted">
-          <span>Each square is one system, in leaderboard order.</span>
+          <span>
+            Each square is one system, in leaderboard order.
+            {f.system ? ` The outlined square is ${sysName(f.system)}.` : ""}
+          </span>
           <span className="inline-flex items-center gap-1.5"><span className="size-3 rounded-[3px] border border-line-strong bg-fg-2" aria-hidden="true" />blocked</span>
           <span className="inline-flex items-center gap-1.5"><span className="size-3 rounded-[3px] border border-line-strong" aria-hidden="true" />passed</span>
           <span className="inline-flex items-center gap-1.5"><span className="size-3 rounded-[3px] border border-warn bg-warn" aria-hidden="true" />wrong</span>
@@ -334,6 +337,18 @@ function RowItem({ r, index, sysName, highlight }: { r: RowLite; index: RowsInde
           <span className="mono">{index.sources[srcI]}</span>
           <span className={label === 1 ? "text-warn" : "text-good"}>{label === 1 ? "Should block" : "Should pass"}</span>
         </div>
+        {highlight && (() => {
+          const d = decisions[index.systems.indexOf(highlight)];
+          if (d === undefined || d === ".") return null;
+          const did = d === "1" ? "blocked it" : d === "0" ? "let it through" : "failed to answer";
+          const ok = !isWrong(d, label);
+          return (
+            <p className={`m-0 text-[13px] font-medium ${ok ? "text-good" : "text-warn"}`}>
+              {sysName(highlight)} {did}
+              {ok ? "" : label === 1 ? ", but it should block" : ", but it should pass"}.
+            </p>
+          );
+        })()}
         {withheld ? (
           <p className="m-0 flex flex-wrap items-center gap-x-1.5 text-[14px] text-muted">
             <Lock className="size-3.5 shrink-0" />

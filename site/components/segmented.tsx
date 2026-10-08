@@ -20,7 +20,7 @@ export function Segmented<T extends string>({
   onChange: (v: T) => void;
 }) {
   return (
-    <div role="group" aria-label={label} className="inline-flex rounded-full border border-line-strong bg-surface p-[3px]">
+    <div role="group" aria-label={label} className="inline-flex max-w-full overflow-x-auto rounded-full border border-line-strong bg-surface p-[3px] [scrollbar-width:none]">
       {options.map((o) => {
         const on = o.value === value;
         return (
