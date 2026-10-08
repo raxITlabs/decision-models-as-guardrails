@@ -56,9 +56,6 @@ export default function Home() {
     <HeroPlate src="/plates/hero.webp">
           <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] items-end gap-6 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-12">
           <div className="flex max-w-[760px] flex-col items-start gap-4 sm:gap-5">
-            <span className="rise over-art plate-title text-[12px] font-medium uppercase tracking-[0.2em]">
-              raxIT Labs · Independent benchmark · v{board.release.version}
-            </span>
             <h1 id="hero-h" className="rise rise-1 over-art plate-title m-0 text-[clamp(2.25rem,5.6vw,3.75rem)] font-semibold leading-[1.05] tracking-[-0.025em] text-balance">
               Can a decision model replace your guardrail?
             </h1>
