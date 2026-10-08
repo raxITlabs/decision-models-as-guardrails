@@ -160,10 +160,10 @@ export function DataExplorer({ board }: { board: Board }) {
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <Select
             id="f-job"
-            label="Job"
+            label="Use case"
             value={f.job}
             onChange={(v) => update({ job: v as JobId | "" })}
-            options={[{ value: "", label: "All jobs" }, ...JOBS.map((j) => ({ value: j.id, label: j.title }))]}
+            options={[{ value: "", label: "All use cases" }, ...JOBS.map((j) => ({ value: j.id, label: j.title }))]}
           />
           <Select
             id="f-source"
@@ -396,7 +396,7 @@ function Heatmap({
     <section aria-labelledby="heat-h" className="flex flex-col gap-5">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-col gap-1.5">
-          <h2 id="heat-h" className="m-0 text-[24px] font-semibold tracking-[-0.02em]">Systems by job</h2>
+          <h2 id="heat-h" className="m-0 text-[24px] font-semibold tracking-[-0.02em]">Systems by use case</h2>
           <p className="m-0 max-w-[62ch] text-[14px] text-muted">Select a cell to list the {what} for that system and job.</p>
         </div>
         <Segmented
@@ -413,7 +413,7 @@ function Heatmap({
       <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
         <table className="w-full min-w-[880px] border-separate border-spacing-1 text-[13px]">
           <caption className="sr-only">
-            {colour === "score" ? "Score" : colour === "catch" ? "Catch rate" : "False-block rate"} for every system on every job. Each cell is a button that lists the {what}.
+            {colour === "score" ? "Score" : colour === "catch" ? "Catch rate" : "False-block rate"} for every system on every use case. Each cell is a button that lists the {what}.
           </caption>
           <thead>
             <tr>
@@ -473,7 +473,7 @@ function Heatmap({
       </div>
       <p className="m-0 text-[12px] text-muted">
         {colour === "score"
-          ? "Balanced accuracy on each job. 50 is a coin flip. Darker is better."
+          ? "Balanced accuracy on each use case. 50 is a coin flip. Darker is better."
           : colour === "catch"
             ? "Share of harmful rows that the system blocked. Darker is better."
             : "Share of safe rows that the system blocked. Your users see these as refusals. Darker is worse."}{" "}

@@ -14,7 +14,7 @@ type JobPick = "overall" | JobId;
 type Axis = "cost" | "fbr";
 type Scope = "managed" | "all";
 
-const JOB_OPTIONS = [{ value: "overall" as JobPick, label: "Overall, all jobs" }, ...JOBS.map((j) => ({ value: j.id as JobPick, label: j.title }))];
+const JOB_OPTIONS = [{ value: "overall" as JobPick, label: "Overall, all use cases" }, ...JOBS.map((j) => ({ value: j.id as JobPick, label: j.title }))];
 
 // Label widths measured with the real font, so placement does not drop labels that fit.
 let measureCtx: CanvasRenderingContext2D | null = null;
@@ -63,7 +63,7 @@ export function Leaderboard({ board }: { board: Board }) {
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <Select id="lb-job" label="Job" options={JOB_OPTIONS} value={job} onChange={setJob} hideLabel />
+        <Select id="lb-job" label="Use case" options={JOB_OPTIONS} value={job} onChange={setJob} hideLabel />
         <Segmented
           label="Horizontal axis"
           value={axis}
@@ -85,8 +85,8 @@ export function Leaderboard({ board }: { board: Board }) {
       </div>
       <p className="m-0 text-[14px] leading-relaxed text-muted">
         {job === "overall"
-          ? `The overall score is the plain average of ${board.stats.suites} guardrail suites, which together cover the ${board.stats.jobs} jobs. The leaders change a lot from job to job. Select your job above.`
-          : `${JOB_BY_ID[job].sub}. The score is balanced accuracy on this job. A score of 50 is a coin flip.`}
+          ? `The overall score is the plain average of ${board.stats.suites} guardrail suites, which together cover the ${board.stats.jobs} use cases. The leaders change a lot from use case to use case. Select your use case above.`
+          : `${JOB_BY_ID[job].sub}. The score is balanced accuracy on this use case. A score of 50 is a coin flip.`}
         {axis === "cost" && scope === "all"
           ? " Dashed squares are self-hosted models. Their cost is our shared GPU time, so it tells you more about our setup than about the model."
           : ""}
@@ -508,7 +508,7 @@ function Scatter({
 function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: SystemMeta; tiers: number; job: JobPick }) {
   const best = Object.fromEntries(JOBS.map((j) => [j.id, Math.max(...board.jobs[j.id].map((x) => x.score))]));
   const stats = [
-    { label: job === "overall" ? "Overall score" : "Score on this job", value: score1(s.score) },
+    { label: job === "overall" ? "Overall score" : "Score on this use case", value: score1(s.score) },
     { label: "95% interval", value: `${score1(s.ciLow)} to ${score1(s.ciHigh)}` },
     { label: "Catches harmful rows", value: pct(s.catchRate) },
     { label: "Blocks safe rows", value: pct(s.falseBlockRate) },
@@ -574,7 +574,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
         </Link>
       </div>
       <div className="flex min-w-0 flex-col gap-3">
-        <h3 className="m-0 text-[16px] font-semibold">{m?.name ?? s.system} by job</h3>
+        <h3 className="m-0 text-[16px] font-semibold">{m?.name ?? s.system} by use case</h3>
         <ul className="m-0 flex list-none flex-col gap-2.5 p-0">
           {JOBS.map((j) => {
             const js = board.jobs[j.id].find((x) => x.system === s.system);
@@ -593,7 +593,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
             );
           })}
         </ul>
-        <p className="m-0 text-[12px] text-muted">Bars start at 50, which is a coin flip. The thin mark shows the best score on that job. Select a system in the chart or the table to see its details.</p>
+        <p className="m-0 text-[12px] text-muted">Bars start at 50, which is a coin flip. The thin mark shows the best score on that use case. Select a system in the chart or the table to see its details.</p>
       </div>
     </section>
   );

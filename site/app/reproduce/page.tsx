@@ -34,7 +34,7 @@ const ISSUE_URL = `${REPO_URL}/issues/new?${new URLSearchParams({
     "System name and version:",
     "Provider, or open weights with a pinned revision:",
     "How it is called (endpoint or model card):",
-    "Which jobs it supports:",
+    "Which use cases it supports:",
     "Output: probability, score or verdict:",
     "Smoke test output (benchmark/runs/e2_smoke.py report):",
   ].join("\n"),
@@ -89,7 +89,7 @@ export default function Reproduce() {
           </li>
           <li>
             The <Link href="/data">Data</Link> page already shows every system&apos;s answer to the {int(scoredRows)} public rows of the
-            eight scored jobs. You can check any number without calling a model. The other {int(board.stats.publicRows - scoredRows)}{" "}
+            eight scored use cases. You can check any number without calling a model. The other {int(board.stats.publicRows - scoredRows)}{" "}
             public rows are a custom-words sanity check that sits outside the score.
           </li>
           <li>The hosted APIs do not pin a model version. For that reason alone, a rerun months later can differ.</li>
@@ -190,13 +190,13 @@ uv run python -m goldrails_dataset.publish_e2 stage`}
             <tbody className="text-fg-2">
               <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_full.py</td><td className="py-2.5 pr-4 sm:pr-0">Content, off-topic, profanity, personal data and grounding, for the hosted APIs and the self-hosted models</td></tr>
               <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_attacks_rerun.py</td><td className="py-2.5 pr-4 sm:pr-0">Direct and indirect prompt attacks for the same systems</td></tr>
-              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_openai_run.py</td><td className="py-2.5 pr-4 sm:pr-0">The OpenAI Decisions API (gpt-6-luna) on all jobs, and <C>score</C>, which rebuilds the leaderboard from the ledgers</td></tr>
+              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_openai_run.py</td><td className="py-2.5 pr-4 sm:pr-0">The OpenAI Decisions API (gpt-6-luna) on all use cases, and <C>score</C>, which rebuilds the leaderboard from the ledgers</td></tr>
             </tbody>
           </table>
         </div>
         <CodeBlock
           label="run the main suites"
-          code={`uv run python benchmark/runs/e2_full.py plan        # offline: rows per job, cost forecast
+          code={`uv run python benchmark/runs/e2_full.py plan        # offline: rows per use case, cost forecast
 uv run python benchmark/runs/e2_full.py preflight   # credentials and VM state, no model call
 uv run python benchmark/runs/e2_full.py freeze      # writes the freeze manifest; commit it before any call
 uv run python benchmark/runs/e2_full.py run --systems jev,clef
@@ -225,14 +225,14 @@ uv run python benchmark/runs/e2_full.py report      # run summary, public ledger
             the lower false-block rate ranks first.
           </li>
           <li>
-            <strong className="font-semibold text-fg">Jobs and the overall score.</strong> We score each job on its own rows. The overall
+            <strong className="font-semibold text-fg">Use cases and the overall score.</strong> We score each job on its own rows. The overall
             score is the plain average of the {board.stats.suites} guardrail types: content (user input and model replies), prompt attacks
             (direct and indirect), off-topic, profanity, personal data and grounding. We score personal data per entity type, then
             take the average. A custom-words check runs next to the score as a pass-or-fail sanity test.
           </li>
           <li>
             <strong className="font-semibold text-fg">Failures count.</strong> A call that fails or gives no decision counts as wrong in
-            both directions. We do not rank a system on a job if it has more than 2% failures on that job.
+            both directions. We do not rank a system on a use case if it has more than 2% failures on that use case.
           </li>
           <li>
             <strong className="font-semibold text-fg">Intervals and tiers.</strong> The 95% intervals come from 2,000 bootstrap resamples of
@@ -247,7 +247,7 @@ uv run python benchmark/runs/e2_full.py report      # run summary, public ledger
         </ul>
         <P>
           The scorer&apos;s full rules are in <a href={`${REPO_URL}/blob/main/benchmark/contracts/v2.0.json`}>benchmark/contracts/v2.0.json</a>.
-          Each job&apos;s written policy is in <a href={`${REPO_URL}/tree/main/benchmark/policies`}>benchmark/policies/</a>.
+          Each use case&apos;s written policy is in <a href={`${REPO_URL}/tree/main/benchmark/policies`}>benchmark/policies/</a>.
         </P>
 
         <H2 id="adapters">Add a system</H2>
@@ -274,8 +274,8 @@ uv run python benchmark/runs/e2_full.py report      # run summary, public ledger
         <P>
           A vendor that answers the same questions at its own URL needs a <C>HostedDecisionClient</C> subclass in{" "}
           <C>benchmark/goldrails_bench/hosted.py</C>. For a vendor with its own categories, subclass <C>VerdictAPIAdapter</C>. Map each
-          job&apos;s policy to the vendor&apos;s categories. Leave out the jobs that the vendor cannot do. Write tests against a fake
-          client. Before any full run, run the compatibility check on 20 public dev rows per job.
+          use case&apos;s policy to the vendor&apos;s categories. Leave out the use cases that the vendor cannot do. Write tests against a fake
+          client. Before any full run, run the compatibility check on 20 public dev rows per use case.
         </P>
         <CodeBlock
           label="compatibility check"
@@ -291,7 +291,7 @@ uv run python benchmark/runs/e2_smoke.py report`}
 
         <H2 id="submit">Add your system to the board</H2>
         <P>
-          Open an issue. Give the system&apos;s name, how to call it and the jobs it covers. Include the output of your compatibility
+          Open an issue. Give the system&apos;s name, how to call it and the use cases it covers. Include the output of your compatibility
           check. We reproduce that check before we do a full run under the same rule.
         </P>
         <div>

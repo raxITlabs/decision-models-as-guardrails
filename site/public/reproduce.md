@@ -28,7 +28,7 @@ Dataset: https://huggingface.co/datasets/raxITLabs/decision-models-as-guardrails
 - A rerun from a fresh clone covers the 7,706 public rows only. Expect scores that are close to the board but not
   identical, because the board also includes the held-back slice. On that slice, overall scores are within 2.6
   points of the public rows.
-- We already publish every system's answer to the 7,606 public rows in the eight scored jobs. Find them on the Data
+- We already publish every system's answer to the 7,606 public rows in the eight scored use cases. Find them on the Data
   page of the site, or in `site/data/rows-index.json` in this repository. You can check any number without calling a
   model. The other 100 public rows are a custom-words sanity check. It is pass or fail, outside the score, and not on
   the Data page.
@@ -84,17 +84,17 @@ uv run --with scikit-learn python -m pytest -q
 ### 2. Look at the dataset and the plan (free, no accounts)
 
 The run scripts download the dataset from Hugging Face at the pinned commit. The `plan` commands work offline. They
-list the rows per job and forecast the cost.
+list the rows per use case and forecast the cost.
 
 ```bash
 uv run python benchmark/runs/e2_full.py plan
 uv run python benchmark/runs/e2_smoke.py plan
 ```
 
-### 3. Check one system on 20 rows per job (small cost)
+### 3. Check one system on 20 rows per use case (small cost)
 
 Copy `.env.example` to `.env`. Fill in only the keys for the systems you want. The compatibility check sends 20
-public development rows per job to each system that you name. It skips a system that has no key.
+public development rows per use case to each system that you name. It skips a system that has no key.
 
 ```bash
 cp .env.example .env
@@ -162,12 +162,12 @@ uv run python -m goldrails_dataset.e2_local rehydrate
 ## Add your own system
 
 Write an adapter (see `benchmark/goldrails_bench/adapters/README.md`). Run the step 3 compatibility check on it.
-Then open an issue with the system's name, how to call it, the jobs it covers and the output of the check:
+Then open an issue with the system's name, how to call it, the use cases it covers and the output of the check:
 https://github.com/raxITlabs/decision-models-as-guardrails/issues
 
 ## Where the details are
 
 - Scoring rules: `benchmark/contracts/v2.0.json`
-- Written policies per job: `benchmark/policies/`
+- Written policies per use case: `benchmark/policies/`
 - Infrastructure: `infra/gcp/README.md`, `infra/aws/README.md`
 - Adapters: `benchmark/goldrails_bench/adapters/README.md`

@@ -1,4 +1,4 @@
-// The eight guardrail jobs the site is organised around. Each maps to one scored subtask of the benchmark.
+// The eight guardrail use cases the site is organised around. Each maps to one scored subtask of the benchmark.
 // Shared by the data generator (scripts/) and the pages, so it holds no scores.
 
 export type JobId = "indirect" | "direct" | "input" | "output" | "topics" | "pii" | "grounding" | "profanity";

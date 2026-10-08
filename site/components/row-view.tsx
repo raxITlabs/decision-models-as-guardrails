@@ -113,7 +113,7 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
         <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-muted">Row</span>
         <h1 className="mono m-0 text-[clamp(1.25rem,3.5vw,2rem)] font-medium tracking-[-0.02em] [overflow-wrap:anywhere]">{row.id}</h1>
         <dl className="m-0 grid grid-cols-2 gap-x-8 gap-y-3 text-[14px] sm:grid-cols-4">
-          <div><dt className="text-[12px] text-muted">Job</dt><dd className="m-0 mt-0.5">{job.title}</dd></div>
+          <div><dt className="text-[12px] text-muted">Use case</dt><dd className="m-0 mt-0.5">{job.title}</dd></div>
           <div><dt className="text-[12px] text-muted">Source</dt><dd className="mono m-0 mt-0.5 [overflow-wrap:anywhere]">{row.source}</dd></div>
           <div><dt className="text-[12px] text-muted">Licence</dt><dd className="mono m-0 mt-0.5">{row.licence ?? "see source"}</dd></div>
           <div>

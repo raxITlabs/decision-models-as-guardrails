@@ -6,7 +6,7 @@ import { int } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Data",
-  description: "Every public test row in the benchmark, each system's answer to it, and a heatmap of scores by job.",
+  description: "Every public test row in the benchmark, each system's answer to it, and a heatmap of scores by use case.",
   alternates: { canonical: "/data" },
   openGraph: { url: "/data", siteName: "decision-models-as-guardrails", type: "website", images: [{ url: "/opengraph-image", width: 1200, height: 630 }] },
 };

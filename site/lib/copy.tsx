@@ -98,7 +98,7 @@ export function faqItems(board: Board): QA[] {
       q: "Does it cover images, multi-turn chats or my own policies?",
       a: (
         <p className="m-0">
-          Not yet. The benchmark tests text only: one message and its context. Only the off-topic job and an exact-word check cover
+          Not yet. The benchmark tests text only: one message and its context. Only the off-topic use case and an exact-word check cover
           custom policies. Multimodal and multi-turn tests are not part of this release.
         </p>
       ),

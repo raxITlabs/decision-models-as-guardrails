@@ -30,8 +30,8 @@ export default function Changelog() {
           <div className="flex flex-col gap-4">
             <h2 className="m-0 text-[20px] font-semibold tracking-[-0.01em]">First public release</h2>
             <ul className="m-0 flex flex-col gap-2 pl-5 text-[15px] leading-relaxed text-fg-2 marker:text-muted">
-              <li>{board.stats.systems} systems scored on {int(board.stats.checks)} checks across {board.stats.jobs} guardrail jobs, under one fixed rule: a probability of {board.stats.threshold} or more blocks.</li>
-              <li>Accuracy and cost for every system, with 95% intervals and statistical tiers, overall and per job.</li>
+              <li>{board.stats.systems} systems scored on {int(board.stats.checks)} checks across {board.stats.jobs} guardrail use cases, under one fixed rule: a probability of {board.stats.threshold} or more blocks.</li>
+              <li>Accuracy and cost for every system, with 95% intervals and statistical tiers, overall and per use case.</li>
               <li>{int(rows)} public test rows with every system&apos;s answer on the <Link href="/data">Data</Link> page, plus a held-back slice of {int(board.stats.heldBackRows)} rows.</li>
               <li>Jev results are for Jev 1.13.0. Every call asked TypeSafe&apos;s API for that version, and the API reported it on every call (5 and 6 October 2026).</li>
               <li>The dataset on <a href={HF_URL}>Hugging Face</a>. The code, scoring rules and run records on <a href={REPO_URL}>GitHub</a>.</li>

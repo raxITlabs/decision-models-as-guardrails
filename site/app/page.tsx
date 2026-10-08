@@ -5,6 +5,7 @@ import { HashOpen } from "@/components/hash-open";
 import { PillLink } from "@/components/pill-link";
 import { Podium } from "@/components/podium";
 import { TwoKinds } from "@/components/two-kinds";
+import { CostCalculator } from "@/components/cost-calculator";
 import { HeroPlate, Plate } from "@/components/plate";
 import { Faq } from "@/components/faq";
 import { Leaderboard } from "@/components/leaderboard";
@@ -31,7 +32,7 @@ export default function Home() {
     {
       title: "Clean test rows",
       big: `${int(board.stats.checks)} checks`,
-      body: `${board.stats.jobs} guardrail jobs. We remove rows that match a model's published training data. We keep ${int(board.stats.heldBackRows)} rows private as a held-back slice.`,
+      body: `${board.stats.jobs} guardrail use cases. We remove rows that match a model's published training data. We keep ${int(board.stats.heldBackRows)} rows private as a held-back slice.`,
     },
     {
       title: "Same checks for all",
@@ -95,6 +96,8 @@ export default function Home() {
         <Leaderboard board={board} />
       </section>
 
+      <CostCalculator board={board} />
+
       <TwoKinds board={board} />
 
       <section id="fixed-rule" aria-labelledby="claims-h" className="scroll-mt-24">
@@ -148,8 +151,8 @@ export default function Home() {
       <section aria-labelledby="jobs-h" className="flex flex-col gap-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="flex flex-col gap-2.5">
-            <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-muted">By job</span>
-            <h2 id="jobs-h" className="m-0 text-[clamp(1.75rem,3.4vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.02em]">The leader changes with the job</h2>
+            <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-muted">By use case</span>
+            <h2 id="jobs-h" className="m-0 text-[clamp(1.75rem,3.4vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.02em]">The leader changes with the use case</h2>
           </div>
           <Link href="/data" className="inline-flex min-h-11 items-center gap-1.5 text-[14px]">
             See all {int(index.rows.length)} public rows <ArrowRight />
