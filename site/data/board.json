@@ -80,7 +80,7 @@
   {
    "id": "strands-decider-2b",
    "name": "Strands Decider 2B",
-   "provider": "Strands Agents (AWS) · open weights",
+   "provider": "Amazon Web Services · open weights",
    "mono": "St",
    "short": "Strands 2B",
    "logo": "/logos/aws.svg",
