@@ -21,6 +21,8 @@
    "mono": "Px",
    "short": "Perplexity Decisions",
    "logo": "/logos/perplexity.svg",
+   "docs": "https://docs.perplexity.ai/docs/decisions/quickstart",
+   "pricing": "https://docs.perplexity.ai/docs/getting-started/pricing",
    "hosting": "managed",
    "kind": "decision"
   },
@@ -31,6 +33,8 @@
    "mono": "Oa",
    "short": "OpenAI Decisions",
    "logo": "/logos/openai.svg",
+   "docs": "https://developers.openai.com/api/docs/guides/decisions",
+   "pricing": "https://developers.openai.com/api/docs/pricing",
    "hosting": "managed",
    "kind": "decision"
   },
@@ -40,6 +44,8 @@
    "provider": "Cloudflare · Workers AI",
    "mono": "Cf",
    "logo": "/logos/cloudflare.svg",
+   "docs": "https://developers.cloudflare.com/workers-ai/models/clef/",
+   "pricing": "https://developers.cloudflare.com/workers-ai/platform/pricing/",
    "hosting": "managed",
    "kind": "decision"
   },
@@ -49,6 +55,8 @@
    "provider": "TypeSafe",
    "mono": "Ts",
    "logo": "/logos/typesafe.svg",
+   "docs": "https://docs.typesafe.ai/models",
+   "pricing": "https://docs.typesafe.ai/models",
    "hosting": "managed",
    "kind": "decision"
   },
@@ -58,6 +66,8 @@
    "provider": "Cloudflare · Workers AI",
    "mono": "Cf",
    "logo": "/logos/cloudflare.svg",
+   "docs": "https://developers.cloudflare.com/workers-ai/models/clef-flash/",
+   "pricing": "https://developers.cloudflare.com/workers-ai/platform/pricing/",
    "hosting": "managed",
    "kind": "decision"
   },
@@ -66,6 +76,8 @@
    "name": "Kev 4B",
    "provider": "Jared Palmer · open weights",
    "mono": "JP",
+   "docs": "https://huggingface.co/jaredpalmer/kev-4b",
+   "pricing": "https://cloud.google.com/compute/gpus-pricing",
    "hosting": "self-hosted",
    "kind": "decision"
   },
@@ -74,6 +86,8 @@
    "name": "Kev 9B",
    "provider": "Jared Palmer · open weights",
    "mono": "JP",
+   "docs": "https://huggingface.co/jaredpalmer/kev-9b",
+   "pricing": "https://cloud.google.com/compute/gpus-pricing",
    "hosting": "self-hosted",
    "kind": "decision"
   },
@@ -84,6 +98,8 @@
    "mono": "Aw",
    "short": "Bedrock Guardrails",
    "logo": "/logos/aws.svg",
+   "docs": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html",
+   "pricing": "https://aws.amazon.com/bedrock/pricing/",
    "hosting": "managed",
    "kind": "service"
   },
@@ -94,6 +110,8 @@
    "mono": "St",
    "short": "Strands 2B",
    "logo": "/logos/aws.svg",
+   "docs": "https://huggingface.co/StrandsAgents/strands-decider-2B-hobson-v19",
+   "pricing": "https://cloud.google.com/compute/gpus-pricing",
    "hosting": "self-hosted",
    "kind": "decision"
   },
@@ -102,6 +120,8 @@
    "name": "Open-Jev 2B",
    "provider": "Zefan Cai · open weights",
    "mono": "ZC",
+   "docs": "https://huggingface.co/ZefanCai/Open-Jev-2B",
+   "pricing": "https://cloud.google.com/compute/gpus-pricing",
    "hosting": "self-hosted",
    "kind": "decision"
   },
@@ -110,6 +130,8 @@
    "name": "Kev 0.8B",
    "provider": "Jared Palmer · open weights",
    "mono": "JP",
+   "docs": "https://huggingface.co/jaredpalmer/kev-0.8b",
+   "pricing": "https://cloud.google.com/compute/gpus-pricing",
    "hosting": "self-hosted",
    "kind": "decision"
   },
@@ -119,6 +141,8 @@
    "provider": "Convai Innovations · open weights",
    "mono": "CI",
    "logo": "/logos/laya.svg",
+   "docs": "https://huggingface.co/convaiinnovations/laya",
+   "pricing": "https://cloud.google.com/compute/gpus-pricing",
    "hosting": "self-hosted",
    "kind": "decision"
   }

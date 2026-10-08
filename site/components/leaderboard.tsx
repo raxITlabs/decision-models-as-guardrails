@@ -5,7 +5,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { JOBS, JOB_BY_ID, type JobId } from "@/lib/jobs";
 import { halfCi, maxTier, money, pct, score1, tierVar } from "@/lib/format";
 import type { Board, Score, SystemMeta } from "@/lib/types";
-import { ArrowRight, ArrowUpLeft } from "./icons";
+import { ArrowRight, ArrowUpLeft, External } from "./icons";
 import { Segmented, Select } from "./segmented";
 import { SystemMark } from "./system-mark";
 import { WallpaperFrame } from "./plate";
@@ -542,6 +542,20 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
               {m ? (m.hosting === "managed" ? " · managed API" : " · self-hosted on our GPUs") : ""}
               {m ? (m.kind === "service" ? " · guardrail service" : " · decision model") : ""}
             </span>
+            {(m?.docs || m?.pricing) && (
+              <span className="flex flex-wrap gap-x-3 text-[13px]">
+                {m.docs && (
+                  <a href={m.docs} className="inline-flex min-h-11 items-center gap-1 sm:min-h-0">
+                    {m.hosting === "self-hosted" ? "Model card" : "Vendor docs"} <External className="size-3" />
+                  </a>
+                )}
+                {m.pricing && (
+                  <a href={m.pricing} className="inline-flex min-h-11 items-center gap-1 sm:min-h-0">
+                    {m.hosting === "self-hosted" ? "GPU pricing" : "Vendor pricing"} <External className="size-3" />
+                  </a>
+                )}
+              </span>
+            )}
           </span>
         </div>
         <dl className="m-0 grid grid-cols-2 gap-2">

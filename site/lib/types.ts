@@ -16,6 +16,10 @@ export interface SystemMeta {
   mono: string;
   /** maker's mark, a path under public/logos */
   logo?: string;
+  /** the vendor's page for the product, or the model card for open weights */
+  docs?: string;
+  /** the vendor's list-price page (cloud GPU pricing for self-hosted models) */
+  pricing?: string;
 }
 
 export interface Score {

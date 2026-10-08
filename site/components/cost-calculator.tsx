@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import type { Board } from "@/lib/types";
 import { score1 } from "@/lib/format";
 import { Segmented } from "./segmented";
+import { External } from "./icons";
 import { SystemMark } from "./system-mark";
 
 const PRESETS = [100_000, 1_000_000, 10_000_000, 100_000_000];
@@ -107,6 +108,16 @@ export function CostCalculator({ board }: { board: Board }) {
                     <span className="text-[12px] text-muted">
                       score {score1(s.score)}
                       {m?.hosting === "self-hosted" ? " · our GPU time" : ""}
+                      {m?.pricing ? (
+                        <>
+                          {" · "}
+                          <a href={m.pricing} className="inline-flex items-center gap-0.5">
+                            {m.hosting === "self-hosted" ? "GPU pricing" : "pricing"}
+                            <span className="sr-only"> for {m.name} (vendor page)</span>
+                            <External className="size-3" />
+                          </a>
+                        </>
+                      ) : null}
                     </span>
                   </span>
                 </span>
@@ -142,7 +153,8 @@ export function CostCalculator({ board }: { board: Board }) {
         </ol>
 
         <p className="m-0 text-[13px] leading-relaxed text-muted">
-          Measured on our test rows and priced at each vendor&apos;s list price on 7 October 2026. Our checks averaged about 1,100 to
+          Measured on our test rows and priced at each vendor&apos;s list price on 7 October 2026; each row links to the vendor&apos;s
+          pricing page. Our checks averaged about 1,100 to
           1,400 input tokens, including the policy questions, so longer messages cost more. Cloudflare also needs its Workers Paid plan
           ($5 a month). Self-hosted figures are our shared GPU time and do not scale in a straight line with volume.
         </p>
