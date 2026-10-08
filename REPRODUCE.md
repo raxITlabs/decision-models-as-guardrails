@@ -43,7 +43,7 @@ Dataset: https://huggingface.co/datasets/raxITLabs/decision-models-as-guardrails
 | Decisions API · Perplexity (pplx-decider-v1-27b) | Perplexity API key (Decisions API) | `PERPLEXITY_API_KEY` | USD 0.56 |
 | Decisions API · OpenAI (gpt-6-luna) | OpenAI API key with access to the Decisions API (public beta). A 403 or 404 means you do not have access yet | `OPENAI_API_KEY` | USD 1.10 |
 | Clef, Clef Flash | Cloudflare account with Workers AI. In practice you need the Workers Paid plan (USD 5 a month). The free allowance of 10,000 neurons a day ran out partway through our run. Use a token scoped to Workers AI read and run | `CLOUDFLARE_ACCOUNT_ID` (the 32-character id), `CLOUDFLARE_API_TOKEN` | USD 2.76 for both, plus the plan |
-| Amazon Bedrock Guardrails | AWS account with Bedrock in your region, an AWS CLI profile (we used AWS SSO) and Terraform. Your role must be able to create guardrails and guardrail versions, and to call ApplyGuardrail | `AWS_PROFILE`, `AWS_REGION` (default `us-east-1`) | USD 1.12 |
+| Bedrock Guardrails | AWS account with Bedrock in your region, an AWS CLI profile (we used AWS SSO) and Terraform. Your role must be able to create guardrails and guardrail versions, and to call ApplyGuardrail | `AWS_PROFILE`, `AWS_REGION` (default `us-east-1`) | USD 1.12 |
 | Kev 0.8B, 4B, 9B, Open-Jev 2B, Strands Decider 2B, Laya | Google Cloud project with billing, quota for at least 2 NVIDIA L4 GPUs in your zone, the `gcloud` CLI and Terraform | Optional: `GOLDRAILS_PROJECT`, `GOLDRAILS_ZONE`, `GOLDRAILS_INSTANCE` | USD 10.44 of VM time |
 | Rebuilding withheld text (optional) | Hugging Face account that has accepted the terms of the gated sources (for example `allenai/wildjailbreak`) | `HF_TOKEN` | Free |
 

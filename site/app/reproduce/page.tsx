@@ -23,7 +23,7 @@ const NEEDS: [string, string, string, string][] = [
   ["Decisions API · Perplexity (pplx-decider-v1-27b)", "Perplexity API key", "PERPLEXITY_API_KEY", "$0.56"],
   ["Decisions API · OpenAI (gpt-6-luna)", "OpenAI key with Decisions API access (public beta)", "OPENAI_API_KEY", "$1.10"],
   ["Clef, Clef Flash", "Cloudflare Workers AI. In practice you need the Workers Paid plan ($5 a month), because the free daily allowance ran out mid-run", "CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN", "$2.76 + plan"],
-  ["Amazon Bedrock Guardrails", "AWS account with Bedrock, a CLI profile (we used SSO), Terraform to create the guardrails", "AWS_PROFILE, AWS_REGION", "$1.12"],
+  ["Bedrock Guardrails", "AWS account with Bedrock, a CLI profile (we used SSO), Terraform to create the guardrails", "AWS_PROFILE, AWS_REGION", "$1.12"],
   ["Six self-hosted models", "Google Cloud project with billing and quota for 2 NVIDIA L4 GPUs, gcloud, Terraform", "GOLDRAILS_PROJECT, GOLDRAILS_ZONE (optional)", "$10.44 VM time"],
   ["Withheld text (optional)", "Hugging Face account that has accepted the terms of the gated sources", "HF_TOKEN", "Free"],
 ];
@@ -266,7 +266,7 @@ uv run python benchmark/runs/e2_full.py report      # run summary, public ledger
             </thead>
             <tbody className="text-fg-2">
               <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">NoulAdapter</td><td className="py-2.5 pr-4">Decision models that answer yes/no questions with a probability</td><td className="py-2.5 pr-4 sm:pr-0">highest probability ≥ {t}</td></tr>
-              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">BedrockAdapter</td><td className="py-2.5 pr-4">Amazon Bedrock Guardrails</td><td className="py-2.5 pr-4 sm:pr-0">the service&apos;s verdict at its frozen setting</td></tr>
+              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">BedrockAdapter</td><td className="py-2.5 pr-4">Bedrock Guardrails</td><td className="py-2.5 pr-4 sm:pr-0">the service&apos;s verdict at its frozen setting</td></tr>
               <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">VerdictAPIAdapter</td><td className="py-2.5 pr-4">Vendor APIs with their own categories</td><td className="py-2.5 pr-4 sm:pr-0">the vendor&apos;s own flag</td></tr>
             </tbody>
           </table>

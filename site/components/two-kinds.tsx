@@ -41,7 +41,7 @@ export function TwoKinds({ board }: { board: Board }) {
         </h2>
         <p className="m-0 text-[16px] leading-relaxed text-fg-2">
           {decision.length} of the {board.systems.length} systems are decision models, including the hosted Decisions APIs from
-          Perplexity and OpenAI. Amazon Bedrock Guardrails is a managed guardrail service. Both block harmful traffic, but you set them up and tune them in different ways.
+          Perplexity and OpenAI. Bedrock Guardrails is a managed guardrail service. Both block harmful traffic, but you set them up and tune them in different ways.
         </p>
       </div>
 

@@ -93,10 +93,9 @@
   },
   {
    "id": "bedrock-guardrails",
-   "name": "Amazon Bedrock Guardrails",
+   "name": "Bedrock Guardrails",
    "provider": "Amazon Web Services · not a decision model",
    "mono": "Aw",
-   "short": "Bedrock Guardrails",
    "logo": "/logos/aws.svg",
    "docs": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html",
    "pricing": "https://aws.amazon.com/bedrock/pricing/",

@@ -42,7 +42,7 @@ export default function Home() {
     {
       title: "One fixed rule",
       big: `≥ ${board.stats.threshold} blocks`,
-      body: "We tune no threshold on the test rows, so you see each system's default. Verdict APIs use their own flag. Amazon Bedrock Guardrails runs at one documented setting.",
+      body: "We tune no threshold on the test rows, so you see each system's default. Verdict APIs use their own flag. Bedrock Guardrails runs at one documented setting.",
     },
     {
       title: "Score and cost",
