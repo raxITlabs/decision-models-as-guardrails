@@ -3,6 +3,8 @@
 export interface SegOption<T extends string> {
   value: T;
   label: string;
+  /** shown instead of label on phones */
+  short?: string;
 }
 
 /** A group of toggle buttons; exactly one is pressed. */
@@ -31,7 +33,14 @@ export function Segmented<T extends string>({
               on ? "bg-fg font-medium text-bg" : "text-fg-2 hover:text-fg"
             }`}
           >
-            {o.label}
+            {o.short ? (
+              <>
+                <span className="sm:hidden">{o.short}</span>
+                <span className="hidden sm:inline">{o.label}</span>
+              </>
+            ) : (
+              o.label
+            )}
           </button>
         );
       })}

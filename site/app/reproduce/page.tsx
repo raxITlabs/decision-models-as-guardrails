@@ -55,7 +55,7 @@ function P({ children }: { children: React.ReactNode }) {
 }
 
 function C({ children }: { children: React.ReactNode }) {
-  return <code className="num rounded bg-raised px-1.5 py-0.5 text-[0.86em] text-fg">{children}</code>;
+  return <code className="mono rounded bg-raised px-1.5 py-0.5 text-[0.86em] text-fg">{children}</code>;
 }
 
 export default function Reproduce() {
@@ -109,7 +109,7 @@ export default function Reproduce() {
                 <span className="num shrink-0 text-[14px] text-fg">{cost}</span>
               </span>
               <span className="text-[14px] leading-relaxed text-fg-2">{account}</span>
-              <span className="num text-[12px] text-muted [overflow-wrap:anywhere]">{env}</span>
+              <span className="mono text-[12px] text-muted [overflow-wrap:anywhere]">{env}</span>
             </li>
           ))}
         </ul>
@@ -128,7 +128,7 @@ export default function Reproduce() {
                 <tr key={what} className="border-t border-line">
                   <th scope="row" className="py-2.5 pl-0 pr-4 text-left font-medium text-fg">{what}</th>
                   <td className="py-2.5 pr-4">{account}</td>
-                  <td className="num py-2.5 pr-4 text-[12px] [overflow-wrap:anywhere]">{env}</td>
+                  <td className="mono py-2.5 pr-4 text-[12px] [overflow-wrap:anywhere]">{env}</td>
                   <td className="num whitespace-nowrap py-2.5 pr-4 text-right sm:pr-0">{cost}</td>
                 </tr>
               ))}
@@ -188,9 +188,9 @@ uv run python -m goldrails_dataset.publish_e2 stage`}
               </tr>
             </thead>
             <tbody className="text-fg-2">
-              <tr className="border-t border-line"><td className="num py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_full.py</td><td className="py-2.5 pr-4 sm:pr-0">Content, off-topic, profanity, personal data and grounding, for the hosted APIs and the self-hosted models</td></tr>
-              <tr className="border-t border-line"><td className="num py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_attacks_rerun.py</td><td className="py-2.5 pr-4 sm:pr-0">Direct and indirect prompt attacks for the same systems</td></tr>
-              <tr className="border-t border-line"><td className="num py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_openai_run.py</td><td className="py-2.5 pr-4 sm:pr-0">gpt-6-luna on all jobs, and <C>score</C>, which rebuilds the leaderboard from the ledgers</td></tr>
+              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_full.py</td><td className="py-2.5 pr-4 sm:pr-0">Content, off-topic, profanity, personal data and grounding, for the hosted APIs and the self-hosted models</td></tr>
+              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_attacks_rerun.py</td><td className="py-2.5 pr-4 sm:pr-0">Direct and indirect prompt attacks for the same systems</td></tr>
+              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_openai_run.py</td><td className="py-2.5 pr-4 sm:pr-0">gpt-6-luna on all jobs, and <C>score</C>, which rebuilds the leaderboard from the ledgers</td></tr>
             </tbody>
           </table>
         </div>
@@ -265,9 +265,9 @@ uv run python benchmark/runs/e2_full.py report      # run summary, public ledger
               </tr>
             </thead>
             <tbody className="text-fg-2">
-              <tr className="border-t border-line"><td className="num py-2.5 pl-4 pr-4 text-fg sm:pl-0">NoulAdapter</td><td className="py-2.5 pr-4">Decision models that answer yes/no questions with a probability</td><td className="py-2.5 pr-4 sm:pr-0">highest probability ≥ {t}</td></tr>
-              <tr className="border-t border-line"><td className="num py-2.5 pl-4 pr-4 text-fg sm:pl-0">BedrockAdapter</td><td className="py-2.5 pr-4">Amazon Bedrock Guardrails</td><td className="py-2.5 pr-4 sm:pr-0">the service&apos;s verdict at its frozen setting</td></tr>
-              <tr className="border-t border-line"><td className="num py-2.5 pl-4 pr-4 text-fg sm:pl-0">VerdictAPIAdapter</td><td className="py-2.5 pr-4">Vendor APIs with their own categories</td><td className="py-2.5 pr-4 sm:pr-0">the vendor&apos;s own flag</td></tr>
+              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">NoulAdapter</td><td className="py-2.5 pr-4">Decision models that answer yes/no questions with a probability</td><td className="py-2.5 pr-4 sm:pr-0">highest probability ≥ {t}</td></tr>
+              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">BedrockAdapter</td><td className="py-2.5 pr-4">Amazon Bedrock Guardrails</td><td className="py-2.5 pr-4 sm:pr-0">the service&apos;s verdict at its frozen setting</td></tr>
+              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">VerdictAPIAdapter</td><td className="py-2.5 pr-4">Vendor APIs with their own categories</td><td className="py-2.5 pr-4 sm:pr-0">the vendor&apos;s own flag</td></tr>
             </tbody>
           </table>
         </div>

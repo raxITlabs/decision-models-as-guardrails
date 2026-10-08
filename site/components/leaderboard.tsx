@@ -69,8 +69,8 @@ export function Leaderboard({ board }: { board: Board }) {
           value={axis}
           onChange={setAxis}
           options={[
-            { value: "cost", label: "Cost per 1,000 checks" },
-            { value: "fbr", label: "False-block rate" },
+            { value: "cost", label: "Cost per 1,000 checks", short: "Cost" },
+            { value: "fbr", label: "False-block rate", short: "False blocks" },
           ]}
         />
         <Segmented
@@ -78,8 +78,8 @@ export function Leaderboard({ board }: { board: Board }) {
           value={scope}
           onChange={setScope}
           options={[
-            { value: "managed", label: "Managed APIs" },
-            { value: "all", label: "All systems" },
+            { value: "managed", label: "Managed APIs", short: "Managed" },
+            { value: "all", label: "All systems", short: "All" },
           ]}
         />
       </div>
@@ -96,7 +96,7 @@ export function Leaderboard({ board }: { board: Board }) {
       <Scatter scores={shown} sys={sys} axis={axis} tiers={tiers} selected={sel?.system} onSelect={setSelected} />
 
       <div className="overflow-x-auto rounded-xl border border-line bg-surface">
-        <table className="w-full min-w-[460px] sm:min-w-[860px] border-collapse text-[14px]">
+        <table className="w-full sm:min-w-[860px] border-collapse text-[14px]">
           <caption className="sr-only">
             {job === "overall" ? "Overall" : JOB_BY_ID[job].title}: rank, score with 95% interval, tier, catch rate, false-block rate, cost and hosting for every system.
           </caption>
@@ -104,11 +104,11 @@ export function Leaderboard({ board }: { board: Board }) {
             <tr className="border-b border-line text-left text-[12px] text-muted">
               <th scope="col" className="hidden w-10 py-3 pl-5 font-medium sm:table-cell">#</th>
               <th scope="col" className="sticky left-0 z-[1] bg-surface py-2.5 pl-3 pr-3 font-medium sm:static sm:pl-0">System</th>
-              <th scope="col" className="py-2.5 pr-3 font-medium">Score <span className="font-normal">±95% CI</span></th>
+              <th scope="col" className="py-2.5 pr-3 text-right font-medium sm:text-left">Score <span className="font-normal">±95% CI</span></th>
               <th scope="col" className="hidden py-2.5 pr-3 font-medium sm:table-cell">Tier</th>
               <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">Catch rate</th>
-              <th scope="col" className="py-2.5 pr-3 text-right font-medium">False-block rate</th>
-              <th scope="col" className="py-2.5 pr-3 text-right font-medium">$ per 1,000 checks</th>
+              <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">False-block rate</th>
+              <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">$ per 1,000 checks</th>
               <th scope="col" className="hidden py-3 pr-4 font-medium sm:table-cell sm:pr-5">Hosting</th>
             </tr>
           </thead>
@@ -141,8 +141,12 @@ export function Leaderboard({ board }: { board: Board }) {
                       </span>
                     </button>
                   </th>
-                  <td className="py-2.5 pr-3">
+                  <td className="py-2.5 pr-3 text-right sm:text-left">
                     <ScoreBar s={s} />
+                    {/* Phones: cost and false blocks sit under the score instead of in columns off-screen. */}
+                    <span className={`num mt-0.5 block whitespace-nowrap text-[12px] sm:hidden ${s.falseBlockRate >= 0.25 ? "text-warn" : "text-muted"}`}>
+                      {money(s.cost)} · {pct(s.falseBlockRate)} blocked
+                    </span>
                   </td>
                   <td className="hidden py-2.5 pr-3 sm:table-cell">
                     <span className="inline-flex items-center gap-2 whitespace-nowrap">
@@ -151,8 +155,8 @@ export function Leaderboard({ board }: { board: Board }) {
                     </span>
                   </td>
                   <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{pct(s.catchRate)}</td>
-                  <td className={`num py-2.5 pr-3 text-right ${s.falseBlockRate >= 0.25 ? "text-warn" : ""}`}>{pct(s.falseBlockRate)}</td>
-                  <td className="num py-2.5 pr-3 text-right">{money(s.cost)}</td>
+                  <td className={`num hidden py-2.5 pr-3 text-right sm:table-cell ${s.falseBlockRate >= 0.25 ? "text-warn" : ""}`}>{pct(s.falseBlockRate)}</td>
+                  <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{money(s.cost)}</td>
                   <td className="hidden py-2.5 pr-4 text-[13px] text-fg-2 sm:table-cell sm:pr-5">{m?.hosting === "managed" ? "Managed API" : "Self-hosted"}</td>
                 </tr>
               );
@@ -184,9 +188,9 @@ export function Leaderboard({ board }: { board: Board }) {
 function ScoreBar({ s }: { s: Score }) {
   const pos = (v: number) => `${Math.max(0, Math.min(100, ((v - 50) / 50) * 100))}%`;
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center justify-end gap-3 sm:justify-start">
       <span className="relative hidden h-2 w-28 rounded-full bg-raised sm:block" aria-hidden="true">
-        <span className="absolute inset-y-0 left-0 rounded-full" style={{ width: pos(s.score), background: tierVar(s.tier) }} />
+        <span className="grow absolute inset-y-0 left-0 rounded-full" style={{ width: pos(s.score), background: tierVar(s.tier), animationDelay: `${s.rank * 40}ms` }} />
         <span className="absolute -top-1 h-4 rounded-sm bg-fg/70" style={{ left: pos(s.ciLow), width: `max(2px, calc(${pos(s.ciHigh)} - ${pos(s.ciLow)}))`, opacity: 0.55 }} />
       </span>
       <span className="num whitespace-nowrap">
@@ -392,9 +396,9 @@ function Scatter({
               aria-pressed={on}
               aria-label={`${m?.name ?? p.s.system}: score ${score1(p.s.score)}, ${axis === "cost" ? `${money(p.s.cost)} per 1,000 checks` : `${pct(p.s.falseBlockRate)} false blocks`}, tier ${p.s.tier}`}
               title={`${m?.name ?? p.s.system} · ${score1(p.s.score)} · ${axis === "cost" ? money(p.s.cost) : pct(p.s.falseBlockRate)}`}
-              className={`absolute grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-md ${on ? "z-10" : ""}`}
+              className={`pop absolute grid place-items-center rounded-md ${on ? "z-10" : ""}`}
               // The hit area is the square plus its ring (half() each way), the same box the layout keeps apart.
-              style={{ left: p.x, top: p.y, width: 2 * half(p.s), height: 2 * half(p.s) }}
+              style={{ left: p.x - half(p.s), top: p.y - half(p.s), width: 2 * half(p.s), height: 2 * half(p.s), animationDelay: `${120 + p.s.rank * 45}ms` }}
             >
               {/* A square per system: the maker's mark inside, tier colour on the border and as a wash behind it. */}
               <span
@@ -437,7 +441,7 @@ function Scatter({
       )}
       <figcaption className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[12px] text-muted">
         <span>
-          Score is balanced accuracy, where 50 is a coin flip. The horizontal axis is {axis === "cost" ? "USD per 1,000 checks" : "the share of safe rows blocked"}. Lines show the 95% interval. Where squares would overlap, they move at most a few pixels and a dot marks the exact value. The table below gives every number.
+          Score is balanced accuracy, where 50 is a coin flip. The horizontal axis is {axis === "cost" ? "USD per 1,000 checks" : "the share of safe rows blocked"}. Lines show the 95% interval; if a square had to move to stay readable, a dot marks its exact value.
         </span>
         <span className="flex flex-wrap items-center gap-3" aria-label="Tier colours">
           {present.map((t) => (
@@ -502,7 +506,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
                   <span className="hidden sm:inline">{j.title}</span>
                 </span>
                 <span className="relative h-2 rounded-full bg-raised" aria-hidden="true">
-                  {js && <span className="absolute inset-y-0 left-0 rounded-full bg-accent" style={{ width: pos(js.score) }} />}
+                  {js && <span className="grow absolute inset-y-0 left-0 rounded-full bg-accent" style={{ width: pos(js.score) }} />}
                   <span className="absolute -top-1 h-4 w-0.5 bg-fg" style={{ left: pos(best[j.id]) }} />
                 </span>
                 <span className="num text-right text-[13px]">{js ? score1(js.score) : "n/a"}</span>

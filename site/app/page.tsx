@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Chevron } from "@/components/icons";
 import { HashOpen } from "@/components/hash-open";
 import { PillLink } from "@/components/pill-link";
+import { Podium } from "@/components/podium";
 import { Plate } from "@/components/plate";
 import { Faq } from "@/components/faq";
 import { Leaderboard } from "@/components/leaderboard";
@@ -58,14 +59,15 @@ export default function Home() {
 
       <section aria-labelledby="hero-h" className="flex flex-col gap-5">
         <Plate src="/plates/hero.webp" priority>
-          <div className="flex max-w-[860px] flex-col items-start gap-4 sm:gap-5">
-            <span className="over-art plate-title text-[12px] font-medium uppercase tracking-[0.2em]">
+          <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] items-end gap-6 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-12">
+          <div className="flex max-w-[760px] flex-col items-start gap-4 sm:gap-5">
+            <span className="rise over-art plate-title text-[12px] font-medium uppercase tracking-[0.2em]">
               raxIT Labs · Independent benchmark · v{board.release.version}
             </span>
-            <h1 id="hero-h" className="over-art plate-title m-0 text-[clamp(2.25rem,5.6vw,3.75rem)] font-semibold leading-[1.05] tracking-[-0.025em] text-balance">
+            <h1 id="hero-h" className="rise rise-1 over-art plate-title m-0 text-[clamp(2.25rem,5.6vw,3.75rem)] font-semibold leading-[1.05] tracking-[-0.025em] text-balance">
               Can a decision model replace your guardrail?
             </h1>
-            <div className="mt-2 flex flex-wrap gap-3">
+            <div className="rise rise-1 mt-2 flex flex-wrap gap-3">
               <PillLink href="#leaderboard" variant="paper">
                 See the leaderboard <ArrowRight />
               </PillLink>
@@ -73,6 +75,8 @@ export default function Home() {
                 Reproduce it
               </PillLink>
             </div>
+          </div>
+          <Podium board={board} />
           </div>
         </Plate>
       </section>

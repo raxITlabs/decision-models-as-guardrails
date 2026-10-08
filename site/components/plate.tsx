@@ -25,7 +25,7 @@ export function Plate({
   priority?: boolean;
 }) {
   return (
-    <div className={`relative grid overflow-hidden rounded-[4px] ${minH} ${className}`}>
+    <div className={`relative grid grid-cols-[minmax(0,1fr)] overflow-hidden rounded-[4px] ${minH} ${className}`}>
       <img
         src={src}
         srcSet={srcSet(src)}

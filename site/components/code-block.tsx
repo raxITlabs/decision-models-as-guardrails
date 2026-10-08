@@ -37,7 +37,7 @@ export function CodeBlock({ code, label }: { code: string; label: string }) {
         tabIndex={0}
         role="region"
         aria-label={`Code: ${label}`}
-        className="num m-0 overflow-x-auto px-4 py-4 text-[13px] leading-[1.7] text-fg"
+        className="mono m-0 overflow-x-auto px-4 py-4 text-[13px] leading-[1.7] text-fg"
       >
         {code.split("\n").map((l, i) => {
           const c = l.indexOf(" #");

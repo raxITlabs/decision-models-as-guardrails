@@ -70,7 +70,7 @@ export function RowView({ board }: { board: Board }) {
         <div className="flex flex-col gap-4">
           <h1 className="m-0 text-[32px] font-semibold tracking-[-0.02em]">Row not found</h1>
           <p className="m-0 max-w-[60ch] text-[16px] text-fg-2">
-            {state.id ? <><span className="num">{state.id}</span> is not a public test row.</> : "The address has no row id."} We never
+            {state.id ? <><span className="mono">{state.id}</span> is not a public test row.</> : "The address has no row id."} We never
             list rows from the held-back slice.
           </p>
           <p className="m-0"><Link href="/data">Browse the data</Link></p>
@@ -105,17 +105,17 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
           <li aria-hidden="true">/</li>
           <li><Link href={`/data?job=${row.job}#rows`} className="inline-flex min-h-11 items-center sm:min-h-6">{job.title}</Link></li>
           <li aria-hidden="true">/</li>
-          <li aria-current="page" className="num text-fg-2">{row.id}</li>
+          <li aria-current="page" className="mono text-fg-2">{row.id}</li>
         </ol>
       </nav>
 
       <header className="flex flex-col gap-5">
         <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-muted">Row</span>
-        <h1 className="num m-0 text-[clamp(1.25rem,3.5vw,2rem)] font-medium tracking-[-0.02em] [overflow-wrap:anywhere]">{row.id}</h1>
+        <h1 className="mono m-0 text-[clamp(1.25rem,3.5vw,2rem)] font-medium tracking-[-0.02em] [overflow-wrap:anywhere]">{row.id}</h1>
         <dl className="m-0 grid grid-cols-2 gap-x-8 gap-y-3 text-[14px] sm:grid-cols-4">
           <div><dt className="text-[12px] text-muted">Job</dt><dd className="m-0 mt-0.5">{job.title}</dd></div>
-          <div><dt className="text-[12px] text-muted">Source</dt><dd className="num m-0 mt-0.5 [overflow-wrap:anywhere]">{row.source}</dd></div>
-          <div><dt className="text-[12px] text-muted">Licence</dt><dd className="num m-0 mt-0.5">{row.licence ?? "see source"}</dd></div>
+          <div><dt className="text-[12px] text-muted">Source</dt><dd className="mono m-0 mt-0.5 [overflow-wrap:anywhere]">{row.source}</dd></div>
+          <div><dt className="text-[12px] text-muted">Licence</dt><dd className="mono m-0 mt-0.5">{row.licence ?? "see source"}</dd></div>
           <div>
             <dt className="text-[12px] text-muted">Label</dt>
             <dd className={`m-0 mt-0.5 font-medium ${row.label === "yes" ? "text-warn" : "text-good"}`}>{row.label === "yes" ? "Should block" : "Should pass"}</dd>
@@ -145,7 +145,7 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
                 <a href={src.url} className="inline-flex min-h-11 items-center gap-1.5 font-medium">
                   View {src.name} at the source <External />
                 </a>
-                <span className="num text-[12px] text-muted">
+                <span className="mono text-[12px] text-muted">
                   revision {src.revision} · {src.licence}
                 </span>
               </p>
@@ -162,7 +162,7 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
               <Block title="Earlier turns">
                 {row.context.map((c, i) => (
                   <span key={i} className="block [&:not(:first-child)]:mt-3">
-                    <span className="num text-[12px] text-muted">{c.role}</span>
+                    <span className="mono text-[12px] text-muted">{c.role}</span>
                     <br />
                     {c.text}
                   </span>
@@ -171,7 +171,7 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
             )}
             {row.document && <Block title="Source document">{row.document}</Block>}
             {row.query && <Block title="Query">{row.query}</Block>}
-            {row.toolCall && <Block title="Tool call"><code className="num text-[13px]">{row.toolCall}</code></Block>}
+            {row.toolCall && <Block title="Tool call"><code className="mono text-[13px]">{row.toolCall}</code></Block>}
             {row.text && <Block title={`Text under review${row.role ? `, ${roleName[row.role] ?? row.role}` : ""}`}>{row.text}</Block>}
           </div>
           </Sensitive>

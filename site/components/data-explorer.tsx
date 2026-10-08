@@ -313,11 +313,11 @@ function RowItem({ r, index, sysName, highlight }: { r: RowLite; index: RowsInde
     <li className="grid gap-x-6 gap-y-3 rounded-lg border border-line bg-surface px-4 py-3.5 transition-colors hover:border-line-strong md:grid-cols-[minmax(0,1fr)_auto]">
       <div className="flex min-w-0 flex-col gap-1.5">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-muted">
-          <Link href={`/data/rows/${id}`} className="num inline-flex min-h-11 items-center text-[13px] font-medium sm:min-h-6">
+          <Link href={`/data/rows/${id}`} className="mono inline-flex min-h-11 items-center text-[13px] font-medium sm:min-h-6">
             {id}
           </Link>
           <span>{job?.title}</span>
-          <span className="num">{index.sources[srcI]}</span>
+          <span className="mono">{index.sources[srcI]}</span>
           <span className={label === 1 ? "text-warn" : "text-good"}>{label === 1 ? "Should block" : "Should pass"}</span>
         </div>
         {withheld ? (
