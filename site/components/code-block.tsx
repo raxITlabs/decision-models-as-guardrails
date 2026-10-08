@@ -13,7 +13,7 @@ export function CodeBlock({ code, label }: { code: string; label: string }) {
     .join("\n")
     .trim();
   return (
-    <div className="overflow-hidden rounded-xl border border-line bg-code">
+    <div className="overflow-hidden border-y border-line bg-code">
       <div className="flex items-center justify-between gap-3 border-b border-line py-1 pl-4 pr-1">
         <span className="text-[12px] text-muted first-letter:uppercase">{label}</span>
         <button
@@ -25,7 +25,7 @@ export function CodeBlock({ code, label }: { code: string; label: string }) {
               setTimeout(() => setCopied(false), 1600);
             } catch {}
           }}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-md px-3 text-[13px] text-fg-2 hover:bg-raised hover:text-fg"
+          className="inline-flex min-h-11 items-center gap-1.5 px-3 text-[13px] text-fg-2 underline-offset-4 hover:text-fg hover:underline"
           aria-label={copied ? "Copied" : `Copy: ${label}`}
         >
           {copied ? <Check /> : <Copy />}

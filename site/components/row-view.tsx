@@ -26,8 +26,9 @@ function verdict(r: RowResult, label: "yes" | "no") {
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-2">
-      <h3 className="m-0 text-[12px] font-medium text-muted">{title}</h3>
-      <div className="max-h-[32rem] overflow-y-auto whitespace-pre-wrap rounded-lg border border-line bg-surface px-4 py-3 text-[14px] leading-relaxed text-fg [overflow-wrap:anywhere]">
+      <h3 className="m-0 text-[13px] font-medium text-muted">{title}</h3>
+      {/* Set on the paper between hairlines, not in a box; very long text scrolls inside its own band. */}
+      <div className="max-h-[32rem] max-w-[80ch] overflow-y-auto whitespace-pre-wrap border-t border-line pt-3 text-[15px] leading-relaxed text-fg [overflow-wrap:anywhere]">
         {children}
       </div>
     </div>
