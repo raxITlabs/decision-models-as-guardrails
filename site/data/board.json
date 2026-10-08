@@ -94,7 +94,7 @@
   {
    "id": "bedrock-guardrails",
    "name": "Bedrock Guardrails",
-   "provider": "Amazon Web Services · not a decision model",
+   "provider": "AWS · not a decision model",
    "mono": "Aw",
    "logo": "/logos/aws.svg",
    "docs": "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html",
@@ -105,7 +105,7 @@
   {
    "id": "strands-decider-2b",
    "name": "Strands Decider 2B",
-   "provider": "Amazon Web Services · open weights",
+   "provider": "AWS · open weights",
    "mono": "St",
    "short": "Strands 2B",
    "logo": "/logos/aws.svg",
