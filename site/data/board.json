@@ -16,10 +16,10 @@
  "systems": [
   {
    "id": "pplx-decider-v1-27b",
-   "name": "pplx-decider v1 27B",
-   "provider": "Perplexity",
+   "name": "Perplexity Decisions API",
+   "provider": "Perplexity · runs pplx-decider-v1-27b",
    "mono": "Px",
-   "short": "pplx-decider",
+   "short": "Perplexity Decisions",
    "logo": "/logos/perplexity.svg",
    "hosting": "managed"
   },
@@ -28,7 +28,7 @@
    "name": "OpenAI Decisions API",
    "provider": "OpenAI · runs gpt-6-luna",
    "mono": "Oa",
-   "short": "Decisions API",
+   "short": "OpenAI Decisions",
    "logo": "/logos/openai.svg",
    "hosting": "managed"
   },

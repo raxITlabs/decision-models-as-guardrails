@@ -13,11 +13,18 @@ export function SiteHeader() {
   const path = usePathname();
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
+    // A sentinel at the top of the hero says whether the page is still at rest; scroll events back it up.
     const on = () => setScrolled(window.scrollY > 24);
     on();
     window.addEventListener("scroll", on, { passive: true });
-    return () => window.removeEventListener("scroll", on);
-  }, []);
+    const sentinel = document.getElementById("hero-sentinel");
+    const io = sentinel ? new IntersectionObserver(([e]) => setScrolled(!e.isIntersecting)) : null;
+    if (sentinel && io) io.observe(sentinel);
+    return () => {
+      window.removeEventListener("scroll", on);
+      io?.disconnect();
+    };
+  }, [path]);
   const overArt = path === "/" && !scrolled;
   return (
     <header

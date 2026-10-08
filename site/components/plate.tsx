@@ -61,6 +61,7 @@ export function WallpaperFrame({ src, children }: { src: string; children: React
 export function HeroPlate({ src, children }: { src: string; children: React.ReactNode }) {
   return (
     <section aria-labelledby="hero-h" className="relative -mt-[73px] grid min-h-[100svh] grid-cols-[minmax(0,1fr)] overflow-hidden">
+      <span id="hero-sentinel" aria-hidden="true" className="pointer-events-none absolute left-0 top-0 h-6 w-px" />
       <img
         src={src}
         srcSet={srcSet(src)}

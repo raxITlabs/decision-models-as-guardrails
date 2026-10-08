@@ -20,7 +20,7 @@ const AGENT_PROMPT = `Read ${SITE}/reproduce.md and help me reproduce the decisi
 const NEEDS: [string, string, string, string][] = [
   ["Tests and dataset", "None", "None", "Free"],
   ["Jev 1.13.0", "TypeSafe API key", "TYPESAFE_API_KEY", "$0.38"],
-  ["pplx-decider v1 27B", "Perplexity API key", "PERPLEXITY_API_KEY", "$0.56"],
+  ["Perplexity Decisions API (pplx-decider-v1-27b)", "Perplexity API key", "PERPLEXITY_API_KEY", "$0.56"],
   ["OpenAI Decisions API (gpt-6-luna)", "OpenAI key with Decisions API access (public beta)", "OPENAI_API_KEY", "$1.10"],
   ["Clef, Clef Flash", "Cloudflare Workers AI. In practice you need the Workers Paid plan ($5 a month), because the free daily allowance ran out mid-run", "CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN", "$2.76 + plan"],
   ["Amazon Bedrock Guardrails", "AWS account with Bedrock, a CLI profile (we used SSO), Terraform to create the guardrails", "AWS_PROFILE, AWS_REGION", "$1.12"],
