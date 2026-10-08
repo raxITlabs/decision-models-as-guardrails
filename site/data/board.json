@@ -44,6 +44,7 @@
    "name": "Jev 1.13",
    "provider": "TypeSafe",
    "mono": "Ts",
+   "logo": "/logos/typesafe.svg",
    "hosting": "managed"
   },
   {
@@ -105,6 +106,7 @@
    "name": "Laya",
    "provider": "Convai Innovations · open weights",
    "mono": "CI",
+   "logo": "/logos/laya.svg",
    "hosting": "self-hosted"
   }
  ],

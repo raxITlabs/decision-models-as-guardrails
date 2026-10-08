@@ -32,12 +32,12 @@ export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna"];
 export const RELEASE_VERSION = "1.0.0";
 
 /** Display names, makers and marks for the systems on the board. Ids not listed fall back to the id itself.
- *  `short` labels the chart dots. `logo` is a file in public/logos; systems without one show a generic mark (shield for a managed API, cube for open weights). */
+ *  `short` labels the chart dots. `logo` is a file in public/logos; systems without one show `mono`, the maker's initials. */
 export const SYSTEM_DISPLAY: Record<string, { name: string; short?: string; provider: string; mono: string; logo?: string }> = {
   "pplx-decider-v1-27b": { name: "pplx-decider v1 27B", short: "pplx-decider", provider: "Perplexity", mono: "Px", logo: "/logos/perplexity.svg" },
   "gpt-6-luna": { name: "GPT-6 Luna", provider: "OpenAI · Decisions API", mono: "Oa", logo: "/logos/openai.svg" },
   clef: { name: "Clef", provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg" },
-  "jev-1.13.0": { name: "Jev 1.13", provider: "TypeSafe", mono: "Ts" },
+  "jev-1.13.0": { name: "Jev 1.13", provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg" },
   "clef-flash": { name: "Clef Flash", provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg" },
   "kev-4b": { name: "Kev 4B", provider: "Jared Palmer · open weights", mono: "JP" },
   "kev-9b": { name: "Kev 9B", provider: "Jared Palmer · open weights", mono: "JP" },
@@ -45,7 +45,7 @@ export const SYSTEM_DISPLAY: Record<string, { name: string; short?: string; prov
   "strands-decider-2b": { name: "Strands Decider 2B", short: "Strands 2B", provider: "Amazon Web Services · open weights", mono: "St", logo: "/logos/aws.svg" },
   "open-jev-2b": { name: "Open-Jev 2B", provider: "Zefan Cai · open weights", mono: "ZC" },
   "kev-0-8b": { name: "Kev 0.8B", provider: "Jared Palmer · open weights", mono: "JP" },
-  laya: { name: "Laya", provider: "Convai Innovations · open weights", mono: "CI" },
+  laya: { name: "Laya", provider: "Convai Innovations · open weights", mono: "CI", logo: "/logos/laya.svg" },
 };
 
 /** The system whose native question format every decision model receives (disclosed in the FAQ). */
