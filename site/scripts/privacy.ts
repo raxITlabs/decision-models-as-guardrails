@@ -1,7 +1,7 @@
 // Leak check for generated site data: no unpublished id and no licence-withheld text may appear in it.
 import fs from "node:fs";
 import path from "node:path";
-import { buildTestFiles, privateIds, readJsonl, readLedgers, repoPaths, textCleared } from "./generate";
+import { buildTestFiles, isAdult, privateIds, readJsonl, repoPaths, textCleared } from "./generate";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -9,12 +9,12 @@ import { buildTestFiles, privateIds, readJsonl, readLedgers, repoPaths, textClea
 export function withheldTexts(repo: string): string[] {
   const p = repoPaths(repo);
   const policy = JSON.parse(fs.readFileSync(p.redistribution, "utf8"));
-  const { idsOnlyRows } = readLedgers(p.ledgerDirs, new Set());
   const out: string[] = [];
   for (const f of buildTestFiles(p.buildDir)) {
     for (const r of readJsonl(f)) {
       const src = r.provenance?.source;
-      if (textCleared(src, policy) && !idsOnlyRows.has(r.id) && r.redistribution !== "ids_only") continue;
+      // Text may appear only for cleared sources (ruling 34), and never for sexual or adult content.
+      if (textCleared(src, policy) && r.redistribution !== "ids_only" && !isAdult(r)) continue;
       const st = r.state ?? {};
       const fields = [st.text, st.query, st.source, ...(Array.isArray(st.context) ? st.context.map((t: any) => t?.text) : [])];
       for (const t of fields) if (typeof t === "string" && t.trim().length >= 20) out.push(t.trim());

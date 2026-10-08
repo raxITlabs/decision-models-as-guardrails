@@ -105,7 +105,8 @@
   "llmail_inject": {
    "mode": "text",
    "basis": "MIT",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "HF card YAML license: mit at 1063bdf (no LICENSE file in the HF repo); the companion GitHub repo microsoft/llmail-inject-challenge carries an MIT LICENSE",
    "attribution": "named in the dataset card (Abdelnabi et al., 2025)",
    "licence_check": "Claude, 2026-10-06: declared licence checked at the pinned revision",
@@ -165,31 +166,36 @@
   "e2_content_orbench80k": {
    "mode": "text",
    "basis": "CC-BY-4.0",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "same HF repo and revision as orbench (e36d8b8), not gated"
   },
   "e2_content_harmbench": {
    "mode": "text",
    "basis": "MIT",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "GitHub licence MIT, centerforaisafety/HarmBench at 8e1604d"
   },
   "e2_content_harmbench_cls": {
    "mode": "text",
    "basis": "MIT",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "GitHub licence MIT, centerforaisafety/HarmBench at 8e1604d"
   },
   "e2_content_xstest": {
    "mode": "text",
    "basis": "CC-BY-4.0",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "GitHub licence CC-BY-4.0, paul-rottger/xstest at d7bb5bd"
   },
   "deepset_injections_test": {
    "mode": "text",
    "basis": "Apache-2.0",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "same repo and revision as deepset_injections (4f61ecb); test split",
    "attribution": "named in the dataset card",
    "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision",
@@ -207,7 +213,8 @@
   "itw_jailbreak_prompts": {
    "mode": "text",
    "basis": "MIT",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "HF cardData.license mit at a10aab8, not gated",
    "attribution": "named in the dataset card (Shen et al., CCS 2024)",
    "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision",
@@ -216,7 +223,8 @@
   "lakera_mosscap": {
    "mode": "text",
    "basis": "MIT",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "HF cardData.license mit at b7e495f, not gated",
    "attribution": "named in the dataset card",
    "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision",
@@ -234,7 +242,8 @@
   "neuralchemy_injection": {
    "mode": "text",
    "basis": "Apache-2.0 as declared; rows derive from HackAPrompt (MIT), WildGuardMix (ODC-BY), HarmBench (MIT)",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "HF cardData.license apache-2.0 at 7d70432, not gated; per-row upstream origin kept in notes",
    "attribution": "named in the dataset card, with HackAPrompt, WildGuardMix and HarmBench",
    "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision; upstream licences noted, owner to confirm the ODC-BY rows (36)",
@@ -271,7 +280,8 @@
   "e2_profanity_rtp": {
    "mode": "text",
    "basis": "Apache-2.0",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "allenai/real-toxicity-prompts at f2162971",
    "licence_check": "Claude, 2026-10-08: declared licence recorded from dataset/edition2/word_filters/SOURCES.md",
    "note": "pending owner review; until then ids, labels and hashes ship and the text stays local"
@@ -279,7 +289,8 @@
   "e2_profanity_oasst2": {
    "mode": "text",
    "basis": "Apache-2.0",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "OpenAssistant/oasst2 at 179dd21f, same repo and revision as e2_oasst2",
    "licence_check": "Claude, 2026-10-08: declared licence recorded from dataset/edition2/word_filters/SOURCES.md",
    "note": "pending owner review; until then ids, labels and hashes ship and the text stays local"
@@ -287,7 +298,8 @@
   "e2_profanity_civil_comments": {
    "mode": "text",
    "basis": "CC0-1.0",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "google/civil_comments at f2970eb3, validation and test",
    "licence_check": "Claude, 2026-10-08: declared licence recorded from dataset/edition2/word_filters/SOURCES.md",
    "note": "pending owner review; until then ids, labels and hashes ship and the text stays local"
@@ -295,7 +307,8 @@
   "e2_oasst2": {
    "mode": "text",
    "basis": "Apache-2.0",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "HF tags license:apache-2.0 at 179dd21, not gated",
    "attribution": "named in the dataset card",
    "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision",
@@ -304,7 +317,8 @@
   "gretel_pii_en": {
    "mode": "text",
    "basis": "Apache-2.0, attribution in the card",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "HF cardData.license apache-2.0 at e06eb1499ca8d54470f085021cd8e54f9efac7fd, not gated",
    "attribution": "named in the dataset card",
    "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision",
@@ -313,7 +327,8 @@
   "gretel_pii_finance": {
    "mode": "text",
    "basis": "Apache-2.0, attribution in the card",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "HF cardData.license apache-2.0 at 7b844d16738527a04264f50214cb426a4cea0897, not gated",
    "attribution": "named in the dataset card",
    "licence_check": "Claude, 2026-10-02: declared licence checked at the pinned revision",
@@ -332,13 +347,15 @@
   "faithdial": {
    "mode": "text",
    "basis": "MIT; knowledge sentences are Wikipedia (CC-BY-SA)",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "HF cardData.license mit at 7a414e8, not gated"
   },
   "summedits": {
    "mode": "text",
    "basis": "CC-BY-4.0; only BillSum, QMSum, SciTLDR, Shakespeare and SummEdits' synthetic sales domains are loaded",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "HF cardData.license cc-by-4.0 at ce0c479, not gated"
   },
   "ragbench": {
@@ -350,14 +367,16 @@
   "nemotron_pii": {
    "mode": "text",
    "basis": "CC-BY-4.0",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "HF nvidia/Nemotron-PII at b70ffaf, test split (dataset/edition2/pii/SOURCES.md says the v1.3 rights.json cleared it; this file had no entry)",
    "note": "pending owner review: no entry existed, so the default (ids_only) applied; ids, labels and hashes ship, the text stays in a git-ignored local cache"
   },
   "e2_content_aegis2_test": {
    "mode": "text",
    "basis": "CC-BY-4.0",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "same HF repo and revision as aegis2 (d86bb8b), not gated; held to the e2_content_aegis2_val precedent until reviewed"
   },
   "e2_content_beavertails": {
@@ -369,7 +388,8 @@
   "sep_dataset": {
    "mode": "text",
    "basis": "MIT",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "LICENCE file (MIT, 'Copyright (c) 2024') at egozverev/Should-It-Be-Executed-Or-Processed 7606c06; passages and probes generated by the authors with GPT-4",
    "attribution": "Zverev et al., 'Can LLMs Separate Instructions From Data?' (ICLR 2025)",
    "licence_check": "Claude, 2026-10-06: declared licence checked at the pinned revision",
@@ -378,7 +398,8 @@
   "bipia": {
    "mode": "text",
    "basis": "MIT (repository); email contexts from OpenAI Evals per NOTICE.md",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "LICENSE (MIT, Copyright (c) Microsoft Corporation) at microsoft/BIPIA a004b69; NOTICE.md lists third-party components (email: OpenAI Evals; table: WikiTableQuestions CC-BY-SA-4.0, not used)",
    "attribution": "Yi et al., 'Benchmarking and Defending Against Indirect Prompt Injection Attacks on LLMs' (2023)",
    "licence_check": "Claude, 2026-10-06: declared licence checked at the pinned revision",
@@ -387,7 +408,8 @@
   "agentdojo": {
    "mode": "text",
    "basis": "MIT",
-   "reviewed": false,
+   "reviewed": true,
+   "owner_review": "approved by the owner on 2026-10-08 (ruling 34); site masks harmful text and never shows sexual content",
    "evidence": "LICENSE (MIT, Copyright (c) 2024 Debenedetti et al.) at ethz-spylab/agentdojo 089ed46; environment data is synthetic",
    "attribution": "Debenedetti et al., 'AgentDojo' (NeurIPS 2024 Datasets and Benchmarks)",
    "licence_check": "Claude, 2026-10-06: declared licence checked at the pinned revision",

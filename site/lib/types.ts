@@ -75,7 +75,8 @@ export interface Board {
 }
 
 /** One public row in the row browser: [id, job index, source index, label (1 = should block), decisions, withheld (1/0), snippet] */
-export type RowLite = [string, number, number, 0 | 1, string, 0 | 1, string | null];
+/** withheld: 0 shown (one of the example rows), 1 licence, 2 sexual or adult content (never shown), 3 not an example row */
+export type RowLite = [string, number, number, 0 | 1, string, 0 | 1 | 2 | 3, string | null];
 
 export interface RowsIndex {
   /** system ids, in the order of each row's decisions string */
@@ -106,6 +107,8 @@ export interface RowDetail {
   licence: string | null;
   label: "yes" | "no";
   withheld: boolean;
+  /** why the text is not shown: the source licence, or sexual/adult content (ruling 34) */
+  withheldReason?: "licence" | "adult" | "sample";
   /** present only when the source licence allows the text to be published */
   text?: string | null;
   role?: string | null;

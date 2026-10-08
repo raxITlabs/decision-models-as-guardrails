@@ -19,7 +19,18 @@ describe("source links", () => {
     const dataDir = fs.existsSync(path.resolve(__dirname, "../data/rows-index.json")) ? "../data" : "../fixtures/data";
     const index = JSON.parse(fs.readFileSync(path.resolve(__dirname, dataDir, "rows-index.json"), "utf8"));
     if (dataDir === "../fixtures/data") return; // synthetic sources have no upstream
-    const withheld = new Set<string>(index.rows.filter((r: unknown[]) => r[5] === 1).map((r: number[]) => index.sources[r[2]]));
+    const withheld = new Set<string>(index.rows.filter((r: unknown[]) => r[5] !== 0).map((r: number[]) => index.sources[r[2]]));
     expect([...withheld].filter((s) => !SOURCES[s])).toEqual([]);
+  });
+});
+
+describe("example rows", () => {
+  it("show text for at most 100 rows, none of them adult", () => {
+    const file = path.resolve(__dirname, "../data/rows-index.json");
+    if (!fs.existsSync(file)) return;
+    const index = JSON.parse(fs.readFileSync(file, "utf8"));
+    const shown = index.rows.filter((r: unknown[]) => r[5] === 0);
+    expect(shown.length).toBeLessThanOrEqual(100);
+    expect(index.rows.filter((r: unknown[]) => r[5] !== 0 && r[6] !== null)).toEqual([]);
   });
 });

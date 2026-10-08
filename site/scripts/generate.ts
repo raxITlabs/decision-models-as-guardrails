@@ -11,6 +11,7 @@
 //   - a row ships text only when its source is listed with mode "text" and reviewed true, its ledger records do
 //     not flag it ids_only, and the row itself is not marked redistribution ids_only. Every other row ships
 //     its id, job, source and label, with the text withheld.
+import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { JOBS, JOB_BY_LEDGER_SUBTASK, SUITE_COUNT, type JobId } from "../lib/jobs";
@@ -158,6 +159,82 @@ export function privateIds(p: Paths, pub: Set<string> = publicIds(p)): Set<strin
     }
   }
   return ids;
+}
+
+// Ruling 34: rows with sexual or adult content never show text on the site, whatever their licence. Detected from the
+// row's own category labels (Bedrock, AILuminate, and the upstream source label). "sexuality" alone is a PII entity
+// type, not content, so the source-label pattern needs the full word "sexual" or a named adult category.
+const ADULT_SOURCE_LABEL = /\bsexual\b|sexually_explicit|adult_content|child_abuse/i;
+export function isAdult(r: Json): boolean {
+  const c = r.category ?? {};
+  return (
+    c.bedrock === "SEXUAL" ||
+    ["sexual_content", "sex_related_crimes", "child_sexual_exploitation"].includes(c.ailuminate) ||
+    ADULT_SOURCE_LABEL.test(String(c.source_label ?? ""))
+  );
+}
+
+/** Ruling 34 follow-up: the site shows the full text of this many example rows only. */
+export const SHOWCASE_SIZE = 100;
+const SHOWCASE_MAX_CHARS = 700;
+
+/**
+ * Picks the example rows whose text the site shows. Deterministic: same inputs, same rows. Only rows whose source is
+ * licence-cleared, with no sexual or adult content and a short enough text, are eligible. Each job gets an equal
+ * share split evenly between should-block and should-pass rows; within a share, rows the systems disagree on come
+ * first, sources are taken in turn so no one source dominates, and ties break on a hash of the row id.
+ */
+export function selectShowcase(
+  rows: Json[],
+  correctShare: (r: Json) => number | null,
+  eligible: (r: Json) => boolean,
+): Set<string> {
+  const hash = (id: string) => createHash("sha256").update(id).digest("hex");
+  const jobs = JOBS.map((j) => j.id);
+  const per = Math.floor(SHOWCASE_SIZE / jobs.length);
+  const extra = SHOWCASE_SIZE - per * jobs.length;
+  const out = new Set<string>();
+  jobs.forEach((job, ji) => {
+    const quota = per + (ji < extra ? 1 : 0);
+    for (const [li, label] of (["yes", "no"] as const).entries()) {
+      const want = li === 0 ? Math.ceil(quota / 2) : Math.floor(quota / 2);
+      const pool = rows.filter((r) => ROW_TAG_JOB[r.subtask] === job && r.expected === label && eligible(r));
+      const bySource = new Map<string, Json[]>();
+      for (const r of pool) {
+        const share = correctShare(r);
+        r.__rank = [share !== null && share >= 0.25 && share <= 0.75 ? 0 : 1, hash(r.id)];
+        const k = r.provenance?.source ?? "unknown";
+        bySource.set(k, [...(bySource.get(k) ?? []), r]);
+      }
+      const queues = [...bySource.entries()]
+        .sort((a, b) => (a[0] < b[0] ? -1 : 1))
+        .map(([, q]) => q.sort((a, b) => a.__rank[0] - b.__rank[0] || (a.__rank[1] < b.__rank[1] ? -1 : 1)));
+      let taken = 0;
+      while (taken < want && queues.some((q) => q.length)) {
+        for (const q of queues) {
+          const r = q.shift();
+          if (!r || taken >= want) continue;
+          out.add(r.id);
+          taken++;
+        }
+      }
+    }
+  });
+  // A job with too few short, eligible rows leaves slots open: fill them from the other jobs, best-ranked first.
+  if (out.size < SHOWCASE_SIZE) {
+    const rest = rows
+      .filter((r) => !out.has(r.id) && ROW_TAG_JOB[r.subtask] && eligible(r))
+      .map((r) => {
+        const share = correctShare(r);
+        return { r, k: [share !== null && share >= 0.25 && share <= 0.75 ? 0 : 1, hash(r.id)] as [number, string] };
+      })
+      .sort((a, b) => a.k[0] - b.k[0] || (a.k[1] < b.k[1] ? -1 : 1));
+    for (const { r } of rest) {
+      if (out.size >= SHOWCASE_SIZE) break;
+      out.add(r.id);
+    }
+  }
+  return out;
 }
 
 export function textCleared(source: string, policy: Json): boolean {
@@ -355,7 +432,7 @@ export function generate(repo: string, source: Board["source"] = "real"): Genera
   const drop = privateIds(p);
   const board = buildBoard(lb, source);
   const systemIds = board.systems.map((s) => s.id);
-  const { picks, idsOnlyRows } = readLedgers(p.ledgerDirs, drop);
+  const { picks } = readLedgers(p.ledgerDirs, drop);
 
   const rows: Json[] = [];
   let droppedPrivate = 0;
@@ -376,13 +453,41 @@ export function generate(repo: string, source: Board["source"] = "real"): Genera
   const sourceIdx = Object.fromEntries(sources.map((s, i) => [s, i]));
   const jobIds = JOBS.map((j) => j.id);
 
+  // Texts of adult rows: a row elsewhere with the same text is treated as adult too, so the text cannot leak.
+  const adultTexts = new Set(rows.filter((r) => isAdult(r)).map((r) => str(r.state?.text)).filter(Boolean));
+  const adultRow = (r: Json) => isAdult(r) || adultTexts.has(str(r.state?.text));
+  const rowText = (r: Json) => [r.state?.text, r.state?.query, r.state?.source, ...(r.state?.context ?? []).map((t: Json) => t?.text)]
+    .filter((t) => typeof t === "string")
+    .join(" ");
+  const showcase = selectShowcase(
+    rows,
+    (r) => {
+      const by = picks.get(r.id);
+      if (!by || by.size === 0) return null;
+      let right = 0;
+      for (const k of by.values()) if (k.outcome === "decided" && k.decision === (r.expected === "yes")) right++;
+      return right / by.size;
+    },
+    (r) =>
+      textCleared(r.provenance?.source, policy) &&
+      r.redistribution !== "ids_only" &&
+      !adultRow(r) &&
+      rowText(r).length > 0 &&
+      rowText(r).length <= SHOWCASE_MAX_CHARS,
+  );
+
   const lite: RowLite[] = [];
   const details: Record<string, RowDetail> = {};
   let withheld = 0;
   for (const r of rows) {
     const src: string = r.provenance?.source ?? "unknown";
     const job = ROW_TAG_JOB[r.subtask];
-    const isWithheld = !textCleared(src, policy) || idsOnlyRows.has(r.id) || r.redistribution === "ids_only";
+    // The release policy decides (ruling 34 cleared sources after the runs, so the ids_only flag stamped in the run
+    // ledgers at run time is not consulted).
+    const licenceWithheld = !textCleared(src, policy) || r.redistribution === "ids_only";
+    const adult = !licenceWithheld && adultRow(r);
+    const sampleOnly = !licenceWithheld && !adult && !showcase.has(r.id);
+    const isWithheld = licenceWithheld || adult || sampleOnly;
     if (isWithheld) withheld++;
     const bySystem = picks.get(r.id);
     const results: RowResult[] = systemIds.map((s) => {
@@ -397,7 +502,7 @@ export function generate(repo: string, source: Board["source"] = "real"): Genera
     const text = isWithheld ? null : str(st.text);
     const snippetSrc = isWithheld ? null : text ?? str(st.query) ?? str(st.source);
     const snippet = snippetSrc ? (snippetSrc.length > 200 ? snippetSrc.slice(0, 200).trimEnd() + "…" : snippetSrc) : null;
-    lite.push([r.id, jobIds.indexOf(job), sourceIdx[src], r.expected === "yes" ? 1 : 0, decisions, isWithheld ? 1 : 0, snippet]);
+    lite.push([r.id, jobIds.indexOf(job), sourceIdx[src], r.expected === "yes" ? 1 : 0, decisions, licenceWithheld ? 1 : adult ? 2 : sampleOnly ? 3 : 0, snippet]);
 
     const d: RowDetail = {
       id: r.id,
@@ -406,6 +511,7 @@ export function generate(repo: string, source: Board["source"] = "real"): Genera
       licence: str(r.provenance?.licence),
       label: r.expected === "yes" ? "yes" : "no",
       withheld: isWithheld,
+      ...(isWithheld ? { withheldReason: adult ? ("adult" as const) : sampleOnly ? ("sample" as const) : ("licence" as const) } : {}),
       results,
     };
     if (!isWithheld) {

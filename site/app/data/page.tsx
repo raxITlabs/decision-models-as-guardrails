@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DataExplorer } from "@/components/data-explorer";
+import { ContentWarning } from "@/components/sensitive";
 import { loadBoard } from "@/lib/data";
 import { int } from "@/lib/format";
 
@@ -21,6 +22,7 @@ export default function DataPage() {
           private and do not list it here.
         </p>
       </header>
+      <ContentWarning />
       <DataExplorer board={board} />
     </div>
   );

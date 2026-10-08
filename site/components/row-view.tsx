@@ -6,6 +6,7 @@ import { JOB_BY_ID } from "@/lib/jobs";
 import { shardUrl } from "@/lib/shard";
 import type { Board, RowDetail, RowResult } from "@/lib/types";
 import { SOURCES, REASON_TEXT } from "@/lib/sources";
+import { ContentWarning, Sensitive } from "./sensitive";
 import { SystemMark } from "./system-mark";
 import { Check, Cross, External, Lock } from "./icons";
 
@@ -122,13 +123,22 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
         </dl>
       </header>
 
+      <ContentWarning />
+
       <section aria-labelledby="text-h" className="flex flex-col gap-4">
         <h2 id="text-h" className="m-0 text-[20px] font-semibold tracking-[-0.01em]">What the systems saw</h2>
         {row.withheld ? (
           <div className="flex flex-col gap-2 rounded-lg border border-dashed border-line-strong bg-surface px-5 py-5 text-[14px] text-fg-2">
             <p className="m-0 inline-flex items-center gap-2 font-medium text-fg"><Lock /> Text not shown here</p>
             <p className="m-0 max-w-[68ch] leading-relaxed">
-              {src ? REASON_TEXT[src.reason] : "We do not republish this source's text."} You can read the original at the source.
+              {row.withheldReason === "adult"
+                ? "This row has sexual or adult content. We never show that content on this site."
+                : row.withheldReason === "sample"
+                  ? REASON_TEXT.cleared
+                  : src
+                    ? REASON_TEXT[src.reason]
+                    : "We do not republish this source's text."}{" "}
+              You can read the original at the source.
             </p>
             {src && (
               <p className="m-0 flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -146,6 +156,7 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
             </p>
           </div>
         ) : (
+          <Sensitive hide={row.label === "yes"}>
           <div className="flex flex-col gap-4">
             {row.context && row.context.length > 0 && (
               <Block title="Earlier turns">
@@ -163,6 +174,7 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
             {row.toolCall && <Block title="Tool call"><code className="num text-[13px]">{row.toolCall}</code></Block>}
             {row.text && <Block title={`Text under review${row.role ? `, ${roleName[row.role] ?? row.role}` : ""}`}>{row.text}</Block>}
           </div>
+          </Sensitive>
         )}
       </section>
 

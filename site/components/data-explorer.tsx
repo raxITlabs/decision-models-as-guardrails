@@ -7,6 +7,7 @@ import { int, score1 } from "@/lib/format";
 import type { Board, RowLite, RowsIndex, Score } from "@/lib/types";
 import { External, Lock } from "./icons";
 import { SOURCES } from "@/lib/sources";
+import { Sensitive } from "./sensitive";
 import { SystemMark } from "./system-mark";
 import { Segmented, Select } from "./segmented";
 
@@ -108,7 +109,7 @@ export function DataExplorer({ board }: { board: Board }) {
       if (jobIdx >= 0 && r[1] !== jobIdx) return false;
       if (srcIdx >= 0 && r[2] !== srcIdx) return false;
       if (f.label && (r[3] === 1) !== (f.label === "yes")) return false;
-      if (f.text && r[5] === 1) return false;
+      if (f.text && r[5] !== 0) return false;
       if (f.hard) {
         let wrong = 0;
         let answered = 0;
@@ -186,7 +187,7 @@ export function DataExplorer({ board }: { board: Board }) {
           </label>
           <label className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-line bg-surface px-3 text-[13px] text-fg hover:border-line-strong">
             <input type="checkbox" checked={f.text} onChange={(e) => update({ text: e.target.checked })} className="size-5 accent-[var(--accent)]" />
-            Text available
+            Only the 100 example rows
           </label>
           {(f.job || f.source || f.label || f.hard || f.text || f.system) && (
             <button type="button" onClick={() => update(EMPTY)} className="min-h-11 rounded-lg px-2 text-[13px] text-link hover:text-link-hover">
@@ -320,7 +321,7 @@ function RowItem({ r, index, sysName, highlight }: { r: RowLite; index: RowsInde
         {withheld ? (
           <p className="m-0 flex flex-wrap items-center gap-x-1.5 text-[14px] text-muted">
             <Lock className="size-3.5 shrink-0" />
-            Text not shown here.
+            {withheld === 2 ? "Sexual or adult content, not shown here." : "Text not shown here."}
             {SOURCES[index.sources[srcI]] ? (
               <a href={SOURCES[index.sources[srcI]].url} className="inline-flex min-h-11 items-center gap-1 sm:min-h-0">
                 View it at {SOURCES[index.sources[srcI]].name} <External className="size-3" />
@@ -328,7 +329,9 @@ function RowItem({ r, index, sysName, highlight }: { r: RowLite; index: RowsInde
             ) : null}
           </p>
         ) : (
-          <p className="m-0 line-clamp-2 text-[14px] leading-snug text-fg-2 [overflow-wrap:anywhere]">{snippet}</p>
+          <Sensitive hide={label === 1} compact>
+            <p className="m-0 line-clamp-2 text-[14px] leading-snug text-fg-2 [overflow-wrap:anywhere]">{snippet}</p>
+          </Sensitive>
         )}
       </div>
       <div className="flex flex-col gap-1.5 md:items-end">
