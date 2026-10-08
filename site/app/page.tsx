@@ -11,7 +11,7 @@ import { Faq } from "@/components/faq";
 import { Leaderboard } from "@/components/leaderboard";
 import { faqItems } from "@/lib/copy";
 import { loadBoard, loadRowsIndex } from "@/lib/data";
-import { REPO_URL, int, listNames, longDate, pct, score1, systemMap } from "@/lib/format";
+import { REPO_URL, int, listNames, longDate, oneLine, pct, score1, systemMap } from "@/lib/format";
 import { JOBS } from "@/lib/jobs";
 
 export const metadata: Metadata = {
@@ -172,7 +172,7 @@ export default function Home() {
                   <p className="m-0 text-[14px] leading-snug text-fg-2">{j.sub}</p>
                   <p className="m-0 text-[14px] leading-snug">
                     <span className="text-muted">Top tier: </span>
-                    {listNames(top.map((s) => sys[s.system]?.name ?? s.system))}
+                    {listNames(top.map((s) => oneLine(sys[s.system], s.system)))}
                   </p>
                   <p className="m-0 text-[13px] text-muted">
                     Top tier blocks{" "}

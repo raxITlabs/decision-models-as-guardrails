@@ -37,3 +37,8 @@ export function listNames(names: string[]): string {
   if (names.length <= 1) return names[0] ?? "";
   return `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`;
 }
+
+/** A system's name on one line: the product, plus its vendor when the product name alone is ambiguous. */
+export function oneLine(m: { name: string; label?: string } | undefined, fallback: string): string {
+  return m?.label ?? m?.name ?? fallback;
+}

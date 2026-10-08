@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { JOBS, JOB_BY_ID, type JobId } from "@/lib/jobs";
-import { halfCi, maxTier, money, pct, score1, tierVar } from "@/lib/format";
+import { halfCi, maxTier, money, pct, score1, tierVar, oneLine } from "@/lib/format";
 import type { Board, Score, SystemMeta } from "@/lib/types";
 import { ArrowRight, ArrowUpLeft, External } from "./icons";
 import { Segmented, Select } from "./segmented";
@@ -137,7 +137,7 @@ export function Leaderboard({ board }: { board: Board }) {
                       <SystemMark m={m} size="md" />
                       <span className="flex flex-col items-start">
                         <span className="font-semibold text-fg">{m?.name ?? s.system}</span>
-                        <span className="hidden text-[12px] text-muted sm:block">{m?.provider}</span>
+                        <span className="text-[12px] text-muted">{m?.provider}</span>
                         {m?.kind === "service" && <span className="text-[12px] text-fg-2 sm:hidden">Guardrail service</span>}
                       </span>
                     </button>
@@ -344,7 +344,7 @@ function Scatter({
   }
 
   for (const p of placed) {
-    const name = sys[p.s.system]?.short ?? sys[p.s.system]?.name ?? p.s.system;
+    const name = sys[p.s.system]?.short ?? oneLine(sys[p.s.system], p.s.system);
     const lw = Math.ceil(textWidth(name, measure)) + 4;
     const off = p.s.system === selected ? (compact ? 20 : 24) : compact ? 17 : 20;
     const tries: { x: number; y: number; anchor: "left" | "right" }[] = [];
@@ -432,8 +432,8 @@ function Scatter({
               type="button"
               onClick={() => onSelect(p.s.system)}
               aria-pressed={on}
-              aria-label={`${m?.name ?? p.s.system}: score ${score1(p.s.score)}, ${axis === "cost" ? `${money(p.s.cost)} per 1,000 checks` : `${pct(p.s.falseBlockRate)} false blocks`}, tier ${p.s.tier}`}
-              title={`${m?.name ?? p.s.system} · ${score1(p.s.score)} · ${axis === "cost" ? money(p.s.cost) : pct(p.s.falseBlockRate)}`}
+              aria-label={`${oneLine(m, p.s.system)}: score ${score1(p.s.score)}, ${axis === "cost" ? `${money(p.s.cost)} per 1,000 checks` : `${pct(p.s.falseBlockRate)} false blocks`}, tier ${p.s.tier}`}
+              title={`${oneLine(m, p.s.system)} · ${score1(p.s.score)} · ${axis === "cost" ? money(p.s.cost) : pct(p.s.falseBlockRate)}`}
               className={`pop absolute grid place-items-center rounded-md ${on ? "z-10" : ""}`}
               // The hit area is the square plus its ring (half() each way), the same box the layout keeps apart.
               style={{ left: p.x - half(p.s), top: p.y - half(p.s), width: 2 * half(p.s), height: 2 * half(p.s), animationDelay: `${120 + p.s.rank * 45}ms` }}
@@ -476,14 +476,14 @@ function Scatter({
               }`}
               style={{ left: p.label.x, top: p.label.y, width: p.label.w, textAlign: p.label.anchor === "left" ? "right" : "left" }}
             >
-              {sys[p.s.system]?.short ?? sys[p.s.system]?.name ?? p.s.system}
+              {sys[p.s.system]?.short ?? oneLine(sys[p.s.system], p.s.system)}
             </span>
           ) : null,
         )}
       </div>
       {unlabelled.length > 0 && (
         <p className="m-0 text-[12px] text-muted">
-          No room for a label: {unlabelled.map((p) => sys[p.s.system]?.name ?? p.s.system).join(", ")}. Select its square to see it.
+          No room for a label: {unlabelled.map((p) => oneLine(sys[p.s.system], p.s.system)).join(", ")}. Select its square to see it.
         </p>
       )}
       <figcaption className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[12px] text-muted">
@@ -531,7 +531,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
         ]
       : null;
   return (
-    <section aria-label={`Details for ${m?.name ?? s.system}`} className="grid gap-8 rounded-xl border border-line bg-surface p-5 sm:p-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <section aria-label={`Details for ${oneLine(m, s.system)}`} className="grid gap-8 rounded-xl border border-line bg-surface p-5 sm:p-6 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <SystemMark m={m} size="lg" />
@@ -588,7 +588,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
         </Link>
       </div>
       <div className="flex min-w-0 flex-col gap-3">
-        <h3 className="m-0 text-[16px] font-semibold">{m?.name ?? s.system} by use case</h3>
+        <h3 className="m-0 text-[16px] font-semibold">{oneLine(m, s.system)} by use case</h3>
         <ul className="m-0 flex list-none flex-col gap-2.5 p-0">
           {JOBS.map((j) => {
             const js = board.jobs[j.id].find((x) => x.system === s.system);

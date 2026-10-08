@@ -16,9 +16,10 @@
  "systems": [
   {
    "id": "pplx-decider-v1-27b",
-   "name": "Perplexity Decisions API",
-   "provider": "Perplexity · runs pplx-decider-v1-27b",
+   "name": "Decisions API",
+   "provider": "Perplexity",
    "mono": "Px",
+   "label": "Decisions API · Perplexity",
    "logo": "/logos/perplexity.svg",
    "docs": "https://docs.perplexity.ai/docs/decisions/quickstart",
    "pricing": "https://docs.perplexity.ai/docs/getting-started/pricing",
@@ -27,9 +28,10 @@
   },
   {
    "id": "gpt-6-luna",
-   "name": "OpenAI Decisions API",
-   "provider": "OpenAI · runs gpt-6-luna",
+   "name": "Decisions API",
+   "provider": "OpenAI",
    "mono": "Oa",
+   "label": "Decisions API · OpenAI",
    "logo": "/logos/openai.svg",
    "docs": "https://developers.openai.com/api/docs/guides/decisions",
    "pricing": "https://developers.openai.com/api/docs/pricing",

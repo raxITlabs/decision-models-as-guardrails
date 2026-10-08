@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { JOBS, type JobId } from "@/lib/jobs";
-import { int, score1 } from "@/lib/format";
+import { int, oneLine, score1 } from "@/lib/format";
 import type { Board, RowLite, RowsIndex, Score } from "@/lib/types";
 import { External, Lock } from "./icons";
 import { SOURCES } from "@/lib/sources";
@@ -142,7 +142,7 @@ export function DataExplorer({ board }: { board: Board }) {
     rowsRef.current?.focus({ preventScroll: true });
   };
 
-  const sysName = (id: string) => sys[id]?.name ?? id;
+  const sysName = (id: string) => oneLine(sys[id], id);
   const modeText = f.mode === "missed" ? "harmful rows it missed" : f.mode === "blocked" ? "safe rows it blocked" : "rows it got wrong";
 
   return (
@@ -435,7 +435,7 @@ function Heatmap({
                       <SystemMark m={m} />
                       <span>
                         <span className="block max-w-[9rem] font-semibold leading-tight text-fg sm:max-w-none">{m?.name ?? o.system}</span>
-                        <span className="hidden text-[12px] text-muted sm:block">{m?.provider}</span>
+                        <span className="block text-[12px] text-muted">{m?.provider}</span>
                       </span>
                     </span>
                   </th>
@@ -450,7 +450,7 @@ function Heatmap({
                         <button
                           type="button"
                           onClick={() => onPick(j.id, o.system)}
-                          aria-label={`${m?.name ?? o.system}, ${j.title}: ${fmt(v)}. List the ${what}.`}
+                          aria-label={`${oneLine(m, o.system)}, ${j.title}: ${fmt(v)}. List the ${what}.`}
                           className={`num flex h-11 w-full items-center justify-center rounded-md text-[13px] transition-[box-shadow] hover:shadow-[inset_0_0_0_2px_var(--fg-2)] ${
                             on ? "shadow-[inset_0_0_0_2px_var(--fg)]" : ""
                           }`}

@@ -23,7 +23,7 @@ export function Podium({ board }: { board: Board }) {
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className="text-[15px] font-semibold leading-snug">{m?.name ?? s.system}</span>
                 <span className="truncate text-[12px] text-muted">
-                  <span className="hidden sm:inline">{m?.provider.split(" · ")[0]} · </span>
+                  {m?.provider.split(" · ")[0]} · 
                   {money(s.cost)} per 1,000
                 </span>
               </span>

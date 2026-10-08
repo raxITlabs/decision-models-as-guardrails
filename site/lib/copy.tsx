@@ -1,6 +1,6 @@
 // Page copy that depends on the data. Every number comes from the generated board, never from this file.
 import type { QA } from "@/components/faq";
-import { int, listNames, pct, systemMap } from "./format";
+import { int, listNames, oneLine, pct, systemMap } from "./format";
 import type { Board } from "./types";
 
 export function faqItems(board: Board): QA[] {
@@ -31,7 +31,7 @@ export function faqItems(board: Board): QA[] {
           It may. Every decision model gets the same yes/no questions in the format that Jev&apos;s API uses. Jev was trained on that
           format. The other models get the questions through our adapters. We disclose this home advantage and do not remove it,
           because any other format would favour a different system.
-          {qf ? ` ${sys[qf.system]?.name ?? qf.system} finishes in tier ${qf.tier} of ${qf.tiers} overall.` : ""}
+          {qf ? ` ${oneLine(sys[qf.system], qf.system)} finishes in tier ${qf.tier} of ${qf.tiers} overall.` : ""}
         </p>
       ),
     },
@@ -68,7 +68,7 @@ export function faqItems(board: Board): QA[] {
           held-back slice of {int(board.stats.heldBackRows)} rows that we do not publish.
           {typeof f.sliceGapMax === "number" ? ` Overall scores on that slice are within ${f.sliceGapMax} points of the public rows.` : ""}
           {own
-            ? ` Some content rows come from datasets that the vendors published themselves. We also score content without those rows. ${sys[own.system]?.name ?? own.system} scores ${own.allRows} on all content rows and ${own.withoutOwnRows} without ${own.vendor}'s own rows. So it did ${own.withoutOwnRows >= own.allRows ? "worse, not better," : "better"} on its vendor's data.`
+            ? ` Some content rows come from datasets that the vendors published themselves. We also score content without those rows. ${oneLine(sys[own.system], own.system)} scores ${own.allRows} on all content rows and ${own.withoutOwnRows} without ${own.vendor}'s own rows. So it did ${own.withoutOwnRows >= own.allRows ? "worse, not better," : "better"} on its vendor's data.`
             : ""}{" "}
           We cannot rule out training data that a vendor has not disclosed.
         </p>

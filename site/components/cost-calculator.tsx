@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { Board } from "@/lib/types";
-import { score1 } from "@/lib/format";
+import { oneLine, score1 } from "@/lib/format";
 import { Segmented } from "./segmented";
 import { External } from "./icons";
 import { SystemMark } from "./system-mark";
@@ -101,12 +101,9 @@ export function CostCalculator({ board }: { board: Board }) {
                 <span className="flex min-w-0 items-center gap-2.5">
                   <SystemMark m={m} />
                   <span className="flex min-w-0 flex-col">
-                    <span className="truncate text-[14px] font-semibold">
-                      <span className="sm:hidden">{m?.short ?? m?.name ?? s.system}</span>
-                      <span className="hidden sm:inline">{m?.name ?? s.system}</span>
-                    </span>
+                    <span className="truncate text-[14px] font-semibold">{m?.name ?? s.system}</span>
                     <span className="text-[12px] text-muted">
-                      score {score1(s.score)}
+                      {m?.provider.split(" · ")[0]} · score {score1(s.score)}
                       {m?.hosting === "self-hosted" ? " · our GPU time" : ""}
                       {m?.kind === "service" ? " · not a decision model" : ""}
                       {m?.pricing ? (
@@ -114,7 +111,7 @@ export function CostCalculator({ board }: { board: Board }) {
                           {" · "}
                           <a href={m.pricing} className="inline-flex items-center gap-0.5">
                             {m.hosting === "self-hosted" ? "GPU pricing" : "pricing"}
-                            <span className="sr-only"> for {m.name} (vendor page)</span>
+                            <span className="sr-only"> for {oneLine(m, s.system)} (vendor page)</span>
                             <External className="size-3" />
                           </a>
                         </>

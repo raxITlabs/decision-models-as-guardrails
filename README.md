@@ -1,7 +1,7 @@
 # decision-models-as-guardrails
 
 A benchmark that asks one question: can a decision model replace a managed guardrail service? It sends the same
-labelled rows to decision models (Jev, Kev, Open-Jev, Laya, Clef, Strands Decider), to the Perplexity and OpenAI Decisions APIs and to
+labelled rows to decision models (Jev, Kev, Open-Jev, Laya, Clef, Strands Decider), to the Decisions APIs from Perplexity and OpenAI and to
 Amazon Bedrock Guardrails, and compares them on accuracy and cost. Built by raxIT Labs.
 
 The dataset is on Hugging Face as
@@ -55,8 +55,8 @@ The short version:
 |---|---|---|
 | Tests, dataset, cost forecast | Python 3.12+, `uv`, git | Free |
 | Jev 1.13.0 | TypeSafe API key | USD 0.38 |
-| Perplexity Decisions API (pplx-decider-v1-27b) | Perplexity API key | USD 0.56 |
-| OpenAI Decisions API (gpt-6-luna) | OpenAI key with Decisions API access (public beta) | USD 1.10 |
+| Decisions API · Perplexity (pplx-decider-v1-27b) | Perplexity API key | USD 0.56 |
+| Decisions API · OpenAI (gpt-6-luna) | OpenAI key with Decisions API access (public beta) | USD 1.10 |
 | Clef, Clef Flash | Cloudflare Workers AI. In practice you need the Workers Paid plan (USD 5 a month) | USD 2.76 |
 | Amazon Bedrock Guardrails | AWS account with Bedrock, a CLI profile, Terraform (`infra/aws/`) | USD 1.12 |
 | Kev 0.8B/4B/9B, Open-Jev 2B, Strands Decider 2B, Laya | Google Cloud project with quota for 2 NVIDIA L4 GPUs, `gcloud`, Terraform (`infra/gcp/`); one `g2-standard-24` VM, about USD 2 an hour on demand | USD 10.44 |
