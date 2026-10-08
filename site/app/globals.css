@@ -185,3 +185,13 @@ details[open] > summary .chev {
 .art-link:hover { text-decoration-color: var(--over-art); }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 .fade { animation: fade-in 240ms cubic-bezier(0.25, 1, 0.5, 1) both; }
+
+/* Chart labels: a paper-coloured halo traced around each glyph, so a line passing behind the text is knocked out
+   cleanly instead of striking through it. */
+.label-halo {
+  text-shadow: 0 0 2px var(--bg), 0 0 2px var(--bg), 0 0 3px var(--bg), 1px 0 0 var(--bg), -1px 0 0 var(--bg), 0 1px 0 var(--bg), 0 -1px 0 var(--bg);
+}
+
+/* The hero painting, washed out: less colour and contrast, a touch lighter, so it reads as atmosphere behind the
+   type rather than a picture competing with it. */
+.hero-painting { filter: saturate(0.5) contrast(0.82) brightness(0.98); }

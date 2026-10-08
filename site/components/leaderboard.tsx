@@ -335,15 +335,56 @@ function Scatter({
   const ref = scores.find((s) => sys[s.system]?.kind === "service");
   const selP = placed.find((p) => p.s.system === selected);
   const gap = ref && selP && selP.s.system !== ref.system ? selP.s.score - ref.score : null;
-  let gapLabel: { x: number; y: number; text: string } | null = null;
+  // Set inside placeGap(), which runs during label placement, so read it through a box TypeScript can follow.
+  const gapBox: { label: { x: number; y: number; text: string } | null } = { label: null };
+  const placeGap = () => {
+    if (gap !== null && selP && ref) {
+      const text = `${gap >= 0 ? "+" : "−"}${Math.abs(gap).toFixed(1)} vs Bedrock`;
+      const gw = Math.ceil(textWidth(text, measure)) + 6;
+      // Try beside the connector at its middle, then near either end, right side first, then left; take the first spot
+      // that hits no square and stays inside the plot. Squares are already placed, so this only has to dodge them.
+      const yRef = py(ref.score);
+      const mid = (selP.ty + yRef) / 2;
+      const hs = half(selP.s);
+      const down = yRef > selP.ty ? 1 : -1;
+      // Beside the connector first; when it is too short or crowded, under or over the selected square, or along the
+      // Bedrock line, on either side.
+      const ys = [mid, yRef - down * 10, yRef + down * 12, selP.y + down * (hs + 12), selP.y - down * (hs + 12), yRef + down * 26, yRef - down * 24];
+      const xs = [selP.tx + 6, selP.tx - 6 - gw, selP.tx + hs + 6, selP.tx - hs - 6 - gw, selP.tx - gw / 2, selP.tx - gw + hs];
+      const fit = (x: number) => Math.min(w - 2 - gw, Math.max(pad.l + 2, x));
+      let best: { x: number; y: number } | null = null;
+      for (const y of ys) {
+        for (const x0 of xs) {
+          const x = fit(x0);
+          const r = { x, y: y - 8, w: gw, h: 16 };
+          const inside = r.x >= pad.l && r.x + r.w <= w - 2 && r.y >= pad.t - 16 && r.y + r.h <= h - pad.b;
+          const hit = rects.some((o) => r.x < o.x + o.w && r.x + r.w > o.x && r.y < o.y + o.h && r.y + r.h > o.y);
+          if (inside && !hit) {
+            best = { x, y };
+            break;
+          }
+        }
+        if (best) break;
+      }
+      best ??= { x: selP.tx + 6 + gw <= w - pad.r ? selP.tx + 6 : selP.tx - 6 - gw, y: mid };
+      gapBox.label = { x: best.x, y: best.y, text };
+      rects.push({ x: best.x, y: best.y - 8, w: gw, h: 16 });
+    }
+  };
+
+  // Lines that a label should not sit on, as thin boxes. The connector to Bedrock matters most, then the Bedrock
+  // reference line, then the interval lines. Placement tries to avoid all of them, then only the connector, then
+  // none; where text still crosses a line, the label's paper halo knocks the line out behind it.
+  type Box = { x: number; y: number; w: number; h: number };
+  const connector: Box[] = [];
+  const refLine: Box[] = [];
   if (gap !== null && selP && ref) {
-    const text = `${gap >= 0 ? "+" : "−"}${Math.abs(gap).toFixed(1)} vs Bedrock`;
-    const gw = Math.ceil(textWidth(text, measure)) + 6;
-    const mid = (selP.ty + py(ref.score)) / 2;
-    const gx = selP.tx + 6 + gw <= w - pad.r ? selP.tx + 6 : selP.tx - 6 - gw;
-    gapLabel = { x: gx, y: mid, text };
-    rects.push({ x: gx, y: mid - 8, w: gw, h: 16 });
+    const y1 = Math.min(selP.ty, py(ref.score));
+    connector.push({ x: selP.tx - 3, y: y1, w: 6, h: Math.abs(selP.ty - py(ref.score)) });
+    refLine.push({ x: pad.l, y: py(ref.score) - 2, w: w - pad.l - pad.r, h: 4 });
   }
+  const ciLines: Box[] = placed.map((p) => ({ x: p.tx - 2, y: py(p.s.ciHigh), w: 4, h: Math.max(0, py(p.s.ciLow) - py(p.s.ciHigh)) }));
+  const lineLevels: Box[][] = [[...connector, ...refLine, ...ciLines], connector, []];
 
   for (const p of placed) {
     const name = sys[p.s.system]?.short ?? oneLine(sys[p.s.system], p.s.system);
@@ -361,18 +402,27 @@ function Scatter({
       tries.push({ x: p.x - lw / 2, y: p.y - v, anchor: "right" }, { x: p.x - lw / 2, y: p.y + v, anchor: "right" });
       for (const dy of [-24, 24]) tries.push({ x: p.x + off, y: p.y + dy, anchor: "right" }, { x: p.x - off - lw, y: p.y + dy, anchor: "left" });
     }
-    for (const t of tries) {
-      const r = { x: t.x, y: t.y - 8, w: lw, h: 16 };
-      const inside = r.x >= pad.l - 4 && r.x + r.w <= w - 2 && r.y >= 0 && r.y + r.h <= h - pad.b + 4;
-      const hit = rects.some((o) => o !== rects[placed.indexOf(p) + 1] && r.x < o.x + o.w && r.x + r.w > o.x && r.y < o.y + o.h && r.y + r.h > o.y);
-      if (inside && !hit) {
-        rects.push(r);
-        p.label = { x: t.x, y: t.y, w: lw, anchor: t.anchor };
-        break;
+    const overlaps = (r: Box, o: Box) => r.x < o.x + o.w && r.x + r.w > o.x && r.y < o.y + o.h && r.y + r.h > o.y;
+    // Each system's own interval line runs through its square, so it never blocks its own label.
+    const own = ciLines[placed.indexOf(p)];
+    search: for (const lines of lineLevels) {
+      for (const t of tries) {
+        const r = { x: t.x, y: t.y - 8, w: lw, h: 16 };
+        const inside = r.x >= pad.l - 4 && r.x + r.w <= w - 2 && r.y >= 0 && r.y + r.h <= h - pad.b + 4;
+        const hit =
+          rects.some((o) => o !== rects[placed.indexOf(p) + 1] && overlaps(r, o)) || lines.some((o) => o !== own && overlaps(r, o));
+        if (inside && !hit) {
+          rects.push(r);
+          p.label = { x: t.x, y: t.y, w: lw, anchor: t.anchor };
+          break search;
+        }
       }
     }
+    // The selected system takes its own label spot first; the distance-to-Bedrock note fits around it.
+    if (p.s.system === selected) placeGap();
   }
 
+  const gapLabel = gapBox.label;
   // Tiers 5 and below share one colour, so the legend shows them as one entry.
   const present = [...new Set(scores.map((s) => Math.min(s.tier, 5)))].sort((a, b) => a - b);
   const unlabelled = placed.filter((p) => !p.label).sort((a, b) => a.s.rank - b.s.rank);
@@ -462,7 +512,7 @@ function Scatter({
         {gapLabel && (
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -translate-y-1/2 whitespace-nowrap bg-bg/90 px-1 text-[12px] font-semibold leading-[16px] text-fg"
+            className="label-halo pointer-events-none absolute -translate-y-1/2 whitespace-nowrap px-1 text-[12px] font-semibold leading-[16px] text-fg"
             style={{ left: gapLabel.x, top: gapLabel.y }}
           >
             {gapLabel.text}
@@ -473,7 +523,7 @@ function Scatter({
             <span
               key={`l${p.s.system}`}
               aria-hidden="true"
-              className={`pointer-events-none absolute -translate-y-1/2 whitespace-nowrap text-[12px] leading-none ${
+              className={`label-halo pointer-events-none absolute -translate-y-1/2 whitespace-nowrap text-[12px] leading-none ${
                 p.s.system === selected ? "font-semibold text-fg" : "text-fg-2"
               }`}
               style={{ left: p.label.x, top: p.label.y, width: p.label.w, textAlign: p.label.anchor === "left" ? "right" : "left" }}

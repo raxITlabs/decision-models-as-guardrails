@@ -65,7 +65,7 @@ export function HeroPlate({ src, children }: { src: string; children: React.Reac
       {/* The painting is pinned to one screen height. When the hero grows (the names opened on a phone, a long
           example), the extra height is smoky ground below the painting, so the painting never rescales or zooms. */}
       <div aria-hidden="true" className="absolute inset-x-0 top-0 h-[100svh]">
-        <img src={src} srcSet={srcSet(src)} sizes="100vw" alt="" loading="eager" className="size-full object-cover brightness-90" />
+        <img src={src} srcSet={srcSet(src)} sizes="100vw" alt="" loading="eager" className="hero-painting size-full object-cover" />
         <div className="hero-wash absolute inset-0" />
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[rgb(var(--smoky))]" />
       </div>
