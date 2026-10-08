@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   alternates: { types: { "text/markdown": "/reproduce.md" } },
 };
 
-const SITE = "https://decision-models-as-guardrails.vercel.app";
+const SITE = "https://decision-models-as-guardrails.raxitlabs.com";
 const AGENT_PROMPT = `Read ${SITE}/reproduce.md and help me reproduce the decision-models-as-guardrails benchmark. Do the free steps first. Ask me before any step that needs an account or costs money.`;
 
 /** Accounts and cost per system, from the 1.0.0 run. Kept in step with REPRODUCE.md at the repository root. */

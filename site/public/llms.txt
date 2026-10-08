@@ -6,14 +6,14 @@ If you are an agent and you must reproduce the benchmark, read /reproduce.md fir
 
 ## Reproduce
 
-- [Reproduce guide (Markdown)](https://decision-models-as-guardrails.vercel.app/reproduce.md): step-by-step, agent-readable
-- [Reproduce page](https://decision-models-as-guardrails.vercel.app/reproduce): the same guide, plus the scoring method
+- [Reproduce guide (Markdown)](https://decision-models-as-guardrails.raxitlabs.com/reproduce.md): step-by-step, agent-readable
+- [Reproduce page](https://decision-models-as-guardrails.raxitlabs.com/reproduce): the same guide, plus the scoring method
 
 ## Results and data
 
-- [Leaderboard](https://decision-models-as-guardrails.vercel.app/): overall and per-job scores, cost per 1,000 checks
-- [Data explorer](https://decision-models-as-guardrails.vercel.app/data): every public row and every system's answer
-- [Changelog](https://decision-models-as-guardrails.vercel.app/changelog)
+- [Leaderboard](https://decision-models-as-guardrails.raxitlabs.com/): overall and per-job scores, cost per 1,000 checks
+- [Data explorer](https://decision-models-as-guardrails.raxitlabs.com/data): every public row and every system's answer
+- [Changelog](https://decision-models-as-guardrails.raxitlabs.com/changelog)
 
 ## Source
 

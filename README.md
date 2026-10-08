@@ -47,7 +47,7 @@ Python packages and folders keep the project's working names (`goldrails_dataset
 
 [`REPRODUCE.md`](REPRODUCE.md) is the full guide. It lists each account, the GPU machine, and the cost and time for each
 step. A coding agent can follow it. Point your agent at that file or at
-https://decision-models-as-guardrails.vercel.app/reproduce.md. The agent runs the free steps and asks before any paid step.
+https://decision-models-as-guardrails.raxitlabs.com/reproduce.md. The agent runs the free steps and asks before any paid step.
 
 The short version:
 

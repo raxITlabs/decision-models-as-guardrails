@@ -4,7 +4,7 @@ This file shows how to rerun the benchmark. A person can follow it, or a coding 
 It lists each account, each piece of infrastructure and each cost. Read it, then decide how far to go before you
 spend money.
 
-Site: https://decision-models-as-guardrails.vercel.app ·
+Site: https://decision-models-as-guardrails.raxitlabs.com ·
 Code: https://github.com/raxITlabs/decision-models-as-guardrails ·
 Dataset: https://huggingface.co/datasets/raxITLabs/decision-models-as-guardrails (pinned at commit `13beb711`)
 

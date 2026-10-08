@@ -8,7 +8,7 @@ const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "sw
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://decision-models-as-guardrails.vercel.app"),
+  metadataBase: new URL("https://decision-models-as-guardrails.raxitlabs.com"),
   title: { default: "decision-models-as-guardrails", template: "%s · decision-models-as-guardrails" },
   description:
     "Can a decision model replace your guardrail? Twelve systems answer the same guardrail checks under one fixed rule. raxIT Labs compares them on accuracy and cost.",
