@@ -1,0 +1,21 @@
+# decision-models-as-guardrails
+
+> An independent benchmark by raxIT Labs. Twelve guardrail systems (decision models and managed guardrail APIs) answer the same 9,975 checks across eight guardrail jobs under one fixed rule, compared on accuracy and cost. Version 1.0.0, 7 October 2026.
+
+If you are an agent and you must reproduce the benchmark, read /reproduce.md first. It lists the accounts, infrastructure, cost and time for each step. It also shows which steps are free.
+
+## Reproduce
+
+- [Reproduce guide (Markdown)](https://decision-models-as-guardrails.vercel.app/reproduce.md): step-by-step, agent-readable
+- [Reproduce page](https://decision-models-as-guardrails.vercel.app/reproduce): the same guide, plus the scoring method
+
+## Results and data
+
+- [Leaderboard](https://decision-models-as-guardrails.vercel.app/): overall and per-job scores, cost per 1,000 checks
+- [Data explorer](https://decision-models-as-guardrails.vercel.app/data): every public row and every system's answer
+- [Changelog](https://decision-models-as-guardrails.vercel.app/changelog)
+
+## Source
+
+- [GitHub repository](https://github.com/raxITlabs/decision-models-as-guardrails): code, scoring rules, AGENTS.md
+- [Dataset on Hugging Face](https://huggingface.co/datasets/raxITLabs/decision-models-as-guardrails)

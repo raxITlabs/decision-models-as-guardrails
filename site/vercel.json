@@ -1,5 +1,16 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [{ "source": "/data/rows/:id", "destination": "/data/rows/view" }],
-  "headers": [{ "source": "/opengraph-image", "headers": [{ "key": "Content-Type", "value": "image/png" }] }]
+  "rewrites": [
+    {
+      "source": "/reproduce",
+      "has": [{ "type": "header", "key": "accept", "value": "(.*)text/markdown(.*)" }],
+      "destination": "/reproduce.md"
+    },
+    { "source": "/data/rows/:id", "destination": "/data/rows/view" }
+  ],
+  "headers": [
+    { "source": "/opengraph-image", "headers": [{ "key": "Content-Type", "value": "image/png" }] },
+    { "source": "/(.*)\\.md", "headers": [{ "key": "Content-Type", "value": "text/markdown; charset=utf-8" }] },
+    { "source": "/llms.txt", "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }] }
+  ]
 }

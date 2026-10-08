@@ -43,7 +43,26 @@ docs/         the evaluation contract and plan, and copies of vendor docs that t
 
 Python packages and folders keep the project's working names (`goldrails_dataset`, `goldrails_bench`).
 
-## Run it
+## Reproduce it
+
+[`REPRODUCE.md`](REPRODUCE.md) is the full guide. It lists each account, the GPU machine, and the cost and time for each
+step. A coding agent can follow it. Point your agent at that file or at
+https://decision-models-as-guardrails.vercel.app/reproduce.md. The agent runs the free steps and asks before any paid step.
+
+The short version:
+
+| To run | You need | Our cost (Oct 2026) |
+|---|---|---|
+| Tests, dataset, cost forecast | Python 3.12+, `uv`, git | Free |
+| Jev 1.13 | TypeSafe API key | USD 0.38 |
+| pplx-decider v1 27B | Perplexity API key | USD 0.56 |
+| GPT-6 Luna | OpenAI key with Decisions API access (public beta) | USD 1.10 |
+| Clef, Clef Flash | Cloudflare Workers AI. In practice you need the Workers Paid plan (USD 5 a month) | USD 2.76 |
+| Amazon Bedrock Guardrails | AWS account with Bedrock, a CLI profile, Terraform (`infra/aws/`) | USD 1.12 |
+| Kev 0.8B/4B/9B, Open-Jev 2B, Strands Decider 2B, Laya | Google Cloud project with quota for 2 NVIDIA L4 GPUs, `gcloud`, Terraform (`infra/gcp/`); one `g2-standard-24` VM, about USD 2 an hour on demand | USD 10.44 |
+
+We do not publish the held-back slice (2,269 of the 9,975 checks). A rerun from a fresh clone covers the 7,706 public
+rows only. Its scores are close to the board, but not identical.
 
 ```bash
 uv sync --extra dev
@@ -51,18 +70,9 @@ uv run --with scikit-learn python -m pytest
 cp .env.example .env    # API keys for the hosted systems you want to run
 ```
 
-Rows whose source licence does not let us ship their text are published as ids. Fetch that text from the original
-publishers, then rebuild the dataset from the committed candidate files and stage the Hugging Face layout:
-
-```bash
-uv run python -m goldrails_dataset.e2_local rehydrate
-uv run --with scikit-learn python -m goldrails_dataset.edition2
-uv run python -m goldrails_dataset.publish_e2 stage
-```
-
-The run scripts in [`benchmark/runs/`](benchmark/runs/) send every test row to every system. Each run writes a freeze
-manifest first and refuses to send a row until that manifest is committed, so the configuration provably predates
-the results. `make up` and `make pause` start and stop the model VM (see [`infra/gcp/README.md`](infra/gcp/README.md)).
+Each run script in [`benchmark/runs/`](benchmark/runs/) writes a freeze manifest first. It sends no row until you commit
+that manifest. The commit proves that the configuration came before the results. `make up` starts the model VM and
+`make pause` stops it (see [`infra/gcp/README.md`](infra/gcp/README.md)).
 
 ## Licences
 

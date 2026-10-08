@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AgentPrompt } from "@/components/agent-prompt";
 import { CodeBlock } from "@/components/code-block";
 import { ArrowRight, External } from "@/components/icons";
 import { loadBoard } from "@/lib/data";
@@ -8,7 +9,23 @@ import { HF_REVISION, HF_URL, REPO_URL, int } from "@/lib/format";
 export const metadata: Metadata = {
   title: "Reproduce",
   description: "Run the benchmark, see how we score it, and add your own guardrail through an adapter.",
+  alternates: { types: { "text/markdown": "/reproduce.md" } },
 };
+
+const SITE = "https://decision-models-as-guardrails.vercel.app";
+const AGENT_PROMPT = `Read ${SITE}/reproduce.md and help me reproduce the decision-models-as-guardrails benchmark. Do the free steps first. Ask me before any step that needs an account or costs money.`;
+
+/** Accounts and cost per system, from the 1.0.0 run. Kept in step with REPRODUCE.md at the repository root. */
+const NEEDS: [string, string, string, string][] = [
+  ["Tests and dataset", "None", "None", "Free"],
+  ["Jev 1.13", "TypeSafe API key", "TYPESAFE_API_KEY", "$0.38"],
+  ["pplx-decider v1 27B", "Perplexity API key", "PERPLEXITY_API_KEY", "$0.56"],
+  ["GPT-6 Luna", "OpenAI key with Decisions API access (public beta)", "OPENAI_API_KEY", "$1.10"],
+  ["Clef, Clef Flash", "Cloudflare Workers AI. In practice you need the Workers Paid plan ($5 a month), because the free daily allowance ran out mid-run", "CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN", "$2.76 + plan"],
+  ["Amazon Bedrock Guardrails", "AWS account with Bedrock, a CLI profile (we used SSO), Terraform to create the guardrails", "AWS_PROFILE, AWS_REGION", "$1.12"],
+  ["Six self-hosted models", "Google Cloud project with billing and quota for 2 NVIDIA L4 GPUs, gcloud, Terraform", "GOLDRAILS_PROJECT, GOLDRAILS_ZONE (optional)", "$10.44 VM time"],
+  ["Withheld text (optional)", "Hugging Face account that has accepted the terms of the gated sources", "HF_TOKEN", "Free"],
+];
 
 const ISSUE_URL = `${REPO_URL}/issues/new?${new URLSearchParams({
   title: "Add a system: <name>",
@@ -53,6 +70,73 @@ export default function Reproduce() {
             Run the benchmark yourself. See how we calculate a score. Or put your own guardrail through the same checks.
           </p>
         </header>
+
+        <H2 id="agent">Ask your agent</H2>
+        <P>
+          Paste this prompt into Claude Code, Codex, Cursor or another coding agent. The agent reads the step-by-step guide and
+          runs the free steps. It asks you before any step that needs an account or costs money.
+        </P>
+        <AgentPrompt prompt={AGENT_PROMPT} mdUrl="/reproduce.md" />
+
+        <H2 id="scope">What you can reproduce</H2>
+        <ul className="m-0 flex max-w-[64ch] flex-col gap-3 pl-5 text-[16px] leading-[1.7] text-fg-2 marker:text-muted">
+          <li>
+            The board scores {int(board.stats.checks)} checks per system. {int(board.stats.publicRows)} are public test rows. We do not
+            publish the other {int(board.stats.heldBackRows)}. A rerun from a fresh clone covers the public rows only. Expect scores
+            that are close to the board but not identical.
+          </li>
+          <li>
+            The <Link href="/data">Data</Link> page already shows every system&apos;s answer to every public row. You can check any
+            number without calling a model.
+          </li>
+          <li>The hosted APIs do not pin a model version. For that reason alone, a rerun months later can differ.</li>
+        </ul>
+
+        <H2 id="needs">What you need</H2>
+        <P>
+          Each system needs its own account. Run only the systems that you can access. The costs show what our run spent at list
+          prices in October 2026. All runs together cost about $16.40.
+        </P>
+        {/* Phones get one card per system: four columns do not fit at 375px. */}
+        <ul className="m-0 flex list-none flex-col gap-2 p-0 sm:hidden">
+          {NEEDS.map(([what, account, env, cost]) => (
+            <li key={what} className="flex flex-col gap-1.5 rounded-xl border border-line bg-surface px-4 py-3.5">
+              <span className="flex items-baseline justify-between gap-3">
+                <span className="text-[15px] font-semibold text-fg">{what}</span>
+                <span className="num shrink-0 text-[14px] text-fg">{cost}</span>
+              </span>
+              <span className="text-[14px] leading-relaxed text-fg-2">{account}</span>
+              <span className="num text-[12px] text-muted [overflow-wrap:anywhere]">{env}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="hidden sm:block">
+          <table className="w-full border-collapse text-[14px]">
+            <thead>
+              <tr className="border-b border-line text-left text-[12px] text-muted">
+                <th scope="col" className="py-2 pl-0 pr-4 font-medium">To run</th>
+                <th scope="col" className="py-2 pr-4 font-medium">Account and access</th>
+                <th scope="col" className="py-2 pr-4 font-medium">Environment variables</th>
+                <th scope="col" className="py-2 pr-4 text-right font-medium sm:pr-0">Our cost</th>
+              </tr>
+            </thead>
+            <tbody className="align-top text-fg-2">
+              {NEEDS.map(([what, account, env, cost]) => (
+                <tr key={what} className="border-t border-line">
+                  <th scope="row" className="py-2.5 pl-0 pr-4 text-left font-medium text-fg">{what}</th>
+                  <td className="py-2.5 pr-4">{account}</td>
+                  <td className="num py-2.5 pr-4 text-[12px] [overflow-wrap:anywhere]">{env}</td>
+                  <td className="num whitespace-nowrap py-2.5 pr-4 text-right sm:pr-0">{cost}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <P>
+          The self-hosted models run on one Google Cloud VM that <C>infra/gcp/</C> creates: <C>g2-standard-24</C> with 2 NVIDIA L4 GPUs
+          and a 200 GB disk. We ran it on demand in <C>us-east4-a</C> at about $2.00 an hour, for about 6.6 hours in total. The VM shuts
+          itself down after 60 idle minutes. <C>make pause</C> stops it and keeps the disk.
+        </P>
 
         <H2 id="quickstart">Quickstart</H2>
         <P>
@@ -119,7 +203,7 @@ uv run python benchmark/runs/e2_full.py report      # run summary, public ledger
           The self-hosted models run on a GPU VM. <C>make up</C> starts it and <C>make pause</C> stops it. The Terraform is in{" "}
           <C>infra/gcp/</C>. To score the ledgers into <C>leaderboard.json</C>, run this command:
         </P>
-        <CodeBlock label="score" code={`uv run --with scikit-learn python benchmark/runs/e2_openai_run.py score --source local`} />
+        <CodeBlock label="score" code={`uv run --with scikit-learn python benchmark/runs/e2_openai_run.py score`} />
         <P>
           We do not publish the held-back slice of {int(board.stats.heldBackRows)} rows. A run from a fresh clone covers only the public
           rows. Expect scores that are close to the board but not identical.
@@ -218,6 +302,9 @@ uv run python benchmark/runs/e2_smoke.py report`}
         <nav aria-label="On this page" className="sticky top-20 flex flex-col gap-2 text-[14px]">
           <span className="text-[12px] text-muted">On this page</span>
           {[
+            ["agent", "Ask your agent"],
+            ["scope", "What you can reproduce"],
+            ["needs", "What you need"],
             ["quickstart", "Quickstart"],
             ["dataset", "Get the dataset"],
             ["run", "Run the systems"],

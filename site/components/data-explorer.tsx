@@ -82,13 +82,21 @@ export function DataExplorer({ board }: { board: Board }) {
   }, []);
 
   const update = useCallback((patch: Partial<Filters>) => {
-    setF((prev) => {
-      const next = { ...prev, ...patch };
-      writeUrl(next);
-      return next;
-    });
+    setF((prev) => ({ ...prev, ...patch }));
     setPage(0);
   }, []);
+
+  // Mirror the filters into the URL after React commits them. Writing history inside the state updater runs during
+  // render and makes Next's router update mid-render. The first run is skipped: the filters still hold their defaults
+  // until the mount effect above has read the URL.
+  const urlReady = useRef(false);
+  useEffect(() => {
+    if (!urlReady.current) {
+      urlReady.current = true;
+      return;
+    }
+    writeUrl(f);
+  }, [f]);
 
   const filtered = useMemo(() => {
     if (!index) return [];
@@ -398,7 +406,7 @@ function Heatmap({
           </caption>
           <thead>
             <tr>
-              <th scope="col" className="sticky left-0 z-10 w-44 bg-bg pb-2 pl-1 text-left text-[12px] font-medium text-muted">System</th>
+              <th scope="col" className="sticky left-0 z-10 bg-bg pb-2 pl-1 text-left text-[12px] font-medium text-muted sm:w-44">System</th>
               {JOBS.map((j) => (
                 <th key={j.id} scope="col" className="pb-2 text-center align-bottom text-[12px] font-medium leading-tight text-muted">
                   {j.short}
@@ -415,8 +423,8 @@ function Heatmap({
                     <span className="flex items-center gap-2">
                       <SystemMark m={m} />
                       <span>
-                        <span className="block font-semibold text-fg">{m?.name ?? o.system}</span>
-                        <span className="block text-[12px] text-muted">{m?.provider}</span>
+                        <span className="block max-w-[9rem] font-semibold leading-tight text-fg sm:max-w-none">{m?.name ?? o.system}</span>
+                        <span className="hidden text-[12px] text-muted sm:block">{m?.provider}</span>
                       </span>
                     </span>
                   </th>

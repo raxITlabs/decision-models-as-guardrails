@@ -83,7 +83,7 @@ export function Leaderboard({ board }: { board: Board }) {
           ]}
         />
       </div>
-      <p className="m-0 max-w-[64ch] text-[14px] leading-relaxed text-muted">
+      <p className="m-0 text-[14px] leading-relaxed text-muted">
         {job === "overall"
           ? `The overall score is the plain average of ${board.stats.suites} guardrail suites, which together cover the ${board.stats.jobs} jobs. The leaders change a lot from job to job. Select your job above.`
           : `${JOB_BY_ID[job].sub}. The score is balanced accuracy on this job. A score of 50 is a coin flip.`}
@@ -96,14 +96,14 @@ export function Leaderboard({ board }: { board: Board }) {
       <Scatter scores={shown} sys={sys} axis={axis} tiers={tiers} selected={sel?.system} onSelect={setSelected} />
 
       <div className="overflow-x-auto rounded-xl border border-line bg-surface">
-        <table className="w-full min-w-[560px] sm:min-w-[860px] border-collapse text-[14px]">
+        <table className="w-full min-w-[460px] sm:min-w-[860px] border-collapse text-[14px]">
           <caption className="sr-only">
             {job === "overall" ? "Overall" : JOB_BY_ID[job].title}: rank, score with 95% interval, tier, catch rate, false-block rate, cost and hosting for every system.
           </caption>
           <thead>
             <tr className="border-b border-line text-left text-[12px] text-muted">
-              <th scope="col" className="w-10 py-3 pl-4 font-medium sm:pl-5">#</th>
-              <th scope="col" className="py-2.5 pr-3 font-medium">System</th>
+              <th scope="col" className="hidden w-10 py-3 pl-5 font-medium sm:table-cell">#</th>
+              <th scope="col" className="sticky left-0 z-[1] bg-surface py-2.5 pl-3 pr-3 font-medium sm:static sm:pl-0">System</th>
               <th scope="col" className="py-2.5 pr-3 font-medium">Score <span className="font-normal">±95% CI</span></th>
               <th scope="col" className="hidden py-2.5 pr-3 font-medium sm:table-cell">Tier</th>
               <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">Catch rate</th>
@@ -125,8 +125,9 @@ export function Leaderboard({ board }: { board: Board }) {
                     on ? "bg-selected" : "hover:bg-raised/60"
                   }`}
                 >
-                  <td className="num py-2.5 pl-4 text-muted sm:pl-5">{s.rank}</td>
-                  <th scope="row" className="py-2.5 pr-3 text-left font-normal">
+                  <td className="num hidden py-2.5 pl-5 text-muted sm:table-cell">{s.rank}</td>
+                  {/* On a phone the name column stays put while the numbers scroll under it. */}
+                  <th scope="row" className={`sticky left-0 z-[1] py-2.5 pl-3 pr-3 text-left font-normal sm:static sm:pl-0 ${on ? "bg-selected" : "bg-surface"}`}>
                     <button
                       type="button"
                       onClick={() => setSelected(s.system)}
@@ -136,7 +137,7 @@ export function Leaderboard({ board }: { board: Board }) {
                       <SystemMark m={m} size="md" />
                       <span className="flex flex-col items-start">
                         <span className="font-semibold text-fg">{m?.name ?? s.system}</span>
-                        <span className="text-[12px] text-muted">{m?.provider}</span>
+                        <span className="hidden text-[12px] text-muted sm:block">{m?.provider}</span>
                       </span>
                     </button>
                   </th>
@@ -161,7 +162,7 @@ export function Leaderboard({ board }: { board: Board }) {
       </div>
       </WallpaperFrame>
 
-      <p className="m-0 max-w-[72ch] text-[13px] leading-relaxed text-muted">
+      <p className="m-0 text-[13px] leading-relaxed text-muted">
         Every system answers the same {board.stats.checks.toLocaleString("en-US")} checks under one fixed rule: a probability of{" "}
         {board.stats.threshold} or more blocks. <Link href="/#fixed-rule">Read why.</Link> Our statistical tests cannot tell the
         systems in one tier apart from that tier&apos;s leader. Self-hosted cost is our shared GPU time.
@@ -224,7 +225,8 @@ function Scatter({
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
-  const h = w < 560 ? 300 : 380;
+  const compact = w < 560;
+  const h = compact ? 340 : 380;
   const pad = { l: 40, r: 28, t: 16, b: 34 };
   const xv = (s: Score) => (axis === "cost" ? s.cost ?? 0 : s.falseBlockRate);
   const xMax = niceMax(Math.max(...scores.map(xv), axis === "cost" ? 0.05 : 0.05) * 1.08);
@@ -246,14 +248,14 @@ function Scatter({
   for (const s of order) {
     const x = px(xv(s));
     const y = py(s.score);
-    const rr = s.system === selected ? 19 : 15;
+    const rr = s.system === selected ? (compact ? 16 : 19) : compact ? 13 : 15;
     rects.push({ x: x - rr, y: y - rr, w: 2 * rr, h: 2 * rr });
     placed.push({ s, x, y });
   }
   for (const p of placed) {
     const name = sys[p.s.system]?.short ?? sys[p.s.system]?.name ?? p.s.system;
     const lw = Math.ceil(textWidth(name, measure)) + 4;
-    const off = p.s.system === selected ? 24 : 20;
+    const off = p.s.system === selected ? (compact ? 20 : 24) : compact ? 17 : 20;
     const tries: { x: number; y: number; anchor: "left" | "right" }[] = [];
     for (const dy of [0, -14, 14, -26, 26, -38, 38]) {
       tries.push({ x: p.x + off, y: p.y + dy, anchor: "right" });
@@ -321,7 +323,7 @@ function Scatter({
             >
               {/* A square per system: the maker's mark inside, tier colour on the border and as a wash behind it. */}
               <span
-                className={`grid place-items-center rounded-md ${on ? "size-[34px]" : "size-7"}`}
+                className={`grid place-items-center rounded-md ${on ? (compact ? "size-7" : "size-[34px]") : compact ? "size-6" : "size-7"}`}
                 style={{
                   background: `color-mix(in srgb, ${tierVar(p.s.tier)} 14%, var(--surface))`,
                   border: `2px ${self && axis === "cost" ? "dashed" : "solid"} ${tierVar(p.s.tier)}`,
@@ -330,7 +332,7 @@ function Scatter({
               >
                 {m?.logo ? (
                   // eslint-disable-next-line @next/next/no-img-element -- static export, tiny SVGs
-                  <img src={m.logo} alt="" className={on ? "size-5" : "size-4"} />
+                  <img src={m.logo} alt="" className={on && !compact ? "size-5" : compact ? "size-3.5" : "size-4"} />
                 ) : (
                   <span className="text-[11px] font-semibold leading-none text-fg-2">{m?.mono}</span>
                 )}
