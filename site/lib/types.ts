@@ -8,6 +8,8 @@ export interface SystemMeta {
   name: string;
   provider: string;
   hosting: Hosting;
+  /** decision model (answers yes/no questions with a probability) or managed guardrail service (fixed safeguards) */
+  kind: "decision" | "service";
   /** shorter name for chart labels */
   short?: string;
   /** two-letter monogram of the maker, shown when there is no logo */

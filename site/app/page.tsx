@@ -4,6 +4,7 @@ import { ArrowRight, Chevron } from "@/components/icons";
 import { HashOpen } from "@/components/hash-open";
 import { PillLink } from "@/components/pill-link";
 import { Podium } from "@/components/podium";
+import { TwoKinds } from "@/components/two-kinds";
 import { HeroPlate, Plate } from "@/components/plate";
 import { Faq } from "@/components/faq";
 import { Leaderboard } from "@/components/leaderboard";
@@ -93,6 +94,8 @@ export default function Home() {
         </div>
         <Leaderboard board={board} />
       </section>
+
+      <TwoKinds board={board} />
 
       <section id="fixed-rule" aria-labelledby="claims-h" className="scroll-mt-24">
         <HashOpen id="fixed-rule" />

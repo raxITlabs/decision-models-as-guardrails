@@ -109,7 +109,7 @@ export function Leaderboard({ board }: { board: Board }) {
               <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">Catch rate</th>
               <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">False-block rate</th>
               <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">$ per 1,000 checks</th>
-              <th scope="col" className="hidden py-3 pr-4 font-medium sm:table-cell sm:pr-5">Hosting</th>
+              <th scope="col" className="hidden py-3 pr-4 font-medium sm:table-cell sm:pr-5">Type</th>
             </tr>
           </thead>
           <tbody>
@@ -138,6 +138,11 @@ export function Leaderboard({ board }: { board: Board }) {
                       <span className="flex flex-col items-start">
                         <span className="font-semibold text-fg">{m?.name ?? s.system}</span>
                         <span className="hidden text-[12px] text-muted sm:block">{m?.provider}</span>
+                        {m?.kind === "service" && (
+                          <span className="mt-1 sm:hidden">
+                            <KindTag kind="service" />
+                          </span>
+                        )}
                       </span>
                     </button>
                   </th>
@@ -157,7 +162,10 @@ export function Leaderboard({ board }: { board: Board }) {
                   <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{pct(s.catchRate)}</td>
                   <td className={`num hidden py-2.5 pr-3 text-right sm:table-cell ${s.falseBlockRate >= 0.25 ? "text-warn" : ""}`}>{pct(s.falseBlockRate)}</td>
                   <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{money(s.cost)}</td>
-                  <td className="hidden py-2.5 pr-4 text-[13px] text-fg-2 sm:table-cell sm:pr-5">{m?.hosting === "managed" ? "Managed API" : "Self-hosted"}</td>
+                  <td className="hidden py-2.5 pr-4 text-[13px] sm:table-cell sm:pr-5">
+                    <KindTag kind={m?.kind} />
+                    <span className="block text-[12px] text-muted">{m?.hosting === "managed" ? "Managed API" : "Self-hosted"}</span>
+                  </td>
                 </tr>
               );
             })}
@@ -198,6 +206,15 @@ function ScoreBar({ s }: { s: Score }) {
         <span className="ml-1 text-[12px] text-muted">±{halfCi(s).toFixed(1)}</span>
       </span>
     </div>
+  );
+}
+
+/** Decision model or guardrail service, as a small label. The service one is a pill so it stands out in the list, in a neutral ink (it is a kind, not a judgement). */
+export function KindTag({ kind }: { kind?: "decision" | "service" }) {
+  return kind === "service" ? (
+    <span className="inline-flex items-center rounded-full border border-fg/25 bg-raised px-2 py-0.5 text-[12px] font-medium text-fg">Guardrail service</span>
+  ) : (
+    <span className="text-[13px] text-fg-2">Decision model</span>
   );
 }
 
@@ -479,6 +496,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
             <span className="text-[13px] text-muted">
               {m?.provider}
               {m ? (m.hosting === "managed" ? " · managed API" : " · self-hosted on our GPUs") : ""}
+              {m ? (m.kind === "service" ? " · guardrail service" : " · decision model") : ""}
             </span>
           </span>
         </div>

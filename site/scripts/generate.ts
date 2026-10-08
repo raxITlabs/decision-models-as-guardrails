@@ -49,6 +49,9 @@ export const SYSTEM_DISPLAY: Record<string, { name: string; short?: string; prov
   laya: { name: "Laya", provider: "Convai Innovations · open weights", mono: "CI", logo: "/logos/laya.svg" },
 };
 
+/** Systems that are managed guardrail services with fixed safeguards rather than decision models. */
+export const GUARDRAIL_SERVICES = new Set(["bedrock-guardrails"]);
+
 /** The system whose native question format every decision model receives (disclosed in the FAQ). */
 export const QUESTION_FORMAT_SYSTEM = "jev-1.13.0";
 /** A vendor model that is also scored without its vendor's own dataset rows. */
@@ -285,6 +288,8 @@ export function buildBoard(lb: Json, source: Board["source"]): Board {
       ...(d?.short ? { short: d.short } : {}),
       ...(d?.logo ? { logo: d.logo } : {}),
       hosting: hostingOf(arms, r.name),
+      // Amazon Bedrock Guardrails is a configurable guardrail service, not a decision model.
+      kind: GUARDRAIL_SERVICES.has(r.name) ? "service" : "decision",
     };
   });
 
