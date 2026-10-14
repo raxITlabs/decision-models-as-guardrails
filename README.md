@@ -39,9 +39,17 @@ benchmark/    goldrails_bench/ (adapters, hosted clients, freeze and overlap che
               question_sets/, policies/, contracts/, subsets/ (freeze manifests)
 infra/        Terraform for the GPU VM that serves the open models, and for the Bedrock guardrails
 docs/         the evaluation contract and plan, and copies of vendor docs that the overlap scan reads
+research/     linear-probe notebooks for Strands Decider 2B and Kev 4B, with a comparison and run provenance
 ```
 
 Python packages and folders keep the project's working names (`goldrails_dataset`, `goldrails_bench`).
+
+## Probe research
+
+The [linear-probe study](research/probes/README.md) compares Strands Decider 2B and Kev 4B on the same readable denied-topic rows.
+Both runnable notebooks are in [`research/probes/notebooks/`](research/probes/notebooks/). The [site article](https://decision-models-as-guardrails.raxitlabs.com/research/linear-probe)
+reports the native decisions, fitted-probe results, uncertainty, and limits of what this one-use-case experiment can establish.
+The notebooks and site article are separate from the fixed-rule benchmark leaderboard.
 
 ## Reproduce it
 

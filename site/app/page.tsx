@@ -98,7 +98,7 @@ export default function Home() {
     <div className="mx-auto flex max-w-[1200px] flex-col gap-24 px-4 pt-20 sm:gap-28 sm:px-6 sm:pt-24">
       {board.source === "fixture" && (
         <p role="note" className="m-0 border-y border-warn/50 py-3 text-[14px] text-warn">
-          Preview build. The systems and numbers on this page are synthetic placeholders. They are not results.
+          Preview build. The leaderboard and benchmark summaries on this page are synthetic placeholders. The linked research article reports separate recorded probe runs.
         </p>
       )}
 
@@ -115,6 +115,21 @@ export default function Home() {
           </p>
         </div>
         <Leaderboard board={board} />
+      </section>
+
+      <section aria-labelledby="probe-h" className="grid gap-6 border-y border-line-strong py-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-12">
+        <div className="flex max-w-[740px] flex-col gap-3">
+          <span className="text-[12px] font-medium uppercase tracking-[0.2em] text-muted">Inside the models · comparative research</span>
+          <h2 id="probe-h" className="m-0 text-[clamp(1.5rem,3vw,2.25rem)] font-semibold leading-[1.1] tracking-[-0.02em]">
+            Why does one decision model guard better than another here?
+          </h2>
+          <p className="m-0 text-[15px] leading-relaxed text-fg-2">
+            On the same 540 denied-topic rows, Kev 4B&apos;s native output caught 256 of 256 block cases at the fixed 0.5 rule; Strands Decider 2B caught 244. Linear probes help explain what each model represents and how much its delivered score uses. This study is separate from the leaderboard.
+          </p>
+        </div>
+        <Link href="/research/linear-probe" className="inline-flex min-h-11 w-fit items-center gap-1.5 text-[14px]">
+          Read the comparison <ArrowRight />
+        </Link>
       </section>
 
       <CostCalculator board={board} />
