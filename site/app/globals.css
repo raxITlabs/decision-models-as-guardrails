@@ -170,9 +170,12 @@ details[open] > summary .chev {
 .site-header[data-over-art] .text-muted { color: color-mix(in srgb, var(--over-art) 80%, transparent); }
 .site-header[data-over-art] .text-fg { color: var(--over-art); }
 .site-header[data-over-art] .bg-line-strong { background-color: var(--over-line); }
-.site-header[data-over-art] summary { color: var(--over-art); text-decoration-color: var(--over-line); }
-/* The phone menu is a paper panel: its links stay ink even while the header sits on the painting. */
+.site-header[data-over-art] summary { color: var(--over-art); }
+/* Over the painting the Contact button turns paper with ink text, like the hero's own buttons. */
+.site-header[data-over-art] .header-cta, .site-header[data-over-art] .header-cta:hover { background-color: var(--over-art); color: var(--fg); }
+/* The menu sheet is paper: its links stay ink even while the header sits on the painting. */
 .site-header[data-over-art] .menu-panel a, .site-header[data-over-art] .menu-panel a:hover { color: var(--fg); }
+.site-header[data-over-art] .menu-panel .header-cta { background-color: var(--fg); color: var(--bg); }
 
 /* Full-screen hero: a wash under the header, the painting clear in the middle, a deep scrim under the title,
    and a soft shade from the left behind the text column. */
@@ -204,3 +207,5 @@ details[open] > summary .chev {
 /* The contact prompt rises in once, gently. */
 @keyframes prompt-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 .prompt-in { animation: prompt-in 320ms cubic-bezier(0.25, 1, 0.5, 1) both; }
+/* The open phone menu dims the page under it, so the sheet reads as one layer above the content. */
+.site-header details[open] .menu-panel { box-shadow: 0 0 0 100vmax rgb(var(--smoky) / 0.22); }
