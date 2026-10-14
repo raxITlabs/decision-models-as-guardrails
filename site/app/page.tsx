@@ -9,6 +9,7 @@ import { CostCalculator } from "@/components/cost-calculator";
 import { HeroPlate, Plate } from "@/components/plate";
 import { Faq } from "@/components/faq";
 import { Leaderboard } from "@/components/leaderboard";
+import { AttacksFinding, BedrockFinding, CostFinding } from "@/components/finding";
 import { faqItems } from "@/lib/copy";
 import { loadBoard, loadRowDetails, loadRowsIndex } from "@/lib/data";
 import { REPO_URL, int, listNames, longDate, oneLine, pct, score1, systemMap } from "@/lib/format";
@@ -103,6 +104,9 @@ export default function Home() {
       )}
 
 
+      {/* Each finding sits just above the section that shows its evidence. */}
+      <div className="flex flex-col gap-14">
+        <BedrockFinding board={board} />
       <section id="leaderboard" aria-labelledby="lb-h" className="flex scroll-mt-24 flex-col gap-6">
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
           <div className="flex flex-col gap-2.5">
@@ -116,8 +120,12 @@ export default function Home() {
         </div>
         <Leaderboard board={board} />
       </section>
+      </div>
 
-      <CostCalculator board={board} />
+      <div className="flex flex-col gap-14">
+        <CostFinding board={board} />
+        <CostCalculator board={board} />
+      </div>
 
       <TwoKinds board={board} />
 
@@ -161,6 +169,8 @@ export default function Home() {
         </details>
       </section>
 
+      <div className="flex flex-col gap-14">
+        <AttacksFinding board={board} />
       <section aria-labelledby="jobs-h" className="flex flex-col gap-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="flex flex-col gap-2.5">
@@ -203,6 +213,7 @@ export default function Home() {
           })}
         </ol>
       </section>
+      </div>
 
       <section aria-labelledby="faq-h" className="grid gap-8 md:grid-cols-[minmax(0,4fr)_minmax(0,7fr)]">
         <div className="flex flex-col gap-2.5">
