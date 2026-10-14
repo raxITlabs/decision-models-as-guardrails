@@ -11,6 +11,8 @@ import { Faq } from "@/components/faq";
 import { Leaderboard } from "@/components/leaderboard";
 import { AttacksFinding, BedrockFinding, CostFinding } from "@/components/finding";
 import { faqItems } from "@/lib/copy";
+import { ContactLink } from "@/components/contact";
+import { ContactPrompt } from "@/components/contact-prompt";
 import { loadBoard, loadRowDetails, loadRowsIndex } from "@/lib/data";
 import { REPO_URL, int, listNames, longDate, oneLine, pct, score1, systemMap } from "@/lib/format";
 import { JOBS } from "@/lib/jobs";
@@ -75,6 +77,7 @@ export default function Home() {
 
   return (
     <>
+    <ContactPrompt />
     <HeroPlate src="/plates/hero-fork.webp">
           {/* One column on the left: the question, then one message the systems disagree on, then the way in. */}
           <div className="flex max-w-[720px] flex-col gap-7">
@@ -231,7 +234,9 @@ export default function Home() {
               </h2>
               <p className="over-art-86 m-0 text-[17px] leading-relaxed">
                 Clone the repository. Get the pinned dataset. Then score your own guardrail on the same checks. We publish new results
-                as GitHub releases. Watch the repository to get an email for each release.
+                as GitHub releases. Watch the repository to get an email for each release. Want us to test your guardrail, or have a
+                question about the results?{" "}
+                <ContactLink className="art-link font-medium">Contact us</ContactLink>.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
