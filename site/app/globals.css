@@ -170,6 +170,9 @@ details[open] > summary .chev {
 .site-header[data-over-art] .text-muted { color: color-mix(in srgb, var(--over-art) 80%, transparent); }
 .site-header[data-over-art] .text-fg { color: var(--over-art); }
 .site-header[data-over-art] .bg-line-strong { background-color: var(--over-line); }
+.site-header[data-over-art] summary { color: var(--over-art); text-decoration-color: var(--over-line); }
+/* The phone menu is a paper panel: its links stay ink even while the header sits on the painting. */
+.site-header[data-over-art] .menu-panel a, .site-header[data-over-art] .menu-panel a:hover { color: var(--fg); }
 
 /* Full-screen hero: a wash under the header, the painting clear in the middle, a deep scrim under the title,
    and a soft shade from the left behind the text column. */
