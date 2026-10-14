@@ -168,6 +168,8 @@ details[open] > summary .chev {
 .site-header[data-over-art] a:hover { color: var(--over-art); }
 .site-header[data-over-art] a:hover { background-color: transparent; text-decoration-color: var(--over-art); }
 .site-header[data-over-art] .text-muted { color: color-mix(in srgb, var(--over-art) 80%, transparent); }
+.site-header[data-over-art] .text-fg { color: var(--over-art); }
+.site-header[data-over-art] .bg-line-strong { background-color: var(--over-line); }
 
 /* Full-screen hero: a wash under the header, the painting clear in the middle, a deep scrim under the title,
    and a soft shade from the left behind the text column. */
