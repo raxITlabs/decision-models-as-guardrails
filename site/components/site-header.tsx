@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { HF_URL, REPO_URL } from "@/lib/format";
 import { External } from "./icons";
 import { NavLink } from "./nav-link";
+import { ContactLink } from "./contact";
 
 /** On the home page the header sits on the hero painting, transparent with paper ink, until the reader scrolls
  *  (the raxIT site's own behaviour). Everywhere else, and once scrolled, it is solid paper. */
@@ -43,7 +44,13 @@ export function SiteHeader() {
             <li className="hidden sm:block"><NavLink href="/">Results</NavLink></li>
             <li><NavLink href="/reproduce">Reproduce</NavLink></li>
             <li><NavLink href="/data">Data</NavLink></li>
-            <li><NavLink href="/research">Research</NavLink></li>
+            {/* Phones: Research moves to the footer to make room for Contact. */}
+            <li className="hidden sm:block"><NavLink href="/research">Research</NavLink></li>
+            <li>
+              <ContactLink className="inline-flex min-h-11 items-center px-2 font-medium text-fg-2 no-underline underline-offset-[6px] hover:text-fg hover:underline sm:px-3">
+                Contact
+              </ContactLink>
+            </li>
             <li className="hidden sm:block">
               <a href={HF_URL} className="inline-flex min-h-11 items-center gap-1 px-2.5 text-fg-2 no-underline underline-offset-[6px] hover:text-fg hover:underline">
                 Dataset<span className="sr-only"> on Hugging Face</span> <External />
