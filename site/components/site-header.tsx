@@ -33,8 +33,8 @@ export function SiteHeader() {
     >
       <div className="mx-auto flex h-[72px] max-w-[1200px] items-center gap-3 px-4 sm:px-6">
         <Link href="/" prefetch={false} className="flex min-h-11 shrink-0 items-center gap-2 text-fg no-underline hover:text-fg">
-          {/* eslint-disable-next-line @next/next/no-img-element -- static export, one small SVG */}
-          <img src={overArt ? "/brand/raxit-wordmark-light.svg" : "/brand/raxit-wordmark.svg"} alt="raxIT" width={75} height={30} className="h-[30px] w-auto" />
+          {/* eslint-disable-next-line @next/next/no-img-element -- static export, one small PNG (v2 word-only mark from raxitlabs.com) */}
+          <img src={overArt ? "/brand/raxit-wordmark-v2-white.png" : "/brand/raxit-wordmark-v2.png"} alt="raxIT" width={111} height={30} className="h-[30px] w-auto" />
           <span className="hidden text-[14px] text-muted md:inline">/ Labs / decision-models-as-guardrails</span>
         </Link>
         <nav aria-label="Main" className="ml-auto flex min-w-0 items-center">
