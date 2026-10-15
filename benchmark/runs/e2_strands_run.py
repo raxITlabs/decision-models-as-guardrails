@@ -88,6 +88,8 @@ R26 = ar.MANIFEST
 TFVARS = REPO / "infra" / "gcp" / "terraform.tfvars"
 ROSTER = REPO / "infra" / "gcp" / "terraform.tfvars.strands-deciders.example"
 HARDWARE = "g2-standard-48/northamerica-northeast2/on-demand/third-party"
+# Pass 2 (the 26B-A4B) runs on one A100 80 GB: split over four L4 cards it answered wrongly (NOT_RUN's old reason).
+PASS_HARDWARE = {1: HARDWARE, 2: "a2-ultragpu-1g/us-central1/on-demand"}
 DISK = "pd-balanced/us-east4/third-party"
 LABEL = ("Strands Decider extension run: six checkpoints on every edition 2 test row and the unpublished slice, contract "
          "v2.0 as amended")
@@ -403,8 +405,9 @@ def vm_pass(pass_no: int, source: str | None) -> dict:
             raise RuntimeError(f"make up failed (exit {code}): {text.strip().splitlines()[-1:]}")
         vt = _vm_times()
         res["vm"] = vt
-        if vt["machine_type"] != HARDWARE.split("/")[0]:
-            raise RuntimeError(f"the VM is {vt['machine_type']}, not {HARDWARE.split('/')[0]}")
+        want = PASS_HARDWARE[pass_no].split("/")[0]
+        if vt["machine_type"] != want:
+            raise RuntimeError(f"the VM is {vt['machine_type']}, not {want}")
         todo = [n for n in names if not smoke_serving(n)]
         if todo:
             run_smoke(todo)
@@ -447,7 +450,7 @@ def vm_pass(pass_no: int, source: str | None) -> dict:
             up = (res.get("vm") or {}).get("last_start")
             if up and vt["status"] == "TERMINATED":
                 log_event("vm", {"up": up, "paused": vt["last_stop"], "pass": pass_no, "systems": names,
-                                 "hardware": HARDWARE})
+                                 "hardware": PASS_HARDWARE[pass_no]})
         except Exception as e:  # noqa: BLE001
             res["vm_after_error"] = f"{type(e).__name__}: {str(e)[:200]}"
         res.update(finished=_now(), seconds=round(time.time() - t0, 1))
@@ -511,7 +514,7 @@ def serving(tr) -> list:
     sha = {full.FEATURE_SUITE[f]: tr.file_sha[f] for f in full.FEATURES}
     out = []
     for sess in log.get("vm", []):
-        if not (sess.get("up") and sess.get("paused")):
+        if not (sess.get("up") and sess.get("paused")) or sess.get("unallocated"):
             continue
         secs = sample._ts(sess["paused"]) - sample._ts(sess["up"])
         run = {s: (summ.get(s) or {}).get("wall_seconds") or 0 for s in sess["systems"] if s in summ}

@@ -77,6 +77,11 @@ resource "google_compute_instance" "serve" {
     max_run_duration {
       seconds = var.max_run_hours * 3600
     }
+    # Machines with a bundled local SSD (a2-ultragpu-1g) must say what happens to it when the run cap stops the VM.
+    # Nothing is kept there: weights live on the boot disk.
+    on_instance_stop_action {
+      discard_local_ssd = true
+    }
   }
 
   # Logging and monitoring only. Weights come from Hugging Face over HTTPS, not from

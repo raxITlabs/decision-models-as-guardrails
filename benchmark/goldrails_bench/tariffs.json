@@ -219,6 +219,18 @@
       "status": "Google list price from the billing catalog; not reconciled against a billing statement"
     },
     {
+      "id": "gcp/a2-ultragpu-1g/us-central1/on-demand",
+      "provider": "Google Compute Engine",
+      "kind": "per_hour",
+      "match": {"hardware": ["a2-ultragpu-1g/us-central1/on-demand"]},
+      "region": "us-central1",
+      "usd_per_hour": 5.0277,
+      "note": "One A100 80 GB, 12 vCPU, 170 GiB: 12 x $0.031611 (A2 Instance Core running in Americas) + 170 x $0.004237 (A2 Instance Ram) + $3.92808 (Nvidia Tesla A100 80GB GPU running in Americas). Strands Decider 26B-A4B ran here on 15 October 2026.",
+      "checked_on": "2026-10-15",
+      "source": "Cloud Billing Catalog API, service 6F81-5844-456A (Compute Engine) SKUs",
+      "status": "Google list price from the billing catalog; not reconciled against a billing statement"
+    },
+    {
       "id": "local/cpu",
       "provider": "Local CPU for deterministic code (regex baseline)",
       "kind": "per_hour",
