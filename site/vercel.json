@@ -27,6 +27,13 @@
       "dest": "https://us.i.posthog.com/$1"
     },
     {
+      "src": "^/(?!ingest/)(.+)/$",
+      "status": 308,
+      "headers": {
+        "Location": "/$1"
+      }
+    },
+    {
       "src": "/(.*)",
       "headers": {
         "X-Content-Type-Options": "nosniff",
