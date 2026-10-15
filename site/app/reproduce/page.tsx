@@ -26,7 +26,7 @@ const NEEDS: [string, string, string, string][] = [
   ["Clef, Clef Flash", "Cloudflare Workers AI. In practice you need the Workers Paid plan ($5 a month), because the free daily allowance ran out mid-run", "CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN", "$2.76 + plan"],
   ["Bedrock Guardrails", "AWS account with Bedrock, a CLI profile (we used SSO), Terraform to create the guardrails", "AWS_PROFILE, AWS_REGION", "$1.12"],
   ["Six self-hosted models", "Google Cloud project with billing and quota for 2 NVIDIA L4 GPUs, gcloud, Terraform", "GOLDRAILS_PROJECT, GOLDRAILS_ZONE (optional)", "$10.44 VM time"],
-  ["Five newer Strands Decider models", "The same Google Cloud project, with quota for 4 NVIDIA L4 GPUs (g2-standard-48)", "GOLDRAILS_PROJECT, GOLDRAILS_ZONE (optional)", "$31.70 VM time"],
+  ["Six newer Strands Decider models", "The same Google Cloud project, with quota for 4 NVIDIA L4 GPUs (g2-standard-48) and 1 A100 80 GB (for the 26B-A4B)", "GOLDRAILS_PROJECT, GOLDRAILS_ZONE (optional)", "$38.40 VM time"],
   ["Withheld text (optional)", "Hugging Face account that has accepted the terms of the gated sources", "HF_TOKEN", "Free"],
 ];
 
