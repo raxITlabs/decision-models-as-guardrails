@@ -55,6 +55,7 @@ The short version:
 |---|---|---|
 | Tests, dataset, cost forecast | Python 3.12+, `uv`, git | Free |
 | Jev 1.13.0 | TypeSafe API key | USD 0.38 |
+| Jev 1.14.0 | The same TypeSafe API key | USD 0.38 |
 | Decisions API · Perplexity (pplx-decider-v1-27b) | Perplexity API key | USD 0.56 |
 | Decisions API · OpenAI (gpt-6-luna) | OpenAI key with Decisions API access (public beta) | USD 1.10 |
 | Clef, Clef Flash | Cloudflare Workers AI. In practice you need the Workers Paid plan (USD 5 a month) | USD 2.76 |
