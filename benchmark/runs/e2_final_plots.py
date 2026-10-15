@@ -38,7 +38,8 @@ SUITE_NAME = {"content": "Content", "prompt_attacks": "Prompt attacks", "denied_
               "grounding": "Grounding"}
 SHORT = {"jev-1.13.0": "Jev 1.13.0", "clef": "Clef", "clef-flash": "Clef-flash", "pplx-decider-v1-27b": "pplx-decider",
          "kev-0-8b": "Kev-0.8B", "kev-4b": "Kev-4B", "kev-9b": "Kev-9B", "open-jev-2b": "Open-Jev-2B", "laya": "Laya",
-         "strands-decider-2b": "Strands 2B", "bedrock-guardrails": "Bedrock", "gpt-6-luna": "gpt-6-luna"}
+         "strands-decider-2b": "Strands 2B", "bedrock-guardrails": "Bedrock", "gpt-6-luna": "gpt-6-luna",
+         "jev-1.14.0": "Jev 1.14.0"}
 TAG = "test split"
 SPLIT_NOTE = "Test split and unpublished slice"   # main() adds the row count
 

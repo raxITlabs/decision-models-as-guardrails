@@ -23,6 +23,20 @@
       "status": "vendor list price, repository copy; not reconciled against a billing statement"
     },
     {
+      "id": "typesafe/jev-1.14.0",
+      "provider": "TypeSafe (api.typesafe.ai)",
+      "kind": "per_token",
+      "match": {"models": ["jev-1.14.0"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.042},
+        "output_tokens": {"usd_per_million": 0.0, "note": "provider lists output tokens as free"}
+      },
+      "checked_on": "2026-10-15",
+      "source": "https://docs.typesafe.ai/models (repository copy: docs/reference/typesafe/models.md, updated 2026-10-15)",
+      "status": "vendor list price, repository copy; not reconciled against a billing statement"
+    },
+    {
       "id": "cloudflare/workers-ai/clef",
       "provider": "Cloudflare Workers AI",
       "kind": "per_token",

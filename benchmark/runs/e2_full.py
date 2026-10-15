@@ -9,7 +9,7 @@
     uv run python benchmark/runs/e2_full.py hosted-run    # Jev, Clef, Clef-flash, pplx-decider, Bedrock, retry passes
     uv run python benchmark/runs/e2_full.py report        # offline: run summary, public ledgers, privacy checks
 
-The run's records feed the published results in ``benchmark/results/final/`` (``e2_openai_run.py score``), which keep
+The run's records feed the published results in ``benchmark/results/final/`` (``e2_jev114_run.py score``), which keep
 content, denied topics, word filters, PII and grounding from this run and take prompt attacks from the r26 rerun.
 
 What is sent: every row of the edition 2 test split, ``F*.test.jsonl`` of the edition 2 source

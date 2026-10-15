@@ -54,6 +54,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import e2_attacks_rerun as ar  # noqa: E402  (points e2_full's globals at the r26 rerun, which its score reads)
 import e2_full as full  # noqa: E402
 import e2_openai_run as luna  # noqa: E402
+import e2_jev114_run as jev114  # noqa: E402
 import e2_sample as sample  # noqa: E402
 import e2_smoke as smoke  # noqa: E402
 
@@ -554,11 +555,12 @@ def frozen_integrity_as_written(tr) -> dict:
 
 
 def score(replicates: int | None = None) -> Path:
-    """The full rescore: the eleven, gpt-6-luna's extension run and this one."""
+    """The full rescore: the eleven, then the extension runs of gpt-6-luna, Jev 1.14.0 and these checkpoints."""
     tr = full.TestRows()
     luna.write_public(tr)
+    jev114.write_public(tr)
     write_public(tr)
-    return ar.score(replicates, extra_runs=[luna.extra_run(), extra_run()])
+    return ar.score(replicates, extra_runs=[luna.extra_run(), jev114.extra_run(), extra_run()])
 
 
 def plan() -> None:

@@ -336,8 +336,8 @@ def extra_run() -> dict:
 
 
 def score(replicates: int | None = None) -> Path:
-    """gpt-6-luna added to the eleven. Once the Strands Decider extension has run, ``e2_strands_run.py score`` is the
-    full rescore."""
+    """gpt-6-luna added to the eleven. ``e2_strands_run.py score`` is the full rescore (with Jev 1.14.0 and the
+    Strands Decider extension)."""
     tr = full.TestRows()
     write_public(tr)
     return ar.score(replicates, extra_runs=[extra_run()])
