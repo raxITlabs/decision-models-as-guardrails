@@ -40,6 +40,7 @@ Dataset: https://huggingface.co/datasets/raxITLabs/decision-models-as-guardrails
 |---|---|---|---|
 | Steps 1 and 2 (tests, dataset) | None | None | Free |
 | Jev 1.13.0 | TypeSafe API key | `TYPESAFE_API_KEY` | USD 0.38 |
+| Jev 1.14.0 | The same TypeSafe API key | `TYPESAFE_API_KEY` | USD 0.38 |
 | Decisions API · Perplexity (pplx-decider-v1-27b) | Perplexity API key (Decisions API) | `PERPLEXITY_API_KEY` | USD 0.56 |
 | Decisions API · OpenAI (gpt-6-luna) | OpenAI API key with access to the Decisions API (public beta). A 403 or 404 means you do not have access yet | `OPENAI_API_KEY` | USD 1.10 |
 | Clef, Clef Flash | Cloudflare account with Workers AI. In practice you need the Workers Paid plan (USD 5 a month). The free allowance of 10,000 neurons a day ran out partway through our run. Use a token scoped to Workers AI read and run | `CLOUDFLARE_ACCOUNT_ID` (the 32-character id), `CLOUDFLARE_API_TOKEN` | USD 2.76 for both, plus the plan |
@@ -128,20 +129,23 @@ uv run python benchmark/runs/e2_attacks_rerun.py freeze
 uv run python benchmark/runs/e2_attacks_rerun.py all    # direct and indirect prompt attacks
 uv run python benchmark/runs/e2_openai_run.py freeze
 uv run python benchmark/runs/e2_openai_run.py all       # Decisions API · OpenAI
+uv run python benchmark/runs/e2_smoke.py run --systems jev-1.14   # dev rows; the freeze reads its serving
+uv run python benchmark/runs/e2_jev114_run.py freeze
+uv run python benchmark/runs/e2_jev114_run.py all       # Jev 1.14.0
 make pause                                              # stop paying for the VM
 ```
 
 To run only some systems, use `uv run python benchmark/runs/e2_full.py run --systems jev,clef`. To send again only
 the rows that failed, for example after a rate limit, add `--retry-failed`.
 
-Times on our run: Jev about 4 minutes, the Decisions API from OpenAI about 17 minutes, the Decisions API from Perplexity about 27 minutes, Bedrock about
+Times on our run: Jev 1.13.0 about 4 minutes, Jev 1.14.0 about 5 minutes, the Decisions API from OpenAI about 17 minutes, the Decisions API from Perplexity about 27 minutes, Bedrock about
 67 minutes, and each self-hosted model about 1.5 hours per pass. The hosted runs and the VM runs go in parallel.
 
 ### 6. Score
 
 ```bash
 uv run python benchmark/runs/e2_full.py report
-uv run --with scikit-learn python benchmark/runs/e2_openai_run.py score
+uv run --with scikit-learn python benchmark/runs/e2_jev114_run.py score
 ```
 
 `score` reads the ledgers that your runs wrote. It writes `benchmark/results/final/leaderboard.json`. Compare your

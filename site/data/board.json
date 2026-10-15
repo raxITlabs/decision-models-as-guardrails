@@ -57,6 +57,7 @@
    "logo": "/logos/typesafe.svg",
    "docs": "https://docs.typesafe.ai/models",
    "pricing": "https://docs.typesafe.ai/models",
+   "isNew": true,
    "hosting": "managed",
    "kind": "decision"
   },

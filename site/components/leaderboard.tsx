@@ -7,6 +7,7 @@ import { halfCi, maxTier, money, pct, score1, tierVar, oneLine } from "@/lib/for
 import type { Board, Score, SystemMeta } from "@/lib/types";
 import { ArrowRight, ArrowUpLeft, External } from "./icons";
 import { Segmented } from "./segmented";
+import { NewTag } from "./new-tag";
 import { SystemMark } from "./system-mark";
 
 type JobPick = "overall" | JobId;
@@ -137,7 +138,10 @@ export function Leaderboard({ board }: { board: Board }) {
                     >
                       <SystemMark m={m} size="md" />
                       <span className="flex flex-col items-start">
-                        <span className="font-semibold text-fg">{m?.name ?? s.system}</span>
+                        <span className="flex items-center gap-2">
+                          <span className="font-semibold text-fg">{m?.name ?? s.system}</span>
+                          {m?.isNew && <NewTag />}
+                        </span>
                         <span className="text-[12px] text-muted">{m?.provider}</span>
                       </span>
                     </button>
@@ -587,7 +591,10 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
         <div className="flex items-center gap-3">
           <SystemMark m={m} size="lg" />
           <span className="flex flex-col">
-            <span className="text-[20px] font-semibold tracking-[-0.01em]">{m?.name ?? s.system}</span>
+            <span className="flex items-center gap-2.5">
+              <span className="text-[20px] font-semibold tracking-[-0.01em]">{m?.name ?? s.system}</span>
+              {m?.isNew && <NewTag />}
+            </span>
             <span className="text-[13px] text-muted">
               {m?.provider}
               {m ? (m.hosting === "managed" ? " · managed API" : " · self-hosted on our GPUs") : ""}
