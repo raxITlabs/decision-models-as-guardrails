@@ -8,7 +8,7 @@ const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "sw
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://decision-models-as-guardrails.raxitlabs.com"),
+  metadataBase: new URL("https://dm-as-guardrails.raxitlabs.com"),
   openGraph: { siteName: "decision-models-as-guardrails", type: "website" },
   title: { default: "decision-models-as-guardrails", template: "%s · decision-models-as-guardrails" },
   description:
