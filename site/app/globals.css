@@ -181,6 +181,20 @@ details[open] > summary .chev {
 
 /* Outside any layer so these win over utility classes. */
 
+/* Leaving the painting, the header and everything in it change colour together: one duration, one ease-out-quart
+   curve, so the logo, links and button fade with the paper instead of snapping ahead of it. */
+.site-header,
+.site-header :is(a, summary, .text-muted, .bg-line-strong, .header-cta) {
+  transition-property: color, background-color, border-color, text-decoration-color;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+}
+/* Hover answers faster than the scroll fade. */
+.site-header :is(a, .header-cta):hover { transition-duration: 150ms; }
+/* The benchmark's name under the logo comes up to full ink on hover, a quieter echo of the nav links. */
+.site-lockup:hover .text-muted { color: var(--fg); transition-duration: 150ms; }
+.site-header[data-over-art] .site-lockup:hover .text-muted { color: var(--over-art); }
+
 /* Header over the home hero painting: transparent, paper ink, light hover (the raxIT landing page). */
 .site-header[data-over-art] { background-color: transparent; border-color: transparent; }
 .site-header[data-over-art] a,

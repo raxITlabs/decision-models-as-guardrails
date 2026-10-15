@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { HF_URL, REPO_URL } from "@/lib/format";
+import { BenchmarksLogo } from "./benchmarks-logo";
 import { External } from "./icons";
 import { NavLink } from "./nav-link";
 import { ContactLink } from "./contact";
@@ -32,13 +33,12 @@ export function SiteHeader() {
   return (
     <header
       data-over-art={overArt ? "true" : undefined}
-      className="site-header sticky top-0 z-40 border-b border-line bg-bg transition-[background-color,border-color] duration-300 ease-out"
+      className="site-header sticky top-0 z-40 border-b border-line bg-bg"
     >
       <div className="mx-auto flex h-[72px] max-w-[1200px] items-center gap-6 px-4 sm:px-6">
         {/* The raxIT Benchmarks word logo, and under it the benchmark's name on a shared left edge. */}
-        <Link href="/" prefetch={false} aria-label="raxIT Benchmarks: decision-models-as-guardrails" className="flex shrink-0 flex-col items-start gap-[5px] py-2 text-fg no-underline hover:text-fg">
-          {/* eslint-disable-next-line @next/next/no-img-element -- static export, one small SVG (raxIT Benchmarks word logo, cropped to its ink) */}
-          <img src={overArt ? "/brand/raxit-benchmarks-wordlogo-white.svg" : "/brand/raxit-benchmarks-wordlogo.svg"} alt="" width={94} height={36} className="h-9 w-auto" />
+        <Link href="/" prefetch={false} aria-label="raxIT Benchmarks: decision-models-as-guardrails" className="site-lockup flex shrink-0 flex-col items-start gap-[5px] py-2 text-fg no-underline hover:text-fg">
+          <BenchmarksLogo className="h-9 w-auto" />
           <span className="whitespace-nowrap text-[12px] leading-none tracking-[0.005em] text-muted">decision-models-as-guardrails</span>
         </Link>
 
