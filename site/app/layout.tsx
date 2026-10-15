@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: { siteName: "decision-models-as-guardrails", type: "website" },
   title: { default: "decision-models-as-guardrails", template: "%s · decision-models-as-guardrails" },
   description:
-    "Can a decision model replace your guardrail? Seventeen systems answer the same guardrail checks under one fixed rule. raxIT Labs compares them on accuracy and cost.",
+    "Can a decision model replace your guardrail? Eighteen systems answer the same guardrail checks under one fixed rule. raxIT Labs compares them on accuracy and cost.",
 };
 
 // Matches --bg in globals.css; the site has one light theme.
