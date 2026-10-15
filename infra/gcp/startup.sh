@@ -51,18 +51,30 @@ else
   echo "laya $LAYA_VERSION venv present"
 fi
 
-# Strands Decider: the vendor's package at a pinned release in its own venv, launched by our create_app + uvicorn
-# wrapper (shipped via metadata) so it binds 0.0.0.0. Built only when a strands model is listed. The checkpoint is
-# downloaded here at its pinned revision, before the unit starts; the server then runs with HF_HUB_OFFLINE=1.
+# Strands Decider: the vendor's package in its own venv, launched by our create_app + uvicorn wrapper (shipped via
+# metadata) so it binds 0.0.0.0. Built only when a strands model is listed. The package is the PyPI release in
+# strands-version, or, when the strands models carry a code_sha (Gemma 4 support is on the repository's main, not on
+# PyPI), that commit of github.com/strands-labs/strands-decider with its cuda extra. The checkpoint is downloaded here
+# at its pinned revision, before the unit starts; the server then runs with HF_HUB_OFFLINE=1.
 STRANDS_VERSION=$(md strands-version || echo "")
 if echo "$MODELS_JSON" | jq -e 'any(.[]; .kind == "strands")' >/dev/null; then
-  [[ "$STRANDS_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "refusing strands-decider version: $STRANDS_VERSION"; exit 1; }
-  mkdir -p /opt/goldrails/strands && md strands-server-py > /opt/goldrails/strands/strands_server.py && chown -R goldrails:goldrails /opt/goldrails/strands
-  if ! sudo -u goldrails -H bash -c "cd /opt/goldrails/strands && [ -x .venv/bin/python ] && .venv/bin/python -c 'import sys; from importlib.metadata import version; sys.exit(0 if version(\"strands-decider\") == \"$STRANDS_VERSION\" else 1)'" 2>/dev/null; then
-    sudo -u goldrails -H bash -c "cd /opt/goldrails/strands && rm -rf .venv && /usr/local/bin/uv venv -q .venv && /usr/local/bin/uv pip install -q 'strands-decider==$STRANDS_VERSION' 'huggingface_hub>=0.34' 'uvicorn>=0.30'" \
-      && echo "strands-decider $STRANDS_VERSION venv ready" || echo "strands-decider venv build FAILED (service will not start)"
+  STRANDS_SHA=$(echo "$MODELS_JSON" | jq -r '[.[] | select(.kind == "strands") | .code_sha // ""] | unique | if length == 1 then .[0] else "MIXED" end')
+  if [ -n "$STRANDS_SHA" ]; then
+    [[ "$STRANDS_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "refusing strands code_sha: $STRANDS_SHA"; exit 1; }
+    STRANDS_SPEC="strands-decider[cuda] @ git+https://github.com/strands-labs/strands-decider@$STRANDS_SHA"
+    STRANDS_PIN="git:$STRANDS_SHA"
   else
-    echo "strands-decider $STRANDS_VERSION venv present"
+    [[ "$STRANDS_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "refusing strands-decider version: $STRANDS_VERSION"; exit 1; }
+    STRANDS_SPEC="strands-decider==$STRANDS_VERSION"
+    STRANDS_PIN="pypi:$STRANDS_VERSION"
+  fi
+  mkdir -p /opt/goldrails/strands && md strands-server-py > /opt/goldrails/strands/strands_server.py && chown -R goldrails:goldrails /opt/goldrails/strands
+  # The venv records what it was built from; any other pin rebuilds it.
+  if [ "$(cat /opt/goldrails/strands/.venv/.goldrails-pin 2>/dev/null || true)" != "$STRANDS_PIN" ] || [ ! -x /opt/goldrails/strands/.venv/bin/python ]; then
+    sudo -u goldrails -H bash -c "cd /opt/goldrails/strands && rm -rf .venv && /usr/local/bin/uv venv -q --python 3.12 .venv && /usr/local/bin/uv pip install -q '$STRANDS_SPEC' 'huggingface_hub>=0.34' 'uvicorn>=0.30' && echo '$STRANDS_PIN' > .venv/.goldrails-pin" \
+      && echo "strands-decider $STRANDS_PIN venv ready" || echo "strands-decider venv build FAILED (service will not start)"
+  else
+    echo "strands-decider $STRANDS_PIN venv present"
   fi
   echo "$MODELS_JSON" | jq -c '.[] | select(.kind == "strands")' | while read -r m; do
     sname=$(echo "$m" | jq -r '.name'); sref=$(echo "$m" | jq -r '.ref'); srev=$(echo "$m" | jq -r '.revision')
@@ -155,8 +167,11 @@ cd /opt/goldrails/strands
 ckpt="/opt/goldrails/checkpoints/${MODEL_NAME}"
 # Serve only the pinned revision that startup.sh downloaded; never fetch at serve time.
 [ "$(cat "$ckpt/.goldrails-revision" 2>/dev/null || true)" = "$MODEL_REVISION" ] || { echo "checkpoint $ckpt is not at $MODEL_REVISION"; exit 1; }
-exec env CUDA_VISIBLE_DEVICES="$MODEL_GPU" HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python strands_server.py \
-  --checkpoint "$ckpt" --model-name "$MODEL_NAME" --device cuda:0 --host 0.0.0.0 --port "$MODEL_PORT"
+# A model split over several GPUs (MODEL_GPU_COUNT > 1) sees them all and loads with a balanced device map.
+devices=$(seq -s, "$MODEL_GPU" $((MODEL_GPU + ${MODEL_GPU_COUNT:-1} - 1)))
+split=(); [ "${MODEL_GPU_COUNT:-1}" -gt 1 ] && split=(--split-gpus "$MODEL_GPU_COUNT")
+exec env CUDA_VISIBLE_DEVICES="$devices" HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python strands_server.py \
+  --checkpoint "$ckpt" --model-name "$MODEL_NAME" --device cuda:0 --host 0.0.0.0 --port "$MODEL_PORT" "${split[@]}"
 RUN
 chmod +x /usr/local/bin/goldrails-run-kev /usr/local/bin/goldrails-run-openjev /usr/local/bin/goldrails-run-laya /usr/local/bin/goldrails-run-strands
 
@@ -166,7 +181,7 @@ echo "$MODELS_JSON" | jq -c '.[]' | while read -r m; do
   # Allowlist: lowercase alnum and hyphen only, no dots, so the name is safe as a path component.
   [[ "$name" =~ ^[a-z0-9][a-z0-9-]{0,40}$ ]] || { echo "refusing model name: $name"; exit 1; }
   [[ "$kind" =~ ^(kev|openjev|laya|strands)$ ]] || { echo "refusing model kind: $kind"; exit 1; }
-  echo "$m" | jq -r '@sh "MODEL_NAME=\(.name)\nMODEL_REF=\(.ref)\nMODEL_REVISION=\(.revision)\nMODEL_PORT=\(.port|tostring)\nMODEL_GPU=\(.gpu|tostring)"' > "/tmp/${name}.env"
+  echo "$m" | jq -r '@sh "MODEL_NAME=\(.name)\nMODEL_REF=\(.ref)\nMODEL_REVISION=\(.revision)\nMODEL_PORT=\(.port|tostring)\nMODEL_GPU=\(.gpu|tostring)\nMODEL_GPU_COUNT=\((.gpu_count // 1)|tostring)"' > "/tmp/${name}.env"
   install -m 0640 -o root -g goldrails -T "/tmp/${name}.env" "/etc/goldrails/${name}.env"
   cat > "/tmp/goldrails-${name}.service" <<UNIT
 [Unit]

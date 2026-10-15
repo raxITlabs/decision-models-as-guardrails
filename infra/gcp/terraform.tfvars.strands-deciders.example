@@ -1,0 +1,25 @@
+# The six Strands Decider checkpoints released after the edition 2 full run (the 2B hobson-v19 is in that run).
+# Gemma 4 support is on the strands-decider repository's main, not on PyPI 0.1.0, so every strands model here pins
+# code_sha. The 12B (about 23 GB in bf16) and the 26B-A4B (about 51 GB) do not fit one 24 GB L4, and on 15 October
+# 2026 every US and EU zone was out of A100s, so this roster runs on g2-standard-48 (four L4 cards, 96 GB) in two
+# passes, with the two large models split over several cards (gpu_count; infra/gcp/strands_server.py --split-gpus).
+#
+# Pass 1: the four small models two to a card, and the 12B over cards 2 and 3.
+# Pass 2: swap `models` for the 26B-A4B alone, over all four cards, then apply and resume.
+project_id    = "raxit-ai"
+zone          = "us-east4-a"
+machine_type  = "g2-standard-48"
+spot          = false
+max_run_hours = 10
+models = [
+  { name = "strands-decider-e4b", kind = "strands", ref = "StrandsAgents/strands-decider-E4B-gemma4-v1-2610", revision = "1344d44397c457f3be34b8ff15c593b41248c6bf", port = 8018, gpu = 0, code_sha = "6039cf8b64c6074e75804000c07ac3d4cce795f7" },
+  { name = "strands-decider-2b-qwen35", kind = "strands", ref = "StrandsAgents/strands-decider-2B-qwen3.5-v1-2610", revision = "216d1ccb46a9e9b036eb9187b248db98480f77d4", port = 8015, gpu = 0, code_sha = "6039cf8b64c6074e75804000c07ac3d4cce795f7" },
+  { name = "strands-decider-e2b", kind = "strands", ref = "StrandsAgents/strands-decider-E2B-gemma4-v1-2610", revision = "d383ecf8534b13d49b3b567a1b66f88fca6d50ba", port = 8017, gpu = 1, code_sha = "6039cf8b64c6074e75804000c07ac3d4cce795f7" },
+  { name = "strands-decider-2b-v21", kind = "strands", ref = "StrandsAgents/strands-decider-2B-hobson-v21", revision = "2b52a6235c1b8306bbfa30b00b9d4b74b63a39f5", port = 8014, gpu = 1, code_sha = "6039cf8b64c6074e75804000c07ac3d4cce795f7" },
+  { name = "strands-decider-12b", kind = "strands", ref = "StrandsAgents/strands-decider-12B-gemma4-v1-2610", revision = "1202634aec54c890c3e11b8747db62195f116006", port = 8016, gpu = 2, gpu_count = 2, code_sha = "6039cf8b64c6074e75804000c07ac3d4cce795f7" },
+]
+# Pass 2:
+# models = [
+#   { name = "strands-decider-26b-a4b", kind = "strands", ref = "StrandsAgents/strands-decider-26B-A4B-gemma4-v1-2610", revision = "3ca5dfe2d5aa758ae162b6249729181f1d13ed65", port = 8019, gpu = 0, gpu_count = 4, code_sha = "6039cf8b64c6074e75804000c07ac3d4cce795f7" },
+# ]
+attach_service_account = false

@@ -38,14 +38,16 @@ variable "boot_disk_gb" {
 }
 
 variable "models" {
-  description = "Models to serve, one systemd service each. ref is a Hugging Face repo, revision its commit sha, gpu the CUDA device index. Values are validated because they reach a shell on the VM."
+  description = "Models to serve, one systemd service each. ref is a Hugging Face repo, revision its commit sha, gpu the first CUDA device index and gpu_count how many consecutive devices the model is split over (kind strands only). code_sha (kind strands only) pins github.com/strands-labs/strands-decider to a commit instead of the PyPI release in strands_decider_version. Values are validated because they reach a shell on the VM."
   type = list(object({
-    name     = string
-    kind     = string
-    ref      = string
-    revision = string
-    port     = number
-    gpu      = number
+    name      = string
+    kind      = string
+    ref       = string
+    revision  = string
+    port      = number
+    gpu       = number
+    gpu_count = optional(number, 1)
+    code_sha  = optional(string)
   }))
   default = [
     { name = "kev-9b", kind = "kev", ref = "jaredpalmer/kev-9b", revision = "2629c06a5aeb0feb3b9783bafed17ed8f39ecf5c", port = 8009, gpu = 0 },
@@ -70,6 +72,18 @@ variable "models" {
   validation {
     condition     = alltrue([for m in var.models : m.port >= 1024 && m.port <= 65535 && m.gpu >= 0 && m.gpu <= 7])
     error_message = "model.port in 1024..65535, model.gpu in 0..7."
+  }
+  validation {
+    condition     = alltrue([for m in var.models : m.gpu_count >= 1 && m.gpu + m.gpu_count <= 8 && (m.gpu_count == 1 || m.kind == "strands")])
+    error_message = "model.gpu_count: 1 or more, within devices 0..7; only kind strands can be split over several GPUs."
+  }
+  validation {
+    condition     = alltrue([for m in var.models : m.code_sha == null || (m.kind == "strands" && can(regex("^[0-9a-f]{40}$", coalesce(m.code_sha, "x"))))])
+    error_message = "model.code_sha: a 40-hex commit sha, kind strands only."
+  }
+  validation {
+    condition     = length(distinct([for m in var.models : coalesce(m.code_sha, "pypi") if m.kind == "strands"])) <= 1
+    error_message = "every strands model shares one venv: give them all the same code_sha, or none."
   }
 }
 

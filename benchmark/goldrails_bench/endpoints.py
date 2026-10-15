@@ -77,6 +77,12 @@ def identity_of(m: dict) -> dict:
     ident = {"ref": m.get("ref"), "revision": m.get("revision"), "kind": m["kind"]}
     if m["kind"] in KIND_MAX_LENGTH:
         ident["max_length"] = KIND_MAX_LENGTH[m["kind"]]
+    # A model served from a pinned commit of its package (strands-decider's Gemma 4 support is not on PyPI) records it,
+    # and so does a model split over several GPUs. Models without either keep the identity, and config hash, they had.
+    if m.get("code_sha"):
+        ident["code_sha"] = m["code_sha"]
+    if (m.get("gpu_count") or 1) > 1:
+        ident["gpu_count"] = m["gpu_count"]
     return ident
 
 
