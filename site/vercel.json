@@ -15,6 +15,25 @@
       }
     },
     {
+      "src": "/ingest/static/(.*)",
+      "dest": "https://us-assets.i.posthog.com/static/$1"
+    },
+    {
+      "src": "/ingest/array/(.*)",
+      "dest": "https://us-assets.i.posthog.com/array/$1"
+    },
+    {
+      "src": "/ingest/(.*)",
+      "dest": "https://us.i.posthog.com/$1"
+    },
+    {
+      "src": "^/(?!ingest/)([A-Za-z0-9][A-Za-z0-9._~/-]*?)/$",
+      "status": 308,
+      "headers": {
+        "Location": "/$1"
+      }
+    },
+    {
       "src": "/(.*)",
       "headers": {
         "X-Content-Type-Options": "nosniff",

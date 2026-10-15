@@ -50,6 +50,13 @@ pnpm lint
 pnpm data:fixture    # rebuild fixtures/source/ and fixtures/data/ from scripts/make-fixture.ts
 ```
 
+## Analytics
+
+PostHog loads from `instrumentation-client.ts` only when `NEXT_PUBLIC_POSTHOG_KEY` is set at build time (see
+`.env.example`; on Vercel, set it in the project's environment variables). It records pageviews, including
+client-side navigations, and uncaught exceptions. Events go to `/ingest`, which `vercel.json` proxies to PostHog's US
+cloud. On an EU project, change the `us` hosts in both files to `eu`.
+
 ## Row pages
 
 Prerendering one page per row writes tens of thousands of files, so `/data/rows/<id>` is a single static shell
