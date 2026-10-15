@@ -88,6 +88,8 @@ R26 = ar.MANIFEST
 TFVARS = REPO / "infra" / "gcp" / "terraform.tfvars"
 ROSTER = REPO / "infra" / "gcp" / "terraform.tfvars.strands-deciders.example"
 HARDWARE = "g2-standard-48/northamerica-northeast2/on-demand/third-party"
+# Pass 2 (the 26B-A4B) runs on one A100 80 GB: split over four L4 cards it answered wrongly (NOT_RUN's old reason).
+PASS_HARDWARE = {1: HARDWARE, 2: "a2-ultragpu-1g/us-central1/on-demand"}
 DISK = "pd-balanced/us-east4/third-party"
 LABEL = ("Strands Decider extension run: six checkpoints on every edition 2 test row and the unpublished slice, contract "
          "v2.0 as amended")
@@ -96,36 +98,38 @@ APPROVAL = ("six Strands Decider checkpoints added on the owner's request of 15 
 NOUL_ADAPTER = {"name": "noul-e2", "version": "1"}
 WORKERS = 4
 RETRY_ROUNDS = 2
-# Frozen, smoke-tested and not run: no test row was sent, so it has no score.
-NOT_RUN = {"strands-decider-26b-a4b": (
-    "split over four 24 GB L4 cards (it needs about 51 GB), its smoke-test answers disagreed with the other Strands "
-    "checkpoints on about half the rows and scored below all of them, and its load log listed parameters on the meta "
-    "device, so part of the model was probably not loaded; the run was stopped before any test row. It runs later on "
-    "one 80 GB GPU, under this manifest's frozen arms")}
+# Every frozen checkpoint ran; a checkpoint frozen but not run would be listed here with the reason.
+NOT_RUN: dict = {}
 DISCLOSURES = [
-    "Five of six Strands Decider checkpoints ran on 15 October 2026, after the other systems, under their own freeze manifest "
+    "Six Strands Decider checkpoints ran on 15 October 2026, after the other systems, under their own freeze manifest "
     "committed before their first test call (benchmark/subsets/edition2/freeze-manifest-strands-deciders.json). They "
     "use Strands Decider 2B's question sets, request and fixed 0.5 rule; only the checkpoint and the package commit "
     "differ.",
     "The six were served by strands-decider at commit 6039cf8 of its repository (Gemma 4 support is not in the PyPI "
-    "release 0.1.0 that served Strands Decider 2B), on four NVIDIA L4 cards. The 12B ran split over two cards and the "
-    "26B-A4B over four; the weights and arithmetic are the package's, only where layers sit differs.",
+    "release 0.1.0 that served Strands Decider 2B). Five ran on four NVIDIA L4 cards (g2-standard-48, Toronto), the "
+    "12B split over two of them; the 26B-A4B ran alone on one A100 80 GB (a2-ultragpu-1g, us-central1-c).",
+    "The 12B, split over two cards, ran one request at a time and without the package's shared-prefix cache: the cached "
+    "path hit an illegal CUDA memory access on the split model. The other path is the package's own fallback, which "
+    "truncates the same way.",
+    "A first attempt at the 26B-A4B split over the four L4 cards answered wrongly in its smoke test (it agreed with the "
+    "other checkpoints on about half the rows, and part of the model loaded on the meta device). It was stopped before "
+    "any test row; on one A100 80 GB its smoke answers agreed with the 12B and E4B on 84 to 86 percent of rows. The "
+    "L4 time of that attempt (about 0.8 hours) is reported in the run log and not charged to any system.",
     "Like Strands Decider 2B, the six read at most 4,096 tokens and cut longer input silently, so rows estimated over "
     "the window are counted, not flagged per row.",
-    "Strands Decider 26B-A4B is in the freeze manifest but was not run: " + NOT_RUN["strands-decider-26b-a4b"] + ". "
-    "The VM time of that attempt (about 0.8 hours) is not allocated to any system.",
     "The extension manifest records 69,990 v1 release build rows in its overlap check where there are 34,995: it was "
     "written from a git worktree that saw each v1 build file twice. The duplicates change no overlap result (0 "
     "overlapping test rows either way); the manifest stays as committed and is verified against the same list.",
-    "The six were planned for two A100 40 GB cards; on 15 October 2026 no US or EU zone had A100s or a four-L4 machine, "
-    "so the run used g2-standard-48 in Toronto (northamerica-northeast2-a). The local disk filled once during the run "
-    "and stopped the 12B's runner; it resumed from its ledger with no row lost or sent twice.",
+    "The run was planned for two A100 40 GB cards; on 15 October 2026 no US or EU zone had A100s or a four-L4 machine, "
+    "so five checkpoints ran in Toronto (northamerica-northeast2-a). The local disk filled once during that pass and "
+    "stopped the 12B's runner; it resumed from its ledger with no row lost or sent twice.",
     "StrandsAgents trained these checkpoints on public datasets that include Civil Comments, measuring-hate-speech "
     "(calibration and evaluation only), Anthropic hh-rlhf (2B Qwen3.5) and others listed on each model card. A row "
     "taken from one of those datasets may have been seen in training; the unpublished-slice view is the check.",
 ]
-CAVEATS = ["the six Strands Decider extension checkpoints ran on a different machine type (g2-standard-48) from the "
-           "full run's VM models (g2-standard-24), so their cost is not an equal-hardware comparison"]
+CAVEATS = ["the six Strands Decider extension checkpoints ran on other machine types (g2-standard-48, and one A100 80 GB "
+           "for the 26B-A4B) than the full run's VM models (g2-standard-24), so their cost is not an equal-hardware "
+           "comparison"]
 
 
 def use_paths() -> None:
@@ -403,8 +407,9 @@ def vm_pass(pass_no: int, source: str | None) -> dict:
             raise RuntimeError(f"make up failed (exit {code}): {text.strip().splitlines()[-1:]}")
         vt = _vm_times()
         res["vm"] = vt
-        if vt["machine_type"] != HARDWARE.split("/")[0]:
-            raise RuntimeError(f"the VM is {vt['machine_type']}, not {HARDWARE.split('/')[0]}")
+        want = PASS_HARDWARE[pass_no].split("/")[0]
+        if vt["machine_type"] != want:
+            raise RuntimeError(f"the VM is {vt['machine_type']}, not {want}")
         todo = [n for n in names if not smoke_serving(n)]
         if todo:
             run_smoke(todo)
@@ -447,7 +452,7 @@ def vm_pass(pass_no: int, source: str | None) -> dict:
             up = (res.get("vm") or {}).get("last_start")
             if up and vt["status"] == "TERMINATED":
                 log_event("vm", {"up": up, "paused": vt["last_stop"], "pass": pass_no, "systems": names,
-                                 "hardware": HARDWARE})
+                                 "hardware": PASS_HARDWARE[pass_no]})
         except Exception as e:  # noqa: BLE001
             res["vm_after_error"] = f"{type(e).__name__}: {str(e)[:200]}"
         res.update(finished=_now(), seconds=round(time.time() - t0, 1))
@@ -511,7 +516,7 @@ def serving(tr) -> list:
     sha = {full.FEATURE_SUITE[f]: tr.file_sha[f] for f in full.FEATURES}
     out = []
     for sess in log.get("vm", []):
-        if not (sess.get("up") and sess.get("paused")):
+        if not (sess.get("up") and sess.get("paused")) or sess.get("unallocated"):
             continue
         secs = sample._ts(sess["paused"]) - sample._ts(sess["up"])
         run = {s: (summ.get(s) or {}).get("wall_seconds") or 0 for s in sess["systems"] if s in summ}

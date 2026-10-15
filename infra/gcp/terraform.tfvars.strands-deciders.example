@@ -5,7 +5,9 @@
 # passes, with the two large models split over several cards (gpu_count; infra/gcp/strands_server.py --split-gpus).
 #
 # Pass 1: the four small models two to a card, and the 12B over cards 2 and 3.
-# Pass 2: swap `models` for the 26B-A4B alone, over all four cards, then apply and resume.
+# Pass 2: the 26B-A4B alone on one A100 80 GB. Split over the four L4 cards its answers were wrong (15 October 2026),
+# so pass 2 sets machine_type = "a2-ultragpu-1g" and zone = "us-central1-a" (or -c), swaps `models` for the block
+# below, and applies (the zone change replaces the VM).
 project_id    = "raxit-ai"
 zone          = "us-east4-a"
 machine_type  = "g2-standard-48"
@@ -20,6 +22,6 @@ models = [
 ]
 # Pass 2:
 # models = [
-#   { name = "strands-decider-26b-a4b", kind = "strands", ref = "StrandsAgents/strands-decider-26B-A4B-gemma4-v1-2610", revision = "3ca5dfe2d5aa758ae162b6249729181f1d13ed65", port = 8019, gpu = 0, gpu_count = 4, code_sha = "6039cf8b64c6074e75804000c07ac3d4cce795f7" },
+#   { name = "strands-decider-26b-a4b", kind = "strands", ref = "StrandsAgents/strands-decider-26B-A4B-gemma4-v1-2610", revision = "3ca5dfe2d5aa758ae162b6249729181f1d13ed65", port = 8019, gpu = 0, code_sha = "6039cf8b64c6074e75804000c07ac3d4cce795f7" },
 # ]
 attach_service_account = false
