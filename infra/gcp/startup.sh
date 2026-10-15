@@ -175,6 +175,17 @@ exec env CUDA_VISIBLE_DEVICES="$devices" HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
 RUN
 chmod +x /usr/local/bin/goldrails-run-kev /usr/local/bin/goldrails-run-openjev /usr/local/bin/goldrails-run-laya /usr/local/bin/goldrails-run-strands
 
+# A model that left the roster keeps its unit from an earlier boot: stop and disable it, or it loads on a card the new
+# roster needs (the Strands pass-2 swap of 15 October 2026 found all six models loading at once).
+keep=$(echo "$MODELS_JSON" | jq -r '.[].name')
+for unit in $(systemctl list-unit-files 'goldrails-*.service' --no-legend | awk '{print $1}'); do
+  n=${unit#goldrails-}; n=${n%.service}
+  if ! grep -qx "$n" <<<"$keep"; then
+    systemctl disable --now "$unit" && rm -f "/etc/systemd/system/$unit" "/etc/goldrails/$n.env" && echo "removed unit $unit (not in the roster)"
+  fi
+done
+systemctl daemon-reload
+
 # One unit per model. Values are shell-quoted by jq @sh before they touch a file.
 echo "$MODELS_JSON" | jq -c '.[]' | while read -r m; do
   name=$(echo "$m" | jq -r '.name'); kind=$(echo "$m" | jq -r '.kind')
@@ -183,6 +194,9 @@ echo "$MODELS_JSON" | jq -c '.[]' | while read -r m; do
   [[ "$kind" =~ ^(kev|openjev|laya|strands)$ ]] || { echo "refusing model kind: $kind"; exit 1; }
   echo "$m" | jq -r '@sh "MODEL_NAME=\(.name)\nMODEL_REF=\(.ref)\nMODEL_REVISION=\(.revision)\nMODEL_PORT=\(.port|tostring)\nMODEL_GPU=\(.gpu|tostring)\nMODEL_GPU_COUNT=\((.gpu_count // 1)|tostring)"' > "/tmp/${name}.env"
   install -m 0640 -o root -g goldrails -T "/tmp/${name}.env" "/etc/goldrails/${name}.env"
+  # Strands servers also write to the serial console, so a failure can be read with get-serial-port-output when SSH
+  # (OS Login) is out of reach.
+  console=""; [ "$kind" = strands ] && console=$'StandardOutput=journal+console\nStandardError=journal+console'
   cat > "/tmp/goldrails-${name}.service" <<UNIT
 [Unit]
 Description=Gold Rails model server ${name}
@@ -201,6 +215,7 @@ ProtectSystem=strict
 ReadWritePaths=/opt/goldrails
 PrivateTmp=yes
 ExecStart=/usr/local/bin/goldrails-run-${kind}
+${console}
 Restart=on-failure
 RestartSec=10
 [Install]

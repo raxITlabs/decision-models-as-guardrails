@@ -141,7 +141,7 @@ Times on our run: Jev about 4 minutes, the Decisions API from OpenAI about 17 mi
 
 ```bash
 uv run python benchmark/runs/e2_full.py report
-uv run --with scikit-learn python benchmark/runs/e2_openai_run.py score
+uv run --with scikit-learn python benchmark/runs/e2_strands_run.py score
 ```
 
 `score` reads the ledgers that your runs wrote. It writes `benchmark/results/final/leaderboard.json`. Compare your

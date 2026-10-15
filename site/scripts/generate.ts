@@ -2,7 +2,7 @@
 //
 // Inputs, relative to the benchmark repository root:
 //   benchmark/results/final/leaderboard.json
-//   benchmark/results/final/ledgers/{main-run,prompt-attacks,gpt-6-luna}/*.jsonl   (never the private/ folders)
+//   benchmark/results/final/ledgers/{main-run,prompt-attacks,gpt-6-luna,strands-deciders}/*.jsonl   (never the private/ folders)
 //   dataset/edition2/build/F*.test.jsonl                                           (never build/private/)
 //   dataset/release/redistribution.json                                            (which sources may ship text)
 //
@@ -29,7 +29,7 @@ import type {
   Turn,
 } from "../lib/types";
 
-export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna"];
+export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna", "strands-deciders"];
 export const RELEASE_VERSION = "1.0.0";
 
 /** Display names, makers and marks for the systems on the board. Ids not listed fall back to the id itself.
@@ -46,6 +46,12 @@ export const SYSTEM_DISPLAY: Record<string, { name: string; label?: string; shor
   "kev-9b": { name: "Kev 9B", provider: "Jared Palmer · open weights", mono: "JP", docs: "https://huggingface.co/jaredpalmer/kev-9b", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   "bedrock-guardrails": { name: "Bedrock Guardrails", provider: "AWS · not a decision model", mono: "Aw", logo: "/logos/aws.svg", docs: "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html", pricing: "https://aws.amazon.com/bedrock/pricing/" },
   "strands-decider-2b": { name: "Strands Decider 2B", short: "Strands 2B", provider: "AWS · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-2B-hobson-v19", pricing: "https://cloud.google.com/compute/gpus-pricing" },
+  "strands-decider-2b-v21": { name: "Strands Decider 2B v21", short: "Strands 2B v21", provider: "AWS · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-2B-hobson-v21", pricing: "https://cloud.google.com/compute/gpus-pricing" },
+  "strands-decider-2b-qwen35": { name: "Strands Decider 2B Qwen3.5", short: "Strands 2B Q3.5", provider: "AWS · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-2B-qwen3.5-v1-2610", pricing: "https://cloud.google.com/compute/gpus-pricing" },
+  "strands-decider-e2b": { name: "Strands Decider E2B", short: "Strands E2B", provider: "AWS · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-E2B-gemma4-v1-2610", pricing: "https://cloud.google.com/compute/gpus-pricing" },
+  "strands-decider-e4b": { name: "Strands Decider E4B", short: "Strands E4B", provider: "AWS · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-E4B-gemma4-v1-2610", pricing: "https://cloud.google.com/compute/gpus-pricing" },
+  "strands-decider-12b": { name: "Strands Decider 12B", short: "Strands 12B", provider: "AWS · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-12B-gemma4-v1-2610", pricing: "https://cloud.google.com/compute/gpus-pricing" },
+  "strands-decider-26b-a4b": { name: "Strands Decider 26B-A4B", short: "Strands 26B", provider: "AWS · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-26B-A4B-gemma4-v1-2610", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   "open-jev-2b": { name: "Open-Jev 2B", provider: "Zefan Cai · open weights", mono: "ZC", docs: "https://huggingface.co/ZefanCai/Open-Jev-2B", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   "kev-0-8b": { name: "Kev 0.8B", provider: "Jared Palmer · open weights", mono: "JP", docs: "https://huggingface.co/jaredpalmer/kev-0.8b", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   laya: { name: "Laya", provider: "Convai Innovations · open weights", mono: "CI", logo: "/logos/laya.svg", docs: "https://huggingface.co/convaiinnovations/laya", pricing: "https://cloud.google.com/compute/gpus-pricing" },

@@ -455,7 +455,7 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
         ext_raw += raw
         ext_sum.update(s)
         ext_logs.append((x, log))
-        ext_manifests.append(lv2.load_freeze(x["manifest"], integ))
+        ext_manifests.append(lv2.load_freeze(x["manifest"], x.get("integrity", integ)))
     ext_systems = set(ext_sum)
     blocked = full.blocked_systems()
     unfinished = {s for s in blocked if s not in new_sum or new_sum[s]["never_logged"]
@@ -484,7 +484,7 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
                        None, replicates, None, tariffs, serving, arms_meta, {}, frozen=full.frozen_rows(tr),
                        manifest=pm, manifest_identity=pident, diagnostic=False, integrity=_primary_integrity(),
                        extensions=[(xm, xident)] + ext_manifests, capture=cap,
-                       extension_integrity=[integ] * (1 + len(ext_manifests)) if integ else None)
+                       extension_integrity=[integ] + [x.get("integrity", integ) for x in extra_runs] if integ else None)
     for a in doc["arms"]:                     # owner ruling 22: no latency in the published results
         a.pop("latency", None)
     pub, unp = tr.public_ids(), tr.unpublished

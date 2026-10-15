@@ -95,8 +95,14 @@ APPROVAL = ("six Strands Decider checkpoints added on the owner's request of 15 
 NOUL_ADAPTER = {"name": "noul-e2", "version": "1"}
 WORKERS = 4
 RETRY_ROUNDS = 2
+# Frozen, smoke-tested and not run: no test row was sent, so it has no score.
+NOT_RUN = {"strands-decider-26b-a4b": (
+    "split over four 24 GB L4 cards (it needs about 51 GB), its smoke-test answers disagreed with the other Strands "
+    "checkpoints on about half the rows and scored below all of them, and its load log listed parameters on the meta "
+    "device, so part of the model was probably not loaded; the run was stopped before any test row. It runs later on "
+    "one 80 GB GPU, under this manifest's frozen arms")}
 DISCLOSURES = [
-    "Six Strands Decider checkpoints ran on 15 October 2026, after the other systems, under their own freeze manifest "
+    "Five of six Strands Decider checkpoints ran on 15 October 2026, after the other systems, under their own freeze manifest "
     "committed before their first test call (benchmark/subsets/edition2/freeze-manifest-strands-deciders.json). They "
     "use Strands Decider 2B's question sets, request and fixed 0.5 rule; only the checkpoint and the package commit "
     "differ.",
@@ -105,6 +111,14 @@ DISCLOSURES = [
     "26B-A4B over four; the weights and arithmetic are the package's, only where layers sit differs.",
     "Like Strands Decider 2B, the six read at most 4,096 tokens and cut longer input silently, so rows estimated over "
     "the window are counted, not flagged per row.",
+    "Strands Decider 26B-A4B is in the freeze manifest but was not run: " + NOT_RUN["strands-decider-26b-a4b"] + ". "
+    "The VM time of that attempt (about 0.8 hours) is not allocated to any system.",
+    "The extension manifest records 69,990 v1 release build rows in its overlap check where there are 34,995: it was "
+    "written from a git worktree that saw each v1 build file twice. The duplicates change no overlap result (0 "
+    "overlapping test rows either way); the manifest stays as committed and is verified against the same list.",
+    "The six were planned for two A100 40 GB cards; on 15 October 2026 no US or EU zone had A100s or a four-L4 machine, "
+    "so the run used g2-standard-48 in Toronto (northamerica-northeast2-a). The local disk filled once during the run "
+    "and stopped the 12B's runner; it resumed from its ledger with no row lost or sent twice.",
     "StrandsAgents trained these checkpoints on public datasets that include Civil Comments, measuring-hate-speech "
     "(calibration and evaluation only), Anthropic hh-rlhf (2B Qwen3.5) and others listed on each model card. A row "
     "taken from one of those datasets may have been seen in training; the unpublished-slice view is the check.",
@@ -521,10 +535,22 @@ def extra_run() -> dict:
     """This run as one of ``e2_attacks_rerun.score``'s ``extra_runs``."""
     tr = full.TestRows()
     run_entry = {"key": "strands_extension_run", "date": "2026-10-15", "folder": full._rel(OUT), "suites": "all six",
-                 "systems": list(SYSTEMS), "manifest": full._rel(MANIFEST), "source": sample._source_label()}
+                 "systems": [n for n in SYSTEMS if n not in NOT_RUN], "not_run": NOT_RUN,
+                 "manifest": full._rel(MANIFEST), "source": sample._source_label()}
     return {"work": WORK, "log": RUN_LOG, "manifest": MANIFEST, "label": LABEL, "run": run_entry,
             "approval": APPROVAL, "disclosures": DISCLOSURES, "caveats": CAVEATS, "public_files": committed_files(),
-            "serving": serving(tr), "disk": DISK}
+            "serving": serving(tr), "disk": DISK, "integrity": frozen_integrity_as_written(tr)}
+
+
+def frozen_integrity_as_written(tr) -> dict:
+    """The integrity arguments that reproduce this manifest's overlap check as it ran. It was written from a git
+    worktree whose links to the main checkout's ignored folders made ``v1_release_build_files`` list each v1 release
+    build file twice, so the manifest records 69,990 v1 build rows for 34,995 distinct ones (fixed since in
+    ``freeze.v1_release_build_files``). Duplicates do not change which test rows overlap; the manifest stays as
+    committed because every record carries its sha256, and is checked against the same doubled list."""
+    from goldrails_bench import freeze as F
+    rows = F.v1_release_rows()
+    return {**(full.frozen_integrity(tr) or {}), "v1_build_rows": rows + rows}
 
 
 def score(replicates: int | None = None) -> Path:
