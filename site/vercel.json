@@ -27,7 +27,7 @@
       "dest": "https://us.i.posthog.com/$1"
     },
     {
-      "src": "^/(?!ingest/)(.+)/$",
+      "src": "^/(?!ingest/|/|\\\\)([^\\\\]+?)/$",
       "status": 308,
       "headers": {
         "Location": "/$1"
