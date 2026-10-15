@@ -35,15 +35,11 @@ export function SiteHeader() {
       className="site-header sticky top-0 z-40 border-b border-line bg-bg transition-[background-color,border-color] duration-300 ease-out"
     >
       <div className="mx-auto flex h-[72px] max-w-[1200px] items-center gap-6 px-4 sm:px-6">
-        {/* The raxIT wordmark, and under it the product line on a shared left edge. */}
-        <Link href="/" prefetch={false} aria-label="Benchmark: decision-models-as-guardrails, by raxIT" className="flex shrink-0 flex-col items-start gap-[7px] py-2 text-fg no-underline hover:text-fg">
-          {/* eslint-disable-next-line @next/next/no-img-element -- static export, one small PNG (v2 word-only mark from raxitlabs.com) */}
-          <img src={overArt ? "/brand/raxit-wordmark-v2-white.png" : "/brand/raxit-wordmark-v2.png"} alt="" width={60} height={16} className="h-4 w-auto" />
-          <span className="flex items-center gap-2 whitespace-nowrap text-[12px] leading-none tracking-[0.005em]">
-            <span className="font-medium text-fg">Benchmark</span>
-            <span aria-hidden="true" className="h-2.5 w-px bg-line-strong" />
-            <span className="text-muted">decision-models-as-guardrails</span>
-          </span>
+        {/* The raxIT Benchmarks word logo, and under it the benchmark's name on a shared left edge. */}
+        <Link href="/" prefetch={false} aria-label="raxIT Benchmarks: decision-models-as-guardrails" className="flex shrink-0 flex-col items-start gap-[5px] py-2 text-fg no-underline hover:text-fg">
+          {/* eslint-disable-next-line @next/next/no-img-element -- static export, one small SVG (raxIT Benchmarks word logo, cropped to its ink) */}
+          <img src={overArt ? "/brand/raxit-benchmarks-wordlogo-white.svg" : "/brand/raxit-benchmarks-wordlogo.svg"} alt="" width={94} height={36} className="h-9 w-auto" />
+          <span className="whitespace-nowrap text-[12px] leading-none tracking-[0.005em] text-muted">decision-models-as-guardrails</span>
         </Link>
 
         {/* Desktop: the pages, then the outside links after a hairline, then Contact as the one button. */}
