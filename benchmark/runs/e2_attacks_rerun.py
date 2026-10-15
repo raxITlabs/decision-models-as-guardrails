@@ -324,6 +324,20 @@ def system_costs(records: list, serving: list, tariffs: dict) -> dict:
     out = {}
     for sy, rs in sorted(by.items()):
         sv = [s for s in serving if s["system"] == sy]
+        if sv and sy not in sample.VM_SYSTEMS:
+            # an extension run on its own VM: each serving entry at its own hardware's dated rate
+            def hw_rate(hw):
+                return next((e.get("usd_per_hour") for e in tariffs["entries"]
+                             if hw in (e.get("match") or {}).get("hardware", [])), None)
+            rates = {s["hardware"]: hw_rate(s["hardware"]) for s in sv}
+            secs = sum(s["allocated_seconds"] for s in sv)
+            usd = None if None in rates.values() else sum(
+                s["allocated_seconds"] / 3600 * (rates[s["hardware"]] + sample.VM_DISK_USD_PER_HOUR) for s in sv)
+            out[sy] = {"usd_total": None if usd is None else round(usd, 4), "checks": len(rs),
+                       "usd_per_1000": None if usd is None else 1000 * usd / len(rs),
+                       "basis": f"allocated VM time ({secs:.0f} s) x {', '.join(sorted(rates))} "
+                                f"${'/'.join(str(r) for r in rates.values())}/h + disk ${sample.VM_DISK_USD_PER_HOUR:.3f}/h"}
+            continue
         if sy in sample.VM_SYSTEMS:
             secs = sum(s["allocated_seconds"] for s in sv)
             usd = secs / 3600 * ((rate or 0) + sample.VM_DISK_USD_PER_HOUR) if sv else None
@@ -457,6 +471,7 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
     old_sum_vm = _with_log(FULL / "run-log.json", lambda: sample.run_summary(
         full.amend_ledgers(sample.load_ledgers(FULL_WORK), tr), sel_all))
     serving, vm_info = serving_entries(tr, old_sum_vm, new_sum, old_log, new_log)
+    serving += [s for x in extra_runs for s in x.get("serving") or []]   # extension runs on the VM bring their own
     arms_meta = {}
     for d in final:
         x = full.scorer_record(d, tr)
@@ -544,7 +559,7 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
         doc["run"]["extension_runs"] = []
         for x, log in ext_logs:
             sys_x = {s for s in ext_sum if any(d["system"] == s for d in sample.load_ledgers(x["work"]))}
-            c = system_costs([r for r in records if r["system"] in sys_x], [], tariffs)
+            c = system_costs([r for r in records if r["system"] in sys_x], x.get("serving") or [], tariffs)
             doc["run"]["extension_runs"].append({
                 "label": x["label"], "systems": sorted(sys_x), "runs": log.get("runs"), "forecasts": log.get("forecasts"),
                 "retry_passes": log.get("retry_passes"), "cost": c,
@@ -604,6 +619,9 @@ NAMES = {"jev-1.13.0": "Jev 1.13.0", "clef": "Clef", "clef-flash": "Clef-flash",
          "kev-0-8b": "Kev-0.8B", "kev-4b": "Kev-4B", "kev-9b": "Kev-9B", "open-jev-2b": "Open-Jev-2B", "laya": "Laya",
          "strands-decider-2b": "Strands Decider 2B", "bedrock-guardrails": "Bedrock Guardrails",
          "gpt-6-luna": "gpt-6-luna"}
+NAMES.update({"strands-decider-2b-v21": "Strands Decider 2B v21", "strands-decider-2b-qwen35": "Strands Decider 2B Qwen3.5",
+              "strands-decider-e2b": "Strands Decider E2B", "strands-decider-e4b": "Strands Decider E4B",
+              "strands-decider-12b": "Strands Decider 12B", "strands-decider-26b-a4b": "Strands Decider 26B-A4B"})
 SUITE_COLS = (("content", "Content"), ("prompt_attacks", "Prompt attacks"), ("denied_topics", "Denied topics"),
               ("word_filters", "Profanity"), ("sensitive_info", "PII"), ("grounding", "Grounding"))
 
