@@ -269,12 +269,22 @@ def write_freeze(tr) -> dict:
                "after_extension": {"manifest_sha256": xident["manifest_sha256"], "manifest_path": xident["path"],
                                    "note": "the prompt-attack arms use the r26 dataset version that extension froze; "
                                            "the contract is the one it amended to, unchanged since"}}
+    # owner ruling 32: the dataset version every arm records is the frozen copy the other systems answered, so the
+    # manifest is written from that copy and names its files by the repository paths the copy mirrors
+    integ = full.frozen_integrity(tr)
+    files = {full.FEATURE_SUITE[f]: [full.FROZEN / q.relative_to(REPO) if integ else q for q in tr.files[f]]
+             for f in full.FEATURES}
     t0 = time.time()
     m = F.write_manifest(doc, MANIFEST, retry_policy=DEFAULT_POLICY,
                          test_datasets={full.FEATURE_SUITE[f]: tr.file_sha[f] for f in full.FEATURES},
-                         test_files={full.FEATURE_SUITE[f]: tr.files[f] for f in full.FEATURES},
-                         references=F.default_references(), edition=2, extends=extends, contract=contract)
-    probs = F.validate(m) + F.integrity_problems(m, recompute=False)
+                         test_files=files, references=integ["references"] if integ else F.default_references(),
+                         edition=2, extends=extends, contract=contract)
+    if integ:
+        prefix = full._rel(full.FROZEN) + "/"
+        for d in m["integrity"]["datasets"].values():
+            for x in d["files"]:
+                x["path"] = x["path"].removeprefix(prefix)
+    probs = F.validate(m) + F.integrity_problems(m, **(integ or {}))
     if probs:
         MANIFEST.unlink()
         raise SystemExit("extension manifest invalid: " + "; ".join(probs))

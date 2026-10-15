@@ -90,19 +90,44 @@ def split_over_gpus(n: int) -> None:
     srv.StrandsDeciderModel = type("SplitStrandsDeciderModel", (), {"load": staticmethod(split_load)})
 
 
-def share_card(app) -> None:
+def share_card(app, serialize: bool = False) -> None:
     """Several servers share one card: give back the caching allocator's reserve after every request, or each process
-    keeps its own peak and the card fills up (as the Kev and Open-Jev runners do)."""
+    keeps its own peak and the card fills up (as the Kev and Open-Jev runners do).
+
+    ``serialize`` (a model split over several GPUs) runs one request at a time, so only one forward pass crosses the
+    cards at once. A CUDA error poisons the process for good, so the server then exits and systemd starts a clean one;
+    the run's retry passes resend what failed meanwhile."""
+    import asyncio
+    import os
     import torch
     if not torch.cuda.is_available():
         return
+    lock = asyncio.Lock() if serialize else None
 
     @app.middleware("http")
     async def release(request, call_next):
         try:
-            return await call_next(request)
+            if lock is None:
+                return await call_next(request)
+            async with lock:
+                return await call_next(request)
+        except Exception as e:
+            if "CUDA error" in str(e):
+                print(f"strands: {e!s:.300}; exiting for a clean restart", flush=True)
+                os._exit(3)
+            # The server is reachable only through the IAP tunnel, and the run's clients record no error body; the
+            # traceback in the 500 is the one way to read a failure when the journal is out of reach.
+            import traceback
+            from fastapi.responses import PlainTextResponse
+            tb = traceback.format_exc()
+            print(tb, flush=True)
+            return PlainTextResponse(tb[-4000:], status_code=500)
         finally:
-            torch.cuda.empty_cache()
+            try:
+                torch.cuda.empty_cache()
+            except Exception as e:  # a CUDA error raised late, at the release
+                print(f"strands: {e!s:.300}; exiting for a clean restart", flush=True)
+                os._exit(3)
 
 
 def main(argv=None) -> None:
@@ -117,8 +142,14 @@ def main(argv=None) -> None:
     if a.split_gpus > 1:
         split_over_gpus(a.split_gpus)
     create_app = find_create_app()
-    app = create_app(**app_kwargs(create_app, a.checkpoint, a.device, a.model_name))
-    share_card(app)
+    kw = app_kwargs(create_app, a.checkpoint, a.device, a.model_name)
+    if a.split_gpus > 1 and "use_prefix_cache" in inspect.signature(create_app).parameters:
+        # A split model forwards each question with the whole prompt instead of reusing one KV cache across cards: the
+        # shared-prefix path hit "CUDA error: an illegal memory access" after about ten requests on four L4 cards, even
+        # one request at a time (15 October 2026). The other path is the package's own fallback, which truncates alike.
+        kw["use_prefix_cache"] = False
+    app = create_app(**kw)
+    share_card(app, serialize=a.split_gpus > 1)
     import uvicorn
     uvicorn.run(app, host=a.host, port=a.port, log_level="info")
 
