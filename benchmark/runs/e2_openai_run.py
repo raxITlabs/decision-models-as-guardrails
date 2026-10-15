@@ -327,14 +327,19 @@ def report() -> int:
     return 0 if pc["pass"] else 1
 
 
-def score(replicates: int | None = None) -> Path:
-    tr = full.TestRows()
-    write_public(tr)
+def extra_run() -> dict:
+    """This run as one of ``e2_attacks_rerun.score``'s ``extra_runs``; later extension runs pass it with their own."""
     run_entry = {"key": "openai_extension_run", "date": "2026-10-07", "folder": full._rel(OUT), "suites": "all six",
                  "systems": [SYSTEM], "manifest": full._rel(MANIFEST), "source": sample._source_label()}
-    extra = {"work": WORK, "log": RUN_LOG, "manifest": MANIFEST, "label": LABEL, "run": run_entry,
-             "approval": APPROVAL, "disclosures": DISCLOSURES, "caveats": CAVEATS, "public_files": committed_files()}
-    return ar.score(replicates, extra_runs=[extra])
+    return {"work": WORK, "log": RUN_LOG, "manifest": MANIFEST, "label": LABEL, "run": run_entry,
+            "approval": APPROVAL, "disclosures": DISCLOSURES, "caveats": CAVEATS, "public_files": committed_files()}
+
+
+def score(replicates: int | None = None) -> Path:
+    """gpt-6-luna added to the eleven. Once Jev 1.14.0 has run, ``e2_jev114_run.py score`` is the full rescore."""
+    tr = full.TestRows()
+    write_public(tr)
+    return ar.score(replicates, extra_runs=[extra_run()])
 
 
 def plan() -> None:

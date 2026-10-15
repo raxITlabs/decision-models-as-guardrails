@@ -20,6 +20,7 @@ const AGENT_PROMPT = `Read ${SITE}/reproduce.md and help me reproduce the decisi
 const NEEDS: [string, string, string, string][] = [
   ["Tests and dataset", "None", "None", "Free"],
   ["Jev 1.13.0", "TypeSafe API key", "TYPESAFE_API_KEY", "$0.38"],
+  ["Jev 1.14.0", "The same TypeSafe API key", "TYPESAFE_API_KEY", "$0.38"],
   ["Decisions API · Perplexity (pplx-decider-v1-27b)", "Perplexity API key", "PERPLEXITY_API_KEY", "$0.56"],
   ["Decisions API · OpenAI (gpt-6-luna)", "OpenAI key with Decisions API access (public beta)", "OPENAI_API_KEY", "$1.10"],
   ["Clef, Clef Flash", "Cloudflare Workers AI. In practice you need the Workers Paid plan ($5 a month), because the free daily allowance ran out mid-run", "CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN", "$2.76 + plan"],
@@ -190,7 +191,8 @@ uv run python -m goldrails_dataset.publish_e2 stage`}
             <tbody className="text-fg-2">
               <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_full.py</td><td className="py-2.5 pr-4 sm:pr-0">Content, off-topic, profanity, personal data and grounding, for the hosted APIs and the self-hosted models</td></tr>
               <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_attacks_rerun.py</td><td className="py-2.5 pr-4 sm:pr-0">Direct and indirect prompt attacks for the same systems</td></tr>
-              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_openai_run.py</td><td className="py-2.5 pr-4 sm:pr-0">The Decisions API from OpenAI (gpt-6-luna) on all use cases, and <C>score</C>, which rebuilds the leaderboard from the ledgers</td></tr>
+              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_openai_run.py</td><td className="py-2.5 pr-4 sm:pr-0">The Decisions API from OpenAI (gpt-6-luna) on all use cases</td></tr>
+              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_jev114_run.py</td><td className="py-2.5 pr-4 sm:pr-0">Jev 1.14.0 on all use cases, and <C>score</C>, which rebuilds the leaderboard from the ledgers</td></tr>
             </tbody>
           </table>
         </div>
@@ -206,7 +208,7 @@ uv run python benchmark/runs/e2_full.py report      # run summary, public ledger
           The self-hosted models run on a GPU VM. <C>make up</C> starts it and <C>make pause</C> stops it. The Terraform is in{" "}
           <C>infra/gcp/</C>. To score the ledgers into <C>leaderboard.json</C>, run this command:
         </P>
-        <CodeBlock label="score" code={`uv run --with scikit-learn python benchmark/runs/e2_openai_run.py score`} />
+        <CodeBlock label="score" code={`uv run --with scikit-learn python benchmark/runs/e2_jev114_run.py score`} />
         <P>
           We do not publish the held-back slice of {int(board.stats.heldBackRows)} rows. A run from a fresh clone covers only the public
           rows. Expect scores that are close to the board but not identical.

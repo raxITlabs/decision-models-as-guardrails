@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { listNames, oneLine } from "@/lib/format";
+import { NewTag } from "./new-tag";
 import { JOB_BY_ID, type JobId } from "@/lib/jobs";
 import type { SystemMeta } from "@/lib/types";
 
@@ -125,6 +126,7 @@ function Side({ title, items, wrong, border = false }: { title: string; items: S
               )}
             </span>
             <span className="min-w-0 break-words">{oneLine(s, s.id)}</span>
+            {s.isNew && <NewTag onArt />}
             {wrong && (
               <span className="ml-auto shrink-0 pl-2 text-[13px]">
                 <span aria-hidden="true">✕</span>

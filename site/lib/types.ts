@@ -22,6 +22,8 @@ export interface SystemMeta {
   docs?: string;
   /** the vendor's list-price page (cloud GPU pricing for self-hosted models) */
   pricing?: string;
+  /** joined the board after the first release; shown with a "New" marker */
+  isNew?: boolean;
 }
 
 export interface Score {

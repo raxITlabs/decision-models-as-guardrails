@@ -2,7 +2,7 @@
 //
 // Inputs, relative to the benchmark repository root:
 //   benchmark/results/final/leaderboard.json
-//   benchmark/results/final/ledgers/{main-run,prompt-attacks,gpt-6-luna}/*.jsonl   (never the private/ folders)
+//   benchmark/results/final/ledgers/{main-run,prompt-attacks,gpt-6-luna,jev-1.14.0}/*.jsonl   (never the private/ folders)
 //   dataset/edition2/build/F*.test.jsonl                                           (never build/private/)
 //   dataset/release/redistribution.json                                            (which sources may ship text)
 //
@@ -29,17 +29,18 @@ import type {
   Turn,
 } from "../lib/types";
 
-export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna"];
+export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna", "jev-1.14.0"];
 export const RELEASE_VERSION = "1.0.0";
 
 /** Display names, makers and marks for the systems on the board. Ids not listed fall back to the id itself.
  *  `short` labels the chart dots. `logo` is a file in public/logos; systems without one show `mono`, the maker's initials. */
 /** Vendor links per system: docs is the vendor's page for the product or model (the model card for open weights),
  *  pricing is the vendor's list-price page (Google Cloud GPU pricing for the self-hosted models). Checked 8 Oct 2026. */
-export const SYSTEM_DISPLAY: Record<string, { name: string; label?: string; short?: string; provider: string; mono: string; logo?: string; docs?: string; pricing?: string }> = {
+export const SYSTEM_DISPLAY: Record<string, { name: string; label?: string; short?: string; provider: string; mono: string; logo?: string; docs?: string; pricing?: string; isNew?: boolean }> = {
   "pplx-decider-v1-27b": { name: "Decisions API", label: "Decisions API · Perplexity", provider: "Perplexity", mono: "Px", logo: "/logos/perplexity.svg", docs: "https://docs.perplexity.ai/docs/decisions/quickstart", pricing: "https://docs.perplexity.ai/docs/getting-started/pricing" },
   "gpt-6-luna": { name: "Decisions API", label: "Decisions API · OpenAI", provider: "OpenAI", mono: "Oa", logo: "/logos/openai.svg", docs: "https://developers.openai.com/api/docs/guides/decisions", pricing: "https://developers.openai.com/api/docs/pricing" },
   clef: { name: "Clef", provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg", docs: "https://developers.cloudflare.com/workers-ai/models/clef/", pricing: "https://developers.cloudflare.com/workers-ai/platform/pricing/" },
+  "jev-1.14.0": { name: "Jev 1.14.0", isNew: true, provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg", docs: "https://docs.typesafe.ai/models", pricing: "https://docs.typesafe.ai/models" },
   "jev-1.13.0": { name: "Jev 1.13.0", provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg", docs: "https://docs.typesafe.ai/models", pricing: "https://docs.typesafe.ai/models" },
   "clef-flash": { name: "Clef Flash", provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg", docs: "https://developers.cloudflare.com/workers-ai/models/clef-flash/", pricing: "https://developers.cloudflare.com/workers-ai/platform/pricing/" },
   "kev-4b": { name: "Kev 4B", provider: "Jared Palmer · open weights", mono: "JP", docs: "https://huggingface.co/jaredpalmer/kev-4b", pricing: "https://cloud.google.com/compute/gpus-pricing" },
@@ -312,6 +313,7 @@ export function buildBoard(lb: Json, source: Board["source"]): Board {
       ...(d?.logo ? { logo: d.logo } : {}),
       ...(d?.docs ? { docs: d.docs } : {}),
       ...(d?.pricing ? { pricing: d.pricing } : {}),
+      ...(d?.isNew ? { isNew: true } : {}),
       hosting: hostingOf(arms, r.name),
       // Amazon Bedrock Guardrails is a configurable guardrail service, not a decision model.
       kind: GUARDRAIL_SERVICES.has(r.name) ? "service" : "decision",

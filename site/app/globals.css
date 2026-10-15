@@ -32,6 +32,7 @@
   --heat-max: 0.7;
   /* Over a painting: paper ink on a smoky-black scrim, the raxIT hero-plate treatment. */
   --over-art: #f2efea;
+  --accent-art: #aebcff;   /* the accent, lightened to read on the dark scrim (about 9:1) */
   --smoky: 16 12 8;
 }
 
@@ -150,7 +151,25 @@ details[open] > summary .chev {
 .pop { animation: square-in 520ms cubic-bezier(0.25, 1, 0.5, 1) both; }
 .grow { transform-origin: left center; animation: grow 900ms cubic-bezier(0.25, 1, 0.5, 1) both; }
 
+/* "New" marker after a system's name (components/new-tag.tsx): a dot that pulses slowly, then the word. */
+.new-tag {
+  display: inline-flex; flex-shrink: 0; align-items: center; gap: 0.375rem;
+  font-size: 11px; font-weight: 600; line-height: 1; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent);
+}
+.new-tag-art { font-size: 12px; color: var(--accent-art); }
+.new-tag-dot { position: relative; width: 6px; height: 6px; border-radius: 9999px; background: currentColor; }
+.new-tag-dot::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; background: currentColor;
+  animation: new-tag-pulse 2.4s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+@keyframes new-tag-pulse {
+  0% { transform: scale(1); opacity: 0.7; }
+  70%, 100% { transform: scale(2.8); opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .new-tag-dot::after { animation: none; opacity: 0; }
   *,
   *::before,
   *::after {
