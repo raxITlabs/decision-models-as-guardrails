@@ -70,6 +70,10 @@ LIMITS = {"jev-1.13.0": (32000, "documented"), "jev-1.14.0": (32000, "documented
           "gpt-6-luna": (None, "undocumented (the public beta docs give no input limit)"),
           "laya": (512, "observed: usage.input_tokens tops out at 512 x questions, so each prompt is cut at 512"),
           "bedrock-guardrails": (None, "service")}
+# The Strands Decider checkpoints of the extension run (benchmark/runs/e2_strands_run.py): the same 4,096-token window.
+LIMITS.update({n: (4096, "documented window; cut silently, no truncation flag") for n in (
+    "strands-decider-2b-v21", "strands-decider-2b-qwen35", "strands-decider-e2b", "strands-decider-e4b",
+    "strands-decider-12b", "strands-decider-26b-a4b")})
 # Servers whose usage.input_tokens is the sum over one prompt per question: per-prompt tokens = usage / questions.
 PER_PROMPT_USAGE = {"open-jev-2b", "laya"}
 # Hosted joint-schema models report one input count for the whole request: at the limit means the input was capped.

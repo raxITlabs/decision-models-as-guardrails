@@ -145,7 +145,7 @@ Times on our run: Jev 1.13.0 about 4 minutes, Jev 1.14.0 about 5 minutes, the De
 
 ```bash
 uv run python benchmark/runs/e2_full.py report
-uv run --with scikit-learn python benchmark/runs/e2_jev114_run.py score
+uv run --with scikit-learn python benchmark/runs/e2_strands_run.py score
 ```
 
 `score` reads the ledgers that your runs wrote. It writes `benchmark/results/final/leaderboard.json`. Compare your

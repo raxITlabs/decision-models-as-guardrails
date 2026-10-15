@@ -358,7 +358,9 @@ def v1_release_build_files(repo=None) -> list[Path]:
     files = sorted(repo.glob(V1_BUILD_GLOB))
     main = _main_checkout(repo)
     if main is not None:
-        files += sorted(main.glob(V1_BUILD_GLOB))
+        # a worktree that links the main checkout's ignored folders sees the same files twice: count each file once
+        seen = {f.resolve() for f in files}
+        files += [f for f in sorted(main.glob(V1_BUILD_GLOB)) if f.resolve() not in seen]
     return files
 
 

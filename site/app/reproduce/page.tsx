@@ -26,6 +26,7 @@ const NEEDS: [string, string, string, string][] = [
   ["Clef, Clef Flash", "Cloudflare Workers AI. In practice you need the Workers Paid plan ($5 a month), because the free daily allowance ran out mid-run", "CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN", "$2.76 + plan"],
   ["Bedrock Guardrails", "AWS account with Bedrock, a CLI profile (we used SSO), Terraform to create the guardrails", "AWS_PROFILE, AWS_REGION", "$1.12"],
   ["Six self-hosted models", "Google Cloud project with billing and quota for 2 NVIDIA L4 GPUs, gcloud, Terraform", "GOLDRAILS_PROJECT, GOLDRAILS_ZONE (optional)", "$10.44 VM time"],
+  ["Five newer Strands Decider models", "The same Google Cloud project, with quota for 4 NVIDIA L4 GPUs (g2-standard-48)", "GOLDRAILS_PROJECT, GOLDRAILS_ZONE (optional)", "$31.70 VM time"],
   ["Withheld text (optional)", "Hugging Face account that has accepted the terms of the gated sources", "HF_TOKEN", "Free"],
 ];
 
@@ -192,7 +193,8 @@ uv run python -m goldrails_dataset.publish_e2 stage`}
               <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_full.py</td><td className="py-2.5 pr-4 sm:pr-0">Content, off-topic, profanity, personal data and grounding, for the hosted APIs and the self-hosted models</td></tr>
               <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_attacks_rerun.py</td><td className="py-2.5 pr-4 sm:pr-0">Direct and indirect prompt attacks for the same systems</td></tr>
               <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_openai_run.py</td><td className="py-2.5 pr-4 sm:pr-0">The Decisions API from OpenAI (gpt-6-luna) on all use cases</td></tr>
-              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_jev114_run.py</td><td className="py-2.5 pr-4 sm:pr-0">Jev 1.14.0 on all use cases, and <C>score</C>, which rebuilds the leaderboard from the ledgers</td></tr>
+              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_jev114_run.py</td><td className="py-2.5 pr-4 sm:pr-0">Jev 1.14.0 on all use cases</td></tr>
+              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">e2_strands_run.py</td><td className="py-2.5 pr-4 sm:pr-0">The newer Strands Decider models on all use cases, and <C>score</C>, which rebuilds the leaderboard from every run&apos;s ledgers</td></tr>
             </tbody>
           </table>
         </div>
@@ -208,7 +210,7 @@ uv run python benchmark/runs/e2_full.py report      # run summary, public ledger
           The self-hosted models run on a GPU VM. <C>make up</C> starts it and <C>make pause</C> stops it. The Terraform is in{" "}
           <C>infra/gcp/</C>. To score the ledgers into <C>leaderboard.json</C>, run this command:
         </P>
-        <CodeBlock label="score" code={`uv run --with scikit-learn python benchmark/runs/e2_jev114_run.py score`} />
+        <CodeBlock label="score" code={`uv run --with scikit-learn python benchmark/runs/e2_strands_run.py score`} />
         <P>
           We do not publish the held-back slice of {int(board.stats.heldBackRows)} rows. A run from a fresh clone covers only the public
           rows. Expect scores that are close to the board but not identical.

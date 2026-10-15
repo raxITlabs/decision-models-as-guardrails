@@ -207,6 +207,18 @@
       "status": "third-party list price; confirm against https://cloud.google.com/compute/disks-image-pricing before publishing"
     },
     {
+      "id": "gcp/g2-standard-48/northamerica-northeast2/on-demand",
+      "provider": "Google Compute Engine",
+      "kind": "per_hour",
+      "match": {"hardware": ["g2-standard-48/northamerica-northeast2/on-demand/third-party"]},
+      "region": "northamerica-northeast2",
+      "usd_per_hour": 4.4062,
+      "note": "Four L4 GPUs, 48 vCPU, 192 GiB: 48 x $0.02751452 (G2 Instance Core running in Toronto) + 192 x $0.003223414 (G2 Instance Ram) + 4 x $0.6166603 (Nvidia L4 GPU running in Toronto). The Strands Decider extension run of 15 October 2026 ran here (northamerica-northeast2-a) because US and EU zones had no A100 or g2-standard-48 capacity. The hardware key keeps the 'third-party' suffix of the other VM entries so the scorer's matching is unchanged; this price is Google's own catalog.",
+      "checked_on": "2026-10-15",
+      "source": "Cloud Billing Catalog API, service 6F81-5844-456A (Compute Engine) SKUs, effective 2026-10-14T07:00:00Z",
+      "status": "Google list price from the billing catalog; not reconciled against a billing statement"
+    },
+    {
       "id": "local/cpu",
       "provider": "Local CPU for deterministic code (regex baseline)",
       "kind": "per_hour",
