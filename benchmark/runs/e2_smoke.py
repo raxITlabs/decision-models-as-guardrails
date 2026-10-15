@@ -15,6 +15,7 @@ row ids, labels and system outputs, never the row text, because many dev rows co
 
 New decision models (docs/benchmark/28): ``clef`` and ``clef-flash`` (Cloudflare Workers AI), ``perplexity``
 (pplx-decider-v1-27b), ``strands`` (Strands Decider 2B on the GCP VM) and ``openai`` (gpt-6-luna, OpenAI Decisions API).
+``jev-1.14`` is Jev 1.14.0 (api.typesafe.ai, released 14 October 2026), pinned by its versioned id, not ``jev-preview``.
 A system whose credentials or VM slot are missing is skipped as ``not_configured`` before any row is read for it;
 nothing is sent and nothing is written for it.
 
@@ -61,7 +62,8 @@ NOT_RUN = {("grounding", "relevance"): "no edition 2 dev row carries a relevance
 # Known request limits, in tokens. Open-Jev is served with --max-length 4096 (infra/gcp/startup.sh); Jev documents
 # 32k tokens for state plus the longest question (docs/reference/typesafe/models.md). Kev and Laya do not document
 # theirs here, so the 4096 reference is applied to them as a conservative proxy and labelled as such.
-LIMITS = {"jev-1.13.0": (32000, "documented"), "open-jev-2b": (4096, "served --max-length"),
+LIMITS = {"jev-1.13.0": (32000, "documented"), "jev-1.14.0": (32000, "documented"),
+          "open-jev-2b": (4096, "served --max-length"),
           "clef": (65536, "hosted context (Workers AI)"), "clef-flash": (65536, "hosted context (Workers AI)"),
           "pplx-decider-v1-27b": (262144, "hosted input limit (Perplexity docs)"),
           "strands-decider-2b": (4096, "documented window; cut silently, no truncation flag"),
@@ -209,8 +211,9 @@ def leak_check(paths, rows_by_id: dict) -> list:
 
 # --- systems ---------------------------------------------------------------------------------------------------
 
-NEW_KINDS = ("clef", "clef-flash", "perplexity", "strands", "openai")
+NEW_KINDS = ("clef", "clef-flash", "perplexity", "strands", "openai", "jev-1.14")
 KINDS = ("jev", "open", "bedrock") + NEW_KINDS
+JEV_114 = "jev-1.14.0"   # the versioned id; jev-preview points at it today but moves with the next release
 
 
 def build_systems(kinds: set, env=None) -> tuple[dict, dict]:
@@ -260,6 +263,14 @@ def build_new_systems(kinds: set, env) -> tuple[dict, dict]:
             skipped["openai"] = hosted.not_configured("openai")
         else:
             out[c.system] = (NoulAdapter(c, endpoint=c.endpoint), 4)   # the client throttles the pool to 5/s
+    if "jev-1.14" in kinds:
+        if not env.get("TYPESAFE_API_KEY"):
+            skipped["jev-1.14"] = "not_configured: jev-1.14 needs TYPESAFE_API_KEY"
+        else:
+            from goldrails_bench.systemone import SystemOneClient
+            c = SystemOneClient(JEV_114, model=JEV_114, api_key=env["TYPESAFE_API_KEY"],
+                                identity={"model": JEV_114, "provider": "api.typesafe.ai"})
+            out[JEV_114] = (NoulAdapter(c, endpoint="https://api.typesafe.ai"), 8)
     if "strands" in kinds:
         found, why = strands_models()
         if not found:

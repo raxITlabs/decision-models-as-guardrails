@@ -4,16 +4,20 @@
 
 # Models
 
+<!-- Repository copy of https://docs.typesafe.ai/models, updated 2026-10-15 for Jev 1.14 (table and aliases). -->
+
 Jev is TypeSafe's flagship model and the first [System One model](/concepts/system-one). Every model on this page is served by the same endpoint, `POST /v1/systemone`. The request's `model` field selects which one handles the call; see the [API reference](/api) for the full request shape.
 
 ## Current models
 
-| Jev 1.13                    | `jev-1.13.0`                                                                              |
-| :-------------------------- | :---------------------------------------------------------------------------------------- |
-| Price (per Btok / per Mtok) | \$42 / \$0.042                                                                            |
-| Rate limits                 | 250,000 tokens per second / 1,200 requests per minute                                     |
-| Context length              | 64k tokens per request; 32k tokens for `state` plus the longest question                  |
-| Input                       | Text only. String, JSON object, or array of text values. No image, audio, or video input. |
+|                             | Jev 1.14                                                                 | Jev 1.13                                                                 |
+| :-------------------------- | :----------------------------------------------------------------------- | :----------------------------------------------------------------------- |
+| Model ID                    | `jev-1.14.0`                                                             | `jev-1.13.0`                                                             |
+| Price (per Btok / per Mtok) | \$42 / \$0.042                                                           | \$42 / \$0.042                                                           |
+| Context length              | 64k per-request / 32k per-question                                       | 64k per-request / 32k per-question                                       |
+| Input                       | Text                                                                     | Text                                                                     |
+
+Jev 1.14 is the newest Jev release, available from October 14, 2026.
 
 * **Price:** Charged per input token. Output tokens are free. A Btok is a billion tokens and an Mtok is a million tokens.
 * **Rate limits:** Measured in tokens per second and requests per minute. A request over either limit returns `429 Too Many Requests`. Our [client SDKs](/sdk) retry with backoff by default and honor the `retry-after` header when the response carries one. If you call the HTTP API directly, see [Handling rate limits](/api#handling-rate-limits).
@@ -31,11 +35,7 @@ An alias is a model name that resolves to a versioned model ID. Send it in the `
 | Alias         | Points to    | Meaning                                                                                                                       |
 | :------------ | :----------- | :---------------------------------------------------------------------------------------------------------------------------- |
 | `jev-latest`  | `jev-1.13.0` | The most recent stable, official release. The default in our client SDKs, and the name the examples in these docs use.        |
-| `jev-preview` | `jev-1.13.0` | The most recent release, whether or not it is an official one. Moves ahead of `jev-latest` when a preview build is available. |
-
-<Warning>
-  `jev-preview` currently points to the same model as `jev-latest`. There is no preview build available right now.
-</Warning>
+| `jev-preview` | `jev-1.14.0` | The most recent release, whether or not it is an official one. Moves ahead of `jev-latest` when a preview build is available. |
 
 An alias moves when a new release ships, so the answers behind it can change without a change on your side. The response's `model` field reports the versioned ID that answered, so you can log which model produced each result. If you have tuned confidence thresholds against a specific version, pin that version's ID instead of the alias and move to the new one on your own schedule.
 

@@ -603,7 +603,7 @@ def privacy(tr, extra=(), final: Path | None = None) -> dict:
 NAMES = {"jev-1.13.0": "Jev 1.13.0", "clef": "Clef", "clef-flash": "Clef-flash", "pplx-decider-v1-27b": "pplx-decider-v1-27b",
          "kev-0-8b": "Kev-0.8B", "kev-4b": "Kev-4B", "kev-9b": "Kev-9B", "open-jev-2b": "Open-Jev-2B", "laya": "Laya",
          "strands-decider-2b": "Strands Decider 2B", "bedrock-guardrails": "Bedrock Guardrails",
-         "gpt-6-luna": "gpt-6-luna"}
+         "gpt-6-luna": "gpt-6-luna", "jev-1.14.0": "Jev 1.14.0"}
 SUITE_COLS = (("content", "Content"), ("prompt_attacks", "Prompt attacks"), ("denied_topics", "Denied topics"),
               ("word_filters", "Profanity"), ("sensitive_info", "PII"), ("grounding", "Grounding"))
 
