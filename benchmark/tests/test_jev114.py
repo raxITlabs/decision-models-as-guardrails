@@ -50,3 +50,11 @@ def test_extension_copies_jev_113s_eight_arms_and_its_config_hash_rule():
         finally:
             r.SYSTEM = saved
     assert not r.MANIFEST.exists() or json.loads(r.MANIFEST.read_text())["run"]["systems"] == ["jev-1.14.0"]
+
+
+def test_run_hook_builds_jev_114_without_recursing(monkeypatch):
+    r = _load("e2_jev114_run")
+    monkeypatch.setenv("TYPESAFE_API_KEY", "k")
+    monkeypatch.setattr(r.smoke, "build_systems", lambda kinds, env=None: r.build())   # as run() installs it
+    systems, _ = r.smoke.build_systems({"jev-1.14"})
+    assert set(systems) == {"jev-1.14.0"} and systems["jev-1.14.0"][1] == r.WORKERS

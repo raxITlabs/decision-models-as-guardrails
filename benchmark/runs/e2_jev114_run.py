@@ -240,8 +240,11 @@ def write_freeze(tr) -> dict:
 
 # --- run -------------------------------------------------------------------------------------------------------
 
+_build_systems = smoke.build_systems     # the real builder; run() swaps smoke's hook for build() below
+
+
 def build():
-    systems, skipped = smoke.build_systems({KIND}, os.environ)
+    systems, skipped = _build_systems({KIND}, os.environ)
     if SYSTEM not in systems:
         raise SystemExit(skipped.get(KIND, f"{KIND} not configured"))
     adapter, _ = systems[SYSTEM]
@@ -255,13 +258,12 @@ def run(retry_failed: bool) -> dict:
     except F.FreezeError as e:
         raise SystemExit(f"refusing to run: {e}") from None
     tr = full.TestRows()
-    build_all = smoke.build_systems
     smoke.build_systems = lambda kinds, env=None: build()
     try:
         t = smoke.run_selection({KIND}, select(tr), WORK, None, reruns=False, guard=tr.guard,
                                 retry_failed=retry_failed, stamp={"freeze": F.record_stamp(ident)})
     finally:
-        smoke.build_systems = build_all
+        smoke.build_systems = _build_systems
     for v in t.values():
         v["retry_failed_only"] = retry_failed
     sample.log_timing(t)
