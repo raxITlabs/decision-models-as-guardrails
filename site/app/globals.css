@@ -181,34 +181,81 @@ details[open] > summary .chev {
 
 /* Outside any layer so these win over utility classes. */
 
-/* Leaving the painting, the header and everything in it change colour together: one duration, one ease-out-quart
-   curve, so the logo, links and button fade with the paper instead of snapping ahead of it. */
-.site-header,
-.site-header :is(a, summary, .text-muted, .bg-line-strong, .header-cta) {
-  transition-property: color, background-color, border-color, text-decoration-color;
-  transition-duration: 300ms;
-  transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
-}
-/* Hover answers faster than the scroll fade. */
-.site-header :is(a, .header-cta):hover { transition-duration: 150ms; }
-/* The benchmark's name under the logo comes up to full ink on hover, a quieter echo of the nav links. */
-.site-lockup:hover .text-muted { color: var(--fg); transition-duration: 150ms; }
-.site-header[data-over-art] .site-lockup:hover .text-muted { color: var(--over-art); }
+/* The header moves like the raxIT landing site's: the landing site's ease-out-quart (STD_EASE) at its 200ms
+   QUICK_DURATION for colour changes, a 280ms wipe opening the menu and a 200ms one shutting it. */
+:root { --ease-std: cubic-bezier(0.22, 1, 0.36, 1); }
 
-/* Header over the home hero painting: transparent, paper ink, light hover (the raxIT landing page). */
-.site-header[data-over-art] { background-color: transparent; border-color: transparent; }
-.site-header[data-over-art] a,
-.site-header[data-over-art] a:hover { color: var(--over-art); }
-.site-header[data-over-art] a:hover { background-color: transparent; text-decoration-color: var(--over-art); }
+/* Leaving the painting, the bar and everything in it change colour together, so the logo and the buttons fade
+   with the paper instead of snapping ahead of it. */
+.site-header,
+.site-header :is(a, button, .text-muted, .header-cta) {
+  transition-property: color, background-color, border-color, opacity;
+  transition-duration: 200ms;
+  transition-timing-function: var(--ease-std);
+}
+.site-header :is(a, button, .header-cta):hover { transition-duration: 100ms; }
+.menu-toggle { cursor: pointer; border-radius: 6px; }
+/* The Contact pill draws at 32px but takes taps across 44px. */
+.site-header .header-cta { position: relative; }
+.site-header .header-cta::before { content: ""; position: absolute; inset: -6px -2px; }
+.menu-toggle:hover { color: var(--fg-2); }
+
+/* Header over the home hero painting: transparent, paper ink (the raxIT landing page). */
+.site-header[data-over-art] { background-color: transparent; }
+.site-header[data-over-art] :is(a, button, .text-fg):not(.header-cta) { color: var(--over-art); }
 .site-header[data-over-art] .text-muted { color: color-mix(in srgb, var(--over-art) 80%, transparent); }
-.site-header[data-over-art] .text-fg { color: var(--over-art); }
-.site-header[data-over-art] .bg-line-strong { background-color: var(--over-line); }
-.site-header[data-over-art] summary { color: var(--over-art); }
 /* Over the painting the Contact button turns paper with ink text, like the hero's own buttons. */
 .site-header[data-over-art] .header-cta, .site-header[data-over-art] .header-cta:hover { background-color: var(--over-art); color: var(--fg); }
-/* The menu sheet is paper: its links stay ink even while the header sits on the painting. */
-.site-header[data-over-art] .menu-panel a, .site-header[data-over-art] .menu-panel a:hover { color: var(--fg); }
-.site-header[data-over-art] .menu-panel .header-cta { background-color: var(--fg); color: var(--bg); }
+
+/* The horizon: a hairline that fades out at both ends instead of a ruled border, shown only on solid paper and
+   handed to the menu while it is open. */
+.header-horizon {
+  background-image: linear-gradient(to right, transparent, rgb(0 0 0 / 0.15), transparent);
+  opacity: 1;
+  transition: opacity 200ms var(--ease-std);
+}
+.site-header[data-over-art] .header-horizon,
+.site-header:has(+ #site-menu[data-open]) .header-horizon { opacity: 0; }
+
+/* The menu wipes down from under the bar with clip-path (nothing animates height) and hands visibility over only
+   once the wipe has shut, so it can be neither seen nor tabbed into while closed. */
+.menu-panel {
+  clip-path: inset(0 0 100% 0);
+  visibility: hidden;
+  transition: clip-path 200ms var(--ease-std), visibility 0s linear 200ms;
+}
+.menu-panel[data-open] {
+  clip-path: inset(0);
+  visibility: visible;
+  transition: clip-path 280ms var(--ease-std), visibility 0s;
+}
+/* Its items settle in on a 55ms stagger with 4px of lift, and all leave together as it shuts. */
+.menu-item {
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 200ms var(--ease-std), transform 0s linear 200ms;
+}
+.menu-panel[data-open] .menu-item {
+  opacity: 1;
+  transform: none;
+  transition: opacity 320ms var(--ease-std) calc(var(--i) * 55ms), transform 320ms var(--ease-std) calc(var(--i) * 55ms);
+}
+/* Behind the desktop menu the page recedes: a faint tint and a blur, the landing site's one sanctioned blur. */
+.menu-scrim {
+  background-color: rgb(0 0 0 / 0.08);
+  backdrop-filter: blur(16px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms var(--ease-std);
+}
+.menu-scrim[data-open] { opacity: 1; pointer-events: auto; }
+/* The two strokes of the menu icon cross into an X. */
+.menu-toggle path { transform-origin: 10px 10px; transition: transform 200ms var(--ease-std); }
+.menu-toggle[aria-expanded="true"] .menu-icon-a { transform: translateY(3px) rotate(45deg); }
+.menu-toggle[aria-expanded="true"] .menu-icon-b { transform: translateY(-3px) rotate(-45deg); }
+@media (prefers-reduced-motion: reduce) {
+  .menu-item, .menu-panel[data-open] .menu-item { transition-delay: 0s !important; transform: none; }
+}
 
 /* Full-screen hero: a wash under the header, the painting clear in the middle, a deep scrim under the title,
    and a soft shade from the left behind the text column. */
@@ -241,4 +288,3 @@ details[open] > summary .chev {
 @keyframes prompt-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 .prompt-in { animation: prompt-in 320ms cubic-bezier(0.25, 1, 0.5, 1) both; }
 /* The open phone menu dims the page under it, so the sheet reads as one layer above the content. */
-.site-header details[open] .menu-panel { box-shadow: 0 0 0 100vmax rgb(var(--smoky) / 0.22); }

@@ -60,7 +60,7 @@ export function WallpaperFrame({ src, children }: { src: string; children: React
  */
 export function HeroPlate({ src, children }: { src: string; children: React.ReactNode }) {
   return (
-    <section aria-labelledby="hero-h" className="relative -mt-[73px] flex min-h-[100svh] flex-col justify-end overflow-hidden bg-[rgb(var(--smoky))]">
+    <section aria-labelledby="hero-h" className="relative -mt-14 flex min-h-[100svh] flex-col justify-end overflow-hidden bg-[rgb(var(--smoky))]">
       <span id="hero-sentinel" aria-hidden="true" className="pointer-events-none absolute left-0 top-0 h-6 w-px" />
       {/* The painting is pinned to one screen height. When the hero grows (the names opened on a phone, a long
           example), the extra height is smoky ground below the painting, so the painting never rescales or zooms. */}
