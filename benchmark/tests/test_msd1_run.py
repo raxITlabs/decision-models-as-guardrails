@@ -26,6 +26,9 @@ class FakeRows:
         self.unpublished = {"unp-1"}
         self.guarded = []
 
+    def public_ids(self):
+        return set(self.rows) - self.unpublished
+
     def guard(self, r):
         self.guarded.append(r["id"])
 
@@ -78,10 +81,30 @@ def test_run_hook_builds_msd1_without_recursing(monkeypatch):
     assert set(systems) == {"microsoft-decision-1"} and systems["microsoft-decision-1"][1] == r.WORKERS
 
 
-def test_score_refuses_until_the_scoring_route_is_decided():
+def test_public_rows_view_refuses_a_ledger_with_an_unpublished_row(monkeypatch):
     r = _load("e2_msd1_run")
-    with pytest.raises(SystemExit, match="public test rows only"):
-        r.score()
+    tr = FakeRows()
+    monkeypatch.setattr(r.ar.sample, "load_ledgers", lambda work: [{"row_id": "unp-1", "system": "m"}])
+    monkeypatch.setattr(r.ar.full, "amend_ledgers", lambda raw, t: raw)
+    with pytest.raises(SystemExit, match="unpublished slice"):
+        r.ar.public_rows_view([{"work": "w", "label": "x"}], [], tr, {}, None, {}, None)
+
+
+def test_score_is_the_full_rescore_with_this_run_public_only(monkeypatch):
+    r = _load("e2_msd1_run")
+    import e2_strands_run as strands
+    got = {}
+    monkeypatch.setattr(r.full, "TestRows", lambda: None)
+    for m in (strands.luna, strands.jev114, strands, r):
+        monkeypatch.setattr(m, "write_public", lambda tr: [])
+    monkeypatch.setattr(strands.luna, "extra_run", lambda: "luna")
+    monkeypatch.setattr(strands.jev114, "extra_run", lambda: "jev114")
+    monkeypatch.setattr(strands, "extra_run", lambda: "strands")
+    monkeypatch.setattr(r, "public_only_run", lambda: "msd1")
+    monkeypatch.setattr(r.ar, "score", lambda rep, extra_runs, public_only_runs: got.update(
+        extra=extra_runs, po=public_only_runs) or "out")
+    assert r.score() == "out"
+    assert got == {"extra": ["luna", "jev114", "strands"], "po": ["msd1"]}
 
 
 def test_manifest_if_present_records_the_public_only_scope():
@@ -90,3 +113,10 @@ def test_manifest_if_present_records_the_public_only_scope():
         pytest.skip("not frozen yet")
     run = json.loads(r.MANIFEST.read_text())["run"]
     assert run["systems"] == ["microsoft-decision-1"] and run["row_scope"].startswith("public test rows only")
+
+
+def test_tariff_matches_the_model_id_the_records_carry():
+    from goldrails_bench import leaderboard as lb
+    t = lb.load_tariffs()
+    e = lb.tariff_for({"model": "microsoft/microsoft-decision-1"}, None, t)
+    assert e is not None and e["prices"]["input_tokens"]["usd_per_million"] == 0.042

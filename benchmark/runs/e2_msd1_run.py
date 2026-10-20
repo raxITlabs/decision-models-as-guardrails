@@ -19,9 +19,11 @@ The freeze is an extension manifest that extends the primary with one arm per qu
 gives. The dataset hashes are the frozen versions every system answered; ``run.row_scope`` records that this system
 gets their public rows only. ``run`` refuses to send until the manifest is committed.
 
-Scoring is not wired: the ranked table is over test plus unpublished rows and ``e2_attacks_rerun.score`` refuses an
-extension system with rows never sent. Where the public-only score appears (beside the others in the public-rows
-view, or as its own table) is an owner decision; ``score`` refuses until then.
+Scoring (owner decision, 20 October 2026): the ranked table is over test plus unpublished rows, so this system is not
+in it. ``score`` is the full rescore with this run as a public-only run: ``leaderboard.json`` gains
+``public_rows_view``, every system scored on the public test rows alone with Microsoft-Decision-1 beside them.
+
+    uv run --with scikit-learn python benchmark/runs/e2_msd1_run.py score --source local   # benchmark/results/final/
 """
 from __future__ import annotations
 
@@ -353,10 +355,34 @@ def report() -> int:
     return 0 if pc["pass"] else 1
 
 
+def run_date() -> str:
+    log = json.loads(RUN_LOG.read_text(encoding="utf-8")) if RUN_LOG.exists() else {}
+    done = log.get("all_runs") or []
+    if not done:
+        raise SystemExit(f"{full._rel(RUN_LOG)} records no finished run; run `all` before `score`")
+    return done[-1]["finished"][:10]
+
+
+def public_only_run() -> dict:
+    """This run as one of ``e2_attacks_rerun.score``'s ``public_only_runs``."""
+    run_entry = {"key": "msd1_extension_run", "date": run_date(), "folder": full._rel(OUT), "suites": "all six",
+                 "systems": [SYSTEM], "row_scope": ROW_SCOPE, "manifest": full._rel(MANIFEST),
+                 "source": sample._source_label()}
+    return {"work": WORK, "log": RUN_LOG, "manifest": MANIFEST, "label": LABEL, "run": run_entry,
+            "approval": APPROVAL, "disclosures": DISCLOSURES, "caveats": CAVEATS, "public_files": committed_files()}
+
+
 def score(replicates: int | None = None) -> Path:
-    raise SystemExit(f"{SYSTEM} ran on public test rows only; the ranked table is over test plus unpublished rows. "
-                     "Decide where its score goes (the public-rows view beside the others, or a table of its own) "
-                     "before scoring")
+    """The full rescore (e2_strands_run's, unchanged for the ranked table) plus the public-rows view, where this
+    system sits beside every other system's public-row score. It is never ranked in the headline table."""
+    import e2_strands_run as strands
+    tr = full.TestRows()
+    strands.luna.write_public(tr)
+    strands.jev114.write_public(tr)
+    strands.write_public(tr)
+    write_public(tr)
+    return ar.score(replicates, extra_runs=[strands.luna.extra_run(), strands.jev114.extra_run(), strands.extra_run()],
+                    public_only_runs=[public_only_run()])
 
 
 def plan() -> None:

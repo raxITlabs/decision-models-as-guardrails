@@ -417,11 +417,15 @@ def ai_label_disclosure() -> str:
             f"reference label on {o['agreement']:.1%} of them (Cohen's kappa {o['kappa']:.2f}).")
 
 
-def score(replicates: int | None = None, extra_runs=(), final: Path | None = None) -> Path:
+def score(replicates: int | None = None, extra_runs=(), final: Path | None = None, public_only_runs=()) -> Path:
     """The rescore over every suite. ``extra_runs`` adds systems run later under their own extension manifests (each
     a dict: ``work`` raw ledger folder, ``log`` run-log path, ``manifest``, ``label``, ``run`` (an entry for
     ``full_run.runs``), ``approval``, ``disclosures``, ``caveats``, ``public_files`` (committed files the privacy
-    check also covers)). ``final`` is the output folder (default ``FINAL``)."""
+    check also covers)). ``final`` is the output folder (default ``FINAL``).
+
+    ``public_only_runs`` (same dict shape) are systems sent the public test rows only. They never enter the ranked
+    table or any ranked view; ``public_rows_view`` re-scores every system on the public rows alone, with them beside
+    the others on the same rows and bootstrap settings."""
     from goldrails_bench import freeze as F
     from goldrails_bench import leaderboard as lb
     from goldrails_bench import leaderboard_v2 as lv2
@@ -583,6 +587,8 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
         "public": full.slice_view(records, tr, pub, replicates),
         "unpublished": full.slice_view(records, tr, unp, replicates),
     }
+    if public_only_runs:
+        doc["public_rows_view"] = public_rows_view(public_only_runs, records, tr, sel_all, integ, tariffs, replicates)
     # owner ruling 32: the label review, with the scores from before it (benchmark/results/final/before-relabel/)
     if tr.amendment:
         doc["label_amendment"] = views.label_amendment(tr.amendment, doc, final_dir / "before-relabel" / "leaderboard.json")
@@ -595,13 +601,46 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
         views.write_readme(final_dir / "README.md", doc, NAMES, tables(doc))
     full.write_public(tr)
     full.write_public_ledgers(FULL_WORK, FULL, tr, {SUITE})     # the full run's committed ledgers, amended alike
-    pc = privacy(tr, [f for x in extra_runs for f in x.get("public_files") or []] + [x["manifest"] for x in extra_runs],
-                 final=final_dir)
+    pc = privacy(tr, [f for x in [*extra_runs, *public_only_runs] for f in x.get("public_files") or []]
+                 + [x["manifest"] for x in [*extra_runs, *public_only_runs]], final=final_dir)
     doc["privacy_check"] = pc
     p.write_text(json.dumps(doc, indent=1, ensure_ascii=False, default=float) + "\n", encoding="utf-8")
     if not pc["pass"]:
         raise SystemExit(f"privacy check failed: {pc}")
     return p
+
+
+def public_rows_view(runs, records: list, tr, sel_all: dict, integ, tariffs: dict, replicates) -> dict:
+    """Every ranked system and every public-only system scored on the public test rows alone, together, so the
+    public-only systems sit beside the others on the same rows. Never ranked in the headline table."""
+    from goldrails_bench import leaderboard_v2 as lv2
+    pub, unp = tr.public_ids(), tr.unpublished
+    sel_pub = {k: [r for r in v if r["id"] in pub] for k, v in sel_all.items()}
+    po_records, summary, cost, run_entries, disclosures, caveats = [], {}, {}, {}, [], []
+    for x in runs:
+        raw = full.amend_ledgers(sample.load_ledgers(x["work"]), tr)
+        if any(d["row_id"] in unp for d in raw):
+            raise SystemExit(f"public-only run {x['label']}: its ledger holds a row of the unpublished slice")
+        s = _with_log(Path(x["log"]), lambda: sample.run_summary(raw, sel_pub))
+        bad = {k for k, v in s.items() if v["never_logged"] or v["failed"] > 0.02 * max(1, v["rows"])}
+        if bad:
+            raise SystemExit(f"public-only run {x['label']}: unfinished systems {sorted(bad)}")
+        lv2.load_freeze(x["manifest"], x.get("integrity", integ))   # the committed manifest, integrity checked
+        recs = [y for d in sample.latest(raw) if (y := full.scorer_record(d, tr))]
+        po_records += recs
+        summary.update(s)
+        cost.update(system_costs(recs, [], tariffs))
+        run_entries[x["run"]["key"]] = {k: v for k, v in x["run"].items() if k != "key"}
+        disclosures += x.get("disclosures") or []
+        caveats += x.get("caveats") or []
+    ranked = sorted({r["system"] for r in records})
+    return {
+        "label": "diagnostic, never ranked: every system scored on the public test rows alone, with systems that were "
+                 "sent only those rows beside the ranked ones",
+        "public_only_systems": sorted(summary), "ranked_systems": ranked, "rows": len(pub),
+        "scores": full.slice_view(records + po_records, tr, pub, replicates),
+        "cost": cost, "run": summary, "runs": run_entries, "disclosures": disclosures, "caveats": caveats,
+    }
 
 
 def privacy(tr, extra=(), final: Path | None = None) -> dict:
