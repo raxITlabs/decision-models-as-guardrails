@@ -127,7 +127,13 @@ def test_perplexity_v1_identity_is_unchanged():
   {"input_tokens", "output_tokens", "cost"}, "id", "provider": "Azure"}`.
 - [x] Client sends the System One body, pins the snapshot, keeps 429 Retry-After on a shared 5/s throttle, records
   the upstream provider and drops generation ids. Tests pass with no network.
-- [ ] Smoke: `uv run python benchmark/runs/e2_smoke.py run --systems microsoft` (dev rows, paid, ask first).
+- [x] Smoke on 172 dev rows (20 October 2026): 0 failed, 0 truncated, every response on the pinned snapshot.
+- [x] Run module `benchmark/runs/e2_msd1_run.py` (from `e2_jev114_run.py`): `select` drops the unpublished slice and
+  `public_guard` refuses it before each call. 7,706 public rows, forecast USD 0.20 (high 0.30, cap 5).
+- [x] Freeze manifest `benchmark/subsets/edition2/freeze-manifest-microsoft-decision-1.json`, committed alone.
+- [ ] Full run `e2_msd1_run.py all --source local` (paid, ask first), then `report`.
+- [ ] Scoring route (owner decision): the ranked table is over test plus unpublished rows, so a public-only system
+  either joins the public-rows view beside the others or gets its own table. `score` refuses until decided.
 
 ### Task 3: Serve the new kinds on the VM
 
