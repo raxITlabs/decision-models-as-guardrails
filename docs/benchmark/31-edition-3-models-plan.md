@@ -6,7 +6,7 @@
 **Goal:** Score six decision models taken from the Jev Decision Index 0.3.2 (16 October 2026) on every edition 2 test
 row and the unpublished slice, under contract v2.0. The six are Perplexity Decider Flash v1.2 4B, vLLM-SR d3-flash 9B,
 OneJev1.5-9B, vLLM-SR d3-mini 4B, Kev 27B and Perplexity Decider v1.2 27B. A seventh system, Microsoft-Decision-1
-(released 9 October 2026, not in the index), runs hosted through OpenRouter on the public test rows only.
+(released 9 October 2026, not in the index), runs hosted through OpenRouter on every test row and the unpublished slice (ruling 36), ranked like the others.
 
 **Architecture:** This is an extension run, the same mechanism that added Strands Decider, Jev 1.14.0 and gpt-6-luna.
 It uses the same rows, question sets and fixed 0.5 rule, and its extension manifest
@@ -28,7 +28,7 @@ the edition 2 rows. A true edition 3 (new rows or a new contract) is a separate 
 | `d3-flash` | `vllm-sr/d3-flash` @ `8b35c853b90e777595ec36bacae820fe08ea077a` | 16.8 GB | `d3_server.py` from the checkpoint | pass 1, L4 card 1 |
 | `onejev-1-5-9b` | `OmniJev/OneJev1.5-9B` @ `ec2f276eab207810f576fb1f2d68c2acabd3eb71` | 18.8 GB | `qev serve`, github.com/OmniJev/OneJev @ `80d4e5f2f6dd5af55ca78e74d0dfa3536276106d` | pass 1, L4 card 2 |
 | `kev-27b` | `jaredpalmer/kev-27b` @ `af0e6d551bdc2cc724f3e9d7a8bee1cd4fb8f7bf` | 51.3 GB, ~65.5 GB resident | `kev.serve`, github.com/jaredpalmer/kev @ `1f04cfa28e6a708485b28a9585010b9e436b776e` | pass 2, one A100 80 GB |
-| `microsoft-decision-1` | none (no open weights; HF URL 404). Pinned to the reported snapshot `microsoft/microsoft-decision-1-20261009` | hosted | OpenRouter `POST /api/alpha/decisions`, model `microsoft/microsoft-decision-1` (`hosted.MicrosoftDecisionClient`) | hosted, public test rows only |
+| `microsoft-decision-1` | none (no open weights; HF URL 404). Pinned to the reported snapshot `microsoft/microsoft-decision-1-20261009` | hosted | OpenRouter `POST /api/alpha/decisions`, model `microsoft/microsoft-decision-1` (`hosted.MicrosoftDecisionClient`) | hosted, every test row (ruling 36) |
 | `pplx-decider-v1-2-27b` | `perplexity-ai/pplx-decider-v1.2` @ `225c913ddc8761a8264f04f64548e1f97e443eb3` | 52.2 GB | Perplexity Decisions API if it serves v1.2 (Task 1); otherwise `pplx_server.py` | hosted, or pass 3 on one A100 80 GB |
 
 The six open models are Apache-2.0 and ungated (HF API, read 17 October 2026). The flash v1.2 card still says "the repository is
@@ -47,8 +47,8 @@ four-L4 split answered wrongly.
   higher with one question per request, and the run discloses that instead of changing the request.
 - The unpublished slice goes only to the project VM. Sending it to Perplexity for v1.2 needs a new owner ruling,
   because ruling 21 covered v1 only.
-- Microsoft-Decision-1 gets the public edition 2 test rows only. The unpublished slice never goes to OpenRouter or
-  Microsoft, so its unpublished-slice view is reported as not run, with that reason.
+- Microsoft-Decision-1 gets every test row and the unpublished slice, like every other system (owner ruling 36,
+  20 October 2026). A first run on public rows only, set up before that ruling, is superseded and not scored.
 - Every open model is pinned by HF commit and every server by package commit. Each server runs with `HF_HUB_OFFLINE=1`
   on the revision `startup.sh` downloaded.
 - Ask the owner and wait for a yes before each paid step: the API probe, VM smoke, each VM pass, and the hosted run.
@@ -130,10 +130,11 @@ def test_perplexity_v1_identity_is_unchanged():
 - [x] Smoke on 172 dev rows (20 October 2026): 0 failed, 0 truncated, every response on the pinned snapshot.
 - [x] Run module `benchmark/runs/e2_msd1_run.py` (from `e2_jev114_run.py`): `select` drops the unpublished slice and
   `public_guard` refuses it before each call. 7,706 public rows, forecast USD 0.20 (high 0.30, cap 5).
-- [x] Freeze manifest `benchmark/subsets/edition2/freeze-manifest-microsoft-decision-1.json`, committed alone.
-- [ ] Full run `e2_msd1_run.py all --source local` (paid, ask first), then `report`.
-- [ ] Scoring route (owner decision): the ranked table is over test plus unpublished rows, so a public-only system
-  either joins the public-rows view beside the others or gets its own table. `score` refuses until decided.
+- [x] Public-rows-only run (7,706 rows, USD 0.20, 0 failed) under `freeze-manifest-microsoft-decision-1.json`.
+  Superseded by ruling 36; ledgers kept in `ledgers/microsoft-decision-1-public-only/`, not scored.
+- [x] Ruling 36: every test row and the unpublished slice. New manifest
+  `freeze-manifest-microsoft-decision-1-all-rows.json`, committed alone before the run.
+- [ ] Full run on 9,975 rows (`all`, then `report`), then `score`: the full rescore with it ranked as the 20th system.
 
 ### Task 3: Serve the new kinds on the VM
 

@@ -9,7 +9,6 @@ import { CostCalculator } from "@/components/cost-calculator";
 import { HeroPlate, Plate } from "@/components/plate";
 import { Faq } from "@/components/faq";
 import { Leaderboard } from "@/components/leaderboard";
-import { PublicRows } from "@/components/public-rows";
 import { AttacksFinding, BedrockFinding, CostFinding } from "@/components/finding";
 import { faqItems } from "@/lib/copy";
 import { ContactLink } from "@/components/contact";
@@ -125,8 +124,6 @@ export default function Home() {
         <Leaderboard board={board} />
       </section>
       </div>
-
-      <PublicRows board={board} />
 
       <div className="flex flex-col gap-14">
         <CostFinding board={board} />

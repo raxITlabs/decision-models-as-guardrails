@@ -40,7 +40,6 @@ export const SYSTEM_DISPLAY: Record<string, { name: string; label?: string; shor
   "pplx-decider-v1-27b": { name: "Decisions API", label: "Decisions API · Perplexity", provider: "Perplexity", mono: "Px", logo: "/logos/perplexity.svg", docs: "https://docs.perplexity.ai/docs/decisions/quickstart", pricing: "https://docs.perplexity.ai/docs/getting-started/pricing" },
   "gpt-6-luna": { name: "Decisions API", label: "Decisions API · OpenAI", provider: "OpenAI", mono: "Oa", logo: "/logos/openai.svg", docs: "https://developers.openai.com/api/docs/guides/decisions", pricing: "https://developers.openai.com/api/docs/pricing" },
   clef: { name: "Clef", provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg", docs: "https://developers.cloudflare.com/workers-ai/models/clef/", pricing: "https://developers.cloudflare.com/workers-ai/platform/pricing/" },
-  "microsoft-decision-1": { name: "Microsoft-Decision-1", isNew: true, provider: "Microsoft · via OpenRouter", mono: "Ms", docs: "https://openrouter.ai/microsoft/microsoft-decision-1", pricing: "https://openrouter.ai/microsoft/microsoft-decision-1" },
   "jev-1.14.0": { name: "Jev 1.14.0", isNew: true, provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg", docs: "https://docs.typesafe.ai/models", pricing: "https://docs.typesafe.ai/models" },
   "jev-1.13.0": { name: "Jev 1.13.0", provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg", docs: "https://docs.typesafe.ai/models", pricing: "https://docs.typesafe.ai/models" },
   "clef-flash": { name: "Clef Flash", provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg", docs: "https://developers.cloudflare.com/workers-ai/models/clef-flash/", pricing: "https://developers.cloudflare.com/workers-ai/platform/pricing/" },
@@ -308,25 +307,24 @@ export function buildBoard(lb: Json, source: Board["source"]): Board {
   const ranking: Json[] = lb.overall.ranking;
   const runCost: Json = lb.run?.cost ?? {};
 
-  const metaOf = (id: string): SystemMeta => {
-    const d = SYSTEM_DISPLAY[id] ?? lb.display?.[id];
+  const systems: SystemMeta[] = ranking.map((r) => {
+    const d = SYSTEM_DISPLAY[r.name] ?? lb.display?.[r.name];
     return {
-      id,
-      name: d?.name ?? id,
+      id: r.name,
+      name: d?.name ?? r.name,
       provider: d?.provider ?? "",
-      mono: d?.mono ?? id.slice(0, 2),
+      mono: d?.mono ?? r.name.slice(0, 2),
       ...(d?.short ? { short: d.short } : {}),
       ...(d?.label ? { label: d.label } : {}),
       ...(d?.logo ? { logo: d.logo } : {}),
       ...(d?.docs ? { docs: d.docs } : {}),
       ...(d?.pricing ? { pricing: d.pricing } : {}),
       ...(d?.isNew ? { isNew: true } : {}),
-      hosting: hostingOf(arms, id),
+      hosting: hostingOf(arms, r.name),
       // Amazon Bedrock Guardrails is a configurable guardrail service, not a decision model.
-      kind: GUARDRAIL_SERVICES.has(id) ? "service" : "decision",
+      kind: GUARDRAIL_SERVICES.has(r.name) ? "service" : "decision",
     };
-  };
-  const systems: SystemMeta[] = ranking.map((r) => metaOf(r.name));
+  });
 
   const overall = ranking.map((r) => scoreFrom(r, typeof runCost[r.name]?.usd_per_1000 === "number" ? runCost[r.name].usd_per_1000 : null));
 
@@ -387,24 +385,6 @@ export function buildBoard(lb: Json, source: Board["source"]): Board {
     };
   }
 
-  let publicRows: Board["publicRows"];
-  const pv = lb.public_rows_view;
-  if (pv?.scores) {
-    const only: string[] = pv.public_only_systems ?? [];
-    const costOf = (id: string) => {
-      const c = only.includes(id) ? pv.cost?.[id]?.usd_per_1000 : runCost[id]?.usd_per_1000;
-      return typeof c === "number" ? c : null;
-    };
-    publicRows = {
-      rows: pv.rows ?? 0,
-      publicOnly: only.map(metaOf),
-      overall: Object.entries(pv.scores as Record<string, Json>)
-        .filter(([, v]) => typeof v?.overall?.balanced_accuracy === "number")
-        .map(([id, v]) => scoreFrom({ name: id, ...v.overall }, costOf(id)))
-        .sort((a, b) => a.rank - b.rank),
-    };
-  }
-
   const anyCost = Object.values(runCost).find((v: Json) => typeof v?.checks === "number") as Json;
   const fr = lb.full_run ?? {};
   return {
@@ -424,7 +404,6 @@ export function buildBoard(lb: Json, source: Board["source"]): Board {
     jobs,
     baseline,
     facts,
-    ...(publicRows ? { publicRows } : {}),
   };
 }
 
