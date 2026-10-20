@@ -8,6 +8,8 @@ unchanged ``NoulAdapter`` and ``policy.ask_with_policy`` drive them:
 - ``OpenAIDecisionsClient``: ``POST https://api.openai.com/v1/decisions``, ``gpt-6-luna`` (public beta). Its API has
   no roles and its own question type, so the state is serialised to one text string and each Noul question becomes a
   predicate (``OPENAI_INPUT_MAPPING``, recorded in the identity and disclosed with the results).
+- ``MicrosoftDecisionClient``: ``POST https://openrouter.ai/api/alpha/decisions``, Microsoft-Decision-1, pinned to the
+  dated snapshot the response reports (``MSD1_SNAPSHOT``).
 
 For Clef and pplx-decider the request body is the System One body (``model``, ``state``, ``questions``), with each
 question serialised by the TypeSafe SDK's own question classes, so every system receives the same bytes for the same
@@ -517,9 +519,89 @@ class OpenAIDecisionsClient(HostedDecisionClient):
         return call
 
 
+# --- Microsoft-Decision-1 via OpenRouter ----------------------------------------------------------------------------
+
+OPENROUTER_URL = "https://openrouter.ai/api/alpha/decisions"
+MSD1_SYSTEM = "microsoft-decision-1"
+MSD1_MODEL = "microsoft/microsoft-decision-1"
+MSD1_SNAPSHOT = "microsoft/microsoft-decision-1-20261009"   # the model name a response must report
+MSD1_CONTEXT = 32_768   # OpenRouter model page (33K), read 20 October 2026
+MSD1_RATE = 5.0         # requests/s across threads; OpenRouter publishes no per-model limit for the alpha endpoint
+MSD1_KEEP_HEADERS = ("x-provider-name",)
+
+
+class MicrosoftDecisionClient(HostedDecisionClient):
+    """Microsoft-Decision-1 (released 9 October 2026, Qwen3.5-9B post-trained by Microsoft) through OpenRouter's
+    alpha Decisions endpoint. There are no open weights, so the pin is the dated snapshot the response reports:
+    a response that reports anything but ``MSD1_SNAPSHOT`` is a final ``ModelIdentityError``, never scored.
+
+    Request and response are the System One shape (checked with one canned call on 20 October 2026): the body is
+    ``{"model", "state", "questions"}`` and the response ``{"model", "answers": {qid: {"type", "noul"}}, "usage":
+    {"input_tokens", "output_tokens", "cost"}, "id", "provider"}``. Billable usage keeps the two token counts; the
+    whole block is kept under ``raw.usage_reported``. The upstream provider (``provider`` in the body,
+    ``x-provider-name`` header) is recorded per call; generation ids are not.
+
+    Data handling: a third-party API. The run sends it public edition 2 test rows only, never the unpublished slice."""
+    provider = "openrouter"
+    adapter = {"name": "openrouter-decisions", "version": "1"}
+
+    def __init__(self, api_key: str, system: str = MSD1_SYSTEM, model: str = MSD1_MODEL, url: str = OPENROUTER_URL,
+                 snapshot: str = MSD1_SNAPSHOT, throttle: Throttle | None = None, **kw):
+        identity = {"provider": self.provider, "model": model, "ref": None, "revision": snapshot,
+                    "revision_basis": "dated snapshot name the response reports; any other name fails the call",
+                    "max_length": MSD1_CONTEXT, "precision": None, "data_handling": "public rows only"}
+        super().__init__(system, model, url, api_key, identity=identity,
+                         throttle=throttle if throttle is not None else Throttle(MSD1_RATE), **kw)
+        self.snapshot = snapshot
+        self.endpoint = url
+
+    @classmethod
+    def from_env(cls, env=os.environ, **kw):
+        key = env.get("OPENROUTER_API_KEY")
+        return cls(key, **kw) if key else None
+
+    def on_status(self, resp):
+        if resp.status_code == 429:
+            wait = retry_after_s(resp.headers)
+            if wait is not None and self.throttle:
+                self.throttle.hold(wait)
+            return status_error(429, f"retry-after {wait}s" if wait is not None else "")
+        return super().on_status(resp)
+
+    def response_meta(self, resp):
+        keep = {k: resp.headers[k] for k in MSD1_KEEP_HEADERS if k in resp.headers}
+        return keep or None
+
+    def unwrap(self, payload):
+        if not isinstance(payload, dict):
+            return None, "BadResponse: body is not a JSON object"
+        if payload.get("error") is not None and not payload.get("answers"):
+            e = payload["error"] if isinstance(payload["error"], dict) else {"message": payload["error"]}
+            return None, f"APIError: {e.get('code') or ''} {e.get('message') or ''}".strip()[:240]
+        return payload, None
+
+    def check(self, call):
+        reported = call.model
+        call.raw["reported_model"] = reported
+        if reported != self.snapshot:
+            return SystemOneCall(system=self.system, ok=False, model=reported, usage=call.usage,
+                                 latency_s=call.latency_s, raw={"reported_model": reported},
+                                 error=f"ModelIdentityError: the response reports model {reported!r}, "
+                                       f"not the pinned {self.snapshot!r}")
+        call.raw.pop("id", None)
+        call.raw["serving_provider"] = call.raw.pop("provider", None)
+        if isinstance(call.usage, dict):
+            call.raw["usage_reported"] = call.usage
+            call.usage = {k: v for k, v in call.usage.items() if k in ("input_tokens", "output_tokens")
+                          and isinstance(v, int) and not isinstance(v, bool)} or None
+            call.raw["usage"] = call.usage
+        return call
+
+
 def not_configured(system: str) -> str:
     """Why ``from_env`` returned None: the names (never the values) of what is missing."""
     need = {"clef": "CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN", "clef-flash": "CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN",
             "perplexity": "PERPLEXITY_API_KEY",
-            "openai": "OPENAI_API_KEY"}
+            "openai": "OPENAI_API_KEY",
+            "microsoft": "OPENROUTER_API_KEY"}
     return f"not_configured: {system} needs {need.get(system, 'credentials')}"
