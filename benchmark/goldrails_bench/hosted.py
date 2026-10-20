@@ -541,7 +541,8 @@ class MicrosoftDecisionClient(HostedDecisionClient):
     whole block is kept under ``raw.usage_reported``. The upstream provider (``provider`` in the body,
     ``x-provider-name`` header) is recorded per call; generation ids are not.
 
-    Data handling: a third-party API. The run sends it public edition 2 test rows only, never the unpublished slice."""
+    Data handling: a third-party API. Owner ruling 36 approves sending it every test row, the unpublished slice
+    included, as for the other hosted systems."""
     provider = "openrouter"
     adapter = {"name": "openrouter-decisions", "version": "1"}
 
@@ -549,7 +550,7 @@ class MicrosoftDecisionClient(HostedDecisionClient):
                  snapshot: str = MSD1_SNAPSHOT, throttle: Throttle | None = None, **kw):
         identity = {"provider": self.provider, "model": model, "ref": None, "revision": snapshot,
                     "revision_basis": "dated snapshot name the response reports; any other name fails the call",
-                    "max_length": MSD1_CONTEXT, "precision": None, "data_handling": "public rows only"}
+                    "max_length": MSD1_CONTEXT, "precision": None, "data_handling": "every test row and the unpublished slice (ruling 36)"}
         super().__init__(system, model, url, api_key, identity=identity,
                          throttle=throttle if throttle is not None else Throttle(MSD1_RATE), **kw)
         self.snapshot = snapshot

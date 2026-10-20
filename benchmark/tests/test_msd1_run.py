@@ -1,4 +1,4 @@
-"""Microsoft-Decision-1 extension run: public rows only, template arms, config hash, run hook. No calls."""
+"""Microsoft-Decision-1 extension run: every test row, template arms, config hash, run hook, rescore. No calls."""
 import hashlib
 import importlib.util
 import json
@@ -33,22 +33,11 @@ class FakeRows:
         self.guarded.append(r["id"])
 
 
-def test_select_drops_the_unpublished_slice(monkeypatch):
+def test_select_keeps_the_unpublished_slice(monkeypatch):
     r = _load("e2_msd1_run")
     tr = FakeRows()
     monkeypatch.setattr(r.ar, "_select_all_tasks", lambda t: {("content", "request"): list(t.rows.values())})
-    sel = r.select(tr)
-    assert [x["id"] for x in sel[("content", "request")]] == ["pub-1"]
-
-
-def test_guard_refuses_an_unpublished_row_after_the_test_row_guard():
-    r = _load("e2_msd1_run")
-    tr = FakeRows()
-    g = r.public_guard(tr)
-    g(tr.rows["pub-1"])
-    with pytest.raises(PermissionError, match="unpublished"):
-        g(tr.rows["unp-1"])
-    assert tr.guarded == ["pub-1", "unp-1"]
+    assert [x["id"] for x in r.select(tr)[("content", "request")]] == ["pub-1", "unp-1"]
 
 
 def test_extension_copies_the_eight_noul_arms():
@@ -81,16 +70,7 @@ def test_run_hook_builds_msd1_without_recursing(monkeypatch):
     assert set(systems) == {"microsoft-decision-1"} and systems["microsoft-decision-1"][1] == r.WORKERS
 
 
-def test_public_rows_view_refuses_a_ledger_with_an_unpublished_row(monkeypatch):
-    r = _load("e2_msd1_run")
-    tr = FakeRows()
-    monkeypatch.setattr(r.ar.sample, "load_ledgers", lambda work: [{"row_id": "unp-1", "system": "m"}])
-    monkeypatch.setattr(r.ar.full, "amend_ledgers", lambda raw, t: raw)
-    with pytest.raises(SystemExit, match="unpublished slice"):
-        r.ar.public_rows_view([{"work": "w", "label": "x"}], [], tr, {}, None, {}, None)
-
-
-def test_score_is_the_full_rescore_with_this_run_public_only(monkeypatch):
+def test_score_is_the_full_rescore_with_this_run_ranked(monkeypatch):
     r = _load("e2_msd1_run")
     import e2_strands_run as strands
     got = {}
@@ -100,19 +80,19 @@ def test_score_is_the_full_rescore_with_this_run_public_only(monkeypatch):
     monkeypatch.setattr(strands.luna, "extra_run", lambda: "luna")
     monkeypatch.setattr(strands.jev114, "extra_run", lambda: "jev114")
     monkeypatch.setattr(strands, "extra_run", lambda: "strands")
-    monkeypatch.setattr(r, "public_only_run", lambda: "msd1")
-    monkeypatch.setattr(r.ar, "score", lambda rep, extra_runs, public_only_runs: got.update(
-        extra=extra_runs, po=public_only_runs) or "out")
+    monkeypatch.setattr(r, "extra_run", lambda: "msd1")
+    monkeypatch.setattr(r.ar, "score", lambda rep, extra_runs: got.update(extra=extra_runs) or "out")
     assert r.score() == "out"
-    assert got == {"extra": ["luna", "jev114", "strands"], "po": ["msd1"]}
+    assert got == {"extra": ["luna", "jev114", "strands", "msd1"]}
 
 
-def test_manifest_if_present_records_the_public_only_scope():
+def test_manifest_if_present_covers_every_row_and_names_the_superseded_one():
     r = _load("e2_msd1_run")
     if not r.MANIFEST.exists():
         pytest.skip("not frozen yet")
     run = json.loads(r.MANIFEST.read_text())["run"]
-    assert run["systems"] == ["microsoft-decision-1"] and run["row_scope"].startswith("public test rows only")
+    assert run["systems"] == ["microsoft-decision-1"] and "ruling 36" in run["row_scope"]
+    assert run["supersedes"]["manifest"].endswith("freeze-manifest-microsoft-decision-1.json")
 
 
 def test_tariff_matches_the_model_id_the_records_carry():

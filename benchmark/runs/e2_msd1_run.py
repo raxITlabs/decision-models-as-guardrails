@@ -1,29 +1,32 @@
-"""Microsoft-Decision-1 (OpenRouter, snapshot 20261009) as a hosted extension: all six suites, public test rows only.
+"""Microsoft-Decision-1 (OpenRouter, snapshot 20261009) as the twentieth system: all six suites on the rows the other
+nineteen were scored on.
 
     uv run python benchmark/runs/e2_smoke.py run --systems microsoft --source local   # dev rows first (smoke ledger)
     uv run python benchmark/runs/e2_msd1_run.py plan --source local       # rows per subtask, guard, cost forecast
     uv run python benchmark/runs/e2_msd1_run.py freeze --source local     # extension manifest; commit it first
     uv run python benchmark/runs/e2_msd1_run.py all --source local        # forecast, main pass, retry passes
     uv run python benchmark/runs/e2_msd1_run.py report --source local     # run summary, public ledgers, privacy
+    uv run --with scikit-learn python benchmark/runs/e2_msd1_run.py score --source local   # benchmark/results/final/
 
 The model is sent as ``microsoft/microsoft-decision-1``; every response must report the snapshot
 ``microsoft/microsoft-decision-1-20261009`` or the call fails (``hosted.MicrosoftDecisionClient``). There are no open
 weights, so that snapshot name is the only pin.
 
-Rows: the public edition 2 test rows of the five full-run suites and the r26 prompt-attack suite, owner exclusions
-left out. The unpublished slice is never sent: OpenRouter and Microsoft are third parties no owner ruling covers.
-``select`` drops it and ``public_guard`` refuses it again before each call, after ``e2_full.TestRows.guard``.
+Rows: every edition 2 test row and the unpublished slice of the five full-run suites and the r26 prompt-attack suite,
+owner exclusions left out, the same rows as every other system. ``e2_full.TestRows.guard`` refuses anything else,
+before any call and again before each one. Owner ruling 36 (20 October 2026) approves sending the unpublished slice
+to OpenRouter and Microsoft.
 
 The freeze is an extension manifest that extends the primary with one arm per question set, copied from Clef's arms
 (the same eight Noul question sets, fixed 0.5 rule and retry policy), with the config hash the smoke test's serving
-gives. The dataset hashes are the frozen versions every system answered; ``run.row_scope`` records that this system
-gets their public rows only. ``run`` refuses to send until the manifest is committed.
+gives. ``run`` refuses to send until it is committed.
 
-Scoring (owner decision, 20 October 2026): the ranked table is over test plus unpublished rows, so this system is not
-in it. ``score`` is the full rescore with this run as a public-only run: ``leaderboard.json`` gains
-``public_rows_view``, every system scored on the public test rows alone with Microsoft-Decision-1 beside them.
+An earlier run on the public rows only (``SUPERSEDED_MANIFEST``, ledgers in ``ledgers/microsoft-decision-1-public-only``)
+was set up before ruling 36. It is superseded and never scored.
 
-    uv run --with scikit-learn python benchmark/runs/e2_msd1_run.py score --source local   # benchmark/results/final/
+Raw ledgers (unpublished ids) stay in the git-ignored ``benchmark/results/final/ledgers/microsoft-decision-1/private/``;
+``report`` and ``score`` write committed ledgers with public test rows only and run the privacy checks. ``score`` is the
+full rescore: the eleven, then the extension runs of gpt-6-luna, Jev 1.14.0, the Strands checkpoints and this one.
 """
 from __future__ import annotations
 
@@ -55,15 +58,16 @@ TEMPLATE = "clef"               # a hosted Noul model's arms; every Noul model h
 OUT = full.FINAL / "ledgers" / SYSTEM
 WORK = OUT / "private"
 RUN_LOG = OUT / "run-log.json"
-MANIFEST = REPO / "benchmark" / "subsets" / "edition2" / f"freeze-manifest-{SYSTEM}.json"
+MANIFEST = REPO / "benchmark" / "subsets" / "edition2" / f"freeze-manifest-{SYSTEM}-all-rows.json"
+SUPERSEDED_MANIFEST = REPO / "benchmark" / "subsets" / "edition2" / f"freeze-manifest-{SYSTEM}.json"
 PRIMARY = ar.PRIMARY
 R26 = ar.MANIFEST
 SMOKE = smoke.OUT / f"{SYSTEM}.jsonl"
-LABEL = "microsoft-decision-1 extension run: public edition 2 test rows only, contract v2.0 as amended"
+LABEL = "microsoft-decision-1 extension run: every edition 2 test row and the unpublished slice, contract v2.0 as amended"
 APPROVAL = ("microsoft-decision-1 added at the owner's request of 20 October 2026 (Microsoft, released 9 October 2026, "
-            "through OpenRouter); public test rows only; spend under the USD 5 cap")
-ROW_SCOPE = ("public test rows only: the unpublished slice is not sent to OpenRouter or Microsoft (no owner ruling "
-             "covers them)")
+            "through OpenRouter); spend under the USD 5 cap; unpublished slice sent to OpenRouter and Microsoft under "
+            "ruling 36")
+ROW_SCOPE = "every test row and the unpublished slice, as every other system (ruling 36)"
 NOUL_ADAPTER = {"name": "noul-e2", "version": "1"}
 WORKERS = 4                      # the client throttles the pool to 5 requests/s
 RETRY_ROUNDS = 2
@@ -71,15 +75,18 @@ COST_CAP_USD = 5.0
 DISCLOSURES = [
     "microsoft-decision-1 was sent the same Noul question sets as every other Noul model, in the System One request "
     "shape OpenRouter's Decisions endpoint takes, all of a row's questions in one request.",
-    "microsoft-decision-1 was sent the public test rows only. The unpublished slice did not go to OpenRouter or "
-    "Microsoft, so it has no unpublished-slice score and no contamination check from that slice.",
+    "The unpublished slice was sent to OpenRouter, which routed it to Microsoft on Azure (owner ruling 36, as ruling 21 "
+    "did for Perplexity). OpenRouter's and Microsoft's default API data handling applies; no zero-retention agreement "
+    "is in place.",
     "microsoft-decision-1 has no open weights. Every response reported the snapshot "
     "microsoft/microsoft-decision-1-20261009, and a response naming any other model would have failed the row. "
     "OpenRouter routed the calls to Azure; the provider is recorded per call.",
-    "microsoft-decision-1 ran after the other systems, under its own freeze manifest committed before its first test "
-    "call (benchmark/subsets/edition2/freeze-manifest-microsoft-decision-1.json).",
-    "microsoft-decision-1 ran after the ruling 32 label review. It was sent the reviewed build's public test rows; the "
-    "rows that review removed were not sent.",
+    "microsoft-decision-1 ran on 20 October 2026, after the other nineteen systems, under its own freeze manifest "
+    "committed before its first test call (benchmark/subsets/edition2/freeze-manifest-microsoft-decision-1-all-rows.json). "
+    "An earlier run that day on the public rows only, under its own manifest, was superseded by ruling 36 and is not "
+    "scored.",
+    "microsoft-decision-1 ran after the ruling 32 label review. It was sent the reviewed build's test rows, whose text is "
+    "the frozen version's; the rows that review removed were not sent, and every system is scored without them.",
 ]
 CAVEATS = ["microsoft-decision-1 is reached through OpenRouter's alpha Decisions endpoint; the snapshot name is the "
            "only version pin"]
@@ -102,17 +109,7 @@ def log_event(key: str, value) -> None:
 
 
 def select(tr) -> dict:
-    """Every suite's test rows without the unpublished slice."""
-    return {k: [r for r in rows if r["id"] not in tr.unpublished] for k, rows in ar._select_all_tasks(tr).items()}
-
-
-def public_guard(tr):
-    """``tr.guard`` (a frozen test row, unchanged), then a refusal for any row of the unpublished slice."""
-    def guard(r: dict) -> None:
-        tr.guard(r)
-        if r.get("id") in tr.unpublished:
-            raise PermissionError(f"refused: {r.get('id')} is in the unpublished slice; {SYSTEM} gets public rows only")
-    return guard
+    return ar._select_all_tasks(tr)
 
 
 # --- forecast --------------------------------------------------------------------------------------------------
@@ -214,9 +211,10 @@ def write_freeze(tr) -> dict:
     arms = extension_arms(tr)
     doc = {"schema": F.EDITION2_SCHEMA, "arms": [{k: v for k, v in a.items() if not k.startswith("_")} for a in arms]}
     extends = {"manifest_sha256": pident["manifest_sha256"], "manifest_path": pident["path"],
-               "reason": "another system (microsoft-decision-1 through OpenRouter, released 9 October 2026) on the "
-                         "public rows of every suite's frozen test set: the five suites of the primary freeze and the "
-                         "r26 prompt-attack suite; no arm of the primary or of any earlier extension changes",
+               "reason": "a twentieth system (microsoft-decision-1 through OpenRouter, released 9 October 2026) on every "
+                         "suite's frozen test rows and unpublished slice (ruling 36): the five suites of the primary "
+                         "freeze and the r26 prompt-attack suite; no arm of the primary or of any earlier extension "
+                         "changes",
                "after_extension": {"manifest_sha256": xident["manifest_sha256"], "manifest_path": xident["path"],
                                    "note": "the prompt-attack arms use the r26 dataset version that extension froze; "
                                            "the contract is the one it amended to, unchanged since"}}
@@ -245,7 +243,9 @@ def write_freeze(tr) -> dict:
                                          f"config hash from the {SYSTEM} smoke test's serving"}
     m["run"] = {"label": LABEL, "source": sample._source_label(), "approval": APPROVAL, "systems": [SYSTEM],
                 "smoke": full._rel(SMOKE), "data_handling": DISCLOSURES[1], "row_scope": ROW_SCOPE,
-                "pin": hosted.MSD1_SNAPSHOT}
+                "pin": hosted.MSD1_SNAPSHOT,
+                "supersedes": {"manifest": full._rel(SUPERSEDED_MANIFEST),
+                               "why": "that run sent the public rows only, before ruling 36; it is not scored"}}
     MANIFEST.write_text(json.dumps(m, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     print(f"extension manifest: {len(m['arms'])} arms, integrity pass over {m['integrity']['test_rows']} test rows "
           f"({time.time() - t0:.0f}s) -> {full._rel(MANIFEST)}; commit it before any call")
@@ -274,7 +274,7 @@ def run(retry_failed: bool) -> dict:
     tr = full.TestRows()
     smoke.build_systems = lambda kinds, env=None: build()
     try:
-        t = smoke.run_selection({KIND}, select(tr), WORK, None, reruns=False, guard=public_guard(tr),
+        t = smoke.run_selection({KIND}, select(tr), WORK, None, reruns=False, guard=tr.guard,
                                 retry_failed=retry_failed, stamp={"freeze": F.record_stamp(ident)})
     finally:
         smoke.build_systems = _build_systems
@@ -363,40 +363,36 @@ def run_date() -> str:
     return done[-1]["finished"][:10]
 
 
-def public_only_run() -> dict:
-    """This run as one of ``e2_attacks_rerun.score``'s ``public_only_runs``."""
+def extra_run() -> dict:
     run_entry = {"key": "msd1_extension_run", "date": run_date(), "folder": full._rel(OUT), "suites": "all six",
-                 "systems": [SYSTEM], "row_scope": ROW_SCOPE, "manifest": full._rel(MANIFEST),
-                 "source": sample._source_label()}
+                 "systems": [SYSTEM], "manifest": full._rel(MANIFEST), "source": sample._source_label()}
     return {"work": WORK, "log": RUN_LOG, "manifest": MANIFEST, "label": LABEL, "run": run_entry,
             "approval": APPROVAL, "disclosures": DISCLOSURES, "caveats": CAVEATS, "public_files": committed_files()}
 
 
 def score(replicates: int | None = None) -> Path:
-    """The full rescore (e2_strands_run's, unchanged for the ranked table) plus the public-rows view, where this
-    system sits beside every other system's public-row score. It is never ranked in the headline table."""
+    """The full rescore: the eleven, then gpt-6-luna, Jev 1.14.0, the Strands checkpoints and this run."""
     import e2_strands_run as strands
     tr = full.TestRows()
     strands.luna.write_public(tr)
     strands.jev114.write_public(tr)
     strands.write_public(tr)
     write_public(tr)
-    return ar.score(replicates, extra_runs=[strands.luna.extra_run(), strands.jev114.extra_run(), strands.extra_run()],
-                    public_only_runs=[public_only_run()])
+    return ar.score(replicates, extra_runs=[strands.luna.extra_run(), strands.jev114.extra_run(), strands.extra_run(),
+                                            extra_run()])
 
 
 def plan() -> None:
     tr = full.TestRows()
     sel = select(tr)
     n = 0
-    guard = public_guard(tr)
     for (su, st), rows in sel.items():
         for r in rows:
-            guard(r)
+            tr.guard(r)
         n += len(rows)
         u = sum(r["id"] in tr.unpublished for r in rows)
         print(f"{su}/{st}: {len(rows)} rows ({u} unpublished) {dict(Counter((r['subtask'], r['expected']) for r in rows))}")
-    print(f"total {n} public rows; guard passed (unpublished slice left out)")
+    print(f"total {n} rows; guard passed")
     print("forecast:", json.dumps(forecast(sel), indent=1))
 
 
