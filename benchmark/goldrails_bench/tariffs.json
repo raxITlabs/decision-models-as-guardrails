@@ -95,6 +95,21 @@
       "note": "billed per request on input tokens only"
     },
     {
+      "id": "openrouter/decisions/microsoft-decision-1",
+      "provider": "OpenRouter Decisions API (alpha), served by Microsoft on Azure",
+      "kind": "per_token",
+      "match": {"models": ["microsoft/microsoft-decision-1", "microsoft/microsoft-decision-1-20261009"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.042},
+        "output_tokens": {"usd_per_million": 0.0, "note": "provider lists output tokens as free"}
+      },
+      "checked_on": "2026-10-20",
+      "source": "https://openrouter.ai/microsoft/microsoft-decision-1 and Microsoft's announcement https://commandline.microsoft.com/microsoft-decision-1-model-foundry/ (9 October 2026); a canned call on 20 October 2026 reported cost 0.000002772 for 66 input tokens, which is 0.042 per million",
+      "status": "vendor list price; not reconciled against a billing statement",
+      "note": "matched on the requested model id, which the ledgers record; the client fails any call whose response reports a snapshot other than 20261009"
+    },
+    {
       "id": "aws/bedrock/invoke-guardrail-checks",
       "provider": "Amazon Bedrock Guardrails, InvokeGuardrailChecks",
       "kind": "per_text_unit",

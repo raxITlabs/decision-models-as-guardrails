@@ -430,3 +430,84 @@ def test_smoke_limits_and_caps_for_the_new_systems():
     assert not m.capped("strands-decider-2b", 5000, 6, 4096)   # unknown usage basis: the estimate decides instead
     with pytest.raises(SystemExit, match="unknown --systems"):
         m.run({"nope"})
+
+
+# --- Microsoft-Decision-1 via OpenRouter ----------------------------------------------------------------------------
+
+def msd1_body(qs, hot=None, model="microsoft/microsoft-decision-1-20261009"):
+    return {"model": model, "answers": answers(qs, hot), "usage": {"input_tokens": 66, "output_tokens": 2,
+            "cost": 0.000002772}, "id": "gen-dec-1", "provider": "Azure"}
+
+
+def msd1(server, clock=None):
+    t = hosted.Throttle(5.0, clock=clock.now, sleep=clock.sleep) if clock else hosted.Throttle(0)
+    return hosted.MicrosoftDecisionClient("sk-or-test", http=server.client(), throttle=t)
+
+
+def test_msd1_sends_the_system_one_body_to_openrouter_and_pins_the_snapshot():
+    s = Server(ok(msd1_body(QS["questions"], hot="violence"), headers={"x-provider-name": "Azure",
+                                                                       "x-generation-id": "gen-dec-1"}))
+    res = NoulAdapter(c := msd1(s), policy=FAST).evaluate("content", "request", ROW)
+    req = s.requests[0]
+    assert str(req.url) == "https://openrouter.ai/api/alpha/decisions"
+    assert req.headers["authorization"] == "Bearer sk-or-test"
+    sent = json.loads(req.content)
+    assert set(sent) == {"model", "state", "questions"} and sent["model"] == "microsoft/microsoft-decision-1"
+    assert res.outcome == DECIDED and res.decision is True
+    assert res.serving["served_model"] == "microsoft/microsoft-decision-1-20261009"
+    assert res.raw["serving_provider"] == "Azure" and res.raw["response_headers"] == {"x-provider-name": "Azure"}
+    assert res.raw["usage_reported"]["cost"] == 0.000002772 and set(res.raw["usage"]) == {"input_tokens", "output_tokens"}
+    assert c.identity["revision"] == "microsoft/microsoft-decision-1-20261009" and c.identity["max_length"] == 32768
+    assert c.system == "microsoft-decision-1" and "sk-or-test" not in repr(c)
+
+
+@pytest.mark.parametrize("reported", ["microsoft/microsoft-decision-1-20261201", "microsoft/microsoft-decision-1",
+                                      None, "jev-latest"])
+def test_msd1_refuses_any_other_snapshot_and_does_not_retry(reported):
+    s = Server(ok(msd1_body(QS["questions"], hot="hate", model=reported)))
+    res = NoulAdapter(msd1(s), policy=FAST).evaluate("content", "request", ROW)
+    assert res.outcome == FAILED and res.decision is None and res.error.startswith("ModelIdentityError")
+    assert len(s.requests) == 1
+
+
+def test_msd1_429_honours_retry_after_and_5xx_is_retried():
+    clk = Clock()
+    s = Server(ok({"error": {"code": 429}}, 429, headers={"Retry-After": "2"}), ok({"error": {}}, 502),
+               ok(msd1_body(QS["questions"])))
+    res = NoulAdapter(msd1(s, clock=clk), policy=FAST).evaluate("content", "request", ROW)
+    assert res.outcome == DECIDED and len(s.requests) == 3
+    assert res.attempts[0]["error"].startswith("RateLimitError: HTTP 429 retry-after 2.0s")
+    assert res.attempts[1]["error"].startswith("InternalServerError: HTTP 502")
+    assert sum(clk.slept) >= 2.0
+
+
+@pytest.mark.parametrize("status,name", [(401, "HTTPError"), (402, "HTTPError"), (400, "HTTPError")])
+def test_msd1_client_errors_are_final(status, name):
+    s = Server(ok({"error": {"message": "no"}}, status))
+    res = NoulAdapter(msd1(s), policy=FAST).evaluate("content", "request", ROW)
+    assert res.outcome == FAILED and res.error.startswith(f"{name}: HTTP {status}") and len(s.requests) == 1
+
+
+def test_msd1_error_envelope_with_200_is_final():
+    s = Server(ok({"error": {"code": 400, "message": "bad question"}}))
+    res = NoulAdapter(msd1(s), policy=FAST).evaluate("content", "request", ROW)
+    assert res.outcome == FAILED and res.error.startswith("APIError") and len(s.requests) == 1
+
+
+def test_msd1_from_env_needs_only_the_openrouter_key():
+    assert hosted.MicrosoftDecisionClient.from_env(env={}) is None
+    c = hosted.MicrosoftDecisionClient.from_env(env={"OPENROUTER_API_KEY": "k"})
+    assert c.system == "microsoft-decision-1" and c.throttle.interval == pytest.approx(0.2)
+    assert hosted.not_configured("microsoft") == "not_configured: microsoft needs OPENROUTER_API_KEY"
+
+
+def test_msd1_is_registered_in_the_smoke_and_the_tariffs():
+    m = _smoke()
+    assert "microsoft" in m.NEW_KINDS and m.limit_of("microsoft-decision-1")[0] == 32768
+    assert "microsoft-decision-1" in m.WHOLE_REQUEST_USAGE
+    systems, skipped = m.build_systems({"microsoft"}, env={"OPENROUTER_API_KEY": "k"})
+    assert set(systems) == {"microsoft-decision-1"} and skipped == {}
+    assert m.build_systems({"microsoft"}, env={})[1] == {"microsoft": "not_configured: microsoft needs OPENROUTER_API_KEY"}
+    tariffs = json.loads((ROOT / "benchmark/goldrails_bench/tariffs.json").read_text())
+    e = next(e for e in tariffs["entries"] if "microsoft/microsoft-decision-1-20261009" in e["match"]["models"])
+    assert e["prices"]["input_tokens"]["usd_per_million"] == 0.042 and e["prices"]["output_tokens"]["usd_per_million"] == 0.0

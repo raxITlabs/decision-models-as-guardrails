@@ -621,7 +621,8 @@ NAMES = {"jev-1.13.0": "Jev 1.13.0", "clef": "Clef", "clef-flash": "Clef-flash",
          "gpt-6-luna": "gpt-6-luna", "jev-1.14.0": "Jev 1.14.0"}
 NAMES.update({"strands-decider-2b-v21": "Strands Decider 2B v21", "strands-decider-2b-qwen35": "Strands Decider 2B Qwen3.5",
               "strands-decider-e2b": "Strands Decider E2B", "strands-decider-e4b": "Strands Decider E4B",
-              "strands-decider-12b": "Strands Decider 12B", "strands-decider-26b-a4b": "Strands Decider 26B-A4B"})
+              "strands-decider-12b": "Strands Decider 12B", "strands-decider-26b-a4b": "Strands Decider 26B-A4B",
+              "microsoft-decision-1": "Microsoft-Decision-1"})
 SUITE_COLS = (("content", "Content"), ("prompt_attacks", "Prompt attacks"), ("denied_topics", "Denied topics"),
               ("word_filters", "Profanity"), ("sensitive_info", "PII"), ("grounding", "Grounding"))
 

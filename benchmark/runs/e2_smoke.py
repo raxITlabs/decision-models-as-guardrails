@@ -14,7 +14,8 @@ row ids, labels and system outputs, never the row text, because many dev rows co
 (owner ruling 10). Error strings are cut to 300 characters and checked for row text before they are written.
 
 New decision models (docs/benchmark/28): ``clef`` and ``clef-flash`` (Cloudflare Workers AI), ``perplexity``
-(pplx-decider-v1-27b), ``strands`` (Strands Decider 2B on the GCP VM) and ``openai`` (gpt-6-luna, OpenAI Decisions API).
+(pplx-decider-v1-27b), ``strands`` (Strands Decider 2B on the GCP VM), ``openai`` (gpt-6-luna, OpenAI Decisions API)
+and ``microsoft`` (Microsoft-Decision-1 through OpenRouter, snapshot 20261009).
 ``jev-1.14`` is Jev 1.14.0 (api.typesafe.ai, released 14 October 2026), pinned by its versioned id, not ``jev-preview``.
 A system whose credentials or VM slot are missing is skipped as ``not_configured`` before any row is read for it;
 nothing is sent and nothing is written for it.
@@ -67,6 +68,7 @@ LIMITS = {"jev-1.13.0": (32000, "documented"), "jev-1.14.0": (32000, "documented
           "clef": (65536, "hosted context (Workers AI)"), "clef-flash": (65536, "hosted context (Workers AI)"),
           "pplx-decider-v1-27b": (262144, "hosted input limit (Perplexity docs)"),
           "strands-decider-2b": (4096, "documented window; cut silently, no truncation flag"),
+          "microsoft-decision-1": (32768, "hosted context (OpenRouter model page)"),
           "gpt-6-luna": (None, "undocumented (the public beta docs give no input limit)"),
           "laya": (512, "observed: usage.input_tokens tops out at 512 x questions, so each prompt is cut at 512"),
           "bedrock-guardrails": (None, "service")}
@@ -77,7 +79,7 @@ LIMITS.update({n: (4096, "documented window; cut silently, no truncation flag") 
 # Servers whose usage.input_tokens is the sum over one prompt per question: per-prompt tokens = usage / questions.
 PER_PROMPT_USAGE = {"open-jev-2b", "laya"}
 # Hosted joint-schema models report one input count for the whole request: at the limit means the input was capped.
-WHOLE_REQUEST_USAGE = {"clef", "clef-flash", "pplx-decider-v1-27b"}
+WHOLE_REQUEST_USAGE = {"clef", "clef-flash", "pplx-decider-v1-27b", "microsoft-decision-1"}
 DEFAULT_LIMIT = (4096, "proxy: undocumented, 4096 reference")
 NEAR = 0.8   # a row is near the limit at >= 80% of it
 CHARS_PER_TOKEN = 3.5   # conservative (over-)estimate for English with a BPE tokenizer
@@ -215,7 +217,7 @@ def leak_check(paths, rows_by_id: dict) -> list:
 
 # --- systems ---------------------------------------------------------------------------------------------------
 
-NEW_KINDS = ("clef", "clef-flash", "perplexity", "strands", "openai", "jev-1.14")
+NEW_KINDS = ("clef", "clef-flash", "perplexity", "strands", "openai", "jev-1.14", "microsoft")
 KINDS = ("jev", "open", "bedrock") + NEW_KINDS
 JEV_114 = "jev-1.14.0"   # the versioned id; jev-preview points at it today but moves with the next release
 
@@ -265,6 +267,12 @@ def build_new_systems(kinds: set, env) -> tuple[dict, dict]:
         c = hosted.OpenAIDecisionsClient.from_env(env=env)
         if c is None:
             skipped["openai"] = hosted.not_configured("openai")
+        else:
+            out[c.system] = (NoulAdapter(c, endpoint=c.endpoint), 4)   # the client throttles the pool to 5/s
+    if "microsoft" in kinds:
+        c = hosted.MicrosoftDecisionClient.from_env(env=env)
+        if c is None:
+            skipped["microsoft"] = hosted.not_configured("microsoft")
         else:
             out[c.system] = (NoulAdapter(c, endpoint=c.endpoint), 4)   # the client throttles the pool to 5/s
     if "jev-1.14" in kinds:

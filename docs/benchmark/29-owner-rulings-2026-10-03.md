@@ -54,3 +54,9 @@ Decided by the project owner on 3 October 2026, through the edition 2 decisions 
 | # | Question | Ruling |
 |---|---|---|
 | 35 | The skipped question-wording check (14 October 2026) | Run it now, after the freeze, under the pre-registered plan `docs/benchmark/30-question-wording-check-plan.md`, committed before any model call. Jev 1.13.0 is the reference; the three non-Jev models are pplx-decider-v1-27b, gpt-6-luna and Clef, with no substitutes. Public dev rows only. For `e2-f2-attacks` and `e2-f3-topics`, gap = Jev's change in balanced accuracy from the old to the new wording minus the mean change of the three others: PASS at 2.0 points or less, FAIL when the 95% bootstrap interval lies wholly above 2.0, otherwise INCONCLUSIVE. New-only questions (the 5 new topics, the `e2-f5-pii` revisions) get a reported flag, not a fail. Spend: under USD 3 in API calls, plus Cloudflare Workers Paid if it has lapsed. If every comparison passes, the 1.0.0 board stands and the disclosure says the check ran late and passed; a FAIL leaves 1.0.0 as published with the finding beside it, and a corrected wording would be release 1.1. |
+
+## Additional ruling, 20 October 2026
+
+| # | Question | Ruling |
+|---|---|---|
+| 36 | Microsoft-Decision-1 on the full benchmark (20 October 2026) | Score Microsoft-Decision-1 (snapshot `microsoft-decision-1-20261009`, through OpenRouter, served on Azure) like every other system: all 10,053 test rows, the held-back slice included, so it joins the ranked board. The owner approves sending the held-back rows to OpenRouter and Microsoft, as ruling 21 did for Perplexity (and the gpt-6-luna run for OpenAI). The earlier run on public rows only was set up without this ruling; it is superseded and kept, unscored, beside the new run. The complete run gets its own freeze manifest, committed before its first call. |
