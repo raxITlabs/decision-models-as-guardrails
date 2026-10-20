@@ -65,6 +65,15 @@ export interface Facts {
   labelAgreement?: { contentRows: number; content: number; attackRows: number; attacks: number };
 }
 
+/** Every system re-scored on the public test rows alone, with systems that were sent only those rows. Never ranked
+ *  on the main board: its rows differ (no held-back slice). */
+export interface PublicRows {
+  rows: number;
+  /** systems sent the public rows only; they appear here and nowhere else */
+  publicOnly: SystemMeta[];
+  overall: Score[];
+}
+
 export interface Board {
   source: "real" | "fixture";
   release: { version: string; date: string };
@@ -82,6 +91,7 @@ export interface Board {
   jobs: Record<JobId, Score[]>;
   baseline: Baseline[];
   facts: Facts;
+  publicRows?: PublicRows;
 }
 
 /** One public row in the row browser: [id, job index, source index, label (1 = should block), decisions, withheld (1/0), snippet] */

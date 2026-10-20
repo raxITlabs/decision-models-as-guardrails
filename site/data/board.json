@@ -2189,5 +2189,243 @@
    "attackRows": 400,
    "attacks": 0.95
   }
+ },
+ "publicRows": {
+  "rows": 7706,
+  "publicOnly": [
+   {
+    "id": "microsoft-decision-1",
+    "name": "Microsoft-Decision-1",
+    "provider": "Microsoft · via OpenRouter",
+    "mono": "Ms",
+    "docs": "https://openrouter.ai/microsoft/microsoft-decision-1",
+    "pricing": "https://openrouter.ai/microsoft/microsoft-decision-1",
+    "isNew": true,
+    "hosting": "managed",
+    "kind": "decision"
+   }
+  ],
+  "overall": [
+   {
+    "system": "pplx-decider-v1-27b",
+    "rank": 1,
+    "tier": 1,
+    "score": 90.49,
+    "ciLow": 89.76,
+    "ciHigh": 91.19,
+    "catchRate": 0.8858,
+    "falseBlockRate": 0.076,
+    "cost": 0.05615
+   },
+   {
+    "system": "gpt-6-luna",
+    "rank": 2,
+    "tier": 1,
+    "score": 89.89,
+    "ciLow": 89.12,
+    "ciHigh": 90.63,
+    "catchRate": 0.9228,
+    "falseBlockRate": 0.1251,
+    "cost": 0.10998
+   },
+   {
+    "system": "clef",
+    "rank": 3,
+    "tier": 1,
+    "score": 89.62,
+    "ciLow": 88.88,
+    "ciHigh": 90.39,
+    "catchRate": 0.9116,
+    "falseBlockRate": 0.1192,
+    "cost": 0.20183
+   },
+   {
+    "system": "microsoft-decision-1",
+    "rank": 4,
+    "tier": 2,
+    "score": 89.27,
+    "ciLow": 88.53,
+    "ciHigh": 89.99,
+    "catchRate": 0.8944,
+    "falseBlockRate": 0.109,
+    "cost": 0.0262
+   },
+   {
+    "system": "jev-1.14.0",
+    "rank": 5,
+    "tier": 2,
+    "score": 88.92,
+    "ciLow": 88.15,
+    "ciHigh": 89.66,
+    "catchRate": 0.9023,
+    "falseBlockRate": 0.1238,
+    "cost": 0.03856
+   },
+   {
+    "system": "jev-1.13.0",
+    "rank": 6,
+    "tier": 2,
+    "score": 88.72,
+    "ciLow": 87.95,
+    "ciHigh": 89.46,
+    "catchRate": 0.8893,
+    "falseBlockRate": 0.1148,
+    "cost": 0.03856
+   },
+   {
+    "system": "strands-decider-12b",
+    "rank": 7,
+    "tier": 3,
+    "score": 86.66,
+    "ciLow": 85.8,
+    "ciHigh": 87.52,
+    "catchRate": 0.879,
+    "falseBlockRate": 0.1458,
+    "cost": 0.96203
+   },
+   {
+    "system": "strands-decider-26b-a4b",
+    "rank": 8,
+    "tier": 3,
+    "score": 86.19,
+    "ciLow": 85.37,
+    "ciHigh": 87.03,
+    "catchRate": 0.9026,
+    "falseBlockRate": 0.1788,
+    "cost": 0.66987
+   },
+   {
+    "system": "strands-decider-e4b",
+    "rank": 9,
+    "tier": 4,
+    "score": 82.17,
+    "ciLow": 81.23,
+    "ciHigh": 83.13,
+    "catchRate": 0.8468,
+    "falseBlockRate": 0.2034,
+    "cost": 0.62232
+   },
+   {
+    "system": "clef-flash",
+    "rank": 10,
+    "tier": 4,
+    "score": 82.03,
+    "ciLow": 81.13,
+    "ciHigh": 82.99,
+    "catchRate": 0.8046,
+    "falseBlockRate": 0.164,
+    "cost": 0.07568
+   },
+   {
+    "system": "kev-4b",
+    "rank": 11,
+    "tier": 4,
+    "score": 81.44,
+    "ciLow": 80.52,
+    "ciHigh": 82.31,
+    "catchRate": 0.712,
+    "falseBlockRate": 0.0831,
+    "cost": 0.22985
+   },
+   {
+    "system": "kev-9b",
+    "rank": 12,
+    "tier": 5,
+    "score": 80.51,
+    "ciLow": 79.64,
+    "ciHigh": 81.39,
+    "catchRate": 0.7018,
+    "falseBlockRate": 0.0916,
+    "cost": 0.12361
+   },
+   {
+    "system": "strands-decider-e2b",
+    "rank": 13,
+    "tier": 5,
+    "score": 80.23,
+    "ciLow": 79.28,
+    "ciHigh": 81.24,
+    "catchRate": 0.745,
+    "falseBlockRate": 0.1405,
+    "cost": 0.46098
+   },
+   {
+    "system": "bedrock-guardrails",
+    "rank": 14,
+    "tier": 5,
+    "score": 79.24,
+    "ciLow": 78.29,
+    "ciHigh": 80.26,
+    "catchRate": 0.6889,
+    "falseBlockRate": 0.104,
+    "cost": 0.11255
+   },
+   {
+    "system": "strands-decider-2b-qwen35",
+    "rank": 15,
+    "tier": 6,
+    "score": 78.14,
+    "ciLow": 77.15,
+    "ciHigh": 79.16,
+    "catchRate": 0.7461,
+    "falseBlockRate": 0.1834,
+    "cost": 0.40084
+   },
+   {
+    "system": "strands-decider-2b-v21",
+    "rank": 16,
+    "tier": 6,
+    "score": 77.39,
+    "ciLow": 76.43,
+    "ciHigh": 78.4,
+    "catchRate": 0.6981,
+    "falseBlockRate": 0.1503,
+    "cost": 0.36771
+   },
+   {
+    "system": "strands-decider-2b",
+    "rank": 17,
+    "tier": 7,
+    "score": 75.55,
+    "ciLow": 74.63,
+    "ciHigh": 76.5,
+    "catchRate": 0.6263,
+    "falseBlockRate": 0.1153,
+    "cost": 0.12415
+   },
+   {
+    "system": "open-jev-2b",
+    "rank": 18,
+    "tier": 8,
+    "score": 66.53,
+    "ciLow": 65.7,
+    "ciHigh": 67.3,
+    "catchRate": 0.374,
+    "falseBlockRate": 0.0434,
+    "cost": 0.27742
+   },
+   {
+    "system": "kev-0-8b",
+    "rank": 19,
+    "tier": 8,
+    "score": 66.27,
+    "ciLow": 65.29,
+    "ciHigh": 67.29,
+    "catchRate": 0.5182,
+    "falseBlockRate": 0.1927,
+    "cost": 0.14169
+   },
+   {
+    "system": "laya",
+    "rank": 20,
+    "tier": 9,
+    "score": 60.76,
+    "ciLow": 59.66,
+    "ciHigh": 61.89,
+    "catchRate": 0.4496,
+    "falseBlockRate": 0.2344,
+    "cost": 0.15023
+   }
+  ]
  }
 }

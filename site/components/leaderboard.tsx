@@ -193,7 +193,7 @@ export function Leaderboard({ board }: { board: Board }) {
   );
 }
 
-function ScoreBar({ s }: { s: Score }) {
+export function ScoreBar({ s }: { s: Score }) {
   const pos = (v: number) => `${Math.max(0, Math.min(100, ((v - 50) / 50) * 100))}%`;
   return (
     <div className="flex items-center justify-end gap-3 sm:justify-start">
