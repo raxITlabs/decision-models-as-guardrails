@@ -8,7 +8,7 @@ import type { Board, LineageSummary, Score, SystemMeta, VersionChange, VersionSt
 import { supersededBy, visibleRanks } from "@/lib/versions";
 import { type Lens, type Pick, pickFor, tierGroups } from "@/lib/picks";
 import { ArrowRight, ArrowUpLeft, Chevron, External } from "./icons";
-import { Segmented } from "./segmented";
+import { Segmented, Select } from "./segmented";
 import { NewTag } from "./new-tag";
 import { SystemMark } from "./system-mark";
 
@@ -81,9 +81,10 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
 
   return (
     <div className="flex flex-col gap-6">
-      {/* The use case leads: the board answers "which system for my job", so picking it comes first. */}
-      <div className="border-b border-line-strong">
-        <Segmented label="Use case" options={JOB_OPTIONS} value={job} onChange={setJob} />
+      {/* The use case leads: the board answers "which system for my job". One control shows the choice in force; the
+          other eight wait behind it. */}
+      <div className="border-b border-line-strong pb-2">
+        <Select id="use-case" label="Use case" options={JOB_OPTIONS} value={job} onChange={setJob} />
       </div>
       <div className="flex flex-wrap items-center gap-x-10 gap-y-2">
         <Segmented

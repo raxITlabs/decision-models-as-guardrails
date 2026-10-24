@@ -122,7 +122,7 @@ export default function Home() {
             <h2 id="lb-h" className="m-0 text-[clamp(1.75rem,3.4vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.02em]">Overall ranking</h2>
           </div>
           <p className="m-0 text-[14px] text-muted">
-            {models === board.stats.systems ? `${board.stats.systems} systems` : `${models} models, ${board.stats.systems} versions`} · version {board.release.version} · {longDate(board.release.date)} ·{" "}
+            {models} {models === 1 ? "model" : "models"} · version {board.release.version} · {longDate(board.release.date)} ·{" "}
             <Link href="/changelog">changelog</Link>
           </p>
         </div>
