@@ -14,7 +14,7 @@ import { faqItems } from "@/lib/copy";
 import { ContactLink } from "@/components/contact";
 import { ContactPrompt } from "@/components/contact-prompt";
 import { loadBoard, loadRowDetails, loadRowsIndex, loadVersions } from "@/lib/data";
-import { lineageSummaries } from "@/lib/versions";
+import { lineageSummaries, supersededBy } from "@/lib/versions";
 import { REPO_URL, int, listNames, longDate, oneLine, pct, score1, systemMap } from "@/lib/format";
 import { JOBS } from "@/lib/jobs";
 
@@ -37,6 +37,7 @@ const HERO_EXAMPLES = [
 export default function Home() {
   const board = loadBoard();
   const lineages = lineageSummaries(loadVersions());
+  const older = supersededBy(lineages);
   // A model with several versions on the board counts once.
   const models = board.stats.systems - lineages.reduce((n, l) => n + l.versions.length - 1, 0);
   const index = loadRowsIndex();
@@ -113,7 +114,7 @@ export default function Home() {
 
       {/* Each finding sits just above the section that shows its evidence. */}
       <div className="flex flex-col gap-14">
-        <BedrockFinding board={board} />
+        <BedrockFinding board={board} hide={older} />
       <section id="leaderboard" aria-labelledby="lb-h" className="flex scroll-mt-24 flex-col gap-6">
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
           <div className="flex flex-col gap-2.5">
@@ -130,7 +131,7 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col gap-14">
-        <CostFinding board={board} />
+        <CostFinding board={board} hide={older} />
         <CostCalculator board={board} />
       </div>
 
@@ -177,7 +178,7 @@ export default function Home() {
       </section>
 
       <div className="flex flex-col gap-14">
-        <AttacksFinding board={board} />
+        <AttacksFinding board={board} hide={older} />
       <section aria-labelledby="jobs-h" className="flex flex-col gap-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="flex flex-col gap-2.5">

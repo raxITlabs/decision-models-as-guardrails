@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { Fragment, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { JOBS, JOB_BY_ID, type JobId } from "@/lib/jobs";
-import { halfCi, maxTier, money, pct, score1, tierVar, oneLine } from "@/lib/format";
+import { halfCi, listNames, maxTier, money, pct, score1, tierVar, oneLine } from "@/lib/format";
 import type { Board, LineageSummary, Score, SystemMeta, VersionChange, VersionStepSummary } from "@/lib/types";
 import { supersededBy, visibleRanks } from "@/lib/versions";
+import { type Lens, type Pick, pickFor, tierGroups } from "@/lib/picks";
 import { ArrowRight, ArrowUpLeft, Chevron, External } from "./icons";
 import { Segmented } from "./segmented";
 import { NewTag } from "./new-tag";
@@ -64,8 +65,18 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const latest = scores.filter((s) => !older[s.system]);
   const byId = Object.fromEntries(scores.map((s) => [s.system, s]));
-  const rankOf = visibleRanks(latest);
+  // One toggle, one meaning: "Managed APIs" filters the chart and the table alike.
   const shown = latest.filter((s) => scope === "all" || sys[s.system]?.hosting === "managed");
+  const rankOf = visibleRanks(shown);
+  const groups = tierGroups(shown);
+  const [lens, setLens] = useState<Lens | null>(null);
+  const pick = lens ? pickFor(shown, lens) : null;
+  const choose = (l: Lens) => {
+    const next = lens === l ? null : l;
+    setLens(next);
+    const p = next ? pickFor(shown, next) : null;
+    if (p) setSelected(p.system);
+  };
   const sel = scores.find((s) => s.system === selected) ?? scores[0];
 
   return (
@@ -105,17 +116,19 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
 
       <Scatter scores={shown} sys={sys} axis={axis} tiers={tiers} selected={sel?.system} onSelect={setSelected} />
 
+      <Recommend lens={lens} onChoose={choose} pick={pick} byId={byId} sys={sys} scope={scope} />
+
       <div className="overflow-x-auto border-t border-line-strong">
         <table className="w-full sm:min-w-[860px] border-collapse text-[14px]">
           <caption className="sr-only">
-            {job === "overall" ? "Overall" : JOB_BY_ID[job].title}: rank, score with 95% interval, tier, catch rate, false-block rate, cost and hosting for every system.
+            {job === "overall" ? "Overall" : JOB_BY_ID[job].title}: {scope === "managed" ? "managed APIs" : "every system"}, grouped by
+            statistical tier, with rank, score and 95% interval, catch rate, false-block rate, cost and hosting.
           </caption>
           <thead>
             <tr className="border-b border-line text-left text-[12px] text-muted">
               <th scope="col" className="hidden w-10 py-3 pl-5 font-medium sm:table-cell">#</th>
               <th scope="col" className="sticky left-0 z-[1] bg-bg py-2.5 pl-3 pr-3 font-medium sm:static sm:pl-0">System</th>
               <th scope="col" className="py-2.5 pr-3 text-right font-medium sm:text-left">Score <span className="font-normal">±95% CI</span></th>
-              <th scope="col" className="hidden py-2.5 pr-3 font-medium sm:table-cell">Tier</th>
               <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">Catch rate</th>
               <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">False-block rate</th>
               <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">$ per 1,000 checks</th>
@@ -123,20 +136,22 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
             </tr>
           </thead>
           <tbody>
-            {latest.map((s, i) => {
+            {shown.map((s, i) => {
               const m = sys[s.system];
-              const newTier = i > 0 && latest[i - 1].tier !== s.tier;
+              const g = groups.find((x) => x.first === i);
               const l = lineageOf[s.system];
               const isOpen = !!(l && open[l.key]);
               const earlier = l ? l.versions.slice(0, -1).reverse().map((v) => byId[v]).filter(Boolean) : [];
               return (
                 <Fragment key={s.system}>
+                  {g && <TierHeading tier={g.tier} count={g.count} skipped={g.skipped} first={i === 0} />}
                   <Row
                     s={s}
                     rank={rankOf[s.system]}
                     m={m}
                     on={s.system === sel?.system}
-                    border={newTier ? "border-line-strong" : "border-line"}
+                    picked={pick?.system === s.system}
+                    border="border-line"
                     onSelect={setSelected}
                     toggle={
                       l && earlier.length ? (
@@ -162,7 +177,7 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
                   {isOpen && l && (
                     <tr id={`versions-${l.key}`} className="border-t border-line">
                       <td className="hidden sm:table-cell" />
-                      <td colSpan={7} className="py-3 pl-3 pr-4 sm:pl-0">
+                      <td colSpan={6} className="py-3 pl-3 pr-4 sm:pl-0">
                         <VersionSteps steps={[...l.steps].reverse()} sys={sys} job={job} />
                       </td>
                     </tr>
@@ -186,7 +201,8 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
         >
           Read why.
         </a> Our statistical tests cannot tell the
-        systems in one tier apart from that tier&apos;s leader. Self-hosted cost is our shared GPU time.
+        systems in one tier apart from that tier&apos;s leader, so tier numbers can skip when a tier has nothing on show. Self-hosted cost is our
+        shared GPU time.
         {lineages.length ? " Earlier versions of a model are folded under its newest version; the rank counts the rows on show, and tiers are as published." : ""}
       </p>
 
@@ -200,6 +216,7 @@ function Row({
   rank,
   m,
   on,
+  picked = false,
   border,
   onSelect,
   toggle,
@@ -210,6 +227,8 @@ function Row({
   rank?: number;
   m?: SystemMeta;
   on: boolean;
+  /** the row the "Recommend for" choice points at */
+  picked?: boolean;
   border: string;
   onSelect: (id: string) => void;
   toggle?: React.ReactNode;
@@ -232,7 +251,10 @@ function Row({
                 <span className={earlier ? "text-fg-2" : "font-semibold text-fg"}>{m?.name ?? s.system}</span>
                 {m?.isNew && !earlier && <NewTag />}
               </span>
-              <span className="text-[12px] text-muted">{earlier ? "Earlier version" : m?.provider}</span>
+              <span className="text-[12px] text-muted">
+                {picked && <span className="font-medium text-accent">Our pick · </span>}
+                {earlier ? `Earlier version · tier ${s.tier}` : m?.provider}
+              </span>
             </span>
           </button>
           {toggle ? <span className="pl-12" onClick={(e) => e.stopPropagation()}>{toggle}</span> : null}
@@ -245,12 +267,6 @@ function Row({
           {money(s.cost)} · {pct(s.falseBlockRate)} blocked
         </span>
       </td>
-      <td className="hidden py-2.5 pr-3 sm:table-cell">
-        <span className="inline-flex items-center gap-2 whitespace-nowrap">
-          <span className="size-2.5 rounded-full" style={{ background: tierVar(s.tier) }} aria-hidden="true" />
-          <span className="num text-[13px]">{s.tier}</span>
-        </span>
-      </td>
       <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{pct(s.catchRate)}</td>
       <td className={`num hidden py-2.5 pr-3 text-right sm:table-cell ${s.falseBlockRate >= 0.25 ? "text-warn" : ""}`}>{pct(s.falseBlockRate)}</td>
       <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{money(s.cost)}</td>
@@ -259,6 +275,94 @@ function Row({
         <span className="block text-[12px] text-muted">{m?.hosting === "managed" ? "Managed API" : "Self-hosted"}</span>
       </td>
     </tr>
+  );
+}
+
+/** A thin heading row per tier: what a tier means, said where the tier is. */
+function TierHeading({ tier, count, skipped, first }: { tier: number; count: number; skipped: number[]; first: boolean }) {
+  return (
+    <tr className={first ? "" : "border-t border-line-strong"}>
+      <td colSpan={7} className="pb-1.5 pt-4 pl-3 sm:pl-5">
+        <span className="sticky left-3 inline-flex flex-wrap items-baseline gap-x-2 text-[12px] text-muted">
+          <span className="inline-flex items-center gap-2 font-medium text-fg">
+            <span className="size-2.5 rounded-full" style={{ background: tierVar(tier) }} aria-hidden="true" />
+            Tier {tier}
+          </span>
+          <span>{count > 1 ? `the tests cannot separate these ${count}` : "on its own"}</span>
+          {skipped.length ? (
+            <span>
+              · {skipped.length === 1 ? `tier ${skipped[0]} has` : `tiers ${skipped[0]} to ${skipped.at(-1)} have`} nothing on show
+            </span>
+          ) : null}
+        </span>
+      </td>
+    </tr>
+  );
+}
+
+const LENSES: { value: Lens; label: string }[] = [
+  { value: "accuracy", label: "Most accurate" },
+  { value: "false_blocks", label: "Fewest false blocks" },
+  { value: "cost", label: "Lowest cost" },
+];
+
+/** "Recommend for": one row from the top tier on show, chosen by a second criterion, with the reason in one sentence. */
+function Recommend({
+  lens,
+  onChoose,
+  pick,
+  byId,
+  sys,
+  scope,
+}: {
+  lens: Lens | null;
+  onChoose: (l: Lens) => void;
+  pick: Pick | null;
+  byId: Record<string, Score>;
+  sys: Record<string, SystemMeta>;
+  scope: Scope;
+}) {
+  const name = (id: string) => oneLine(sys[id], id);
+  const p = pick ? byId[pick.system] : undefined;
+  const n = pick ? pick.tiedWith.length + 1 : 0;
+  let reason = "";
+  if (pick && p) {
+    const among = n > 1 ? `Of the ${n} ${scope === "managed" ? "managed APIs" : "systems"} in tier ${pick.tier}, which the tests cannot tell apart, ` : "";
+    if (pick.lens === "accuracy")
+      reason =
+        n > 1
+          ? `${name(pick.system)} scores highest, ${score1(p.score)}, but the tests cannot separate it from ${listNames(pick.tiedWith.map(name))}. Use cost or false blocks to choose between them.`
+          : `${name(pick.system)} scores highest, ${score1(p.score)}, and is alone in the top tier.`;
+    else if (pick.lens === "false_blocks")
+      reason = `${among}${n > 1 ? name(pick.system) : `${name(pick.system)}, alone in the top tier,`} blocks the fewest benign rows: ${pct(p.falseBlockRate)}.`;
+    else
+      reason = `${among}${n > 1 ? name(pick.system) : `${name(pick.system)}, alone in the top tier,`} costs least: ${money(p.cost)} per 1,000 checks.${
+        sys[pick.system]?.hosting === "self-hosted" ? " Self-hosted cost is our shared GPU time, so check your own." : ""
+      }`;
+  }
+  return (
+    <div className="flex flex-col gap-2">
+      <div role="group" aria-label="Recommend a system for" className="flex flex-wrap items-center gap-x-5 gap-y-1">
+        <span className="w-full text-[13px] text-muted sm:w-auto">Recommend for</span>
+        {LENSES.map((o) => {
+          const on = lens === o.value;
+          return (
+            <button
+              key={o.value}
+              type="button"
+              aria-pressed={on}
+              onClick={() => onChoose(o.value)}
+              className={`min-h-11 whitespace-nowrap border-b-2 text-[14px] transition-colors ${on ? "border-accent font-medium text-fg" : "border-transparent text-muted hover:text-fg"}`}
+            >
+              {o.label}
+            </button>
+          );
+        })}
+      </div>
+      <p aria-live="polite" className="m-0 min-h-[1.5em] max-w-[80ch] text-[14px] leading-relaxed text-fg-2">
+        {reason || <span className="text-muted">Pick what matters most and we choose from the systems tied at the top.</span>}
+      </p>
+    </div>
   );
 }
 
