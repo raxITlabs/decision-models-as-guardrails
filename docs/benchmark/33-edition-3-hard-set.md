@@ -1,7 +1,8 @@
 # 33. Edition 3 hard set: proposal
 
-Status: proposal for the owner, 24 October 2026. Nothing here is approved, no paid model was called, and edition 2
-is unchanged. The pilot rows are in [`dataset/edition3-pilot/`](../../dataset/edition3-pilot/), marked unreleased.
+Status: proposal for the owner, 24 October 2026. Edition 2 is unchanged. The owner approved the pilot run, and it
+ran the same day on 18 systems ([`34-edition-3-pilot-results.md`](34-edition-3-pilot-results.md)). Its main finding:
+the pilot's harmless attacks are too easy for tier 1, and the benign twins in H1 and H6 carry the signal. The pilot rows are in [`dataset/edition3-pilot/`](../../dataset/edition3-pilot/), marked unreleased.
 
 ## Why
 

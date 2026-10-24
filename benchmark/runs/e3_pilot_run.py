@@ -170,7 +170,11 @@ def score() -> Path:
     # rows no system gets right, and rows every system gets right
     right = Counter()
     seen = Counter()
+    dead = {s for s, v in out["systems"].items() if v["all"]["failed"] > v["rows"] / 2}   # e.g. an expired key
+    out["excluded_from_row_counts"] = sorted(dead)
     for (s, i), d in latest.items():
+        if s in dead:
+            continue
         seen[i] += 1
         right[i] += d["outcome"] == "decided" and bool(d["decision"]) == (d["expected"] == "yes")
     out["rows_all_right"] = sum(right[i] == seen[i] for i in seen)
