@@ -86,7 +86,7 @@ export function shareCard(board: Board, older: Record<string, string>, view: Sha
   const subtitle =
     view === "overall"
       ? `Balanced accuracy across ${board.stats.jobs} guardrail use cases`
-      : `${JOB_BY_ID[view].sub}. Balanced accuracy`;
+      : JOB_BY_ID[view].sub;
   const card: ShareCard = {
     view, size, title, subtitle, rows, more: Math.max(0, scores.length - rows.length),
     topTier: scores.filter((s) => s.tier === top).length,
@@ -95,7 +95,7 @@ export function shareCard(board: Board, older: Record<string, string>, view: Sha
       checks: `${board.stats.checks.toLocaleString("en-US")} checks`,
       version: `v${board.release.version}`,
       date: shortDate(board.release.date),
-      rule: `a probability of ${board.stats.threshold} or more blocks`,
+      rule: `blocked at a probability of ${board.stats.threshold} or more`,
     },
     url: shareLink(view),
     alt: "",
