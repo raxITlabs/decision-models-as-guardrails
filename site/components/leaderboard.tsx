@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { JOBS, JOB_BY_ID, type JobId } from "@/lib/jobs";
 import { halfCi, listNames, maxTier, money, pct, score1, tierVar, oneLine } from "@/lib/format";
 import type { Board, LineageSummary, Score, SystemMeta, VersionChange, VersionStepSummary } from "@/lib/types";
@@ -11,6 +11,8 @@ import { ArrowRight, ArrowUpLeft, Chevron, External } from "./icons";
 import { Segmented } from "./segmented";
 import { NewTag } from "./new-tag";
 import { SystemMark } from "./system-mark";
+import { SharePanel, ShareTrigger, useCaseParam } from "./share-panel";
+import { shareCard } from "@/lib/share";
 
 type JobPick = "overall" | JobId;
 type Axis = "cost" | "fbr";
@@ -51,7 +53,13 @@ function ticks(max: number, target = 4): number[] {
 }
 
 export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?: LineageSummary[] }) {
-  const [job, setJob] = useState<JobPick>("overall");
+  // A ?case= link opens on that use case; read after hydration, so the static HTML stays "All use cases".
+  const fromUrl = useCaseParam();
+  const [picked, setJob] = useState<JobPick | null>(null);
+  const job: JobPick = picked ?? fromUrl ?? "overall";
+  const [sharing, setSharing] = useState(false);
+  const shareId = useId();
+  const shareBtn = useRef<HTMLButtonElement>(null);
   const [moreJobs, setMoreJobs] = useState(false);
   const jobsInRow = JOB_OPTIONS.filter((o, i) => i < JOBS_SHOWN || o.value === job);
   const [axis, setAxis] = useState<Axis>("cost");
@@ -105,7 +113,20 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
           </span>
           <Chevron className={`size-3 transition-transform duration-200 ease-out motion-reduce:transition-none ${moreJobs ? "rotate-180" : ""}`} />
         </button>
+        <ShareTrigger ref={shareBtn} open={sharing} controls={shareId} onToggle={() => setSharing((v) => !v)} />
       </div>
+      {sharing && (
+        <SharePanel
+          id={shareId}
+          view={job}
+          viewLabel={job === "overall" ? "All use cases" : JOB_BY_ID[job].title}
+          altFor={(size) => shareCard(board, older, job, size).alt}
+          onClose={() => {
+            setSharing(false);
+            shareBtn.current?.focus();
+          }}
+        />
+      )}
       <div className="flex flex-wrap items-center gap-x-10 gap-y-2">
         <Segmented
           label="Horizontal axis"
