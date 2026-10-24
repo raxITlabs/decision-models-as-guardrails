@@ -7,3 +7,10 @@ third-party licence to record. The raxIT wordmark comes from the raxIT Labs site
 - `estuary`: the branches rejoin and run out to a still sea. The page closes where the paths meet: run it yourself.
 
 Each ships at 1920, 1280 and 828 px wide (WebP, quality 80), cropped inside the painted edge of the 2752 x 1536 source.
+
+Share-image plates (`site/app/share/art/`, 24 October 2026): the same model and style, with `hero-fork` as the style
+reference, one per use case on the share images. `overall` is `hero-fork` itself. `indirect`: streams from many hills
+join the river, one darker than the rest. `direct`: an old stone weir holds back the current. `input`: a stone footbridge,
+the one way into the gorge. `output`: the river leaves the valley over a falls. `topics`: the river held between two
+long embankments. `pii`: a still inlet hidden behind trees. `grounding`: mist hides the far bank. `profanity`: rough
+rapids over dark rocks.

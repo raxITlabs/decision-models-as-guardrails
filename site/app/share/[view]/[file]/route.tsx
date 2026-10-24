@@ -27,6 +27,8 @@ const C = {
   onArtMuted: "rgba(242,239,234,0.8)",
 };
 const MONO = "Geist Mono";
+/** The benchmark's name as an eyebrow over the title: plain words, no hyphens, spaced capitals. */
+const BRAND_CAPS = BRAND.replace(/-/g, " ").toUpperCase();
 
 /** Minimal: the painting carries the brand and the title; the paper carries names, scores and intervals. The tied
  *  top is drawn as one group (a royal-blue rule and a faint band), so the image cannot read as a single winner. */
@@ -34,9 +36,9 @@ const LAYOUT: Record<ShareSize, {
   pad: number; split: boolean; art: number; mark: number; brand: number; title: number; sub: number; name: number;
   score: number; half: number; nameW: number; scoreW: number; small: number; dot: number; rowGap: number;
 }> = {
-  landscape: { pad: 52, split: true, art: 450, mark: 26, brand: 19, title: 38, sub: 18, name: 24, score: 25, half: 15, nameW: 300, scoreW: 118, small: 16, dot: 13, rowGap: 0 },
-  square: { pad: 72, split: false, art: 410, mark: 30, brand: 22, title: 52, sub: 22, name: 28, score: 29, half: 17, nameW: 370, scoreW: 132, small: 19, dot: 15, rowGap: 0 },
-  portrait: { pad: 72, split: false, art: 500, mark: 32, brand: 23, title: 56, sub: 23, name: 29, score: 30, half: 18, nameW: 380, scoreW: 138, small: 19, dot: 16, rowGap: 0 },
+  landscape: { pad: 52, split: true, art: 450, mark: 46, brand: 13, title: 38, sub: 18, name: 24, score: 25, half: 15, nameW: 300, scoreW: 118, small: 16, dot: 13, rowGap: 0 },
+  square: { pad: 72, split: false, art: 410, mark: 52, brand: 15, title: 52, sub: 22, name: 28, score: 29, half: 17, nameW: 370, scoreW: 132, small: 19, dot: 15, rowGap: 0 },
+  portrait: { pad: 72, split: false, art: 500, mark: 56, brand: 16, title: 56, sub: 23, name: 29, score: 30, half: 18, nameW: 380, scoreW: 138, small: 19, dot: 16, rowGap: 0 },
 };
 type Layout = (typeof LAYOUT)[ShareSize];
 const RULE = 4; // the tie rule's width; every row keeps the same inset so names line up
@@ -108,13 +110,10 @@ function Ranking({ card, L }: { card: ShareCard; L: Layout }) {
   );
 }
 
-/** The raxIT letters alone (the BenchmarksLogo paths, viewBox cropped above its small "BENCHMARKS" line). */
+/** The raxIT Benchmarks logo (components/benchmarks-logo.tsx), viewBox 125.6 x 48.3. */
 function Mark({ h, fill }: { h: number; fill: string }) {
   const el = BenchmarksLogo({});
-  const vb = { x: 31.2, y: 15.5, w: 125.6, h: 32 };
-  return cloneElement(el, {
-    viewBox: `${vb.x} ${vb.y} ${vb.w} ${vb.h}`, width: Math.round((h * vb.w) / vb.h), height: h, fill, className: undefined,
-  } as Record<string, unknown>);
+  return cloneElement(el, { width: Math.round((h * 125.6) / 48.3), height: h, fill, className: undefined } as Record<string, unknown>);
 }
 
 /** The painting under a smoky scrim, the raxIT hero-plate treatment. Drawn at the output's own pixels (satori does
@@ -135,11 +134,11 @@ function Art({ card, L, w, h, bare = false }: { card: ShareCard; L: Layout; w: n
     <div style={{ display: "flex", position: "relative", width: w, height: h, flexShrink: 0, overflow: "hidden" }}>
       {bare ? null : <Painting view={card.view} split={L.split} />}
       <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative", width: "100%", height: "100%", padding: L.pad }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: Math.round(L.mark * 0.45) }}>
-          {bare ? <div style={{ display: "flex", height: L.mark }} /> : <Mark h={L.mark} fill={C.onArt} />}
-          <div style={{ display: "flex", fontSize: L.brand, fontWeight: 500, color: C.onArt, letterSpacing: -0.2 }}>{BRAND}</div>
-        </div>
+        {bare ? <div style={{ display: "flex", height: L.mark }} /> : <Mark h={L.mark} fill={C.onArt} />}
         <div style={{ display: "flex", flexDirection: "column", gap: Math.round(L.sub * 0.5) }}>
+          <div style={{ display: "flex", fontSize: L.brand, fontWeight: 500, color: C.onArtMuted, letterSpacing: L.brand * 0.2, marginBottom: Math.round(L.sub * 0.35) }}>
+            {BRAND_CAPS}
+          </div>
           <div style={{ display: "flex", fontSize: L.title, fontWeight: 600, color: C.onArt, letterSpacing: -L.title * 0.03, lineHeight: 1.06 }}>{card.title}</div>
           <div style={{ display: "flex", fontSize: L.sub, color: C.onArtMuted, lineHeight: 1.35 }}>{card.subtitle}</div>
         </div>
