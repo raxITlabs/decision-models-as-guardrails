@@ -3,7 +3,7 @@
 import "server-only";
 import fs from "node:fs";
 import path from "node:path";
-import type { Board, RowDetail, RowsIndex } from "./types";
+import type { Board, RowDetail, RowsIndex, VersionsDoc } from "./types";
 
 const SITE = process.cwd();
 const REAL = path.join(SITE, "data");
@@ -33,3 +33,9 @@ function read<T>(file: string): T {
 export const loadBoard = () => read<Board>("board.json");
 export const loadRowsIndex = () => read<RowsIndex>("rows-index.json");
 export const loadRowDetails = () => read<Record<string, RowDetail>>("rows-detail.json");
+
+/** Version progress, when the benchmark has produced it (null otherwise: the page says so). */
+export function loadVersions(): VersionsDoc | null {
+  const p = path.join(dataDir(), "versions.json");
+  return fs.existsSync(p) ? read<VersionsDoc>("versions.json") : null;
+}

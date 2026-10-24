@@ -12,6 +12,7 @@ const PAGES = [
   { href: "/", label: "Results", blurb: "Accuracy and cost for every system" },
   { href: "/reproduce", label: "Reproduce", blurb: "Run the benchmark yourself" },
   { href: "/data", label: "Data", blurb: "Every public row and every system's answer" },
+  { href: "/versions", label: "Versions", blurb: "How each new model version compares with the last" },
   { href: "/research", label: "Research", blurb: "Work that goes past the leaderboard" },
 ] as const;
 
