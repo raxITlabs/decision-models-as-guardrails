@@ -6,6 +6,7 @@
 //
 // site/data/ is git-ignored: scores are held until release day. When the inputs are missing this exits 0 and the
 // site builds from fixtures/data/ instead.
+import fs from "node:fs";
 import path from "node:path";
 import { generate, hasRealInputs, writeGenerated } from "./generate";
 
@@ -24,6 +25,9 @@ if (!hasRealInputs(repo)) {
 }
 const g = generate(repo, fixture ? "fixture" : "real");
 writeGenerated(g, out);
+// Version progress (benchmark/runs/e2_versions.py): aggregate numbers only, no row ids. Absent: the page says so.
+const versions = path.join(repo, "benchmark", "results", "versions", "versions-site.json");
+if (!fixture && fs.existsSync(versions)) fs.copyFileSync(versions, path.join(out, "versions.json"));
 console.log(
   `[data] wrote ${path.relative(SITE, out)}/ from ${fixture ? "the synthetic fixture" : repo}: ` +
     `${g.board.systems.length} systems, ${g.summary.rows} public rows (${g.summary.withText} with text, ` +

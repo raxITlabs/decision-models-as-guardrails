@@ -128,3 +128,69 @@ export interface RowDetail {
   toolCall?: string | null;
   results: RowResult[];
 }
+
+/** Version progress (benchmark/runs/e2_versions.py, copied to site/data/versions.json): aggregates only, no row ids. */
+export type Verdict = "better" | "worse" | "within noise" | "not tested";
+
+export interface Delta {
+  point: number;
+  ci: { low: number; high: number };
+  p: number | null;
+  p_holm: number | null;
+  verdict: Verdict;
+}
+
+export interface VersionStep {
+  from: string;
+  to: string;
+  kind: "step" | "first to last";
+  overall: Record<"balanced_accuracy" | "catch_rate" | "false_block_rate", Delta & { old: number; new: number }>;
+  board: { difference: number; p_holm_board: number | null; separated_on_board: boolean | null } | null;
+  suites: Record<string, Delta & { old: number; new: number }>;
+  subtasks: Record<string, Delta & { old: number; new: number; fixed: number; broke: number }>;
+  flips: { fixed: number; broke: number; catches_gained: number; catches_lost: number; false_blocks_cleared: number; false_blocks_added: number; judgments: number };
+  cost: { old_usd_per_1000: number; new_usd_per_1000: number; delta_pct: number | null; comparable: boolean } | null;
+  tokens: { checks: number; old_mean?: number; new_mean?: number; delta_pct?: number } | null;
+}
+
+export interface Lineage {
+  key: string;
+  label: string;
+  vendor: string;
+  versions: string[];
+  planned: string[];
+  board: Record<string, { rank: number; tier: number } | null>;
+  comparisons: VersionStep[];
+}
+
+export interface VersionsDoc {
+  schema: string;
+  method: string;
+  lineages: Lineage[];
+}
+
+/** One change between two versions, as the leaderboard rows show it. ``point``, ``low`` and ``high`` are score points,
+ *  or percentage points for catch and false-block rates. */
+export interface VersionChange {
+  point: number;
+  low: number;
+  high: number;
+  verdict: Verdict;
+}
+
+export interface VersionStepSummary {
+  from: string;
+  to: string;
+  score: VersionChange;
+  catches: VersionChange;
+  falseBlocks: VersionChange;
+  /** the score change per use case */
+  jobs: Partial<Record<JobId, VersionChange>>;
+}
+
+/** A model with more than one version on the board: versions oldest first, and each consecutive step. */
+export interface LineageSummary {
+  key: string;
+  versions: string[];
+  steps: VersionStepSummary[];
+}

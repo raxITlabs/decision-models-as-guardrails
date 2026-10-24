@@ -1,19 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { JOBS, JOB_BY_ID, type JobId } from "@/lib/jobs";
-import { halfCi, maxTier, money, pct, score1, tierVar, oneLine } from "@/lib/format";
-import type { Board, Score, SystemMeta } from "@/lib/types";
-import { ArrowRight, ArrowUpLeft, External } from "./icons";
+import { halfCi, listNames, maxTier, money, pct, score1, tierVar, oneLine } from "@/lib/format";
+import type { Board, LineageSummary, Score, SystemMeta, VersionChange, VersionStepSummary } from "@/lib/types";
+import { supersededBy, visibleRanks } from "@/lib/versions";
+import { type Lens, type Pick, pickFor, tierGroups } from "@/lib/picks";
+import { ArrowRight, ArrowUpLeft, Chevron, External } from "./icons";
 import { Segmented } from "./segmented";
 import { NewTag } from "./new-tag";
 import { SystemMark } from "./system-mark";
+import { SharePanel, ShareTrigger, useCaseParam } from "./share-panel";
+import { shareCard } from "@/lib/share";
 
 type JobPick = "overall" | JobId;
 type Axis = "cost" | "fbr";
 type Scope = "managed" | "all";
 
+/** "All use cases" and the first three use cases show; the others sit behind "5 more". */
+const JOBS_SHOWN = 4;
 const JOB_OPTIONS = [{ value: "overall" as JobPick, label: "All use cases", short: "All" }, ...JOBS.map((j) => ({ value: j.id as JobPick, label: j.title, short: j.short }))];
 
 // Label widths measured with the real font, so placement does not drop labels that fit.
@@ -46,8 +52,16 @@ function ticks(max: number, target = 4): number[] {
   return out;
 }
 
-export function Leaderboard({ board }: { board: Board }) {
-  const [job, setJob] = useState<JobPick>("overall");
+export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?: LineageSummary[] }) {
+  // A ?case= link opens on that use case; read after hydration, so the static HTML stays "All use cases".
+  const fromUrl = useCaseParam();
+  const [picked, setJob] = useState<JobPick | null>(null);
+  const job: JobPick = picked ?? fromUrl ?? "overall";
+  const [sharing, setSharing] = useState(false);
+  const shareId = useId();
+  const shareBtn = useRef<HTMLButtonElement>(null);
+  const [moreJobs, setMoreJobs] = useState(false);
+  const jobsInRow = JOB_OPTIONS.filter((o, i) => i < JOBS_SHOWN || o.value === job);
   const [axis, setAxis] = useState<Axis>("cost");
   const [scope, setScope] = useState<Scope>("managed");
   const sys = useMemo(() => Object.fromEntries(board.systems.map((s) => [s.id, s])) as Record<string, SystemMeta>, [board]);
@@ -57,15 +71,63 @@ export function Leaderboard({ board }: { board: Board }) {
   );
   const [selected, setSelected] = useState<string>(board.overall[0]?.system ?? "");
   const tiers = maxTier(scores);
-  const shown = scores.filter((s) => scope === "all" || sys[s.system]?.hosting === "managed");
+  // Earlier versions of a model sit folded under its newest version; their published rank and tier are kept.
+  const older = useMemo(() => supersededBy(lineages), [lineages]);
+  const lineageOf = useMemo(() => Object.fromEntries(lineages.map((l) => [l.versions.at(-1) as string, l])), [lineages]);
+  const [open, setOpen] = useState<Record<string, boolean>>({});
+  const latest = scores.filter((s) => !older[s.system]);
+  const byId = Object.fromEntries(scores.map((s) => [s.system, s]));
+  // The table lists every system; "Managed APIs" only thins the chart.
+  const shown = latest.filter((s) => scope === "all" || sys[s.system]?.hosting === "managed");
+  const rankOf = visibleRanks(latest);
+  const groups = tierGroups(latest);
+  const [lens, setLens] = useState<Lens | null>(null);
+  const pick = lens ? pickFor(latest, lens) : null;
+  const choose = (l: Lens) => {
+    const next = lens === l ? null : l;
+    setLens(next);
+    const p = next ? pickFor(latest, next) : null;
+    if (p) setSelected(p.system);
+  };
   const sel = scores.find((s) => s.system === selected) ?? scores[0];
 
   return (
     <div className="flex flex-col gap-6">
-      {/* The use case leads: the board answers "which system for my job", so picking it comes first. */}
-      <div className="border-b border-line-strong">
-        <Segmented label="Use case" options={JOB_OPTIONS} value={job} onChange={setJob} />
+      {/* The use case leads: the board answers "which system for my job". The first few show; the rest open in place,
+          and a use case picked from them stays in the row when it folds again. */}
+      <div className="flex flex-wrap items-center gap-x-5 border-b border-line-strong">
+        <Segmented
+          label="Use case"
+          options={moreJobs ? JOB_OPTIONS : jobsInRow}
+          value={job}
+          onChange={setJob}
+        />
+        <button
+          type="button"
+          aria-expanded={moreJobs}
+          onClick={() => setMoreJobs((v) => !v)}
+          className="group inline-flex min-h-11 items-center gap-1 text-[14px] text-muted transition-colors hover:text-fg"
+        >
+          <span className="underline decoration-line-strong underline-offset-[3px] group-hover:decoration-fg">
+            {moreJobs ? "Fewer" : `${JOB_OPTIONS.length - jobsInRow.length} more`}
+          </span>
+          <Chevron className={`size-3 transition-transform duration-200 ease-out motion-reduce:transition-none ${moreJobs ? "rotate-180" : ""}`} />
+        </button>
+        <ShareTrigger ref={shareBtn} open={sharing} controls={shareId} onToggle={() => setSharing((v) => !v)} />
       </div>
+      {sharing && (
+        <SharePanel
+          id={shareId}
+          view={job}
+          viewLabel={job === "overall" ? "All use cases" : JOB_BY_ID[job].title}
+          altFor={(size) => shareCard(board, older, job, size).alt}
+          date={board.release.date}
+          onClose={() => {
+            setSharing(false);
+            shareBtn.current?.focus();
+          }}
+        />
+      )}
       <div className="flex flex-wrap items-center gap-x-10 gap-y-2">
         <Segmented
           label="Horizontal axis"
@@ -97,17 +159,19 @@ export function Leaderboard({ board }: { board: Board }) {
 
       <Scatter scores={shown} sys={sys} axis={axis} tiers={tiers} selected={sel?.system} onSelect={setSelected} />
 
+      <Recommend lens={lens} onChoose={choose} pick={pick} byId={byId} sys={sys} />
+
       <div className="overflow-x-auto border-t border-line-strong">
         <table className="w-full sm:min-w-[860px] border-collapse text-[14px]">
           <caption className="sr-only">
-            {job === "overall" ? "Overall" : JOB_BY_ID[job].title}: rank, score with 95% interval, tier, catch rate, false-block rate, cost and hosting for every system.
+            {job === "overall" ? "Overall" : JOB_BY_ID[job].title}: every system, grouped by statistical tier, with rank, score and 95%
+            interval, catch rate, false-block rate, cost and hosting.
           </caption>
           <thead>
             <tr className="border-b border-line text-left text-[12px] text-muted">
               <th scope="col" className="hidden w-10 py-3 pl-5 font-medium sm:table-cell">#</th>
               <th scope="col" className="sticky left-0 z-[1] bg-bg py-2.5 pl-3 pr-3 font-medium sm:static sm:pl-0">System</th>
               <th scope="col" className="py-2.5 pr-3 text-right font-medium sm:text-left">Score <span className="font-normal">±95% CI</span></th>
-              <th scope="col" className="hidden py-2.5 pr-3 font-medium sm:table-cell">Tier</th>
               <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">Catch rate</th>
               <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">False-block rate</th>
               <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">$ per 1,000 checks</th>
@@ -115,58 +179,53 @@ export function Leaderboard({ board }: { board: Board }) {
             </tr>
           </thead>
           <tbody>
-            {scores.map((s, i) => {
+            {latest.map((s, i) => {
               const m = sys[s.system];
-              const on = s.system === sel?.system;
-              const newTier = i > 0 && scores[i - 1].tier !== s.tier;
+              const g = groups.find((x) => x.first === i);
+              const l = lineageOf[s.system];
+              const isOpen = !!(l && open[l.key]);
+              const earlier = l ? l.versions.slice(0, -1).reverse().map((v) => byId[v]).filter(Boolean) : [];
               return (
-                <tr
-                  key={s.system}
-                  onClick={() => setSelected(s.system)}
-                  className={`cursor-pointer transition-colors ${newTier ? "border-t border-line-strong" : "border-t border-line"} ${
-                    on ? "bg-selected" : m?.kind === "service" ? "bg-raised hover:bg-raised" : "hover:bg-raised/60"
-                  }`}
-                >
-                  <td className="num hidden py-2.5 pl-5 text-muted sm:table-cell">{s.rank}</td>
-                  {/* On a phone the name column stays put while the numbers scroll under it. */}
-                  <th scope="row" className={`sticky left-0 z-[1] py-2.5 pl-3 pr-3 text-left font-normal sm:static sm:pl-0 ${on ? "bg-selected" : m?.kind === "service" ? "bg-raised" : "bg-bg"}`}>
-                    <button
-                      type="button"
-                      onClick={() => setSelected(s.system)}
-                      aria-pressed={on}
-                      className="flex min-h-11 items-center gap-3 text-left"
-                    >
-                      <SystemMark m={m} size="md" />
-                      <span className="flex flex-col items-start">
-                        <span className="flex items-center gap-2">
-                          <span className="font-semibold text-fg">{m?.name ?? s.system}</span>
-                          {m?.isNew && <NewTag />}
-                        </span>
-                        <span className="text-[12px] text-muted">{m?.provider}</span>
-                      </span>
-                    </button>
-                  </th>
-                  <td className="py-2.5 pr-3 text-right sm:text-left">
-                    <ScoreBar s={s} />
-                    {/* Phones: cost and false blocks sit under the score instead of in columns off-screen. */}
-                    <span className={`num mt-0.5 block whitespace-nowrap text-[12px] sm:hidden ${s.falseBlockRate >= 0.25 ? "text-warn" : "text-muted"}`}>
-                      {money(s.cost)} · {pct(s.falseBlockRate)} blocked
-                    </span>
-                  </td>
-                  <td className="hidden py-2.5 pr-3 sm:table-cell">
-                    <span className="inline-flex items-center gap-2 whitespace-nowrap">
-                      <span className="size-2.5 rounded-full" style={{ background: tierVar(s.tier) }} aria-hidden="true" />
-                      <span className="num text-[13px]">{s.tier}</span>
-                    </span>
-                  </td>
-                  <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{pct(s.catchRate)}</td>
-                  <td className={`num hidden py-2.5 pr-3 text-right sm:table-cell ${s.falseBlockRate >= 0.25 ? "text-warn" : ""}`}>{pct(s.falseBlockRate)}</td>
-                  <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{money(s.cost)}</td>
-                  <td className="hidden py-2.5 pr-4 text-[13px] sm:table-cell sm:pr-5">
-                    <KindTag kind={m?.kind} />
-                    <span className="block text-[12px] text-muted">{m?.hosting === "managed" ? "Managed API" : "Self-hosted"}</span>
-                  </td>
-                </tr>
+                <Fragment key={s.system}>
+                  {g && <TierHeading tier={g.tier} count={g.count} first={i === 0} />}
+                  <Row
+                    s={s}
+                    rank={rankOf[s.system]}
+                    m={m}
+                    on={s.system === sel?.system}
+                    picked={pick?.system === s.system}
+                    border="border-line"
+                    onSelect={setSelected}
+                    toggle={
+                      l && earlier.length ? (
+                        <button
+                          type="button"
+                          aria-expanded={isOpen}
+                          aria-controls={`versions-${l.key}`}
+                          onClick={() => setOpen((o) => ({ ...o, [l.key]: !o[l.key] }))}
+                          className="group -my-1 inline-flex items-center gap-1 py-1 text-left text-[12px] text-muted transition-colors hover:text-fg pointer-coarse:min-h-11"
+                        >
+                          <span className="underline decoration-line-strong underline-offset-[3px] group-hover:decoration-fg">
+                            {`${isOpen ? "Hide " : ""}${earlier.length} earlier ${earlier.length === 1 ? "version" : "versions"}`}
+                          </span>
+                          <Chevron className={`size-3 transition-transform duration-200 ease-out motion-reduce:transition-none ${isOpen ? "rotate-90" : ""}`} />
+                        </button>
+                      ) : null
+                    }
+                  />
+                  {isOpen &&
+                    earlier.map((e) => (
+                      <Row key={e.system} s={e} m={sys[e.system]} on={e.system === sel?.system} border="border-line" onSelect={setSelected} earlier />
+                    ))}
+                  {isOpen && l && (
+                    <tr id={`versions-${l.key}`} className="border-t border-line">
+                      <td className="hidden sm:table-cell" />
+                      <td colSpan={6} className="py-3 pl-3 pr-4 sm:pl-0">
+                        <VersionSteps steps={[...l.steps].reverse()} sys={sys} job={job} />
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               );
             })}
           </tbody>
@@ -185,10 +244,211 @@ export function Leaderboard({ board }: { board: Board }) {
         >
           Read why.
         </a> Our statistical tests cannot tell the
-        systems in one tier apart from that tier&apos;s leader. Self-hosted cost is our shared GPU time.
+        systems in one tier apart from that tier&apos;s leader. Self-hosted cost is our
+        shared GPU time.
+        {lineages.length ? " Earlier versions of a model are folded under its newest version; the rank counts the rows on show, and tiers are as published." : ""}
       </p>
 
       {sel && <SystemPanel board={board} s={sel} m={sys[sel.system]} tiers={tiers} job={job} />}
+    </div>
+  );
+}
+
+function Row({
+  s,
+  rank,
+  m,
+  on,
+  picked = false,
+  border,
+  onSelect,
+  toggle,
+  earlier = false,
+}: {
+  s: Score;
+  /** rank among the rows on show; none for an earlier version opened under its newest */
+  rank?: number;
+  m?: SystemMeta;
+  on: boolean;
+  /** the row the "Recommend for" choice points at */
+  picked?: boolean;
+  border: string;
+  onSelect: (id: string) => void;
+  toggle?: React.ReactNode;
+  earlier?: boolean;
+}) {
+  const bg = on ? "bg-selected" : m?.kind === "service" ? "bg-raised" : "bg-bg";
+  return (
+    <tr
+      onClick={() => onSelect(s.system)}
+      className={`cursor-pointer border-t transition-colors ${border} ${on ? "bg-selected" : m?.kind === "service" ? "bg-raised hover:bg-raised" : "hover:bg-raised/60"}`}
+    >
+      <td className="num hidden py-2.5 pl-5 text-muted sm:table-cell">{rank ?? <span className="sr-only">Earlier version, not ranked separately</span>}</td>
+      {/* On a phone the name column stays put while the numbers scroll under it. */}
+      <th scope="row" className={`sticky left-0 z-[1] py-2.5 pl-3 pr-3 text-left font-normal sm:static sm:pl-0 ${bg}`}>
+        <div className={`flex flex-col ${earlier ? "pl-6" : ""}`}>
+          <button type="button" onClick={() => onSelect(s.system)} aria-pressed={on} className="flex min-h-11 items-center gap-3 text-left">
+            {earlier ? null : <SystemMark m={m} size="md" />}
+            <span className="flex flex-col items-start">
+              <span className="flex items-center gap-2">
+                <span className={earlier ? "text-fg-2" : "font-semibold text-fg"}>{m?.name ?? s.system}</span>
+                {m?.isNew && !earlier && <NewTag />}
+              </span>
+              <span className="text-[12px] text-muted">
+                {picked && <span className="font-medium text-accent">Our pick · </span>}
+                {earlier ? `Earlier version · tier ${s.tier}` : m?.provider}
+              </span>
+            </span>
+          </button>
+          {toggle ? <span className="pl-12" onClick={(e) => e.stopPropagation()}>{toggle}</span> : null}
+        </div>
+      </th>
+      <td className="py-2.5 pr-3 text-right sm:text-left">
+        <ScoreBar s={s} />
+        {/* Phones: cost and false blocks sit under the score instead of in columns off-screen. */}
+        <span className={`num mt-0.5 block whitespace-nowrap text-[12px] sm:hidden ${s.falseBlockRate >= 0.25 ? "text-warn" : "text-muted"}`}>
+          {money(s.cost)} · {pct(s.falseBlockRate)} blocked
+        </span>
+      </td>
+      <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{pct(s.catchRate)}</td>
+      <td className={`num hidden py-2.5 pr-3 text-right sm:table-cell ${s.falseBlockRate >= 0.25 ? "text-warn" : ""}`}>{pct(s.falseBlockRate)}</td>
+      <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{money(s.cost)}</td>
+      <td className="hidden py-2.5 pr-4 text-[13px] sm:table-cell sm:pr-5">
+        <KindTag kind={m?.kind} />
+        <span className="block text-[12px] text-muted">{m?.hosting === "managed" ? "Managed API" : "Self-hosted"}</span>
+      </td>
+    </tr>
+  );
+}
+
+/** A thin heading row per tier: what a tier means, said where the tier is. */
+function TierHeading({ tier, count, first }: { tier: number; count: number; first: boolean }) {
+  return (
+    <tr className={first ? "" : "border-t border-line-strong"}>
+      <td colSpan={7} className="pb-1.5 pt-4 pl-3 sm:pl-5">
+        <span className="sticky left-3 inline-flex flex-wrap items-baseline gap-x-2 text-[12px] text-muted">
+          <span className="inline-flex items-center gap-2 font-medium text-fg">
+            <span className="size-2.5 rounded-full" style={{ background: tierVar(tier) }} aria-hidden="true" />
+            Tier {tier}
+          </span>
+          <span>{count > 1 ? `the tests cannot separate these ${count}` : "on its own"}</span>
+        </span>
+      </td>
+    </tr>
+  );
+}
+
+const LENSES: { value: Lens; label: string }[] = [
+  { value: "accuracy", label: "Most accurate" },
+  { value: "false_blocks", label: "Fewest false blocks" },
+  { value: "cost", label: "Lowest cost" },
+];
+
+/** "Recommend for": one row from the top tier on show, chosen by a second criterion, with the reason in one sentence. */
+function Recommend({
+  lens,
+  onChoose,
+  pick,
+  byId,
+  sys,
+}: {
+  lens: Lens | null;
+  onChoose: (l: Lens) => void;
+  pick: Pick | null;
+  byId: Record<string, Score>;
+  sys: Record<string, SystemMeta>;
+}) {
+  const name = (id: string) => oneLine(sys[id], id);
+  const p = pick ? byId[pick.system] : undefined;
+  const n = pick ? pick.tiedWith.length + 1 : 0;
+  let reason = "";
+  if (pick && p) {
+    const among = n > 1 ? `Of the ${n} systems in tier ${pick.tier}, which the tests cannot tell apart, ` : "";
+    if (pick.lens === "accuracy")
+      reason =
+        n > 1
+          ? `${name(pick.system)} scores highest, ${score1(p.score)}, but the tests cannot separate it from ${listNames(pick.tiedWith.map(name))}. Use cost or false blocks to choose between them.`
+          : `${name(pick.system)} scores highest, ${score1(p.score)}, and is alone in the top tier.`;
+    else if (pick.lens === "false_blocks")
+      reason = `${among}${n > 1 ? name(pick.system) : `${name(pick.system)}, alone in the top tier,`} blocks the fewest benign rows: ${pct(p.falseBlockRate)}.`;
+    else
+      reason = `${among}${n > 1 ? name(pick.system) : `${name(pick.system)}, alone in the top tier,`} costs least: ${money(p.cost)} per 1,000 checks.${
+        sys[pick.system]?.hosting === "self-hosted" ? " Self-hosted cost is our shared GPU time, so check your own." : ""
+      }`;
+  }
+  return (
+    <div className="flex flex-col gap-2">
+      <div role="group" aria-label="Recommend a system for" className="flex flex-wrap items-center gap-x-5 gap-y-1">
+        <span className="w-full text-[13px] text-muted sm:w-auto">Recommend for</span>
+        {LENSES.map((o) => {
+          const on = lens === o.value;
+          return (
+            <button
+              key={o.value}
+              type="button"
+              aria-pressed={on}
+              onClick={() => onChoose(o.value)}
+              className={`min-h-11 whitespace-nowrap border-b-2 text-[14px] transition-colors ${on ? "border-accent font-medium text-fg" : "border-transparent text-muted hover:text-fg"}`}
+            >
+              {o.label}
+            </button>
+          );
+        })}
+      </div>
+      <p aria-live="polite" className="m-0 min-h-[1.5em] max-w-[80ch] text-[14px] leading-relaxed text-fg-2">
+        {reason || <span className="text-muted">Pick what matters most and we choose from the systems tied at the top.</span>}
+      </p>
+    </div>
+  );
+}
+
+const VERDICT_WORD = { better: "better", worse: "worse", "within noise": "no clear change", "not tested": "not tested" } as const;
+
+function signed(n: number, d: number): string {
+  const r = Math.abs(n).toFixed(d);
+  return Number(r) === 0 ? r : `${n > 0 ? "+" : "−"}${r}`;
+}
+
+function Change({ label, c, d = 1, interval = false }: { label: string; c: VersionChange; d?: number; interval?: boolean }) {
+  const tone = c.verdict === "better" ? "text-accent" : c.verdict === "worse" ? "text-warn" : "text-muted";
+  return (
+    <span className="whitespace-nowrap">
+      {label} <span className="num text-fg">{signed(c.point, d)}</span>
+      {interval ? <span className="num text-muted"> ({signed(c.low, d)} to {signed(c.high, d)})</span> : null}
+      , <span className={tone}>{VERDICT_WORD[c.verdict]}</span>
+    </span>
+  );
+}
+
+/** Under an expanded model: each version step, newest first, in one line. */
+function VersionSteps({ steps, sys, job }: { steps: VersionStepSummary[]; sys: Record<string, SystemMeta>; job: JobPick }) {
+  const name = (id: string) => sys[id]?.name ?? id;
+  return (
+    <div className="flex flex-col gap-2 text-[13px] leading-relaxed text-fg-2">
+      {steps.map((st) => {
+        const onJob = job === "overall" ? null : st.jobs[job];
+        return (
+          <p key={`${st.from}-${st.to}`} className="m-0 flex flex-wrap gap-x-3 gap-y-0.5">
+            <span className="font-medium text-fg">
+              {name(st.to)} vs {name(st.from)}
+            </span>
+            {onJob ? (
+              <Change label="Score on this use case" c={onJob} interval />
+            ) : (
+              <>
+                <Change label="Score" c={st.score} d={2} interval />
+                <span aria-hidden="true">·</span>
+                <Change label="Catches" c={st.catches} />
+                <span aria-hidden="true">·</span>
+                <Change label="False blocks" c={st.falseBlocks} />
+              </>
+            )}
+          </p>
+        );
+      })}
+      <Link href="/versions" className="inline-flex w-fit items-center gap-1 text-[13px]">
+        Compare versions use case by use case <ArrowRight className="size-3.5" />
+      </Link>
     </div>
   );
 }

@@ -7,5 +7,5 @@ const SITE = "https://dm-as-guardrails.raxitlabs.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date(loadBoard().release.date);
-  return ["/", "/reproduce", "/data", "/research", "/changelog"].map((p) => ({ url: `${SITE}${p}`, lastModified }));
+  return ["/", "/reproduce", "/data", "/research", "/versions", "/changelog"].map((p) => ({ url: `${SITE}${p}`, lastModified }));
 }
