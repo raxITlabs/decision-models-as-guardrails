@@ -59,7 +59,7 @@ case "${1:-status}" in
     ssd=()
     if [ "${state:-}" = RUNNING ] && gcloud compute instances describe "$INSTANCE" --zone "$zone" --project "$PROJECT" \
          --format="value(disks[].type)" 2>/dev/null | grep -q SCRATCH; then ssd=(--discard-local-ssd=true); fi
-    [ "${state:-}" = RUNNING ] && gcloud compute instances stop "$INSTANCE" --zone "$zone" --project "$PROJECT" "${ssd[@]}" --quiet >/dev/null
+    [ "${state:-}" = RUNNING ] && gcloud compute instances stop "$INSTANCE" --zone "$zone" --project "$PROJECT" ${ssd[@]+"${ssd[@]}"} --quiet >/dev/null
     echo "paused: VM stopped, disk kept (~\$20/month at list for 200 GB); 'make up' resumes in ~4 min" ;;
   down)
     infra/tunnels.sh down >/dev/null 2>&1 || true
