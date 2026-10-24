@@ -57,9 +57,14 @@ export interface ShareCard {
   alt: string;
 }
 
+/** Bump when the image design changes, so browsers holding an earlier image fetch the new one. */
+export const SHARE_REV = 3;
+
 /** The PNG's path on the site: /share/overall/landscape.png, or landscape@2x.png at twice the pixels (downloads). */
 export const shareFile = (view: ShareView, size: ShareSize, scale: 1 | 2 = 1) =>
   `/share/${view}/${size}${scale === 2 ? "@2x" : ""}.png`;
+/** shareFile with the design revision appended, for the page to load (the file itself is unchanged). */
+export const shareSrc = (view: ShareView, size: ShareSize, scale: 1 | 2 = 1) => `${shareFile(view, size, scale)}?v=${SHARE_REV}`;
 /** The name a downloaded image is saved under: decision-models-as-guardrails-overall-landscape-2026-10-20.png */
 export const shareDownloadName = (view: ShareView, size: ShareSize, date: string) => `${BRAND}-${view}-${size}-${date}.png`;
 export const shareLink = (view: ShareView) => (view === "overall" ? `${SITE_URL}/#leaderboard` : `${SITE_URL}/?case=${view}#leaderboard`);

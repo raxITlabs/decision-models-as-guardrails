@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { SHARE_SIZES, SHARE_SIZE_IDS, type ShareSize, type ShareView, isShareView, shareDownloadName, shareFile, shareLink } from "../lib/share";
+import { SHARE_SIZES, SHARE_SIZE_IDS, type ShareSize, type ShareView, isShareView, shareDownloadName, shareLink, shareSrc } from "../lib/share";
 import { Segmented } from "./segmented";
 
 /** The use case named by ``?case=`` in a query string, if it is one the board has. */
@@ -79,9 +79,9 @@ export function SharePanel({
   const [file, setFile] = useState<{ src: string; file: File } | null>(null);
   const canCopy = useCanCopyImage();
   const root = useRef<HTMLDivElement>(null);
-  const src = shareFile(view, size);
+  const src = shareSrc(view, size);
   // Downloads, copies and shares use the 2x file: feeds show it sharp on high-density screens.
-  const hi = shareFile(view, size, 2);
+  const hi = shareSrc(view, size, 2);
   const dims = SHARE_SIZES[size];
   const name = downloadName(view, size, date);
 

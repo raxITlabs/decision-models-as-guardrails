@@ -204,6 +204,5 @@ export async function GET(_req: Request, ctx: RouteContext<"/share/[view]/[file]
     width: width * scale,
     height: height * scale,
     fonts: shareFonts(),
-    headers: { "Cache-Control": "public, max-age=3600" },
   });
 }
