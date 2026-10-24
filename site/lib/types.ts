@@ -168,3 +168,29 @@ export interface VersionsDoc {
   method: string;
   lineages: Lineage[];
 }
+
+/** One change between two versions, as the leaderboard rows show it. ``point``, ``low`` and ``high`` are score points,
+ *  or percentage points for catch and false-block rates. */
+export interface VersionChange {
+  point: number;
+  low: number;
+  high: number;
+  verdict: Verdict;
+}
+
+export interface VersionStepSummary {
+  from: string;
+  to: string;
+  score: VersionChange;
+  catches: VersionChange;
+  falseBlocks: VersionChange;
+  /** the score change per use case */
+  jobs: Partial<Record<JobId, VersionChange>>;
+}
+
+/** A model with more than one version on the board: versions oldest first, and each consecutive step. */
+export interface LineageSummary {
+  key: string;
+  versions: string[];
+  steps: VersionStepSummary[];
+}

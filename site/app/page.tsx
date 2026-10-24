@@ -13,7 +13,8 @@ import { AttacksFinding, BedrockFinding, CostFinding } from "@/components/findin
 import { faqItems } from "@/lib/copy";
 import { ContactLink } from "@/components/contact";
 import { ContactPrompt } from "@/components/contact-prompt";
-import { loadBoard, loadRowDetails, loadRowsIndex } from "@/lib/data";
+import { loadBoard, loadRowDetails, loadRowsIndex, loadVersions } from "@/lib/data";
+import { lineageSummaries } from "@/lib/versions";
 import { REPO_URL, int, listNames, longDate, oneLine, pct, score1, systemMap } from "@/lib/format";
 import { JOBS } from "@/lib/jobs";
 
@@ -121,7 +122,7 @@ export default function Home() {
             <Link href="/changelog">changelog</Link>
           </p>
         </div>
-        <Leaderboard board={board} />
+        <Leaderboard board={board} lineages={lineageSummaries(loadVersions())} />
       </section>
       </div>
 

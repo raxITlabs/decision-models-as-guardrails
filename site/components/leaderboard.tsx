@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { JOBS, JOB_BY_ID, type JobId } from "@/lib/jobs";
 import { halfCi, maxTier, money, pct, score1, tierVar, oneLine } from "@/lib/format";
-import type { Board, Score, SystemMeta } from "@/lib/types";
+import type { Board, LineageSummary, Score, SystemMeta, VersionChange, VersionStepSummary } from "@/lib/types";
+import { supersededBy } from "@/lib/versions";
 import { ArrowRight, ArrowUpLeft, External } from "./icons";
 import { Segmented } from "./segmented";
 import { NewTag } from "./new-tag";
@@ -46,7 +47,7 @@ function ticks(max: number, target = 4): number[] {
   return out;
 }
 
-export function Leaderboard({ board }: { board: Board }) {
+export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?: LineageSummary[] }) {
   const [job, setJob] = useState<JobPick>("overall");
   const [axis, setAxis] = useState<Axis>("cost");
   const [scope, setScope] = useState<Scope>("managed");
@@ -57,7 +58,13 @@ export function Leaderboard({ board }: { board: Board }) {
   );
   const [selected, setSelected] = useState<string>(board.overall[0]?.system ?? "");
   const tiers = maxTier(scores);
-  const shown = scores.filter((s) => scope === "all" || sys[s.system]?.hosting === "managed");
+  // Earlier versions of a model sit folded under its newest version; their published rank and tier are kept.
+  const older = useMemo(() => supersededBy(lineages), [lineages]);
+  const lineageOf = useMemo(() => Object.fromEntries(lineages.map((l) => [l.versions.at(-1) as string, l])), [lineages]);
+  const [open, setOpen] = useState<Record<string, boolean>>({});
+  const latest = scores.filter((s) => !older[s.system]);
+  const byId = Object.fromEntries(scores.map((s) => [s.system, s]));
+  const shown = latest.filter((s) => scope === "all" || sys[s.system]?.hosting === "managed");
   const sel = scores.find((s) => s.system === selected) ?? scores[0];
 
   return (
@@ -115,58 +122,47 @@ export function Leaderboard({ board }: { board: Board }) {
             </tr>
           </thead>
           <tbody>
-            {scores.map((s, i) => {
+            {latest.map((s, i) => {
               const m = sys[s.system];
-              const on = s.system === sel?.system;
-              const newTier = i > 0 && scores[i - 1].tier !== s.tier;
+              const newTier = i > 0 && latest[i - 1].tier !== s.tier;
+              const l = lineageOf[s.system];
+              const isOpen = !!(l && open[l.key]);
+              const earlier = l ? l.versions.slice(0, -1).reverse().map((v) => byId[v]).filter(Boolean) : [];
               return (
-                <tr
-                  key={s.system}
-                  onClick={() => setSelected(s.system)}
-                  className={`cursor-pointer transition-colors ${newTier ? "border-t border-line-strong" : "border-t border-line"} ${
-                    on ? "bg-selected" : m?.kind === "service" ? "bg-raised hover:bg-raised" : "hover:bg-raised/60"
-                  }`}
-                >
-                  <td className="num hidden py-2.5 pl-5 text-muted sm:table-cell">{s.rank}</td>
-                  {/* On a phone the name column stays put while the numbers scroll under it. */}
-                  <th scope="row" className={`sticky left-0 z-[1] py-2.5 pl-3 pr-3 text-left font-normal sm:static sm:pl-0 ${on ? "bg-selected" : m?.kind === "service" ? "bg-raised" : "bg-bg"}`}>
-                    <button
-                      type="button"
-                      onClick={() => setSelected(s.system)}
-                      aria-pressed={on}
-                      className="flex min-h-11 items-center gap-3 text-left"
-                    >
-                      <SystemMark m={m} size="md" />
-                      <span className="flex flex-col items-start">
-                        <span className="flex items-center gap-2">
-                          <span className="font-semibold text-fg">{m?.name ?? s.system}</span>
-                          {m?.isNew && <NewTag />}
-                        </span>
-                        <span className="text-[12px] text-muted">{m?.provider}</span>
-                      </span>
-                    </button>
-                  </th>
-                  <td className="py-2.5 pr-3 text-right sm:text-left">
-                    <ScoreBar s={s} />
-                    {/* Phones: cost and false blocks sit under the score instead of in columns off-screen. */}
-                    <span className={`num mt-0.5 block whitespace-nowrap text-[12px] sm:hidden ${s.falseBlockRate >= 0.25 ? "text-warn" : "text-muted"}`}>
-                      {money(s.cost)} · {pct(s.falseBlockRate)} blocked
-                    </span>
-                  </td>
-                  <td className="hidden py-2.5 pr-3 sm:table-cell">
-                    <span className="inline-flex items-center gap-2 whitespace-nowrap">
-                      <span className="size-2.5 rounded-full" style={{ background: tierVar(s.tier) }} aria-hidden="true" />
-                      <span className="num text-[13px]">{s.tier}</span>
-                    </span>
-                  </td>
-                  <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{pct(s.catchRate)}</td>
-                  <td className={`num hidden py-2.5 pr-3 text-right sm:table-cell ${s.falseBlockRate >= 0.25 ? "text-warn" : ""}`}>{pct(s.falseBlockRate)}</td>
-                  <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{money(s.cost)}</td>
-                  <td className="hidden py-2.5 pr-4 text-[13px] sm:table-cell sm:pr-5">
-                    <KindTag kind={m?.kind} />
-                    <span className="block text-[12px] text-muted">{m?.hosting === "managed" ? "Managed API" : "Self-hosted"}</span>
-                  </td>
-                </tr>
+                <Fragment key={s.system}>
+                  <Row
+                    s={s}
+                    m={m}
+                    on={s.system === sel?.system}
+                    border={newTier ? "border-line-strong" : "border-line"}
+                    onSelect={setSelected}
+                    toggle={
+                      l && earlier.length ? (
+                        <button
+                          type="button"
+                          aria-expanded={isOpen}
+                          aria-controls={`versions-${l.key}`}
+                          onClick={() => setOpen((o) => ({ ...o, [l.key]: !o[l.key] }))}
+                          className="mt-0.5 text-left text-[12px] text-muted underline decoration-line-strong underline-offset-[3px] hover:text-fg"
+                        >
+                          {`${isOpen ? "Hide " : ""}${earlier.length} earlier ${earlier.length === 1 ? "version" : "versions"}`}
+                        </button>
+                      ) : null
+                    }
+                  />
+                  {isOpen &&
+                    earlier.map((e) => (
+                      <Row key={e.system} s={e} m={sys[e.system]} on={e.system === sel?.system} border="border-line" onSelect={setSelected} earlier />
+                    ))}
+                  {isOpen && l && (
+                    <tr id={`versions-${l.key}`} className="border-t border-line">
+                      <td className="hidden sm:table-cell" />
+                      <td colSpan={7} className="py-3 pl-3 pr-4 sm:pl-0">
+                        <VersionSteps steps={[...l.steps].reverse()} sys={sys} job={job} />
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               );
             })}
           </tbody>
@@ -186,9 +182,125 @@ export function Leaderboard({ board }: { board: Board }) {
           Read why.
         </a> Our statistical tests cannot tell the
         systems in one tier apart from that tier&apos;s leader. Self-hosted cost is our shared GPU time.
+        {lineages.length ? " Earlier versions of a model sit under its newest version and keep their own rank." : ""}
       </p>
 
       {sel && <SystemPanel board={board} s={sel} m={sys[sel.system]} tiers={tiers} job={job} />}
+    </div>
+  );
+}
+
+function Row({
+  s,
+  m,
+  on,
+  border,
+  onSelect,
+  toggle,
+  earlier = false,
+}: {
+  s: Score;
+  m?: SystemMeta;
+  on: boolean;
+  border: string;
+  onSelect: (id: string) => void;
+  toggle?: React.ReactNode;
+  earlier?: boolean;
+}) {
+  const bg = on ? "bg-selected" : m?.kind === "service" ? "bg-raised" : "bg-bg";
+  return (
+    <tr
+      onClick={() => onSelect(s.system)}
+      className={`cursor-pointer border-t transition-colors ${border} ${on ? "bg-selected" : m?.kind === "service" ? "bg-raised hover:bg-raised" : "hover:bg-raised/60"}`}
+    >
+      <td className="num hidden py-2.5 pl-5 text-muted sm:table-cell">{s.rank}</td>
+      {/* On a phone the name column stays put while the numbers scroll under it. */}
+      <th scope="row" className={`sticky left-0 z-[1] py-2.5 pl-3 pr-3 text-left font-normal sm:static sm:pl-0 ${bg}`}>
+        <div className={`flex flex-col ${earlier ? "pl-6" : ""}`}>
+          <button type="button" onClick={() => onSelect(s.system)} aria-pressed={on} className="flex min-h-11 items-center gap-3 text-left">
+            {earlier ? null : <SystemMark m={m} size="md" />}
+            <span className="flex flex-col items-start">
+              <span className="flex items-center gap-2">
+                <span className={earlier ? "text-fg-2" : "font-semibold text-fg"}>{m?.name ?? s.system}</span>
+                {m?.isNew && !earlier && <NewTag />}
+              </span>
+              <span className="text-[12px] text-muted">{earlier ? "Earlier version" : m?.provider}</span>
+            </span>
+          </button>
+          {toggle ? <span className="pl-12" onClick={(e) => e.stopPropagation()}>{toggle}</span> : null}
+        </div>
+      </th>
+      <td className="py-2.5 pr-3 text-right sm:text-left">
+        <ScoreBar s={s} />
+        {/* Phones: cost and false blocks sit under the score instead of in columns off-screen. */}
+        <span className={`num mt-0.5 block whitespace-nowrap text-[12px] sm:hidden ${s.falseBlockRate >= 0.25 ? "text-warn" : "text-muted"}`}>
+          {money(s.cost)} · {pct(s.falseBlockRate)} blocked
+        </span>
+      </td>
+      <td className="hidden py-2.5 pr-3 sm:table-cell">
+        <span className="inline-flex items-center gap-2 whitespace-nowrap">
+          <span className="size-2.5 rounded-full" style={{ background: tierVar(s.tier) }} aria-hidden="true" />
+          <span className="num text-[13px]">{s.tier}</span>
+        </span>
+      </td>
+      <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{pct(s.catchRate)}</td>
+      <td className={`num hidden py-2.5 pr-3 text-right sm:table-cell ${s.falseBlockRate >= 0.25 ? "text-warn" : ""}`}>{pct(s.falseBlockRate)}</td>
+      <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{money(s.cost)}</td>
+      <td className="hidden py-2.5 pr-4 text-[13px] sm:table-cell sm:pr-5">
+        <KindTag kind={m?.kind} />
+        <span className="block text-[12px] text-muted">{m?.hosting === "managed" ? "Managed API" : "Self-hosted"}</span>
+      </td>
+    </tr>
+  );
+}
+
+const VERDICT_WORD = { better: "better", worse: "worse", "within noise": "no clear change", "not tested": "not tested" } as const;
+
+function signed(n: number, d: number): string {
+  const r = Math.abs(n).toFixed(d);
+  return Number(r) === 0 ? r : `${n > 0 ? "+" : "−"}${r}`;
+}
+
+function Change({ label, c, d = 1, interval = false }: { label: string; c: VersionChange; d?: number; interval?: boolean }) {
+  const tone = c.verdict === "better" ? "text-accent" : c.verdict === "worse" ? "text-warn" : "text-muted";
+  return (
+    <span className="whitespace-nowrap">
+      {label} <span className="num text-fg">{signed(c.point, d)}</span>
+      {interval ? <span className="num text-muted"> ({signed(c.low, d)} to {signed(c.high, d)})</span> : null}
+      , <span className={tone}>{VERDICT_WORD[c.verdict]}</span>
+    </span>
+  );
+}
+
+/** Under an expanded model: each version step, newest first, in one line. */
+function VersionSteps({ steps, sys, job }: { steps: VersionStepSummary[]; sys: Record<string, SystemMeta>; job: JobPick }) {
+  const name = (id: string) => sys[id]?.name ?? id;
+  return (
+    <div className="flex flex-col gap-2 text-[13px] leading-relaxed text-fg-2">
+      {steps.map((st) => {
+        const onJob = job === "overall" ? null : st.jobs[job];
+        return (
+          <p key={`${st.from}-${st.to}`} className="m-0 flex flex-wrap gap-x-3 gap-y-0.5">
+            <span className="font-medium text-fg">
+              {name(st.to)} vs {name(st.from)}
+            </span>
+            {onJob ? (
+              <Change label="Score on this use case" c={onJob} interval />
+            ) : (
+              <>
+                <Change label="Score" c={st.score} d={2} interval />
+                <span aria-hidden="true">·</span>
+                <Change label="Catches" c={st.catches} />
+                <span aria-hidden="true">·</span>
+                <Change label="False blocks" c={st.falseBlocks} />
+              </>
+            )}
+          </p>
+        );
+      })}
+      <Link href="/versions" className="inline-flex w-fit items-center gap-1 text-[13px]">
+        Compare versions use case by use case <ArrowRight className="size-3.5" />
+      </Link>
     </div>
   );
 }

@@ -7,13 +7,21 @@ Date: 24 October 2026. A proposal and a plan. Nothing in it has run. The finding
 
 ### Where it goes
 
-A new page, `/versions`, linked from the menu as "Versions". The site has no per-model pages, and adding them for three lineages
-would be a bigger change than the data needs. When model pages exist, the same block can move onto each one.
+On the leaderboard, each model shows its newest version. Under its name an underlined link, "2 earlier versions", opens the
+older versions as indented rows with their own scores. Below them, one line per version step gives the score change with its
+interval, catches and false blocks, each with a verdict word. A use-case view shows the change on that use case. A link goes to
+`/versions` for the full comparison.
 
-The leaderboard keeps every version as its own row, as it does today. The versions page compares them, and each lineage block links
-back to the board.
+Earlier versions keep the rank and tier they were published with, so the folded board has gaps in the rank column. Re-ranking
+on newest versions only would change published numbers, which is a new release, not a display change. The scatter plot shows
+newest versions only.
 
-### What each lineage shows
+"Newest" is release order, not the best score. For Strands that puts the Qwen3.5 checkpoint first, though it blocks more benign
+documents than v21.
+
+`/versions` is no longer in the menu. The leaderboard rows link to it, and the sitemap lists it.
+
+### What the /versions page shows for each model
 
 One block per lineage, ruled off like the rest of the site, with no cards and no pill toggles.
 
@@ -47,7 +55,8 @@ but they do not help someone pick a guardrail. The page has one line of method w
 - Never a bare score delta without its interval.
 - No rulings, editions or internal process on the page (PRODUCT.md).
 
-The prototype is `site/app/versions/page.tsx`, reading `site/data/versions.json`.
+The prototypes are the folded rows in `site/components/leaderboard.tsx` and `site/app/versions/page.tsx`, both reading
+`site/data/versions.json` through `site/lib/versions.ts`.
 
 ## 2. Next run: Perplexity Decider v1.2
 
