@@ -8,7 +8,7 @@ import type { Board, LineageSummary, Score, SystemMeta, VersionChange, VersionSt
 import { supersededBy, visibleRanks } from "@/lib/versions";
 import { type Lens, type Pick, pickFor, tierGroups } from "@/lib/picks";
 import { ArrowRight, ArrowUpLeft, Chevron, External } from "./icons";
-import { Segmented, Select } from "./segmented";
+import { Segmented } from "./segmented";
 import { NewTag } from "./new-tag";
 import { SystemMark } from "./system-mark";
 
@@ -16,6 +16,8 @@ type JobPick = "overall" | JobId;
 type Axis = "cost" | "fbr";
 type Scope = "managed" | "all";
 
+/** "All use cases" and the first three use cases show; the others sit behind "5 more". */
+const JOBS_SHOWN = 4;
 const JOB_OPTIONS = [{ value: "overall" as JobPick, label: "All use cases", short: "All" }, ...JOBS.map((j) => ({ value: j.id as JobPick, label: j.title, short: j.short }))];
 
 // Label widths measured with the real font, so placement does not drop labels that fit.
@@ -50,6 +52,8 @@ function ticks(max: number, target = 4): number[] {
 
 export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?: LineageSummary[] }) {
   const [job, setJob] = useState<JobPick>("overall");
+  const [moreJobs, setMoreJobs] = useState(false);
+  const jobsInRow = JOB_OPTIONS.filter((o, i) => i < JOBS_SHOWN || o.value === job);
   const [axis, setAxis] = useState<Axis>("cost");
   const [scope, setScope] = useState<Scope>("managed");
   const sys = useMemo(() => Object.fromEntries(board.systems.map((s) => [s.id, s])) as Record<string, SystemMeta>, [board]);
@@ -81,10 +85,26 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
 
   return (
     <div className="flex flex-col gap-6">
-      {/* The use case leads: the board answers "which system for my job". One control shows the choice in force; the
-          other eight wait behind it. */}
-      <div className="border-b border-line-strong pb-2">
-        <Select id="use-case" label="Use case" options={JOB_OPTIONS} value={job} onChange={setJob} />
+      {/* The use case leads: the board answers "which system for my job". The first few show; the rest open in place,
+          and a use case picked from them stays in the row when it folds again. */}
+      <div className="flex flex-wrap items-center gap-x-5 border-b border-line-strong">
+        <Segmented
+          label="Use case"
+          options={moreJobs ? JOB_OPTIONS : jobsInRow}
+          value={job}
+          onChange={setJob}
+        />
+        <button
+          type="button"
+          aria-expanded={moreJobs}
+          onClick={() => setMoreJobs((v) => !v)}
+          className="group inline-flex min-h-11 items-center gap-1 text-[14px] text-muted transition-colors hover:text-fg"
+        >
+          <span className="underline decoration-line-strong underline-offset-[3px] group-hover:decoration-fg">
+            {moreJobs ? "Fewer" : `${JOB_OPTIONS.length - jobsInRow.length} more`}
+          </span>
+          <Chevron className={`size-3 transition-transform duration-200 ease-out motion-reduce:transition-none ${moreJobs ? "rotate-180" : ""}`} />
+        </button>
       </div>
       <div className="flex flex-wrap items-center gap-x-10 gap-y-2">
         <Segmented
