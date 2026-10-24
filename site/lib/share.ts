@@ -14,9 +14,9 @@ export const SHARE_VIEWS: ShareView[] = ["overall", ...JOBS.map((j) => j.id)];
 /** Feed sizes: 16:9 for X and LinkedIn link-style posts, 1:1 everywhere, 4:5 for the LinkedIn and Instagram feed.
  *  ``rows``: how many systems fit legibly. */
 export const SHARE_SIZES = {
-  landscape: { width: 1200, height: 675, rows: 6, label: "Landscape", hint: "16:9 · X, LinkedIn" },
-  square: { width: 1080, height: 1080, rows: 8, label: "Square", hint: "1:1 · any feed" },
-  portrait: { width: 1080, height: 1350, rows: 10, label: "Portrait", hint: "4:5 · LinkedIn, Instagram" },
+  landscape: { width: 1200, height: 675, rows: 5, label: "Landscape", hint: "16:9 · X, LinkedIn" },
+  square: { width: 1080, height: 1080, rows: 6, label: "Square", hint: "1:1 · any feed" },
+  portrait: { width: 1080, height: 1350, rows: 8, label: "Portrait", hint: "4:5 · LinkedIn, Instagram" },
 } as const;
 export type ShareSize = keyof typeof SHARE_SIZES;
 export const SHARE_SIZE_IDS = Object.keys(SHARE_SIZES) as ShareSize[];
