@@ -121,6 +121,7 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
           view={job}
           viewLabel={job === "overall" ? "All use cases" : JOB_BY_ID[job].title}
           altFor={(size) => shareCard(board, older, job, size).alt}
+          date={board.release.date}
           onClose={() => {
             setSharing(false);
             shareBtn.current?.focus();

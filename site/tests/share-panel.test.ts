@@ -10,6 +10,6 @@ describe("share panel helpers", () => {
     expect(caseFromSearch("?case=")).toBeNull();
   });
   it("names downloads by view and size", () => {
-    expect(downloadName("overall", "square")).toBe("raxit-guardrails-overall-square.png");
+    expect(downloadName("overall", "square", "2026-10-20")).toBe("decision-models-as-guardrails-overall-square-2026-10-20.png");
   });
 });

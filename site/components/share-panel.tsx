@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { SHARE_SIZES, SHARE_SIZE_IDS, type ShareSize, type ShareView, isShareView, shareFile, shareLink } from "../lib/share";
+import { SHARE_SIZES, SHARE_SIZE_IDS, type ShareSize, type ShareView, isShareView, shareDownloadName, shareFile, shareLink } from "../lib/share";
 import { Segmented } from "./segmented";
 
 /** The use case named by ``?case=`` in a query string, if it is one the board has. */
@@ -10,8 +10,8 @@ export function caseFromSearch(search: string): ShareView | null {
   return isShareView(v) ? v : null;
 }
 
-/** The name a downloaded image is saved under. */
-export const downloadName = (view: ShareView, size: ShareSize) => `raxit-guardrails-${view}-${size}.png`;
+/** The name a downloaded image is saved under: decision-models-as-guardrails-overall-landscape-2026-10-20.png */
+export const downloadName = (view: ShareView, size: ShareSize, date: string) => shareDownloadName(view, size, date);
 
 const noSubscribe = () => () => {};
 
@@ -62,6 +62,7 @@ export function SharePanel({
   view,
   viewLabel,
   altFor,
+  date,
   onClose,
 }: {
   id: string;
@@ -69,6 +70,8 @@ export function SharePanel({
   viewLabel: string;
   /** the image's text equivalent for a size */
   altFor: (size: ShareSize) => string;
+  /** the release date, for the download's file name */
+  date: string;
   onClose: () => void;
 }) {
   const [size, setSize] = useState<ShareSize>("landscape");
@@ -77,14 +80,16 @@ export function SharePanel({
   const canCopy = useCanCopyImage();
   const root = useRef<HTMLDivElement>(null);
   const src = shareFile(view, size);
+  // Downloads, copies and shares use the 2x file: feeds show it sharp on high-density screens.
+  const hi = shareFile(view, size, 2);
   const dims = SHARE_SIZES[size];
-  const name = downloadName(view, size);
+  const name = downloadName(view, size, date);
 
   // Fetch the PNG ahead of a click, so the system share sheet opens inside the click's user activation.
   useEffect(() => {
     if (typeof navigator.canShare !== "function") return;
     let live = true;
-    fetch(src)
+    fetch(hi)
       .then((r) => (r.ok ? r.blob() : Promise.reject(new Error(String(r.status)))))
       .then((b) => {
         const f = new File([b], name, { type: "image/png" });
@@ -94,7 +99,7 @@ export function SharePanel({
     return () => {
       live = false;
     };
-  }, [src, name]);
+  }, [src, hi, name]);
   const shareable = file?.src === src ? file.file : null;
 
   useEffect(() => {
@@ -104,7 +109,7 @@ export function SharePanel({
   const copyImage = async () => {
     try {
       // A promise inside the item keeps Safari's user activation while the PNG loads.
-      const blob = fetch(src).then((r) => (r.ok ? r.blob() : Promise.reject(new Error(String(r.status)))));
+      const blob = fetch(hi).then((r) => (r.ok ? r.blob() : Promise.reject(new Error(String(r.status)))));
       await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
       setNote("Image copied");
     } catch {
@@ -117,6 +122,14 @@ export function SharePanel({
       setNote("Link copied");
     } catch {
       setNote(`Could not copy the link. It is ${shareLink(view)}`);
+    }
+  };
+  const copyAlt = async () => {
+    try {
+      await navigator.clipboard.writeText(altFor(size));
+      setNote("Alt text copied. Paste it into the image description when you post.");
+    } catch {
+      setNote("Could not copy the alt text.");
     }
   };
   const share = async () => {
@@ -176,7 +189,7 @@ export function SharePanel({
           </p>
         </div>
         <div className="flex flex-wrap gap-x-5 border-t border-line pt-2">
-          <a href={src} download={name} className={action}>
+          <a href={hi} download={name} className={action}>
             Download PNG
           </a>
           {canCopy && (
@@ -186,6 +199,9 @@ export function SharePanel({
           )}
           <button type="button" onClick={copyLink} className={action}>
             Copy link
+          </button>
+          <button type="button" onClick={copyAlt} className={action}>
+            Copy alt text
           </button>
           {shareable && (
             <button type="button" onClick={share} className={action}>

@@ -32,6 +32,8 @@ export interface ShareRow {
   logo?: string;
   mono: string;
   score: number;
+  /** half-width of the 95% interval, as the board's "±" */
+  half: number;
   ciLow: number;
   ciHigh: number;
   tier: number;
@@ -55,8 +57,11 @@ export interface ShareCard {
   alt: string;
 }
 
-/** The PNG's path on the site: /share/overall/landscape.png */
-export const shareFile = (view: ShareView, size: ShareSize) => `/share/${view}/${size}.png`;
+/** The PNG's path on the site: /share/overall/landscape.png, or landscape@2x.png at twice the pixels (downloads). */
+export const shareFile = (view: ShareView, size: ShareSize, scale: 1 | 2 = 1) =>
+  `/share/${view}/${size}${scale === 2 ? "@2x" : ""}.png`;
+/** The name a downloaded image is saved under: decision-models-as-guardrails-overall-landscape-2026-10-20.png */
+export const shareDownloadName = (view: ShareView, size: ShareSize, date: string) => `${BRAND}-${view}-${size}-${date}.png`;
 export const shareLink = (view: ShareView) => (view === "overall" ? `${SITE_URL}/#leaderboard` : `${SITE_URL}/?case=${view}#leaderboard`);
 export const isShareView = (v: string | null | undefined): v is ShareView => !!v && (SHARE_VIEWS as string[]).includes(v);
 
@@ -80,14 +85,24 @@ export function shareCard(board: Board, older: Record<string, string>, view: Sha
     return {
       rank: rankOf(s.rank), system: s.system, name: m?.label ?? m?.name ?? s.system, provider: m?.provider ?? "",
       hosting: m?.hosting ?? "managed", logo: m?.logo, mono: m?.mono ?? s.system.slice(0, 2), score: s.score,
+      half: Math.max(s.score - s.ciLow, s.ciHigh - s.score),
       ciLow: s.ciLow, ciHigh: s.ciHigh, tier: s.tier, service: m?.kind === "service",
     };
   });
   const top = scores.length ? scores[0].tier : 1;
-  const title = view === "overall" ? "Overall ranking" : JOB_BY_ID[view].title;
+  // The overall image leads with the board's published finding (components/finding.tsx, BedrockFinding).
+  const ref = scores.find((s) => sys[s.system]?.kind === "service");
+  const decisions = scores.filter((s) => sys[s.system]?.kind === "decision");
+  const beat = ref ? decisions.filter((s) => s.score > ref.score).length : 0;
+  const title =
+    view !== "overall"
+      ? JOB_BY_ID[view].title
+      : ref
+        ? `${beat} of ${decisions.length} decision models beat ${sys[ref.system]?.name ?? "the guardrail service"}`
+        : "Overall ranking";
   const subtitle =
     view === "overall"
-      ? `Balanced accuracy across ${board.stats.jobs} guardrail use cases`
+      ? `Overall ranking, balanced accuracy across ${board.stats.jobs} guardrail use cases`
       : JOB_BY_ID[view].sub;
   const card: ShareCard = {
     view, size, title, subtitle, rows, more: Math.max(0, scores.length - rows.length),
