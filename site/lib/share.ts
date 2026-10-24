@@ -6,6 +6,8 @@ import { JOBS, JOB_BY_ID, type JobId } from "./jobs";
 import type { Board, Hosting } from "./types";
 
 export const SITE_HOST = "dm-as-guardrails.raxitlabs.com";
+/** The benchmark's name, written as the site writes it. */
+export const BRAND = "decision-models-as-guardrails";
 export const SITE_URL = `https://${SITE_HOST}`;
 
 export type ShareView = "overall" | JobId;
@@ -82,7 +84,7 @@ export function shareCard(board: Board, older: Record<string, string>, view: Sha
     };
   });
   const top = scores.length ? scores[0].tier : 1;
-  const title = view === "overall" ? "Guardrail leaderboard" : JOB_BY_ID[view].title;
+  const title = view === "overall" ? "Overall ranking" : JOB_BY_ID[view].title;
   const subtitle =
     view === "overall"
       ? `Balanced accuracy across ${board.stats.jobs} guardrail use cases`
@@ -100,6 +102,6 @@ export function shareCard(board: Board, older: Record<string, string>, view: Sha
     url: shareLink(view),
     alt: "",
   };
-  card.alt = `${title}: ${rows.map((r) => `${r.rank}. ${r.name} ${r.score.toFixed(1)}`).join(", ")}. ${card.footer.site}, ${card.footer.date}.`;
+  card.alt = `${BRAND}, ${title}: ${rows.map((r) => `${r.rank}. ${r.name} ${r.score.toFixed(1)}`).join(", ")}. ${card.footer.site}, ${card.footer.date}.`;
   return card;
 }

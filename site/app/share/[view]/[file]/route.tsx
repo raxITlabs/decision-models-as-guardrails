@@ -4,7 +4,7 @@ import { cloneElement } from "react";
 import { ImageResponse } from "next/og";
 import { BenchmarksLogo } from "@/components/benchmarks-logo";
 import { loadBoard, loadVersions } from "@/lib/data";
-import { SHARE_SIZES, SHARE_SIZE_IDS, SHARE_VIEWS, isShareView, shareCard, type ShareCard, type ShareRow, type ShareSize } from "@/lib/share";
+import { BRAND, SHARE_SIZES, SHARE_SIZE_IDS, SHARE_VIEWS, isShareView, shareCard, type ShareCard, type ShareRow, type ShareSize } from "@/lib/share";
 import { lineageSummaries, supersededBy } from "@/lib/versions";
 import { shareFonts, svgDataUri } from "../../assets";
 
@@ -146,7 +146,11 @@ function Card({ card }: { card: ShareCard }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", padding: L.pad, background: C.bg, color: C.ink, fontFamily: "Inter" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
-        <Logo h={L.logoH} />
+        <div style={{ display: "flex", alignItems: "center", gap: Math.round(L.logoH * 0.55) }}>
+          <Logo h={L.logoH} />
+          <div style={{ display: "flex", width: 1, height: Math.round(L.logoH * 0.9), background: C.lineStrong }} />
+          <div style={{ display: "flex", fontSize: Math.round(L.small * 1.15), fontWeight: 500, color: C.ink, letterSpacing: -0.2 }}>{BRAND}</div>
+        </div>
         <div style={{ display: "flex", fontFamily: MONO, fontSize: L.small, color: C.muted }}>{f.date}</div>
       </div>
       {L.split ? (
