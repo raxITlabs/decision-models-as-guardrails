@@ -6,7 +6,7 @@ import { BenchmarksLogo } from "@/components/benchmarks-logo";
 import { loadBoard, loadVersions } from "@/lib/data";
 import { BRAND, SHARE_SIZES, SHARE_SIZE_IDS, SHARE_VIEWS, isShareView, shareCard, type ShareCard, type ShareRow, type ShareSize } from "@/lib/share";
 import { lineageSummaries, supersededBy } from "@/lib/versions";
-import { shareFonts, svgDataUri } from "../../assets";
+import { artDataUri, shareFonts } from "../../assets";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -17,29 +17,31 @@ export function generateStaticParams() {
 
 const C = {
   bg: "#f2efea",
+  paper: "#f2efea",
   line: "#e3d9cc",
   lineStrong: "#c9bfb3",
   ink: "#14120b",
   fg2: "#33302b",
   muted: "#6b5440",
   accent: "#3457d5",
-  rest: "#6f675c",
+  rest: "#8a8174",
+  onArt: "#f2efea",
+  onArtMuted: "rgba(242,239,234,0.78)",
 };
 const MONO = "Geist Mono";
 
-/** One calm frame: few rows, names only, the tie said once. Royal blue marks the statistically tied top tier and
- *  nothing else. */
+/** Minimal: the painting carries the brand and the title; the paper carries the ranking, names and scores only.
+ *  Royal blue marks the statistically tied top and nothing else. */
 const LAYOUT: Record<ShareSize, {
-  pad: number; split: boolean; logoH: number; title: number; sub: number; name: number; rank: number; score: number;
-  logo: number; nameW: number; scoreW: number; small: number; dot: number; gap: number;
+  pad: number; split: boolean; art: number; logoH: number; title: number; sub: number; name: number; rank: number;
+  score: number; nameW: number; scoreW: number; small: number; dot: number;
 }> = {
-  landscape: { pad: 64, split: true, logoH: 32, title: 48, sub: 20, name: 25, rank: 18, score: 26, logo: 28, nameW: 330, scoreW: 74, small: 17, dot: 14, gap: 36 },
-  square: { pad: 80, split: false, logoH: 38, title: 64, sub: 24, name: 28, rank: 19, score: 30, logo: 32, nameW: 380, scoreW: 86, small: 20, dot: 16, gap: 56 },
-  portrait: { pad: 80, split: false, logoH: 40, title: 68, sub: 25, name: 29, rank: 20, score: 31, logo: 34, nameW: 390, scoreW: 90, small: 20, dot: 17, gap: 64 },
+  landscape: { pad: 56, split: true, art: 440, logoH: 30, title: 44, sub: 19, name: 25, rank: 17, score: 25, nameW: 300, scoreW: 70, small: 16, dot: 13 },
+  square: { pad: 76, split: false, art: 400, logoH: 34, title: 60, sub: 23, name: 28, rank: 18, score: 29, nameW: 380, scoreW: 84, small: 19, dot: 15 },
+  portrait: { pad: 76, split: false, art: 470, logoH: 36, title: 64, sub: 24, name: 29, rank: 19, score: 30, nameW: 390, scoreW: 88, small: 19, dot: 16 },
 };
 type Layout = (typeof LAYOUT)[ShareSize];
 
-/** Axis over the rows shown: whole points, padded, never past 100; labelled at its two ends and middle only. */
 function axis(rows: ShareRow[]) {
   if (!rows.length) return { lo: 50, hi: 100 };
   const lo = Math.max(0, 2 * Math.floor((Math.min(...rows.map((r) => r.ciLow)) - 0.5) / 2));
@@ -49,40 +51,24 @@ function axis(rows: ShareRow[]) {
 type Axis = ReturnType<typeof axis>;
 const at = (v: number, ax: Axis) => ((Math.min(Math.max(v, ax.lo), ax.hi) - ax.lo) / (ax.hi - ax.lo)) * 100;
 
-function Mark({ row, L }: { row: ShareRow; L: Layout }) {
-  const logo = svgDataUri(row.logo);
-  return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: L.logo, height: L.logo, flexShrink: 0 }}>
-      {logo ? (
-        // eslint-disable-next-line @next/next/no-img-element -- next/og renders <img>, not next/image
-        <img src={logo} alt="" width={L.logo} height={L.logo} style={{ objectFit: "contain" }} />
-      ) : (
-        <div style={{ display: "flex", fontSize: Math.round(L.logo * 0.5), fontWeight: 600, color: C.muted }}>{row.mono}</div>
-      )}
-    </div>
-  );
-}
-
 function Plot({ row, ax, L }: { row: ShareRow; ax: Axis; L: Layout }) {
   const col = row.tier === 1 ? C.accent : C.rest;
-  const bar = Math.max(5, Math.round(L.dot * 0.4));
+  const bar = Math.max(4, Math.round(L.dot * 0.36));
   const lo = at(row.ciLow, ax);
   const hi = at(row.ciHigh, ax);
   return (
     <div style={{ display: "flex", position: "relative", flexGrow: 1, height: L.dot + 6 }}>
       <div style={{ position: "absolute", left: 0, right: 0, top: "50%", height: 1, background: C.line }} />
-      <div style={{ position: "absolute", left: `${lo}%`, width: `${Math.max(hi - lo, 0.6)}%`, top: "50%", height: bar, marginTop: -bar / 2, borderRadius: bar, background: col, opacity: 0.28 }} />
+      <div style={{ position: "absolute", left: `${lo}%`, width: `${Math.max(hi - lo, 0.6)}%`, top: "50%", height: bar, marginTop: -bar / 2, borderRadius: bar, background: col, opacity: 0.25 }} />
       <div style={{ position: "absolute", left: `${at(row.score, ax)}%`, top: "50%", width: L.dot, height: L.dot, marginLeft: -L.dot / 2, marginTop: -L.dot / 2, borderRadius: L.dot, background: col }} />
     </div>
   );
 }
 
 function Row({ row, ax, L }: { row: ShareRow; ax: Axis; L: Layout }) {
-  const gap = Math.round(L.logo * 0.55);
   return (
-    <div style={{ display: "flex", alignItems: "center", flexGrow: 1, flexBasis: 0, gap }}>
-      <div style={{ display: "flex", width: L.rank * 1.4, flexShrink: 0, fontFamily: MONO, fontSize: L.rank, color: C.muted }}>{row.rank}</div>
-      <Mark row={row} L={L} />
+    <div style={{ display: "flex", alignItems: "center", flexGrow: 1, flexBasis: 0, gap: 22 }}>
+      <div style={{ display: "flex", width: L.rank * 1.3, flexShrink: 0, fontFamily: MONO, fontSize: L.rank, color: C.muted }}>{row.rank}</div>
       <div style={{ display: "flex", flexDirection: "column", width: L.nameW, flexShrink: 0, whiteSpace: "nowrap", overflow: "hidden" }}>
         <div style={{ display: "flex", fontSize: L.name, fontWeight: 500, color: C.ink, letterSpacing: -0.4 }}>{row.name}</div>
         {row.service ? <div style={{ display: "flex", fontSize: L.small, color: C.muted, marginTop: 2 }}>Not a decision model</div> : null}
@@ -95,82 +81,73 @@ function Row({ row, ax, L }: { row: ShareRow; ax: Axis; L: Layout }) {
   );
 }
 
-function Board({ card, L }: { card: ShareCard; L: Layout }) {
+function Ranking({ card, L }: { card: ShareCard; L: Layout }) {
   const ax = axis(card.rows);
-  const gap = Math.round(L.logo * 0.55);
-  const off = L.rank * 1.4 + L.logo + L.nameW + 3 * gap;
-  const mid = Math.round((ax.lo + ax.hi) / 2);
+  const off = L.rank * 1.3 + L.nameW + 2 * 22;
+  const d = Math.round(L.small * 0.55);
   return (
     <div style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
-      <div style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
-        {card.rows.map((r) => <Row key={r.system} row={r} ax={ax} L={L} />)}
-      </div>
-      <div style={{ display: "flex", position: "relative", height: L.small + 6, marginTop: 8, marginLeft: off, marginRight: L.scoreW + gap, fontFamily: MONO, fontSize: L.small, color: C.muted }}>
-        {[ax.lo, mid, ax.hi].map((t) => (
-          <div key={t} style={{ position: "absolute", top: 0, left: `${at(t, ax)}%`, width: 60, marginLeft: -30, display: "flex", justifyContent: "center" }}>{t}</div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/** The one thing a reader must not miss: the top of the board is a statistical tie. */
-function Tie({ card, L }: { card: ShareCard; L: Layout }) {
-  const d = Math.round(L.small * 0.6);
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: L.small, color: C.muted, lineHeight: 1.4 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, color: C.fg2 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: L.small, color: C.fg2, marginBottom: 6 }}>
         <div style={{ display: "flex", width: d, height: d, borderRadius: d, background: C.accent }} />
         {card.topTier > 1 ? `The top ${card.topTier} are statistically tied` : "The leader is clear of the rest"}
       </div>
-      <div style={{ display: "flex" }}>Dot: score. Bar: 95% interval.</div>
+      <div style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
+        {card.rows.map((r) => <Row key={r.system} row={r} ax={ax} L={L} />)}
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", marginLeft: off, marginRight: L.scoreW + 22, fontFamily: MONO, fontSize: L.small, color: C.muted }}>
+        <span>{ax.lo}</span>
+        <span>{ax.hi}</span>
+      </div>
     </div>
   );
 }
 
-function Logo({ h }: { h: number }) {
+function Logo({ h, fill }: { h: number; fill: string }) {
   const el = BenchmarksLogo({});
   // viewBox 125.6 x 48.3
-  return cloneElement(el, { width: Math.round((h * 125.6) / 48.3), height: h, fill: C.ink, className: undefined } as Record<string, unknown>);
+  return cloneElement(el, { width: Math.round((h * 125.6) / 48.3), height: h, fill, className: undefined } as Record<string, unknown>);
+}
+
+/** The painting with the brand and title over a smoky scrim, the raxIT hero-plate treatment. */
+function Art({ card, L, w, h }: { card: ShareCard; L: Layout; w: number | string; h: number | string }) {
+  return (
+    <div style={{ display: "flex", position: "relative", width: w, height: h, flexShrink: 0, overflow: "hidden" }}>
+      {/* eslint-disable-next-line @next/next/no-img-element -- next/og renders <img>, not next/image */}
+      <img src={artDataUri()} alt="" style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: L.split ? "62% 50%" : "50% 55%" }} />
+      <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundImage: "linear-gradient(180deg, rgba(16,12,8,0.42) 0%, rgba(16,12,8,0.08) 38%, rgba(16,12,8,0.62) 100%)" }} />
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative", width: "100%", height: "100%", padding: L.pad }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <Logo h={L.logoH} fill={C.onArt} />
+          <div style={{ display: "flex", fontSize: Math.round(L.small * 1.1), fontWeight: 500, color: C.onArt, letterSpacing: -0.1 }}>{BRAND}</div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: Math.round(L.sub * 0.45) }}>
+          <div style={{ display: "flex", fontSize: L.title, fontWeight: 600, color: C.onArt, letterSpacing: -L.title * 0.035, lineHeight: 1.02 }}>{card.title}</div>
+          <div style={{ display: "flex", fontSize: L.sub, color: C.onArtMuted, lineHeight: 1.35 }}>{card.subtitle}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Footer({ card, L }: { card: ShareCard; L: Layout }) {
+  const f = card.footer;
+  return (
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: Math.round(L.small * 0.9), borderTop: `1px solid ${C.line}`, fontSize: L.small, color: C.muted, flexShrink: 0 }}>
+      <span style={{ color: C.fg2, fontWeight: 500 }}>{f.site}</span>
+      <span>{`Bars: 95% intervals · ${f.checks} · ${f.date}`}</span>
+    </div>
+  );
 }
 
 function Card({ card }: { card: ShareCard }) {
   const L = LAYOUT[card.size];
-  const f = card.footer;
-  const title = (
-    <div style={{ display: "flex", flexDirection: "column", gap: Math.round(L.sub * 0.5) }}>
-      <div style={{ display: "flex", fontSize: L.title, fontWeight: 600, color: C.ink, letterSpacing: -L.title * 0.035, lineHeight: 1.02 }}>{card.title}</div>
-      <div style={{ display: "flex", fontSize: L.sub, color: C.muted, lineHeight: 1.35 }}>{card.subtitle}</div>
-    </div>
-  );
+  const paper = { display: "flex", flexDirection: "column", flexGrow: 1, background: C.paper, padding: L.pad, gap: Math.round(L.pad * 0.5) } as const;
   return (
-    <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", padding: L.pad, background: C.bg, color: C.ink, fontFamily: "Inter" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: Math.round(L.logoH * 0.55) }}>
-          <Logo h={L.logoH} />
-          <div style={{ display: "flex", width: 1, height: Math.round(L.logoH * 0.9), background: C.lineStrong }} />
-          <div style={{ display: "flex", fontSize: Math.round(L.small * 1.15), fontWeight: 500, color: C.ink, letterSpacing: -0.2 }}>{BRAND}</div>
-        </div>
-        <div style={{ display: "flex", fontFamily: MONO, fontSize: L.small, color: C.muted }}>{f.date}</div>
-      </div>
-      {L.split ? (
-        <div style={{ display: "flex", flexGrow: 1, gap: 56, marginTop: L.gap, marginBottom: L.gap * 0.75 }}>
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: 270, flexShrink: 0 }}>
-            {title}
-            <Tie card={card} L={L} />
-          </div>
-          <Board card={card} L={L} />
-        </div>
-      ) : (
-        <div style={{ display: "flex", flexDirection: "column", flexGrow: 1, marginTop: L.gap, marginBottom: L.gap * 0.75, gap: L.gap * 0.8 }}>
-          {title}
-          <Tie card={card} L={L} />
-          <Board card={card} L={L} />
-        </div>
-      )}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px solid ${C.lineStrong}`, paddingTop: Math.round(L.small * 0.9), fontSize: L.small, color: C.muted, flexShrink: 0 }}>
-        <span style={{ color: C.fg2, fontWeight: 500 }}>{f.site}</span>
-        <span>{`${f.checks} · ${f.version}`}</span>
+    <div style={{ display: "flex", flexDirection: L.split ? "row" : "column", width: "100%", height: "100%", background: C.paper, fontFamily: "Inter", color: C.ink }}>
+      <Art card={card} L={L} w={L.split ? L.art : "100%"} h={L.split ? "100%" : L.art} />
+      <div style={paper}>
+        <Ranking card={card} L={L} />
+        <Footer card={card} L={L} />
       </div>
     </div>
   );

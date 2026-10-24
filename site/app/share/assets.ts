@@ -43,3 +43,11 @@ export function svgDataUri(publicPath: string | undefined, ink = "#14120b"): str
   }
   return svgCache.get(key);
 }
+
+let art: string | null = null;
+
+/** The hero painting (public/plates/hero-fork, see public/plates/NOTICE.md) as a JPEG data: URI; satori reads no WebP. */
+export function artDataUri(): string {
+  art ??= `data:image/jpeg;base64,${fs.readFileSync(path.join(SITE, "app", "share", "art", "hero-fork.jpg")).toString("base64")}`;
+  return art;
+}
