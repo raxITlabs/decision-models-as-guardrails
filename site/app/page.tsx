@@ -36,6 +36,9 @@ const HERO_EXAMPLES = [
 
 export default function Home() {
   const board = loadBoard();
+  const lineages = lineageSummaries(loadVersions());
+  // A model with several versions on the board counts once.
+  const models = board.stats.systems - lineages.reduce((n, l) => n + l.versions.length - 1, 0);
   const index = loadRowsIndex();
   const sys = systemMap(board);
   const details = loadRowDetails();
@@ -118,11 +121,11 @@ export default function Home() {
             <h2 id="lb-h" className="m-0 text-[clamp(1.75rem,3.4vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.02em]">Overall ranking</h2>
           </div>
           <p className="m-0 text-[14px] text-muted">
-            {board.stats.systems} systems · version {board.release.version} · {longDate(board.release.date)} ·{" "}
+            {models === board.stats.systems ? `${board.stats.systems} systems` : `${models} models, ${board.stats.systems} versions`} · version {board.release.version} · {longDate(board.release.date)} ·{" "}
             <Link href="/changelog">changelog</Link>
           </p>
         </div>
-        <Leaderboard board={board} lineages={lineageSummaries(loadVersions())} />
+        <Leaderboard board={board} lineages={lineages} />
       </section>
       </div>
 

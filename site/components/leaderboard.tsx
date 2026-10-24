@@ -6,7 +6,7 @@ import { JOBS, JOB_BY_ID, type JobId } from "@/lib/jobs";
 import { halfCi, maxTier, money, pct, score1, tierVar, oneLine } from "@/lib/format";
 import type { Board, LineageSummary, Score, SystemMeta, VersionChange, VersionStepSummary } from "@/lib/types";
 import { supersededBy, visibleRanks } from "@/lib/versions";
-import { ArrowRight, ArrowUpLeft, External } from "./icons";
+import { ArrowRight, ArrowUpLeft, Chevron, External } from "./icons";
 import { Segmented } from "./segmented";
 import { NewTag } from "./new-tag";
 import { SystemMark } from "./system-mark";
@@ -145,9 +145,12 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
                           aria-expanded={isOpen}
                           aria-controls={`versions-${l.key}`}
                           onClick={() => setOpen((o) => ({ ...o, [l.key]: !o[l.key] }))}
-                          className="mt-0.5 text-left text-[12px] text-muted underline decoration-line-strong underline-offset-[3px] hover:text-fg"
+                          className="group -my-1 inline-flex items-center gap-1 py-1 text-left text-[12px] text-muted transition-colors hover:text-fg pointer-coarse:min-h-11"
                         >
-                          {`${isOpen ? "Hide " : ""}${earlier.length} earlier ${earlier.length === 1 ? "version" : "versions"}`}
+                          <span className="underline decoration-line-strong underline-offset-[3px] group-hover:decoration-fg">
+                            {`${isOpen ? "Hide " : ""}${earlier.length} earlier ${earlier.length === 1 ? "version" : "versions"}`}
+                          </span>
+                          <Chevron className={`size-3 transition-transform duration-200 ease-out motion-reduce:transition-none ${isOpen ? "rotate-90" : ""}`} />
                         </button>
                       ) : null
                     }
