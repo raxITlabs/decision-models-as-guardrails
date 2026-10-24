@@ -1,0 +1,217 @@
+{
+ "runs": [
+  {
+   "kinds": [
+    "clef",
+    "clef-flash",
+    "jev",
+    "jev-1.14",
+    "microsoft",
+    "openai",
+    "perplexity"
+   ],
+   "only": [],
+   "retry_failed": false,
+   "timing": {
+    "jev-1.13.0": {
+     "seconds": 2.6,
+     "sent": 76,
+     "failed": 0,
+     "started": "2026-10-24T06:40:10Z",
+     "finished": "2026-10-24T06:40:12Z",
+     "blocked": null
+    },
+    "clef": {
+     "seconds": 12.9,
+     "sent": 76,
+     "failed": 0,
+     "started": "2026-10-24T06:40:12Z",
+     "finished": "2026-10-24T06:40:25Z",
+     "blocked": null
+    },
+    "clef-flash": {
+     "seconds": 14.0,
+     "sent": 76,
+     "failed": 0,
+     "started": "2026-10-24T06:40:25Z",
+     "finished": "2026-10-24T06:40:39Z",
+     "blocked": null
+    },
+    "pplx-decider-v1-27b": {
+     "seconds": 16.1,
+     "sent": 76,
+     "failed": 0,
+     "started": "2026-10-24T06:40:39Z",
+     "finished": "2026-10-24T06:40:55Z",
+     "blocked": null
+    },
+    "gpt-6-luna": {
+     "seconds": 15.0,
+     "sent": 76,
+     "failed": 76,
+     "started": "2026-10-24T06:40:55Z",
+     "finished": "2026-10-24T06:41:10Z",
+     "blocked": null
+    },
+    "microsoft-decision-1": {
+     "seconds": 17.5,
+     "sent": 76,
+     "failed": 0,
+     "started": "2026-10-24T06:41:10Z",
+     "finished": "2026-10-24T06:41:28Z",
+     "blocked": null
+    },
+    "jev-1.14.0": {
+     "seconds": 2.4,
+     "sent": 76,
+     "failed": 0,
+     "started": "2026-10-24T06:41:28Z",
+     "finished": "2026-10-24T06:41:30Z",
+     "blocked": null
+    }
+   }
+  },
+  {
+   "kinds": [
+    "open"
+   ],
+   "only": [],
+   "retry_failed": false,
+   "timing": {
+    "kev-0-8b": {
+     "seconds": 20.2,
+     "sent": 76,
+     "failed": 0,
+     "started": "2026-10-24T06:55:43Z",
+     "finished": "2026-10-24T06:56:04Z",
+     "blocked": null
+    },
+    "kev-4b": {
+     "seconds": 42.0,
+     "sent": 76,
+     "failed": 0,
+     "started": "2026-10-24T06:56:04Z",
+     "finished": "2026-10-24T06:56:46Z",
+     "blocked": null
+    },
+    "open-jev-2b": {
+     "seconds": 74.2,
+     "sent": 76,
+     "failed": 0,
+     "started": "2026-10-24T06:56:46Z",
+     "finished": "2026-10-24T06:58:00Z",
+     "blocked": null
+    },
+    "kev-9b": {
+     "seconds": 55.0,
+     "sent": 76,
+     "failed": 0,
+     "started": "2026-10-24T06:58:00Z",
+     "finished": "2026-10-24T06:58:55Z",
+     "blocked": null
+    },
+    "laya": {
+     "seconds": 59.8,
+     "sent": 76,
+     "failed": 0,
+     "started": "2026-10-24T06:58:55Z",
+     "finished": "2026-10-24T06:59:55Z",
+     "blocked": null
+    },
+    "strands-decider-2b": {
+     "seconds": 35.3,
+     "sent": 76,
+     "failed": 0,
+     "started": "2026-10-24T06:59:55Z",
+     "finished": "2026-10-24T07:00:30Z",
+     "blocked": null
+    }
+   }
+  },
+  {
+   "kinds": [
+    "strands"
+   ],
+   "only": [],
+   "retry_failed": false,
+   "timing": {
+    "strands-decider-e4b": {
+     "seconds": 52.5,
+     "sent": 76,
+     "failed": 0,
+     "started": "2026-10-24T07:16:21Z",
+     "finished": "2026-10-24T07:17:13Z",
+     "blocked": null
+    },
+    "strands-decider-2b-qwen35": {
+     "seconds": 99.8,
+     "sent": 76,
+     "failed": 1,
+     "started": "2026-10-24T07:17:13Z",
+     "finished": "2026-10-24T07:18:53Z",
+     "blocked": null
+    },
+    "strands-decider-e2b": {
+     "seconds": 39.6,
+     "sent": 76,
+     "failed": 0,
+     "started": "2026-10-24T07:18:53Z",
+     "finished": "2026-10-24T07:19:33Z",
+     "blocked": null
+    },
+    "strands-decider-2b-v21": {
+     "seconds": 30.5,
+     "sent": 76,
+     "failed": 0,
+     "started": "2026-10-24T07:19:33Z",
+     "finished": "2026-10-24T07:20:03Z",
+     "blocked": null
+    },
+    "strands-decider-12b": {
+     "seconds": 107.6,
+     "sent": 76,
+     "failed": 0,
+     "started": "2026-10-24T07:20:03Z",
+     "finished": "2026-10-24T07:21:51Z",
+     "blocked": null
+    }
+   }
+  },
+  {
+   "kinds": [
+    "strands"
+   ],
+   "only": [
+    "strands-decider-2b-qwen35"
+   ],
+   "retry_failed": true,
+   "timing": {
+    "strands-decider-2b-qwen35": {
+     "seconds": 2.0,
+     "sent": 1,
+     "failed": 0,
+     "started": "2026-10-24T07:22:00Z",
+     "finished": "2026-10-24T07:22:02Z",
+     "blocked": null
+    }
+   }
+  },
+  {
+   "kinds": [
+    "strands"
+   ],
+   "only": [],
+   "retry_failed": false,
+   "timing": {
+    "strands-decider-26b-a4b": {
+     "seconds": 37.9,
+     "sent": 76,
+     "failed": 0,
+     "started": "2026-10-24T07:36:18Z",
+     "finished": "2026-10-24T07:36:56Z",
+     "blocked": null
+    }
+   }
+  }
+ ]
+}
