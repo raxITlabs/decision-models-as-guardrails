@@ -65,16 +65,16 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const latest = scores.filter((s) => !older[s.system]);
   const byId = Object.fromEntries(scores.map((s) => [s.system, s]));
-  // One toggle, one meaning: "Managed APIs" filters the chart and the table alike.
+  // The table lists every system; "Managed APIs" only thins the chart.
   const shown = latest.filter((s) => scope === "all" || sys[s.system]?.hosting === "managed");
-  const rankOf = visibleRanks(shown);
-  const groups = tierGroups(shown);
+  const rankOf = visibleRanks(latest);
+  const groups = tierGroups(latest);
   const [lens, setLens] = useState<Lens | null>(null);
-  const pick = lens ? pickFor(shown, lens) : null;
+  const pick = lens ? pickFor(latest, lens) : null;
   const choose = (l: Lens) => {
     const next = lens === l ? null : l;
     setLens(next);
-    const p = next ? pickFor(shown, next) : null;
+    const p = next ? pickFor(latest, next) : null;
     if (p) setSelected(p.system);
   };
   const sel = scores.find((s) => s.system === selected) ?? scores[0];
@@ -116,13 +116,13 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
 
       <Scatter scores={shown} sys={sys} axis={axis} tiers={tiers} selected={sel?.system} onSelect={setSelected} />
 
-      <Recommend lens={lens} onChoose={choose} pick={pick} byId={byId} sys={sys} scope={scope} />
+      <Recommend lens={lens} onChoose={choose} pick={pick} byId={byId} sys={sys} />
 
       <div className="overflow-x-auto border-t border-line-strong">
         <table className="w-full sm:min-w-[860px] border-collapse text-[14px]">
           <caption className="sr-only">
-            {job === "overall" ? "Overall" : JOB_BY_ID[job].title}: {scope === "managed" ? "managed APIs" : "every system"}, grouped by
-            statistical tier, with rank, score and 95% interval, catch rate, false-block rate, cost and hosting.
+            {job === "overall" ? "Overall" : JOB_BY_ID[job].title}: every system, grouped by statistical tier, with rank, score and 95%
+            interval, catch rate, false-block rate, cost and hosting.
           </caption>
           <thead>
             <tr className="border-b border-line text-left text-[12px] text-muted">
@@ -136,7 +136,7 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
             </tr>
           </thead>
           <tbody>
-            {shown.map((s, i) => {
+            {latest.map((s, i) => {
               const m = sys[s.system];
               const g = groups.find((x) => x.first === i);
               const l = lineageOf[s.system];
@@ -144,7 +144,7 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
               const earlier = l ? l.versions.slice(0, -1).reverse().map((v) => byId[v]).filter(Boolean) : [];
               return (
                 <Fragment key={s.system}>
-                  {g && <TierHeading tier={g.tier} count={g.count} skipped={g.skipped} first={i === 0} />}
+                  {g && <TierHeading tier={g.tier} count={g.count} first={i === 0} />}
                   <Row
                     s={s}
                     rank={rankOf[s.system]}
@@ -201,7 +201,7 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
         >
           Read why.
         </a> Our statistical tests cannot tell the
-        systems in one tier apart from that tier&apos;s leader, so tier numbers can skip when a tier has nothing on show. Self-hosted cost is our
+        systems in one tier apart from that tier&apos;s leader. Self-hosted cost is our
         shared GPU time.
         {lineages.length ? " Earlier versions of a model are folded under its newest version; the rank counts the rows on show, and tiers are as published." : ""}
       </p>
@@ -279,7 +279,7 @@ function Row({
 }
 
 /** A thin heading row per tier: what a tier means, said where the tier is. */
-function TierHeading({ tier, count, skipped, first }: { tier: number; count: number; skipped: number[]; first: boolean }) {
+function TierHeading({ tier, count, first }: { tier: number; count: number; first: boolean }) {
   return (
     <tr className={first ? "" : "border-t border-line-strong"}>
       <td colSpan={7} className="pb-1.5 pt-4 pl-3 sm:pl-5">
@@ -289,11 +289,6 @@ function TierHeading({ tier, count, skipped, first }: { tier: number; count: num
             Tier {tier}
           </span>
           <span>{count > 1 ? `the tests cannot separate these ${count}` : "on its own"}</span>
-          {skipped.length ? (
-            <span>
-              · {skipped.length === 1 ? `tier ${skipped[0]} has` : `tiers ${skipped[0]} to ${skipped.at(-1)} have`} nothing on show
-            </span>
-          ) : null}
         </span>
       </td>
     </tr>
@@ -313,21 +308,19 @@ function Recommend({
   pick,
   byId,
   sys,
-  scope,
 }: {
   lens: Lens | null;
   onChoose: (l: Lens) => void;
   pick: Pick | null;
   byId: Record<string, Score>;
   sys: Record<string, SystemMeta>;
-  scope: Scope;
 }) {
   const name = (id: string) => oneLine(sys[id], id);
   const p = pick ? byId[pick.system] : undefined;
   const n = pick ? pick.tiedWith.length + 1 : 0;
   let reason = "";
   if (pick && p) {
-    const among = n > 1 ? `Of the ${n} ${scope === "managed" ? "managed APIs" : "systems"} in tier ${pick.tier}, which the tests cannot tell apart, ` : "";
+    const among = n > 1 ? `Of the ${n} systems in tier ${pick.tier}, which the tests cannot tell apart, ` : "";
     if (pick.lens === "accuracy")
       reason =
         n > 1

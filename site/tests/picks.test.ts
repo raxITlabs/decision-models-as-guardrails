@@ -27,12 +27,11 @@ describe("pickFor", () => {
 });
 
 describe("tierGroups", () => {
-  it("groups consecutive tiers and names the tiers skipped", () => {
-    expect(tierGroups([{ tier: 1 }, { tier: 1 }, { tier: 2 }, { tier: 6 }, { tier: 8 }])).toEqual([
-      { tier: 1, first: 0, count: 2, skipped: [] },
-      { tier: 2, first: 2, count: 1, skipped: [] },
-      { tier: 6, first: 3, count: 1, skipped: [3, 4, 5] },
-      { tier: 8, first: 4, count: 1, skipped: [7] },
+  it("groups consecutive rows of one tier", () => {
+    expect(tierGroups([{ tier: 1 }, { tier: 1 }, { tier: 2 }, { tier: 8 }])).toEqual([
+      { tier: 1, first: 0, count: 2 },
+      { tier: 2, first: 2, count: 1 },
+      { tier: 8, first: 3, count: 1 },
     ]);
   });
 });

@@ -26,17 +26,13 @@ export function pickFor(rows: Score[], lens: Lens): Pick | null {
   return { system: best.system, lens, tier, tiedWith: top.filter((r) => r.system !== best.system).map((r) => r.system) };
 }
 
-/** Tier headings for the rows on show, in order: the tier, how many rows it has, and any tiers skipped before it. */
-export function tierGroups(rows: { tier: number }[]): { tier: number; first: number; count: number; skipped: number[] }[] {
-  const out: { tier: number; first: number; count: number; skipped: number[] }[] = [];
+/** Tier headings for the rows in order: each tier, where it starts and how many rows it has. */
+export function tierGroups(rows: { tier: number }[]): { tier: number; first: number; count: number }[] {
+  const out: { tier: number; first: number; count: number }[] = [];
   rows.forEach((r, i) => {
     const last = out.at(-1);
-    if (last && last.tier === r.tier) {
-      last.count += 1;
-      return;
-    }
-    const skipped = last ? Array.from({ length: Math.max(0, r.tier - last.tier - 1) }, (_, k) => last.tier + 1 + k) : [];
-    out.push({ tier: r.tier, first: i, count: 1, skipped });
+    if (last && last.tier === r.tier) last.count += 1;
+    else out.push({ tier: r.tier, first: i, count: 1 });
   });
   return out;
 }
