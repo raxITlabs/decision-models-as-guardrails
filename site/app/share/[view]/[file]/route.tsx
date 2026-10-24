@@ -140,7 +140,6 @@ function Art({ card, L, w, h, bare = false }: { card: ShareCard; L: Layout; w: n
             {BRAND_CAPS}
           </div>
           <div style={{ display: "flex", fontSize: L.title, fontWeight: 600, color: C.onArt, letterSpacing: -L.title * 0.03, lineHeight: 1.06 }}>{card.title}</div>
-          <div style={{ display: "flex", fontSize: L.sub, color: C.onArtMuted, lineHeight: 1.35 }}>{card.subtitle}</div>
         </div>
       </div>
     </div>
