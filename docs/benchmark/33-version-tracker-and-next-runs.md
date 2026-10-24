@@ -12,8 +12,10 @@ older versions as indented rows with their own scores. Below them, one line per 
 interval, catches and false blocks, each with a verdict word. A use-case view shows the change on that use case. A link goes to
 `/versions` for the full comparison.
 
-Earlier versions keep the rank and tier they were published with, so the folded board has gaps in the rank column. Re-ranking
-on newest versions only would change published numbers, which is a new release, not a display change. The scatter plot shows
+The rank column counts the rows on show, so the folded board reads 1, 2, 3 with no gaps, and tied systems share a number.
+An opened earlier version has no rank of its own. Tiers stay exactly as published: they come from the board's tests over
+all 20 systems, and re-ranking on newest versions only would change published numbers, which is a new release, not a display
+change. Earlier versions are folded until the reader opens them. The scatter plot shows
 newest versions only.
 
 "Newest" is release order, not the best score. For Strands that puts the Qwen3.5 checkpoint first, though it blocks more benign

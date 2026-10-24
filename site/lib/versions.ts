@@ -37,3 +37,9 @@ export function supersededBy(lineages: LineageSummary[]): Record<string, string>
   for (const l of lineages) for (const v of l.versions.slice(0, -1)) out[v] = l.versions.at(-1) as string;
   return out;
 }
+
+/** Rank among the rows on show: 1 + the number of shown rows with a better published rank, so ties keep sharing a number.
+ *  Tiers are untouched: they stay as published. */
+export function visibleRanks(shown: { system: string; rank: number }[]): Record<string, number> {
+  return Object.fromEntries(shown.map((s) => [s.system, 1 + shown.filter((o) => o.rank < s.rank).length]));
+}

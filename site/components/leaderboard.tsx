@@ -5,7 +5,7 @@ import { Fragment, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { JOBS, JOB_BY_ID, type JobId } from "@/lib/jobs";
 import { halfCi, maxTier, money, pct, score1, tierVar, oneLine } from "@/lib/format";
 import type { Board, LineageSummary, Score, SystemMeta, VersionChange, VersionStepSummary } from "@/lib/types";
-import { supersededBy } from "@/lib/versions";
+import { supersededBy, visibleRanks } from "@/lib/versions";
 import { ArrowRight, ArrowUpLeft, External } from "./icons";
 import { Segmented } from "./segmented";
 import { NewTag } from "./new-tag";
@@ -64,6 +64,7 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const latest = scores.filter((s) => !older[s.system]);
   const byId = Object.fromEntries(scores.map((s) => [s.system, s]));
+  const rankOf = visibleRanks(latest);
   const shown = latest.filter((s) => scope === "all" || sys[s.system]?.hosting === "managed");
   const sel = scores.find((s) => s.system === selected) ?? scores[0];
 
@@ -132,6 +133,7 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
                 <Fragment key={s.system}>
                   <Row
                     s={s}
+                    rank={rankOf[s.system]}
                     m={m}
                     on={s.system === sel?.system}
                     border={newTier ? "border-line-strong" : "border-line"}
@@ -182,7 +184,7 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
           Read why.
         </a> Our statistical tests cannot tell the
         systems in one tier apart from that tier&apos;s leader. Self-hosted cost is our shared GPU time.
-        {lineages.length ? " Earlier versions of a model sit under its newest version and keep their own rank." : ""}
+        {lineages.length ? " Earlier versions of a model are folded under its newest version; the rank counts the rows on show, and tiers are as published." : ""}
       </p>
 
       {sel && <SystemPanel board={board} s={sel} m={sys[sel.system]} tiers={tiers} job={job} />}
@@ -192,6 +194,7 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
 
 function Row({
   s,
+  rank,
   m,
   on,
   border,
@@ -200,6 +203,8 @@ function Row({
   earlier = false,
 }: {
   s: Score;
+  /** rank among the rows on show; none for an earlier version opened under its newest */
+  rank?: number;
   m?: SystemMeta;
   on: boolean;
   border: string;
@@ -213,7 +218,7 @@ function Row({
       onClick={() => onSelect(s.system)}
       className={`cursor-pointer border-t transition-colors ${border} ${on ? "bg-selected" : m?.kind === "service" ? "bg-raised hover:bg-raised" : "hover:bg-raised/60"}`}
     >
-      <td className="num hidden py-2.5 pl-5 text-muted sm:table-cell">{s.rank}</td>
+      <td className="num hidden py-2.5 pl-5 text-muted sm:table-cell">{rank ?? <span className="sr-only">Earlier version, not ranked separately</span>}</td>
       {/* On a phone the name column stays put while the numbers scroll under it. */}
       <th scope="row" className={`sticky left-0 z-[1] py-2.5 pl-3 pr-3 text-left font-normal sm:static sm:pl-0 ${bg}`}>
         <div className={`flex flex-col ${earlier ? "pl-6" : ""}`}>
