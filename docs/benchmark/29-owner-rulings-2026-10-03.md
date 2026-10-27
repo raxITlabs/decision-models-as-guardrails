@@ -60,3 +60,9 @@ Decided by the project owner on 3 October 2026, through the edition 2 decisions 
 | # | Question | Ruling |
 |---|---|---|
 | 36 | Microsoft-Decision-1 on the full benchmark (20 October 2026) | Score Microsoft-Decision-1 (snapshot `microsoft-decision-1-20261009`, through OpenRouter, served on Azure) like every other system: all 10,053 test rows, the held-back slice included, so it joins the ranked board. The owner approves sending the held-back rows to OpenRouter and Microsoft, as ruling 21 did for Perplexity (and the gpt-6-luna run for OpenAI). The earlier run on public rows only was set up without this ruling; it is superseded and kept, unscored, beside the new run. The complete run gets its own freeze manifest, committed before its first call. |
+
+## Additional ruling, 27 October 2026
+
+| # | Question | Ruling |
+|---|---|---|
+| 37 | Perplexity Decider v1.2 on the full benchmark (27 October 2026) | Score `pplx-decider-v1.2` (27B) and `pplx-decider-flash-v1.2` (4B), both served on Perplexity's Decisions API, like every other system: all 10,053 test rows, the held-back slice included, so both join the ranked board. Ruling 21 covered pplx-decider-v1-27b only; the owner now approves sending the held-back rows to Perplexity for the v1.2 models too. Perplexity's default API data handling applies; no zero-retention agreement is in place. The run gets its own freeze manifest, committed before its first test call. |
