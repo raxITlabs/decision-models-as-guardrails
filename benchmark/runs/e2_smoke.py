@@ -15,7 +15,8 @@ row ids, labels and system outputs, never the row text, because many dev rows co
 
 New decision models (docs/benchmark/28): ``clef`` and ``clef-flash`` (Cloudflare Workers AI), ``perplexity``
 (pplx-decider-v1-27b), ``strands`` (Strands Decider 2B on the GCP VM), ``openai`` (gpt-6-luna, OpenAI Decisions API)
-and ``microsoft`` (Microsoft-Decision-1 through OpenRouter, snapshot 20261009).
+and ``microsoft`` (Microsoft-Decision-1 through OpenRouter, snapshot 20261009); ``perplexity-v1.2`` and
+``perplexity-flash-v1.2`` (Perplexity Decider v1.2 27B and flash 4B, Decisions API, pinned by reported model name).
 ``jev-1.14`` is Jev 1.14.0 (api.typesafe.ai, released 14 October 2026), pinned by its versioned id, not ``jev-preview``.
 A system whose credentials or VM slot are missing is skipped as ``not_configured`` before any row is read for it;
 nothing is sent and nothing is written for it.
@@ -67,6 +68,8 @@ LIMITS = {"jev-1.13.0": (32000, "documented"), "jev-1.14.0": (32000, "documented
           "open-jev-2b": (4096, "served --max-length"),
           "clef": (65536, "hosted context (Workers AI)"), "clef-flash": (65536, "hosted context (Workers AI)"),
           "pplx-decider-v1-27b": (262144, "hosted input limit (Perplexity docs)"),
+          "pplx-decider-v1-2-27b": (262144, "hosted 256K context (Perplexity docs, 27 October 2026)"),
+          "pplx-decider-flash-v1-2": (262144, "hosted 256K context (Perplexity docs, 27 October 2026)"),
           "strands-decider-2b": (4096, "documented window; cut silently, no truncation flag"),
           "microsoft-decision-1": (32768, "hosted context (OpenRouter model page)"),
           "gpt-6-luna": (None, "undocumented (the public beta docs give no input limit)"),
@@ -79,7 +82,8 @@ LIMITS.update({n: (4096, "documented window; cut silently, no truncation flag") 
 # Servers whose usage.input_tokens is the sum over one prompt per question: per-prompt tokens = usage / questions.
 PER_PROMPT_USAGE = {"open-jev-2b", "laya"}
 # Hosted joint-schema models report one input count for the whole request: at the limit means the input was capped.
-WHOLE_REQUEST_USAGE = {"clef", "clef-flash", "pplx-decider-v1-27b", "microsoft-decision-1"}
+WHOLE_REQUEST_USAGE = {"clef", "clef-flash", "pplx-decider-v1-27b", "pplx-decider-v1-2-27b", "pplx-decider-flash-v1-2",
+                       "microsoft-decision-1"}
 DEFAULT_LIMIT = (4096, "proxy: undocumented, 4096 reference")
 NEAR = 0.8   # a row is near the limit at >= 80% of it
 CHARS_PER_TOKEN = 3.5   # conservative (over-)estimate for English with a BPE tokenizer
@@ -217,7 +221,8 @@ def leak_check(paths, rows_by_id: dict) -> list:
 
 # --- systems ---------------------------------------------------------------------------------------------------
 
-NEW_KINDS = ("clef", "clef-flash", "perplexity", "strands", "openai", "jev-1.14", "microsoft")
+NEW_KINDS = ("clef", "clef-flash", "perplexity", "strands", "openai", "jev-1.14", "microsoft", "perplexity-v1.2",
+             "perplexity-flash-v1.2")
 KINDS = ("jev", "open", "bedrock") + NEW_KINDS
 JEV_114 = "jev-1.14.0"   # the versioned id; jev-preview points at it today but moves with the next release
 
@@ -257,12 +262,14 @@ def build_new_systems(kinds: set, env) -> tuple[dict, dict]:
                 skipped[kind] = hosted.not_configured(kind)
             else:
                 out[c.system] = (NoulAdapter(c, endpoint=c.endpoint), 4)
-    if "perplexity" in kinds:
-        c = hosted.PerplexityDecisionsClient.from_env(env=env)
-        if c is None:
-            skipped["perplexity"] = hosted.not_configured("perplexity")
-        else:
-            out[c.system] = (NoulAdapter(c, endpoint=c.endpoint), 4)   # the client throttles the pool to 5/s
+    pplx_throttle = hosted.Throttle(hosted.PPLX_RATE)   # one budget: Perplexity's 10/s limit is per organisation
+    for kind, kw in hosted.PPLX_KINDS.items():
+        if kind in kinds:
+            c = hosted.PerplexityDecisionsClient.from_env(env=env, throttle=pplx_throttle, **kw)
+            if c is None:
+                skipped[kind] = hosted.not_configured(kind)
+            else:
+                out[c.system] = (NoulAdapter(c, endpoint=c.endpoint), 4)   # the client throttles the pool to 5/s
     if "openai" in kinds:
         c = hosted.OpenAIDecisionsClient.from_env(env=env)
         if c is None:

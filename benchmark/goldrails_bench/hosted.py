@@ -268,7 +268,24 @@ PERPLEXITY_URL = "https://api.perplexity.ai/v1/decisions"
 PPLX_MODEL = "pplx-decider-v1-27b"
 PPLX_WEIGHTS = ("perplexity-ai/pplx-decider-v1-27b", "5117a6c7fe73b19308dc1a6b0fb529a40c2ecad4")
 PPLX_CONTEXT = 262_144   # hosted input limit in tokens (Perplexity docs, read 2 October 2026)
-PPLX_RATE = 5.0          # requests/s, half the documented 10/s organisation limit
+PPLX_RATE = 5.0          # requests/s, half the documented 10/s organisation limit (shared by every decider model)
+# Decider v1.2 (released 15 October 2026). Both answer on the Decisions API under these ids and report them back
+# (probe of 27 October 2026). Perplexity's docs (read 27 October 2026) give a 256K-token window for both and say a
+# request naming pplx-decider-v1-27b or pplx-decider-v1.1-27b is now served by pplx-decider-v1.2.
+PPLX_V12_SYSTEM, PPLX_V12_MODEL = "pplx-decider-v1-2-27b", "pplx-decider-v1.2"
+PPLX_FLASH_SYSTEM, PPLX_FLASH_MODEL = "pplx-decider-flash-v1-2", "pplx-decider-flash-v1.2"
+# The open weights each hosted model id corresponds to (Hugging Face ref, commit), recorded for provenance.
+PPLX_WEIGHTS_BY_MODEL = {
+    PPLX_MODEL: PPLX_WEIGHTS,
+    PPLX_V12_MODEL: ("perplexity-ai/pplx-decider-v1.2", "225c913ddc8761a8264f04f64548e1f97e443eb3"),
+    PPLX_FLASH_MODEL: ("perplexity-ai/pplx-decider-flash-v1.2", "6d771ad7b5ecff5e93b8fc7b90d4c5ccc341954d"),
+}
+# Models whose responses must report exactly the requested id. v1 keeps its original check (no Jev name) only.
+PPLX_PINNED = {PPLX_V12_MODEL, PPLX_FLASH_MODEL}
+# Smoke and run kinds -> client arguments.
+PPLX_KINDS = {"perplexity": {"system": PPLX_MODEL, "model": PPLX_MODEL},
+              "perplexity-v1.2": {"system": PPLX_V12_SYSTEM, "model": PPLX_V12_MODEL},
+              "perplexity-flash-v1.2": {"system": PPLX_FLASH_SYSTEM, "model": PPLX_FLASH_MODEL}}
 JEV_NAME = re.compile(r"^(open-)?jev([-_.].*)?$", re.I)
 
 
@@ -277,7 +294,13 @@ class ModelIdentityError(ValueError):
 
 
 class PerplexityDecisionsClient(HostedDecisionClient):
-    """pplx-decider-v1-27b on Perplexity's Decisions API, throttled to 5 requests/s across threads.
+    """A Perplexity decider model on the Decisions API, throttled to 5 requests/s across threads.
+
+    ``model`` picks the open weights recorded in the identity (``PPLX_WEIGHTS_BY_MODEL``); a model with no entry is
+    refused. The default, pplx-decider-v1-27b, keeps the identity and config hash it had. For the v1.2 models the
+    identity also names ``pinned_model`` and a response reporting any other name fails (``ModelIdentityError``,
+    never retried). The reported name echoes the requested id, so it is a guard against misrouting, not proof of the
+    weights served.
 
     The open-source server of this model answers to ``jev-latest`` / ``jev-1.13.0``, so a response that reports a
     Jev name cannot be told apart from Jev in a ledger. The client keeps the model name the response reports and
@@ -292,9 +315,17 @@ class PerplexityDecisionsClient(HostedDecisionClient):
                  throttle: Throttle | None = None, **kw):
         if JEV_NAME.match(system) or JEV_NAME.match(model):
             raise ModelIdentityError(f"refusing to record Perplexity results under a Jev name ({system!r}, {model!r})")
-        identity = {"provider": self.provider, "model": model, "ref": PPLX_WEIGHTS[0], "revision": PPLX_WEIGHTS[1],
+        if model not in PPLX_WEIGHTS_BY_MODEL:
+            raise ModelIdentityError(f"no open weights are recorded for Perplexity model {model!r}")
+        ref, rev = PPLX_WEIGHTS_BY_MODEL[model]
+        self.pinned = model if model in PPLX_PINNED else None
+        identity = {"provider": self.provider, "model": model, "ref": ref, "revision": rev,
                     "revision_basis": "Hugging Face commit of the open weights, for provenance; the hosted model is not pinned",
                     "max_length": PPLX_CONTEXT, "precision": None}
+        if self.pinned:
+            identity["revision_basis"] = ("Hugging Face commit of the open weights, for provenance; the hosted model is "
+                                          "pinned only by the model name each response reports")
+            identity["pinned_model"] = self.pinned
         super().__init__(system, model, url, api_key, identity=identity,
                          throttle=throttle if throttle is not None else Throttle(PPLX_RATE), **kw)
         self.endpoint = url
@@ -321,7 +352,12 @@ class PerplexityDecisionsClient(HostedDecisionClient):
             return SystemOneCall(system=self.system, ok=False, model=reported, usage=call.usage,
                                  latency_s=call.latency_s, raw={"reported_model": reported},
                                  error=f"ModelIdentityError: the response reports model {reported!r}, a Jev name; "
-                                       "refusing to record it as pplx-decider-v1-27b")
+                                       f"refusing to record it as {self.system}")
+        if self.pinned and reported != self.pinned:
+            return SystemOneCall(system=self.system, ok=False, model=reported, usage=call.usage,
+                                 latency_s=call.latency_s, raw={"reported_model": reported},
+                                 error=f"ModelIdentityError: the response reports model {reported!r}, "
+                                       f"not the pinned {self.pinned!r}")
         return call
 
 
@@ -602,7 +638,8 @@ class MicrosoftDecisionClient(HostedDecisionClient):
 def not_configured(system: str) -> str:
     """Why ``from_env`` returned None: the names (never the values) of what is missing."""
     need = {"clef": "CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN", "clef-flash": "CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN",
-            "perplexity": "PERPLEXITY_API_KEY",
+            "perplexity": "PERPLEXITY_API_KEY", "perplexity-v1.2": "PERPLEXITY_API_KEY",
+            "perplexity-flash-v1.2": "PERPLEXITY_API_KEY",
             "openai": "OPENAI_API_KEY",
             "microsoft": "OPENROUTER_API_KEY"}
     return f"not_configured: {system} needs {need.get(system, 'credentials')}"
