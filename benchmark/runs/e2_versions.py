@@ -48,7 +48,8 @@ SUITE_FOLDER = {"content": "content", "prompt_attacks": "prompt_attacks", "denie
                 "word_filters": "word_filters", "sensitive_info": "sensitive_information", "grounding": "grounding"}
 # (ledger folder under LEDGERS, suites to take from it); the full run's prompt attacks were replaced by the rerun
 SOURCES = (("main-run", lambda s: s != "prompt_attacks"), ("prompt-attacks", lambda s: s == "prompt_attacks"),
-           ("jev-1.14.0", lambda s: True), ("strands-deciders", lambda s: True))
+           ("jev-1.14.0", lambda s: True), ("strands-deciders", lambda s: True),
+           ("pplx-decider-v1-2", lambda s: True))
 
 
 def systems() -> list[str]:
