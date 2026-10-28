@@ -43,7 +43,7 @@ export default function Research() {
             <h2 className="m-0 text-[22px] font-semibold tracking-[-0.01em]">Red Hat: decision models against traditional guardrails</h2>
             <p className="m-0 max-w-[68ch] text-[15px] leading-relaxed text-fg-2">
               Red Hat&apos;s AI Safety team compared nine guardrails on prompt injection and content safety, using each model&apos;s own
-              output with no training. Jev 1.13.0 ranked first on content safety at 86.2% and fourth on prompt injection at 86.4%. A
+              output with no training. Jev 1.13 ranked first on content safety at 86.2% and fourth on prompt injection at 86.4%. A
               small trained classifier came within 0.3 points of the best prompt-injection score. Rewording the content policy raised
               Laya from 57.9% to 75.2% and lowered Jev from 86.2% to 82.5%. How a policy is worded can favour one model over another.
             </p>

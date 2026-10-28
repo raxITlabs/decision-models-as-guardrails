@@ -926,7 +926,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
         </dl>
         {vs && (
           <div className="flex flex-col gap-2 border-t border-line pt-4">
-            <span className="text-[14px] font-semibold">Against Bedrock Guardrails</span>
+            <span className="text-[14px] font-semibold">Against Amazon Bedrock Guardrails</span>
             <dl className="m-0 grid grid-cols-2 gap-x-4 gap-y-2.5">
               {vs.map((x) => (
                 <div key={x.label} className="flex flex-col">

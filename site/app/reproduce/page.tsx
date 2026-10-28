@@ -19,12 +19,12 @@ const AGENT_PROMPT = `Read ${SITE}/reproduce.md and help me reproduce the decisi
 /** Accounts and cost per system, from the 1.0.0 run. Kept in step with REPRODUCE.md at the repository root. */
 const NEEDS: [string, string, string, string][] = [
   ["Tests and dataset", "None", "None", "Free"],
-  ["Jev 1.13.0", "TypeSafe API key", "TYPESAFE_API_KEY", "$0.38"],
-  ["Jev 1.14.0", "The same TypeSafe API key", "TYPESAFE_API_KEY", "$0.38"],
-  ["Decisions API · Perplexity (pplx-decider-v1-27b)", "Perplexity API key", "PERPLEXITY_API_KEY", "$0.56"],
-  ["Decisions API · OpenAI (gpt-6-luna)", "OpenAI key with Decisions API access (public beta)", "OPENAI_API_KEY", "$1.10"],
-  ["Clef, Clef Flash", "Cloudflare Workers AI. In practice you need the Workers Paid plan ($5 a month), because the free daily allowance ran out mid-run", "CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN", "$2.76 + plan"],
-  ["Bedrock Guardrails", "AWS account with Bedrock, a CLI profile (we used SSO), Terraform to create the guardrails", "AWS_PROFILE, AWS_REGION", "$1.12"],
+  ["Jev 1.13", "TypeSafe API key", "TYPESAFE_API_KEY", "$0.38"],
+  ["Jev 1.14", "The same TypeSafe API key", "TYPESAFE_API_KEY", "$0.38"],
+  ["pplx-decider-v1-27b", "Perplexity API key", "PERPLEXITY_API_KEY", "$0.56"],
+  ["GPT-6 Luna (gpt-6-luna)", "OpenAI key with Decisions API access (public beta)", "OPENAI_API_KEY", "$1.10"],
+  ["Clef, Clef-flash", "Cloudflare Workers AI. In practice you need the Workers Paid plan ($5 a month), because the free daily allowance ran out mid-run", "CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN", "$2.76 + plan"],
+  ["Amazon Bedrock Guardrails", "AWS account with Bedrock, a CLI profile (we used SSO), Terraform to create the guardrails", "AWS_PROFILE, AWS_REGION", "$1.12"],
   ["Six self-hosted models", "Google Cloud project with billing and quota for 2 NVIDIA L4 GPUs, gcloud, Terraform", "GOLDRAILS_PROJECT, GOLDRAILS_ZONE (optional)", "$10.44 VM time"],
   ["Six newer Strands Decider models", "The same Google Cloud project, with quota for 4 NVIDIA L4 GPUs (g2-standard-48) and 1 A100 80 GB (for the 26B-A4B)", "GOLDRAILS_PROJECT, GOLDRAILS_ZONE (optional)", "$38.40 VM time"],
   ["Withheld text (optional)", "Hugging Face account that has accepted the terms of the gated sources", "HF_TOKEN", "Free"],
@@ -220,7 +220,7 @@ uv run python benchmark/runs/e2_full.py report      # run summary, public ledger
         <ul className="m-0 flex max-w-[64ch] flex-col gap-3 pl-5 text-[16px] leading-[1.7] text-fg-2 marker:text-muted">
           <li>
             <strong className="font-semibold text-fg">One rule.</strong> A decision model answers yes/no questions with a probability. We
-            block a row when any of its questions reaches {t}. Verdict APIs use their own flag. Bedrock Guardrails runs at one
+            block a row when any of its questions reaches {t}. Verdict APIs use their own flag. Amazon Bedrock Guardrails runs at one
             documented setting. We tune nothing per system.
           </li>
           <li>
@@ -270,7 +270,7 @@ uv run python benchmark/runs/e2_full.py report      # run summary, public ledger
             </thead>
             <tbody className="text-fg-2">
               <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">NoulAdapter</td><td className="py-2.5 pr-4">Decision models that answer yes/no questions with a probability</td><td className="py-2.5 pr-4 sm:pr-0">highest probability ≥ {t}</td></tr>
-              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">BedrockAdapter</td><td className="py-2.5 pr-4">Bedrock Guardrails</td><td className="py-2.5 pr-4 sm:pr-0">the service&apos;s verdict at its frozen setting</td></tr>
+              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">BedrockAdapter</td><td className="py-2.5 pr-4">Amazon Bedrock Guardrails</td><td className="py-2.5 pr-4 sm:pr-0">the service&apos;s verdict at its frozen setting</td></tr>
               <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">VerdictAPIAdapter</td><td className="py-2.5 pr-4">Vendor APIs with their own categories</td><td className="py-2.5 pr-4 sm:pr-0">the vendor&apos;s own flag</td></tr>
             </tbody>
           </table>
