@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageOpenGraph, pageTwitter } from "@/lib/og";
 import Link from "next/link";
 import { ArrowRight, Chevron } from "@/components/icons";
 import { HashOpen } from "@/components/hash-open";
@@ -21,7 +22,8 @@ import { JOBS } from "@/lib/jobs";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
-  openGraph: { url: "/", siteName: "decision-models-as-guardrails", type: "website" },
+  openGraph: pageOpenGraph("/"),
+  twitter: pageTwitter(),
 };
 
 /** Hero examples: published rows, mild enough for a first screen, chosen because the systems disagree on them. */
