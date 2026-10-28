@@ -31,19 +31,21 @@ export function UseCaseLeaders({
   const active = hover ?? picked;
   const name = (id: string) => sys[id]?.short ?? oneLine(sys[id], id);
   const f = picked ? follow(table, picked) : null;
+  const tier = picked ? table.flatMap((r) => r.top).find((s) => s.system === picked)?.tier ?? 1 : 1;
 
   return (
     <div className="flex flex-col gap-3">
       {/* Stays under the site header while the reader scrolls the table, so the summary is in view after a tap lower down. */}
-      <p className="sticky top-[var(--header-h,56px)] z-[2] m-0 flex min-h-11 flex-wrap items-center gap-x-4 gap-y-1 bg-bg py-1 text-[14px] text-fg-2" aria-live="polite">
+      <p className="sticky top-[var(--header-h,56px)] z-[2] m-0 flex min-h-14 items-center gap-3 border-b border-line bg-bg py-2 text-[14px] text-fg-2" aria-live="polite">
         {picked && f ? (
           <>
-            <span>
+            <Mark id={picked} tier={tier} sys={sys} on />
+            <span className="min-w-0 flex-1">
               <b className="font-semibold text-fg">{oneLine(sys[picked], picked)}</b>
               {f.first ? ` leads ${f.first} of ${f.of} use cases` : " leads none of the use cases"}
-              {` and is in the top ${TOP} of ${f.inTop}.`}
+              {` and is in the top ${TOP} in ${f.inTop}.`}
             </span>
-            <button type="button" onClick={() => setPicked(null)} className="min-h-11 text-[14px] text-muted underline decoration-line-strong underline-offset-[3px] hover:text-fg">
+            <button type="button" onClick={() => setPicked(null)} className="min-h-11 shrink-0 text-[14px] text-muted underline decoration-line-strong underline-offset-[3px] hover:text-fg">
               Clear
             </button>
           </>
@@ -101,23 +103,9 @@ export function UseCaseLeaders({
                           onClick={() => setPicked((v) => (v === s.system ? null : s.system))}
                           onPointerEnter={(e) => e.pointerType === "mouse" && setHover(s.system)}
                           onPointerLeave={(e) => e.pointerType === "mouse" && setHover(null)}
-                          className={`group mx-auto flex w-full max-w-[96px] flex-col items-center gap-1.5 rounded-md py-1 transition-opacity duration-200 ease-out motion-reduce:transition-none ${dim ? "opacity-30" : ""}`}
+                          className={`group mx-auto flex w-full max-w-[96px] flex-col items-center gap-1.5 rounded-md py-1 transition-opacity duration-200 ease-out motion-reduce:transition-none ${dim ? "opacity-25" : ""}`}
                         >
-                          <span
-                            className="grid size-9 place-items-center rounded-md sm:size-10 lg:size-11"
-                            style={{
-                              background: `color-mix(in srgb, ${tierVar(s.tier)} 14%, var(--bg))`,
-                              border: `2px solid ${tierVar(s.tier)}`,
-                              boxShadow: on ? "0 0 0 2px var(--bg), 0 0 0 4px var(--fg)" : undefined,
-                            }}
-                          >
-                            {sys[s.system]?.logo ? (
-                              // eslint-disable-next-line @next/next/no-img-element -- static export, tiny SVGs
-                              <img src={sys[s.system]?.logo} alt="" className="size-5 sm:size-[22px] lg:size-6" />
-                            ) : (
-                              <span className="text-[12px] font-semibold text-fg-2">{sys[s.system]?.mono}</span>
-                            )}
-                          </span>
+                          <Mark id={s.system} tier={s.tier} sys={sys} on={on} />
                           <span className={`num text-[13px] leading-none sm:text-[14px] ${n === 0 ? "font-semibold text-fg" : "text-fg-2"}`}>{score1(s.score)}</span>
                           <span className="hidden w-full truncate text-[12px] leading-tight text-muted lg:block">{name(s.system)}</span>
                         </button>
@@ -141,5 +129,26 @@ export function UseCaseLeaders({
         ))}
       </p>
     </div>
+  );
+}
+
+/** One system's logo square, tier colour on the border. `on` marks the followed system with a heavy ring. */
+function Mark({ id, tier, sys, on }: { id: string; tier: number; sys: Record<string, SystemMeta>; on: boolean }) {
+  return (
+    <span
+      className="grid size-9 shrink-0 place-items-center rounded-md sm:size-10 lg:size-11"
+      style={{
+        background: `color-mix(in srgb, ${tierVar(tier)} 14%, var(--bg))`,
+        border: `2px solid ${tierVar(tier)}`,
+        boxShadow: on ? "0 0 0 2px var(--bg), 0 0 0 5px var(--fg)" : undefined,
+      }}
+    >
+      {sys[id]?.logo ? (
+        // eslint-disable-next-line @next/next/no-img-element -- static export, tiny SVGs
+        <img src={sys[id]?.logo} alt="" className="size-5 sm:size-[22px] lg:size-6" />
+      ) : (
+        <span className="text-[12px] font-semibold text-fg-2">{sys[id]?.mono}</span>
+      )}
+    </span>
   );
 }
