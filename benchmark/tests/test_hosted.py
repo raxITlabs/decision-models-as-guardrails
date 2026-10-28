@@ -228,6 +228,103 @@ def test_perplexity_from_env():
     assert c.system == "pplx-decider-v1-27b" and c.throttle.interval == pytest.approx(0.2)
 
 
+V12 = [("pplx-decider-v1-2-27b", "pplx-decider-v1.2", "perplexity-ai/pplx-decider-v1.2",
+        "225c913ddc8761a8264f04f64548e1f97e443eb3"),
+       ("pplx-decider-flash-v1-2", "pplx-decider-flash-v1.2", "perplexity-ai/pplx-decider-flash-v1.2",
+        "6d771ad7b5ecff5e93b8fc7b90d4c5ccc341954d")]
+
+
+@pytest.mark.parametrize("system,model,ref,rev", V12)
+def test_perplexity_v12_records_its_own_weights(system, model, ref, rev):
+    c = hosted.PerplexityDecisionsClient("k", system=system, model=model)
+    assert c.system == system and c.model == model
+    assert (c.identity["ref"], c.identity["revision"]) == (ref, rev)
+    assert c.identity["model"] == model and c.identity["max_length"] == 262144
+    assert c.identity["pinned_model"] == model
+
+
+def test_perplexity_v1_identity_is_unchanged():
+    c = hosted.PerplexityDecisionsClient("k")
+    assert (c.identity["ref"], c.identity["revision"]) == hosted.PPLX_WEIGHTS
+    assert c.identity == {"provider": "perplexity", "model": "pplx-decider-v1-27b",
+                          "ref": "perplexity-ai/pplx-decider-v1-27b",
+                          "revision": "5117a6c7fe73b19308dc1a6b0fb529a40c2ecad4",
+                          "revision_basis": "Hugging Face commit of the open weights, for provenance; the hosted model is not pinned",
+                          "max_length": 262144, "precision": None}
+    # the config hash is (adapter, model, endpoint, question set): none of them moves for v1
+    assert (c.adapter, c.model, c.endpoint) == ({"name": "perplexity-decisions", "version": "1"}, "pplx-decider-v1-27b",
+                                                "https://api.perplexity.ai/v1/decisions")
+
+
+def test_perplexity_refuses_a_model_with_no_known_weights():
+    with pytest.raises(ValueError):
+        hosted.PerplexityDecisionsClient("k", system="pplx-decider-v1-1-27b", model="pplx-decider-v1.1-27b")
+
+
+@pytest.mark.parametrize("system,model,ref,rev", V12)
+def test_perplexity_v12_sends_its_model_and_accepts_only_that_name(system, model, ref, rev):
+    good = {"model": model, "answers": answers(QS["questions"], hot="hate"), "usage": {"input_tokens": 444, "output_tokens": 5}}
+    s = Server(ok(good))
+    c = hosted.PerplexityDecisionsClient("pplx-key", system=system, model=model, http=s.client(), throttle=hosted.Throttle(0))
+    res = NoulAdapter(c, policy=FAST).evaluate("content", "request", ROW)
+    assert json.loads(s.requests[0].content)["model"] == model
+    assert res.outcome == DECIDED and res.decision is True and res.raw["reported_model"] == model
+    assert res.serving["model_id"] == model and res.serving["revision"] == rev
+
+
+@pytest.mark.parametrize("reported", ["pplx-decider-latest", "pplx-decider-v1-27b", "pplx-decider-v1.1-27b",
+                                      "pplx-decider-flash-v1.2", None])
+def test_perplexity_v12_fails_a_response_naming_another_model(reported):
+    s = Server(ok({"model": reported, "answers": answers(QS["questions"], hot="hate")}))
+    c = hosted.PerplexityDecisionsClient("pplx-key", system="pplx-decider-v1-2-27b", model="pplx-decider-v1.2",
+                                         http=s.client(), throttle=hosted.Throttle(0))
+    res = NoulAdapter(c, policy=FAST).evaluate("content", "request", ROW)
+    assert res.outcome == FAILED and res.decision is None and res.error.startswith("ModelIdentityError")
+    assert len(s.requests) == 1   # never retried
+
+
+def test_perplexity_v1_still_accepts_any_non_jev_name():
+    s = Server(ok({"model": "pplx-decider-v1.2", "answers": answers(QS["questions"], hot="hate")}))
+    res = NoulAdapter(pplx(s), policy=FAST).evaluate("content", "request", ROW)
+    assert res.outcome == DECIDED and res.raw["reported_model"] == "pplx-decider-v1.2"
+
+
+def test_perplexity_v12_from_env_by_kind():
+    env = {"PERPLEXITY_API_KEY": "k"}
+    for kind, system, model in [("perplexity-v1.2", "pplx-decider-v1-2-27b", "pplx-decider-v1.2"),
+                                ("perplexity-flash-v1.2", "pplx-decider-flash-v1-2", "pplx-decider-flash-v1.2")]:
+        c = hosted.PerplexityDecisionsClient.from_env(env=env, **hosted.PPLX_KINDS[kind])
+        assert (c.system, c.model) == (system, model)
+        assert hosted.not_configured(kind).endswith("PERPLEXITY_API_KEY")
+    assert hosted.PPLX_KINDS["perplexity"] == {"system": "pplx-decider-v1-27b", "model": "pplx-decider-v1-27b"}
+
+
+def test_perplexity_v12_smoke_wiring():
+    spec = importlib.util.spec_from_file_location("e2_smoke_v12", ROOT / "benchmark" / "runs" / "e2_smoke.py")
+    smoke = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(smoke)
+    out, skipped = smoke.build_new_systems({"perplexity", "perplexity-v1.2", "perplexity-flash-v1.2"},
+                                           {"PERPLEXITY_API_KEY": "k"})
+    assert set(out) == {"pplx-decider-v1-27b", "pplx-decider-v1-2-27b", "pplx-decider-flash-v1-2"} and not skipped
+    throttles = {id(a.client.throttle) for a, _ in out.values()}
+    assert len(throttles) == 1   # one 5/s budget across Perplexity's shared 10/s organisation limit
+    for name in ("pplx-decider-v1-2-27b", "pplx-decider-flash-v1-2"):
+        assert smoke.LIMITS[name][0] == 262144 and name in smoke.WHOLE_REQUEST_USAGE
+
+
+def test_perplexity_v12_tariffs():
+    from goldrails_bench import leaderboard as lb
+    entries = lb.load_tariffs()["entries"]
+    def price(model):
+        (e,) = [e for e in entries if model in e["match"].get("models", [])]
+        return e
+    assert price("pplx-decider-v1.2")["prices"]["input_tokens"]["usd_per_million"] == 0.02
+    assert price("pplx-decider-flash-v1.2")["prices"]["input_tokens"]["usd_per_million"] == 0.01
+    for m in ("pplx-decider-v1.2", "pplx-decider-flash-v1.2"):
+        assert price(m)["prices"]["output_tokens"]["usd_per_million"] == 0.0 and price(m)["checked_on"] == "2026-10-27"
+    assert price("pplx-decider-v1-27b")["prices"]["input_tokens"]["usd_per_million"] == 0.04   # v1's run-time price
+
+
 def test_answers_in_list_or_bare_form_are_normalised():
     assert hosted.normalise_answers([{"id": "a", "type": "noul", "noul": 0.7}]) == {"a": {"type": "noul", "noul": 0.7}}
     assert hosted.normalise_answers({"a": 0.3}) == {"a": {"type": "noul", "noul": 0.3}}

@@ -46,7 +46,7 @@ LINEAGES = {
     "strands-decider-2b": {"label": "Strands Decider 2B (AWS)", "vendor": "AWS",
                            "versions": ["strands-decider-2b", "strands-decider-2b-v21", "strands-decider-2b-qwen35"]},
     "perplexity-decider": {"label": "Perplexity Decisions API", "vendor": "Perplexity",
-                           "versions": ["pplx-decider-v1-27b"], "planned": ["pplx-decider-v1.2"]},
+                           "versions": ["pplx-decider-v1-27b", "pplx-decider-v1-2-27b"]},
 }
 VERDICTS = ("better", "worse", "within noise", "not tested")
 METRICS = ("balanced_accuracy", "catch_rate", "false_block_rate")

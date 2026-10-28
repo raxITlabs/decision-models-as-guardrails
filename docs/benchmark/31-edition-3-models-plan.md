@@ -84,6 +84,8 @@ four-L4 split answered wrongly.
 - [ ] **Step 3:** Decide. A 200 that reports a v1.2 name means **hosted** (Task 2 applies, Task 3's pass 3 does
   not). Anything else means **self-hosted** (skip Task 2, run pass 3).
 
+**Outcome (27 October 2026): hosted.** `pplx-decider-v1.2` and `pplx-decider-flash-v1.2` both answered 200 and reported their own ids; `pplx-decider-v1.2-27b` is not a model id (400); `pplx-decider-latest` echoes its own name and gives v1.2's answers. Perplexity's docs now route `pplx-decider-v1-27b` requests to v1.2. Task 3's pass 3 and the flash VM slot are not needed for Perplexity.
+
 ### Task 2: Hosted Perplexity v1.2 (only if Task 1 says hosted)
 
 **Files:**
@@ -135,6 +137,12 @@ def test_perplexity_v1_identity_is_unchanged():
 - [x] Ruling 36: every test row and the unpublished slice. New manifest
   `freeze-manifest-microsoft-decision-1-all-rows.json`, committed alone before the run.
 - [ ] Full run on 9,975 rows (`all`, then `report`), then `score`: the full rescore with it ranked as the 20th system.
+
+### Task 2c: Perplexity Decider v1.2 run (done 27 October 2026)
+
+- [x] Client: `PPLX_WEIGHTS_BY_MODEL`, `PPLX_PINNED`, `PPLX_KINDS`; v1's identity and config hash unchanged. Tariffs USD 0.02 (v1.2) and 0.01 (flash) per million input tokens, checked 27 October 2026.
+- [x] Smoke: 177 dev rows per model, 0 failed. Ruling 37. Freeze `freeze-manifest-pplx-decider-v1-2.json` (16 arms), committed alone before the run.
+- [x] Full run (`benchmark/runs/e2_pplx12_run.py`): 9,975 rows per model, 0 failed, USD 0.272. Rescore: 22 systems; v1.2 ranks 1st (90.7, tier 1), flash 8th (86.5, tier 3). No existing score moved; tiers are relative to the tier leader, so 39 per-suite tiers shifted (Clef and Microsoft-Decision-1 overall 1 to 2).
 
 ### Task 3: Serve the new kinds on the VM
 

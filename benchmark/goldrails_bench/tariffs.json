@@ -79,6 +79,34 @@
       "status": "vendor list price, repository copy; not reconciled against a billing statement"
     },
     {
+      "id": "perplexity/decisions/pplx-decider-v1.2",
+      "provider": "Perplexity Decisions API",
+      "kind": "per_token",
+      "match": {"models": ["pplx-decider-v1.2"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.02},
+        "output_tokens": {"usd_per_million": 0.0, "note": "provider lists output tokens as free"}
+      },
+      "checked_on": "2026-10-27",
+      "source": "https://docs.perplexity.ai/docs/getting-started/pricing and https://docs.perplexity.ai/docs/decisions/quickstart (no per-request fee)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "perplexity/decisions/pplx-decider-flash-v1.2",
+      "provider": "Perplexity Decisions API",
+      "kind": "per_token",
+      "match": {"models": ["pplx-decider-flash-v1.2"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.01},
+        "output_tokens": {"usd_per_million": 0.0, "note": "provider lists output tokens as free"}
+      },
+      "checked_on": "2026-10-27",
+      "source": "https://docs.perplexity.ai/docs/getting-started/pricing and https://docs.perplexity.ai/docs/decisions/quickstart (no per-request fee)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
       "id": "openai/decisions/gpt-6-luna",
       "provider": "OpenAI Decisions API",
       "kind": "per_token",
