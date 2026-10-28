@@ -67,6 +67,7 @@ NOT_RUN = {("grounding", "relevance"): "no edition 2 dev row carries a relevance
 LIMITS = {"jev-1.13.0": (32000, "documented"), "jev-1.14.0": (32000, "documented"),
           "open-jev-2b": (4096, "served --max-length"),
           "clef": (65536, "hosted context (Workers AI)"), "clef-flash": (65536, "hosted context (Workers AI)"),
+          "clef-omni": (65536, "hosted context (OpenRouter listing 65,536; Workers AI page says 64,000)"),
           "pplx-decider-v1-27b": (262144, "hosted input limit (Perplexity docs)"),
           "pplx-decider-v1-2-27b": (262144, "hosted 256K context (Perplexity docs, 27 October 2026)"),
           "pplx-decider-flash-v1-2": (262144, "hosted 256K context (Perplexity docs, 27 October 2026)"),
@@ -82,8 +83,13 @@ LIMITS.update({n: (4096, "documented window; cut silently, no truncation flag") 
 # Servers whose usage.input_tokens is the sum over one prompt per question: per-prompt tokens = usage / questions.
 PER_PROMPT_USAGE = {"open-jev-2b", "laya"}
 # Hosted joint-schema models report one input count for the whole request: at the limit means the input was capped.
-WHOLE_REQUEST_USAGE = {"clef", "clef-flash", "pplx-decider-v1-27b", "pplx-decider-v1-2-27b", "pplx-decider-flash-v1-2",
+WHOLE_REQUEST_USAGE = {"clef", "clef-flash", "clef-omni", "pplx-decider-v1-27b", "pplx-decider-v1-2-27b", "pplx-decider-flash-v1-2",
                        "microsoft-decision-1"}
+# The OpenRouter decision models (goldrails_bench.hosted.OPENROUTER_DECIDERS): the listing's context, whole-request usage.
+_OR = {"drex-max": 262144, "span-02": 131072, "liquid-d1-ultra": 32768, "liquid-d1.1": 65536, "solar-decide": 524288,
+       "solar-decide-flash": 524288, "mercury-decide": 65536}
+LIMITS.update({k: (v, "hosted context (OpenRouter listing, 28 October 2026)") for k, v in _OR.items()})
+WHOLE_REQUEST_USAGE |= set(_OR)
 DEFAULT_LIMIT = (4096, "proxy: undocumented, 4096 reference")
 NEAR = 0.8   # a row is near the limit at >= 80% of it
 CHARS_PER_TOKEN = 3.5   # conservative (over-)estimate for English with a BPE tokenizer
@@ -221,8 +227,9 @@ def leak_check(paths, rows_by_id: dict) -> list:
 
 # --- systems ---------------------------------------------------------------------------------------------------
 
-NEW_KINDS = ("clef", "clef-flash", "perplexity", "strands", "openai", "jev-1.14", "microsoft", "perplexity-v1.2",
-             "perplexity-flash-v1.2")
+NEW_KINDS = ("clef", "clef-flash", "clef-omni", "perplexity", "strands", "openai", "jev-1.14", "microsoft", "perplexity-v1.2",
+             "perplexity-flash-v1.2", "drex-max", "span-02", "liquid-d1-ultra", "liquid-d1.1", "solar-decide",
+             "solar-decide-flash", "mercury-decide")
 KINDS = ("jev", "open", "bedrock") + NEW_KINDS
 JEV_114 = "jev-1.14.0"   # the versioned id; jev-preview points at it today but moves with the next release
 
@@ -255,7 +262,7 @@ def build_new_systems(kinds: set, env) -> tuple[dict, dict]:
     """The docs/benchmark/28 systems. Hosted ones come from env (names in .env.example); Strands from the VM."""
     from goldrails_bench import hosted
     out, skipped = {}, {}
-    for kind in ("clef", "clef-flash"):
+    for kind in ("clef", "clef-flash", "clef-omni"):
         if kind in kinds:
             c = hosted.CloudflareSystemOneClient.from_env(kind, env=env)
             if c is None:
@@ -276,6 +283,14 @@ def build_new_systems(kinds: set, env) -> tuple[dict, dict]:
             skipped["openai"] = hosted.not_configured("openai")
         else:
             out[c.system] = (NoulAdapter(c, endpoint=c.endpoint), 4)   # the client throttles the pool to 5/s
+    or_throttle = hosted.Throttle(hosted.MSD1_RATE)   # one budget for the OpenRouter models below
+    for kind in hosted.OPENROUTER_DECIDERS:
+        if kind in kinds:
+            c = hosted.OpenRouterDecisionClient.from_env(kind, env=env, throttle=or_throttle)
+            if c is None:
+                skipped[kind] = hosted.not_configured(kind)
+            else:
+                out[c.system] = (NoulAdapter(c, endpoint=c.endpoint), 4)
     if "microsoft" in kinds:
         c = hosted.MicrosoftDecisionClient.from_env(env=env)
         if c is None:

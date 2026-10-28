@@ -9,13 +9,14 @@ import { CostCalculator } from "@/components/cost-calculator";
 import { HeroPlate, Plate } from "@/components/plate";
 import { Faq } from "@/components/faq";
 import { Leaderboard } from "@/components/leaderboard";
+import { UseCaseLeaders } from "@/components/use-case-leaders";
 import { AttacksFinding, BedrockFinding, CostFinding } from "@/components/finding";
 import { faqItems } from "@/lib/copy";
 import { ContactLink } from "@/components/contact";
 import { ContactPrompt } from "@/components/contact-prompt";
 import { loadBoard, loadRowDetails, loadRowsIndex, loadVersions } from "@/lib/data";
 import { lineageSummaries, supersededBy } from "@/lib/versions";
-import { REPO_URL, int, listNames, longDate, oneLine, pct, score1, systemMap } from "@/lib/format";
+import { REPO_URL, int, longDate, systemMap } from "@/lib/format";
 import { JOBS } from "@/lib/jobs";
 
 export const metadata: Metadata = {
@@ -38,6 +39,8 @@ export default function Home() {
   const board = loadBoard();
   const lineages = lineageSummaries(loadVersions());
   const older = supersededBy(lineages);
+  // The hero names the board's top ten, newest versions only, in rank order.
+  const heroTop = board.overall.filter((r) => !older[r.system]).sort((a, b) => a.rank - b.rank).slice(0, 10).map((r) => r.system);
   // A model with several versions on the board counts once.
   const models = board.stats.systems - lineages.reduce((n, l) => n + l.versions.length - 1, 0);
   const index = loadRowsIndex();
@@ -71,7 +74,7 @@ export default function Home() {
     {
       title: "One fixed rule",
       big: `≥ ${board.stats.threshold} blocks`,
-      body: "We tune no threshold on the test rows, so you see each system's default. Verdict APIs use their own flag. Bedrock Guardrails runs at one documented setting.",
+      body: "We tune no threshold on the test rows, so you see each system's default. Verdict APIs use their own flag. Amazon Bedrock Guardrails runs at one documented setting.",
     },
     {
       title: "Score and cost",
@@ -91,7 +94,7 @@ export default function Home() {
             </h1>
             {examples.length > 0 && (
               <div className="rise rise-2">
-                <DecisionSpace examples={examples} systems={board.systems} />
+                <DecisionSpace examples={examples} systems={board.systems} top={heroTop} />
               </div>
             )}
             <div className="rise rise-2 flex flex-wrap gap-3">
@@ -188,38 +191,7 @@ export default function Home() {
             See all {int(index.rows.length)} public rows <ArrowRight />
           </Link>
         </div>
-        <ol className="m-0 grid list-none gap-x-14 p-0 md:grid-cols-2">
-          {JOBS.map((j, i) => {
-            const ranking = board.jobs[j.id];
-            const top = ranking.filter((s) => s.tier === 1);
-            const lead = ranking[0];
-            const fb = top.map((s) => s.falseBlockRate);
-            return (
-              <li key={j.id} className="grid grid-cols-[2rem_minmax(0,1fr)_auto] gap-x-4 border-t border-line-strong py-5">
-                <span className="num pt-1 text-[13px] text-muted">{String(i + 1).padStart(2, "0")}</span>
-                <div className="flex min-w-0 flex-col gap-1.5">
-                  <h3 className="m-0 text-[18px] font-semibold leading-snug tracking-[-0.01em]">{j.title}</h3>
-                  <p className="m-0 text-[14px] leading-snug text-fg-2">{j.sub}</p>
-                  <p className="m-0 text-[14px] leading-snug">
-                    <span className="text-muted">Top tier: </span>
-                    {listNames(top.map((s) => oneLine(sys[s.system], s.system)))}
-                  </p>
-                  <p className="m-0 text-[13px] text-muted">
-                    Top tier blocks{" "}
-                    {fb.length ? (fb.length === 1 ? pct(fb[0], 0) : `${pct(Math.min(...fb), 0)} to ${pct(Math.max(...fb), 0)}`) : "n/a"} of safe rows
-                  </p>
-                  <Link href={`/data?job=${j.id}#rows`} className="inline-flex min-h-11 w-fit items-center gap-1.5 text-[14px]">
-                    {int(rowsPerJob[i])} rows<span className="sr-only"> for {j.title}</span> <ArrowRight />
-                  </Link>
-                </div>
-                <div className="flex flex-col items-end">
-                  <span className="num text-[26px] tracking-[-0.02em]">{lead ? score1(lead.score) : "n/a"}</span>
-                  <span className="text-[12px] text-muted">best score</span>
-                </div>
-              </li>
-            );
-          })}
-        </ol>
+        <UseCaseLeaders jobs={JOBS} rankings={board.jobs} sys={sys} hide={older} rows={rowsPerJob} />
       </section>
       </div>
 

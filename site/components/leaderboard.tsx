@@ -6,7 +6,8 @@ import { JOBS, JOB_BY_ID, type JobId } from "@/lib/jobs";
 import { halfCi, listNames, maxTier, money, pct, score1, tierVar, oneLine } from "@/lib/format";
 import type { Board, LineageSummary, Score, SystemMeta, VersionChange, VersionStepSummary } from "@/lib/types";
 import { supersededBy, visibleRanks } from "@/lib/versions";
-import { type Lens, type Pick, pickFor, tierGroups } from "@/lib/picks";
+import { type Lens, type Pick, pickFor, rowsOnShow, tierGroups } from "@/lib/picks";
+import { type ChartScope, chartSystems, logAxis } from "@/lib/chart";
 import { ArrowRight, ArrowUpLeft, Chevron, External } from "./icons";
 import { Segmented } from "./segmented";
 import { NewTag } from "./new-tag";
@@ -16,10 +17,12 @@ import { shareCard } from "@/lib/share";
 
 type JobPick = "overall" | JobId;
 type Axis = "cost" | "fbr";
-type Scope = "managed" | "all";
+type Scope = ChartScope;
 
 /** "All use cases" and the first three use cases show; the others sit behind "5 more". */
 const JOBS_SHOWN = 4;
+/** Rows the table shows before "Show all"; the rest fold below the last of them. */
+const TOP_ROWS = 20;
 const JOB_OPTIONS = [{ value: "overall" as JobPick, label: "All use cases", short: "All" }, ...JOBS.map((j) => ({ value: j.id as JobPick, label: j.title, short: j.short }))];
 
 // Label widths measured with the real font, so placement does not drop labels that fit.
@@ -63,7 +66,7 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
   const [moreJobs, setMoreJobs] = useState(false);
   const jobsInRow = JOB_OPTIONS.filter((o, i) => i < JOBS_SHOWN || o.value === job);
   const [axis, setAxis] = useState<Axis>("cost");
-  const [scope, setScope] = useState<Scope>("managed");
+  const [scope, setScope] = useState<Scope>("top");
   const sys = useMemo(() => Object.fromEntries(board.systems.map((s) => [s.id, s])) as Record<string, SystemMeta>, [board]);
   const scores: Score[] = useMemo(
     () => [...(job === "overall" ? board.overall : board.jobs[job])].sort((a, b) => a.rank - b.rank),
@@ -77,8 +80,6 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const latest = scores.filter((s) => !older[s.system]);
   const byId = Object.fromEntries(scores.map((s) => [s.system, s]));
-  // The table lists every system; "Managed APIs" only thins the chart.
-  const shown = latest.filter((s) => scope === "all" || sys[s.system]?.hosting === "managed");
   const rankOf = visibleRanks(latest);
   const groups = tierGroups(latest);
   const [lens, setLens] = useState<Lens | null>(null);
@@ -90,6 +91,23 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
     if (p) setSelected(p.system);
   };
   const sel = scores.find((s) => s.system === selected) ?? scores[0];
+  // The table lists every system; the scope only thins the chart. "Top 10" keeps Bedrock as the reference and the
+  // selected and recommended systems wherever they rank.
+  const shown = chartSystems(latest, scope, sys, [sel?.system, pick?.system]);
+  // Progressive disclosure: the first TOP_ROWS rows, plus the selected and recommended systems wherever they rank.
+  const [allRows, setAllRows] = useState(false);
+  const onShow = new Set(rowsOnShow(latest, TOP_ROWS, [sel?.system, pick?.system], allRows));
+  const folded = latest.length - onShow.size;
+  const groupAt = groups.flatMap((g) => Array.from({ length: g.count }, () => g));
+  const firstOnShow = new Set<number>();
+  {
+    let last: (typeof groups)[number] | undefined;
+    latest.forEach((_, i) => {
+      if (!onShow.has(i)) return;
+      if (groupAt[i] !== last) firstOnShow.add(i);
+      last = groupAt[i];
+    });
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -143,8 +161,9 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
           value={scope}
           onChange={setScope}
           options={[
+            { value: "top", label: "Top 10", short: "Top 10" },
             { value: "managed", label: "Managed APIs", short: "Managed" },
-            { value: "all", label: "All systems", short: "All" },
+            { value: "all", label: `All ${latest.length}`, short: "All" },
           ]}
         />
       </div>
@@ -152,7 +171,7 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
         {job === "overall"
           ? `The overall score is the plain average of ${board.stats.suites} guardrail suites, which together cover the ${board.stats.jobs} use cases. The leaders change a lot from use case to use case. Select your use case above.`
           : `${JOB_BY_ID[job].sub}. The score is balanced accuracy on this use case. A score of 50 is a coin flip.`}
-        {axis === "cost" && scope === "all"
+        {axis === "cost" && shown.some((s) => sys[s.system]?.hosting === "self-hosted")
           ? " Dashed squares are self-hosted models. Their cost is our shared GPU time, so it tells you more about our setup than about the model."
           : ""}
       </p>
@@ -180,8 +199,9 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
           </thead>
           <tbody>
             {latest.map((s, i) => {
+              if (!onShow.has(i)) return null;
               const m = sys[s.system];
-              const g = groups.find((x) => x.first === i);
+              const g = firstOnShow.has(i) ? groupAt[i] : undefined;
               const l = lineageOf[s.system];
               const isOpen = !!(l && open[l.key]);
               const earlier = l ? l.versions.slice(0, -1).reverse().map((v) => byId[v]).filter(Boolean) : [];
@@ -231,6 +251,19 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
           </tbody>
         </table>
       </div>
+      {latest.length > TOP_ROWS && (
+        <button
+          type="button"
+          aria-expanded={allRows}
+          onClick={() => setAllRows((v) => !v)}
+          className="group -mt-3 inline-flex min-h-11 items-center gap-1 self-start text-[14px] text-muted transition-colors hover:text-fg"
+        >
+          <span className="underline decoration-line-strong underline-offset-[3px] group-hover:decoration-fg">
+            {allRows ? `Show the top ${TOP_ROWS} only` : `Show all ${latest.length} systems (${folded} more)`}
+          </span>
+          <Chevron className={`size-3 transition-transform duration-200 ease-out motion-reduce:transition-none ${allRows ? "rotate-180" : ""}`} />
+        </button>
+      )}
 
       <p className="m-0 text-[13px] leading-relaxed text-muted">
         The shaded row is a guardrail service, not a decision model (<a href="#kinds">see the difference</a>). Every system answers the
@@ -520,15 +553,21 @@ function Scatter({
   const pad = { l: 40, r: 28, t: 40, b: 34 };
   const xv = (s: Score) => (axis === "cost" ? s.cost ?? 0 : s.falseBlockRate);
   const xMax = niceMax(Math.max(...scores.map(xv), axis === "cost" ? 0.05 : 0.05) * 1.08);
+  // Cost spans two orders of magnitude, so it is drawn on a log axis: the cheap leaders spread out instead of sharing
+  // the left edge. A system with no cost sits at the left end.
+  const cost = logAxis(scores.map((s) => s.cost ?? 0), w < 560);
   const yMinRaw = Math.min(...scores.map((s) => s.ciLow), 90);
   const yMin = Math.max(0, Math.floor((yMinRaw - 1) / 5) * 5);
   const yMax = Math.min(100, Math.ceil((Math.max(...scores.map((s) => s.ciHigh), 60) + 1) / 5) * 5);
-  const px = (v: number) => pad.l + (v / xMax) * (w - pad.l - pad.r);
+  const px = (v: number) =>
+    axis === "cost"
+      ? pad.l + ((Math.log10(Math.max(v, cost.lo)) - Math.log10(cost.lo)) / (Math.log10(cost.hi) - Math.log10(cost.lo))) * (w - pad.l - pad.r)
+      : pad.l + (v / xMax) * (w - pad.l - pad.r);
   const py = (v: number) => pad.t + ((yMax - v) / (yMax - yMin)) * (h - pad.t - pad.b);
   const yTicks: number[] = [];
   for (let v = yMin; v <= yMax; v += yMax - yMin > 30 ? 10 : 5) yTicks.push(v);
-  const xTicks = ticks(xMax, w < 560 ? 3 : 4);
-  const fmtX = (v: number) => (axis === "cost" ? `$${v === 0 ? "0" : v < 0.01 ? v.toFixed(3) : v.toFixed(2)}` : `${Math.round(v * 100)}%`);
+  const xTicks = axis === "cost" ? cost.ticks : ticks(xMax, w < 560 ? 3 : 4);
+  const fmtX = (v: number) => (axis === "cost" ? `$${v === 0 ? "0" : v < 0.01 ? v.toFixed(3) : v < 1 ? v.toFixed(2) : String(v)}` : `${Math.round(v * 100)}%`);
 
   // Greedy label placement: right of the dot, else left, else nudged; dropped when nothing fits.
   const placed: Placed[] = [];
@@ -659,8 +698,9 @@ function Scatter({
       tries.push({ x: p.x + off, y: p.y + dy, anchor: "right" });
       tries.push({ x: p.x - off - lw, y: p.y + dy, anchor: "left" });
     }
-    // The selected system is always annotated: it may also sit centred above or below its square, or further out.
-    if (p.s.system === selected) {
+    // Then centred above or below its square, or further out: squares at nearly the same cost stack in a column, and
+    // a label beside one of them would cover its neighbour.
+    {
       const v = half(p.s) + 10;
       tries.push({ x: p.x - lw / 2, y: p.y - v, anchor: "right" }, { x: p.x - lw / 2, y: p.y + v, anchor: "right" });
       for (const dy of [-24, 24]) tries.push({ x: p.x + off, y: p.y + dy, anchor: "right" }, { x: p.x - off - lw, y: p.y + dy, anchor: "left" });
@@ -803,7 +843,7 @@ function Scatter({
       )}
       <figcaption className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[12px] text-muted">
         <span>
-          Score is balanced accuracy, where 50 is a coin flip. The horizontal axis is {axis === "cost" ? "USD per 1,000 checks" : "the share of safe rows blocked"}. Lines show the 95% interval; if a square had to move to stay readable, a dot marks its exact value.
+          Score is balanced accuracy, where 50 is a coin flip. The horizontal axis is {axis === "cost" ? "USD per 1,000 checks, on a log scale" : "the share of safe rows blocked"}. Lines show the 95% interval; if a square had to move to stay readable, a dot marks its exact value.
         </span>
         <span className="flex flex-wrap items-center gap-3" aria-label="Tier colours">
           {present.map((t) => (
@@ -886,7 +926,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
         </dl>
         {vs && (
           <div className="flex flex-col gap-2 border-t border-line pt-4">
-            <span className="text-[14px] font-semibold">Against Bedrock Guardrails</span>
+            <span className="text-[14px] font-semibold">Against Amazon Bedrock Guardrails</span>
             <dl className="m-0 grid grid-cols-2 gap-x-4 gap-y-2.5">
               {vs.map((x) => (
                 <div key={x.label} className="flex flex-col">

@@ -29,9 +29,9 @@ export function BedrockFinding({ board, hide = {} }: { board: Board; hide?: Reco
   const beat = decisions.filter((s) => s.score > ref.score);
   const top = overall.slice(0, 4);
   return (
-    <Band label="Finding: decision models against Bedrock Guardrails" statement={`${beat.length} of ${decisions.length} decision models beat Bedrock Guardrails.`}>
+    <Band label="Finding: decision models against Amazon Bedrock Guardrails" statement={`${beat.length} of ${decisions.length} decision models beat Amazon Bedrock Guardrails.`}>
       The top four score <N>{score1(Math.min(...top.map((s) => s.score)))}</N> to <N>{score1(Math.max(...top.map((s) => s.score)))}</N> overall.
-      Bedrock Guardrails scores <N>{score1(ref.score)}</N>. Scores are balanced accuracy across all {board.stats.jobs} use cases, where 50 is a coin
+      Amazon Bedrock Guardrails scores <N>{score1(ref.score)}</N>. Scores are balanced accuracy across all {board.stats.jobs} use cases, where 50 is a coin
       flip.
     </Band>
   );
@@ -51,7 +51,7 @@ export function CostFinding({ board, hide = {} }: { board: Board; hide?: Record<
   return (
     <Band label="Finding: cost" statement="Cheaper is not worse.">
       Per million checks at list price,{" "}
-      {listNames(cheaper.map((s) => `${name(s.system)} costs ${perMillion(s.cost as number)}`))}. {cheaper.length === 1 ? "It scores" : "Both score"} higher than Bedrock Guardrails,
+      {listNames(cheaper.map((s) => `${name(s.system)} costs ${perMillion(s.cost as number)}`))}. {cheaper.length === 1 ? "It scores" : "Both score"} higher than Amazon Bedrock Guardrails,
       which costs <N>{perMillion(ref.cost)}</N>.
     </Band>
   );

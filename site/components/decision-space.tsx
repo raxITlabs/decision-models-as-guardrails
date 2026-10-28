@@ -16,16 +16,24 @@ export interface Example {
   verdicts: Record<string, boolean | null>;
 }
 
-/** The hero's decision space: one real benchmark message, set on the painting, and every system sorted to the side
- *  it chose. The reader steps through the examples; nothing advances on its own. */
-export function DecisionSpace({ examples, systems }: { examples: Example[]; systems: SystemMeta[] }) {
+/** The hero's decision space: one real benchmark message, set on the painting, and the leaderboard's top systems sorted
+ *  to the side they chose. The rest of the board is one line of counts, with every name one tap away. The reader steps
+ *  through the examples; nothing advances on its own. */
+export function DecisionSpace({ examples, systems, top }: { examples: Example[]; systems: SystemMeta[]; top: string[] }) {
   const [i, setI] = useState(0);
   // Phones: the names start open; the reader can fold them away and that choice holds across examples.
   const [namesOpen, setNamesOpen] = useState(true);
+  // Every system's name, not only the top ones; the choice holds across examples.
+  const [everyone, setEveryone] = useState(false);
   const ex = examples[i];
   const block = ex.label === "yes";
-  const allowed = systems.filter((s) => ex.verdicts[s.id] === false);
-  const blocked = systems.filter((s) => ex.verdicts[s.id] === true);
+  const byId = Object.fromEntries(systems.map((s) => [s.id, s]));
+  const topSet = new Set(top);
+  const named = everyone ? systems : top.map((id) => byId[id]).filter(Boolean);
+  const rest = systems.filter((s) => !topSet.has(s.id));
+  const restWrong = rest.filter((s) => ex.verdicts[s.id] !== block).length;
+  const allowed = named.filter((s) => ex.verdicts[s.id] === false);
+  const blocked = named.filter((s) => ex.verdicts[s.id] === true);
   const silent = systems.filter((s) => ex.verdicts[s.id] == null);
   const wrong = systems.filter((s) => ex.verdicts[s.id] !== block);
   const right = systems.length - wrong.length;
@@ -53,6 +61,9 @@ export function DecisionSpace({ examples, systems }: { examples: Example[]; syst
         The right call is to <b className="over-art font-semibold">{block ? "block it" : "let it through"}</b>.
       </p>
 
+      <p className="over-art-86 m-0 -mb-1.5 text-[13px] font-medium lg:text-[15px]">
+        {everyone ? `All ${systems.length} systems` : `The top ${top.length} on the leaderboard`}
+      </p>
       {/* Tablet and up: both sides at once. */}
       <div key={`d${ex.id}`} className="fade hidden grid-cols-2 border-t border-[var(--over-line)] sm:grid">
         {lists}
@@ -71,6 +82,23 @@ export function DecisionSpace({ examples, systems }: { examples: Example[]; syst
         </summary>
         <div className="grid grid-cols-1 pb-2 min-[400px]:grid-cols-2">{lists}</div>
       </details>
+
+      {rest.length > 0 && (
+        <p className="over-art-86 num m-0 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-[14px] lg:text-[15px]">
+          {everyone ? (
+            <span>Every system on the board, in board order.</span>
+          ) : (
+            <span>
+              The other {rest.length}: {rest.filter((s) => ex.verdicts[s.id] === false).length} allowed ·{" "}
+              {rest.filter((s) => ex.verdicts[s.id] === true).length} blocked
+              {restWrong > 0 && <span className="text-[var(--warn-art)]">, {restWrong} wrong</span>}
+            </span>
+          )}
+          <button type="button" aria-expanded={everyone} onClick={() => setEveryone((v) => !v)} className="art-link min-h-11 font-medium">
+            {everyone ? `Show the top ${top.length} only` : `Show all ${systems.length}`}
+          </button>
+        </p>
+      )}
 
       <p className="over-art-86 num m-0 border-t border-[var(--over-line)] pt-3 text-[15px] lg:text-[16px]">
         {right} of {systems.length} got it right

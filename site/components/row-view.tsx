@@ -248,7 +248,7 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
           </table>
         </div>
         <p className="m-0 max-w-[72ch] text-[13px] text-muted">
-          A decision model&apos;s score is its highest probability across the job&apos;s questions. Bedrock Guardrails reports a
+          A decision model&apos;s score is its highest probability across the job&apos;s questions. Amazon Bedrock Guardrails reports a
           severity or confidence step instead. Verdict APIs report their own flag. A failed call counts as wrong.
         </p>
       </section>

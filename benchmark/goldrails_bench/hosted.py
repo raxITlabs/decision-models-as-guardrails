@@ -3,7 +3,7 @@
 Each client has the ``ask(state, questions) -> SystemOneCall`` shape ``systemone.SystemOneClient`` has, so the
 unchanged ``NoulAdapter`` and ``policy.ask_with_policy`` drive them:
 
-- ``CloudflareSystemOneClient``: Workers AI ``@cf/cloudflare/clef`` and ``@cf/cloudflare/clef-flash``.
+- ``CloudflareSystemOneClient``: Workers AI ``@cf/cloudflare/clef``, ``clef-flash`` and ``clef-omni``.
 - ``PerplexityDecisionsClient``: ``POST https://api.perplexity.ai/v1/decisions``, ``pplx-decider-v1-27b``.
 - ``OpenAIDecisionsClient``: ``POST https://api.openai.com/v1/decisions``, ``gpt-6-luna`` (public beta). Its API has
   no roles and its own question type, so the state is serialised to one text string and each Noul question becomes a
@@ -198,6 +198,8 @@ CLOUDFLARE_URL = "https://api.cloudflare.com/client/v4/accounts/{account}/ai/run
 CLEF = {  # system name -> (Workers AI model id, Hugging Face weights, pinned revision for provenance)
     "clef": ("@cf/cloudflare/clef", "Cloudflare/clef", "2f3de3dd85f379784083b0814d997ab627200f0c"),
     "clef-flash": ("@cf/cloudflare/clef-flash", "Cloudflare/clef-flash", "17f0b0ad64efb65d273590632833508766b2aae6"),
+    # 30B-A3B multimodal; text-only here. Probed 28 October 2026: same System One body, reports "clef-omni".
+    "clef-omni": ("@cf/cloudflare/clef-omni", "Cloudflare/clef-omni", "df2d7c9505e62ba8a527b147513a4fa66a77dc5d"),
 }
 CLEF_CONTEXT = 65_536   # hosted context in tokens (Workers AI model page, read 2 October 2026)
 CAPPED_AT = 0.99        # usage.input_tokens at >= 99% of the context looks capped: flag possible truncation
@@ -232,7 +234,7 @@ class CloudflareSystemOneClient(HostedDecisionClient):
         return cls(system, acct, tok, **kw) if acct and tok else None
 
     def body(self, state, questions):
-        # Workers AI requires "model": "clef" or "clef-flash" in the body as well as the model id in the URL
+        # Workers AI requires "model": "clef", "clef-flash" or "clef-omni" in the body as well as the model id in the URL
         # (Clef model page, input schema, read 5 October 2026).
         b = super().body(state, questions)
         b["model"] = self.system
@@ -583,10 +585,13 @@ class MicrosoftDecisionClient(HostedDecisionClient):
     adapter = {"name": "openrouter-decisions", "version": "1"}
 
     def __init__(self, api_key: str, system: str = MSD1_SYSTEM, model: str = MSD1_MODEL, url: str = OPENROUTER_URL,
-                 snapshot: str = MSD1_SNAPSHOT, throttle: Throttle | None = None, **kw):
+                 snapshot: str = MSD1_SNAPSHOT, throttle: Throttle | None = None, context: int = MSD1_CONTEXT,
+                 data_handling: str | None = "every test row and the unpublished slice (ruling 36)", **kw):
         identity = {"provider": self.provider, "model": model, "ref": None, "revision": snapshot,
                     "revision_basis": "dated snapshot name the response reports; any other name fails the call",
-                    "max_length": MSD1_CONTEXT, "precision": None, "data_handling": "every test row and the unpublished slice (ruling 36)"}
+                    "max_length": context, "precision": None}
+        if data_handling:
+            identity["data_handling"] = data_handling
         super().__init__(system, model, url, api_key, identity=identity,
                          throttle=throttle if throttle is not None else Throttle(MSD1_RATE), **kw)
         self.snapshot = snapshot
@@ -635,9 +640,44 @@ class MicrosoftDecisionClient(HostedDecisionClient):
         return call
 
 
+# Seven more decision models on OpenRouter's Decisions endpoint (public model list ?output_modalities=decisions and one
+# canned call each, 28 October 2026). Each is pinned to the dated snapshot its response reported; context is the
+# OpenRouter listing's. Data handling for the unpublished slice is set per run by owner ruling, not here.
+OPENROUTER_DECIDERS = {
+    "drex-max": {"model": "nace-ai/drex-max", "snapshot": "nace-ai/drex-max-20261016", "context": 262_144},
+    "span-02": {"model": "respan/span-02", "snapshot": "respan/span-02-20261015", "context": 131_072},
+    "liquid-d1-ultra": {"model": "liquid/d1-ultra", "snapshot": "liquid/d1-ultra-20261015", "context": 32_768},
+    "liquid-d1.1": {"model": "liquid/d1.1", "snapshot": "liquid/d1.1-20261027", "context": 65_536},
+    "solar-decide": {"model": "upstage/solar-decide", "snapshot": "upstage/solar-decide-20260928", "context": 524_288},
+    "solar-decide-flash": {"model": "upstage/solar-decide-flash", "snapshot": "upstage/solar-decide-flash-20261008",
+                           "context": 524_288},
+    "mercury-decide": {"model": "inception/mercury-decide", "snapshot": "inception/mercury-decide-20260930",
+                       "context": 65_536},
+}
+
+
+class OpenRouterDecisionClient(MicrosoftDecisionClient):
+    """One of ``OPENROUTER_DECIDERS`` through OpenRouter's Decisions endpoint: the same request, response, snapshot pin,
+    429 handling and provider record as Microsoft-Decision-1, with the system's own model, snapshot and context."""
+
+    def __init__(self, api_key: str, system: str, **kw):
+        if system not in OPENROUTER_DECIDERS:
+            raise ValueError(f"unknown OpenRouter decision system {system!r}; known: {sorted(OPENROUTER_DECIDERS)}")
+        d = OPENROUTER_DECIDERS[system]
+        super().__init__(api_key, system=system, model=d["model"], snapshot=d["snapshot"], context=d["context"],
+                         data_handling=None, **kw)
+
+    @classmethod
+    def from_env(cls, system: str, env=os.environ, **kw):
+        key = env.get("OPENROUTER_API_KEY")
+        return cls(key, system=system, **kw) if key else None
+
+
 def not_configured(system: str) -> str:
     """Why ``from_env`` returned None: the names (never the values) of what is missing."""
     need = {"clef": "CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN", "clef-flash": "CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN",
+            "clef-omni": "CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN",
+            **{k: "OPENROUTER_API_KEY" for k in OPENROUTER_DECIDERS},
             "perplexity": "PERPLEXITY_API_KEY", "perplexity-v1.2": "PERPLEXITY_API_KEY",
             "perplexity-flash-v1.2": "PERPLEXITY_API_KEY",
             "openai": "OPENAI_API_KEY",

@@ -138,6 +138,118 @@
       "note": "matched on the requested model id, which the ledgers record; the client fails any call whose response reports a snapshot other than 20261009"
     },
     {
+      "id": "openrouter/decisions/drex-max",
+      "provider": "OpenRouter Decisions API (alpha), served by Nace.AI, served by DeepInfra",
+      "kind": "per_token",
+      "match": {"models": ["nace-ai/drex-max", "nace-ai/drex-max-20261016"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.06},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-10-28",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 28 October 2026); a canned call reported cost 0.00004026 for 671 input and 190 output tokens, which is 0.06 per million input with output free",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/span-02",
+      "provider": "OpenRouter Decisions API (alpha), served by Respan",
+      "kind": "per_token",
+      "match": {"models": ["respan/span-02", "respan/span-02-20261015"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.01},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-10-28",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 28 October 2026); a canned call reported cost 0.00000811 for 811 input tokens",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/liquid-d1-ultra",
+      "provider": "OpenRouter Decisions API (alpha), served by Liquid AI",
+      "kind": "per_token",
+      "match": {"models": ["liquid/d1-ultra", "liquid/d1-ultra-20261015"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.042},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-10-28",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 28 October 2026); a canned call reported cost 0.000017682 for 421 input tokens",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/liquid-d1.1",
+      "provider": "OpenRouter Decisions API (alpha), served by Liquid AI",
+      "kind": "per_token",
+      "match": {"models": ["liquid/d1.1", "liquid/d1.1-20261027"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.02},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-10-28",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 28 October 2026); a canned call reported cost 0.00000842 for 421 input tokens",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/solar-decide",
+      "provider": "OpenRouter Decisions API (alpha), served by Upstage",
+      "kind": "per_token",
+      "match": {"models": ["upstage/solar-decide", "upstage/solar-decide-20260928"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.05},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-10-28",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 28 October 2026); a canned call reported cost 0.00011095 for 2,219 input tokens",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/solar-decide-flash",
+      "provider": "OpenRouter Decisions API (alpha), served by Upstage",
+      "kind": "per_token",
+      "match": {"models": ["upstage/solar-decide-flash", "upstage/solar-decide-flash-20261008"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.05},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-10-28",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 28 October 2026); a canned call reported cost 0.00011095 for 2,219 input tokens",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/mercury-decide",
+      "provider": "OpenRouter Decisions API (alpha), served by Inception",
+      "kind": "per_token",
+      "match": {"models": ["inception/mercury-decide", "inception/mercury-decide-20260930"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.02},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-10-28",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 28 October 2026); a canned call reported cost 0.0000113 for 565 input tokens",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "cloudflare/workers-ai/clef-omni",
+      "provider": "Cloudflare Workers AI",
+      "kind": "per_token",
+      "match": {"models": ["@cf/cloudflare/clef-omni"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.15},
+        "output_tokens": {"usd_per_million": 0.0, "note": "Clef models do not charge for output tokens"}
+      },
+      "checked_on": "2026-10-28",
+      "source": "https://developers.cloudflare.com/workers-ai/models/clef-omni/ (read 28 October 2026)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
       "id": "aws/bedrock/invoke-guardrail-checks",
       "provider": "Amazon Bedrock Guardrails, InvokeGuardrailChecks",
       "kind": "per_text_unit",

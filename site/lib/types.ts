@@ -10,7 +10,7 @@ export interface SystemMeta {
   hosting: Hosting;
   /** decision model (answers yes/no questions with a probability) or managed guardrail service (fixed safeguards) */
   kind: "decision" | "service";
-  /** one-line name where the product name alone is ambiguous, e.g. "Decisions API · Perplexity" */
+  /** optional one-line name; unused now that every name is the vendor's own and unique on the board */
   label?: string;
   /** shorter name for chart labels */
   short?: string;

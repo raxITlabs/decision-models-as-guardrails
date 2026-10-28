@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { pickFor, tierGroups } from "../lib/picks";
+import { pickFor, rowsOnShow, tierGroups } from "../lib/picks";
 import type { Score } from "../lib/types";
 
 const row = (system: string, rank: number, tier: number, score: number, falseBlockRate: number, cost: number | null): Score => ({
@@ -33,5 +33,19 @@ describe("tierGroups", () => {
       { tier: 2, first: 2, count: 1 },
       { tier: 8, first: 3, count: 1 },
     ]);
+  });
+});
+
+describe("rowsOnShow", () => {
+  const rows = Array.from({ length: 26 }, (_, i) => ({ system: `s${i}` }));
+  it("shows the top rows and folds the rest", () => {
+    expect(rowsOnShow(rows, 20, [], false)).toEqual(Array.from({ length: 20 }, (_, i) => i));
+  });
+  it("keeps a selected or recommended row on show wherever it ranks", () => {
+    expect(rowsOnShow(rows, 20, ["s24", undefined, "s3"], false)).toEqual([...Array.from({ length: 20 }, (_, i) => i), 24]);
+  });
+  it("shows every row when expanded, and short boards whole", () => {
+    expect(rowsOnShow(rows, 20, [], true)).toHaveLength(26);
+    expect(rowsOnShow(rows.slice(0, 12), 20, [], false)).toHaveLength(12);
   });
 });

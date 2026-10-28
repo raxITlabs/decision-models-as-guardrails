@@ -608,3 +608,97 @@ def test_msd1_is_registered_in_the_smoke_and_the_tariffs():
     tariffs = json.loads((ROOT / "benchmark/goldrails_bench/tariffs.json").read_text())
     e = next(e for e in tariffs["entries"] if "microsoft/microsoft-decision-1-20261009" in e["match"]["models"])
     assert e["prices"]["input_tokens"]["usd_per_million"] == 0.042 and e["prices"]["output_tokens"]["usd_per_million"] == 0.0
+
+
+# --- Seven more decision models through OpenRouter, and Clef Omni on Workers AI ------------------------------------
+
+OR_NEW = {  # system -> (requested model, pinned snapshot, context, input USD per million)
+    "drex-max": ("nace-ai/drex-max", "nace-ai/drex-max-20261016", 262144, 0.06),
+    "span-02": ("respan/span-02", "respan/span-02-20261015", 131072, 0.01),
+    "liquid-d1-ultra": ("liquid/d1-ultra", "liquid/d1-ultra-20261015", 32768, 0.042),
+    "liquid-d1.1": ("liquid/d1.1", "liquid/d1.1-20261027", 65536, 0.02),
+    "solar-decide": ("upstage/solar-decide", "upstage/solar-decide-20260928", 524288, 0.05),
+    "solar-decide-flash": ("upstage/solar-decide-flash", "upstage/solar-decide-flash-20261008", 524288, 0.05),
+    "mercury-decide": ("inception/mercury-decide", "inception/mercury-decide-20260930", 65536, 0.02),
+}
+
+
+def test_openrouter_table_matches_the_probed_models():
+    assert {s: (d["model"], d["snapshot"], d["context"]) for s, d in hosted.OPENROUTER_DECIDERS.items()} == \
+        {s: v[:3] for s, v in OR_NEW.items()}
+
+
+@pytest.mark.parametrize("system", sorted(OR_NEW))
+def test_openrouter_decider_sends_its_model_and_pins_its_snapshot(system):
+    model, snap, ctx, _ = OR_NEW[system]
+    s = Server(ok(msd1_body(QS["questions"], hot="violence", model=snap), headers={"x-provider-name": "Vendor"}))
+    c = hosted.OpenRouterDecisionClient("sk-or-test", system=system, http=s.client(), throttle=hosted.Throttle(0))
+    res = NoulAdapter(c, policy=FAST).evaluate("content", "request", ROW)
+    sent = json.loads(s.requests[0].content)
+    assert str(s.requests[0].url) == "https://openrouter.ai/api/alpha/decisions"
+    assert set(sent) == {"model", "state", "questions"} and sent["model"] == model
+    assert res.outcome == DECIDED and res.decision is True
+    assert res.serving["model_id"] == model and res.serving["served_model"] == snap
+    assert c.identity["revision"] == snap and c.identity["max_length"] == ctx and c.identity["ref"] is None
+    assert c.system == system and "sk-or-test" not in repr(c)
+
+
+@pytest.mark.parametrize("reported", ["upstage/solar-decide-flash-20261008", "upstage/solar-decide", None])
+def test_openrouter_decider_fails_any_other_snapshot_without_retry(reported):
+    s = Server(ok(msd1_body(QS["questions"], hot="hate", model=reported)))
+    c = hosted.OpenRouterDecisionClient("k", system="solar-decide", http=s.client(), throttle=hosted.Throttle(0))
+    res = NoulAdapter(c, policy=FAST).evaluate("content", "request", ROW)
+    assert res.outcome == FAILED and res.error.startswith("ModelIdentityError") and len(s.requests) == 1
+
+
+def test_openrouter_decider_unknown_system_is_refused():
+    with pytest.raises(ValueError):
+        hosted.OpenRouterDecisionClient("k", system="mammoth-1")
+
+
+def test_msd1_identity_is_unchanged_by_the_generalisation():
+    c = hosted.MicrosoftDecisionClient("k")
+    assert c.identity == {"provider": "openrouter", "model": "microsoft/microsoft-decision-1", "ref": None,
+                          "revision": "microsoft/microsoft-decision-1-20261009",
+                          "revision_basis": "dated snapshot name the response reports; any other name fails the call",
+                          "max_length": 32768, "precision": None,
+                          "data_handling": "every test row and the unpublished slice (ruling 36)"}
+    assert (c.adapter, c.model, c.endpoint) == ({"name": "openrouter-decisions", "version": "1"},
+                                                "microsoft/microsoft-decision-1", "https://openrouter.ai/api/alpha/decisions")
+
+
+def test_clef_omni_on_workers_ai():
+    s = Server(ok(cf_wrapped(QS["questions"], hot="hate")))
+    c = cloudflare(s, "clef-omni")
+    res = NoulAdapter(c, policy=FAST).evaluate("content", "request", ROW)
+    req = s.requests[0]
+    assert str(req.url) == f"https://api.cloudflare.com/client/v4/accounts/{ACCT}/ai/run/@cf/cloudflare/clef-omni"
+    assert json.loads(req.content)["model"] == "clef-omni"
+    assert res.outcome == DECIDED and res.decision is True
+    assert c.identity["ref"] == "Cloudflare/clef-omni"
+    assert c.identity["revision"] == "df2d7c9505e62ba8a527b147513a4fa66a77dc5d"
+    assert hosted.CLEF["clef"][2] == "2f3de3dd85f379784083b0814d997ab627200f0c"   # Clef unchanged
+
+
+def test_new_hosted_models_are_wired_into_the_smoke_and_tariffs():
+    spec = importlib.util.spec_from_file_location("e2_smoke_or", ROOT / "benchmark" / "runs" / "e2_smoke.py")
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    kinds = set(OR_NEW) | {"clef-omni"}
+    assert kinds <= set(m.NEW_KINDS)
+    env = {"OPENROUTER_API_KEY": "k", "CLOUDFLARE_ACCOUNT_ID": ACCT, "CLOUDFLARE_API_TOKEN": "t"}
+    systems, skipped = m.build_systems(kinds, env=env)
+    assert set(systems) == kinds and skipped == {}
+    assert len({id(a.client.throttle) for s, (a, _) in systems.items() if s in OR_NEW}) == 1
+    assert m.build_systems({"span-02"}, env={})[1] == {"span-02": "not_configured: span-02 needs OPENROUTER_API_KEY"}
+    for s, (_, snap, ctx, _) in OR_NEW.items():
+        assert m.limit_of(s)[0] == ctx and s in m.WHOLE_REQUEST_USAGE
+    assert m.limit_of("clef-omni")[0] == 65536 and "clef-omni" in m.WHOLE_REQUEST_USAGE
+    from goldrails_bench import leaderboard as lb
+    entries = lb.load_tariffs()["entries"]
+    for s, (model, snap, _, usd) in OR_NEW.items():
+        (e,) = [e for e in entries if snap in e["match"].get("models", [])]
+        assert model in e["match"]["models"] and e["checked_on"] == "2026-10-28"
+        assert e["prices"]["input_tokens"]["usd_per_million"] == usd and e["prices"]["output_tokens"]["usd_per_million"] == 0.0
+    (e,) = [e for e in entries if "@cf/cloudflare/clef-omni" in e["match"].get("models", [])]
+    assert e["prices"]["input_tokens"]["usd_per_million"] == 0.15
