@@ -7,6 +7,7 @@ import { halfCi, listNames, maxTier, money, pct, score1, tierVar, oneLine } from
 import type { Board, LineageSummary, Score, SystemMeta, VersionChange, VersionStepSummary } from "@/lib/types";
 import { supersededBy, visibleRanks } from "@/lib/versions";
 import { type Lens, type Pick, pickFor, rowsOnShow, tierGroups } from "@/lib/picks";
+import { type ChartScope, chartSystems, logAxis } from "@/lib/chart";
 import { ArrowRight, ArrowUpLeft, Chevron, External } from "./icons";
 import { Segmented } from "./segmented";
 import { NewTag } from "./new-tag";
@@ -16,7 +17,7 @@ import { shareCard } from "@/lib/share";
 
 type JobPick = "overall" | JobId;
 type Axis = "cost" | "fbr";
-type Scope = "managed" | "all";
+type Scope = ChartScope;
 
 /** "All use cases" and the first three use cases show; the others sit behind "5 more". */
 const JOBS_SHOWN = 4;
@@ -65,7 +66,7 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
   const [moreJobs, setMoreJobs] = useState(false);
   const jobsInRow = JOB_OPTIONS.filter((o, i) => i < JOBS_SHOWN || o.value === job);
   const [axis, setAxis] = useState<Axis>("cost");
-  const [scope, setScope] = useState<Scope>("managed");
+  const [scope, setScope] = useState<Scope>("top");
   const sys = useMemo(() => Object.fromEntries(board.systems.map((s) => [s.id, s])) as Record<string, SystemMeta>, [board]);
   const scores: Score[] = useMemo(
     () => [...(job === "overall" ? board.overall : board.jobs[job])].sort((a, b) => a.rank - b.rank),
@@ -79,8 +80,6 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const latest = scores.filter((s) => !older[s.system]);
   const byId = Object.fromEntries(scores.map((s) => [s.system, s]));
-  // The table lists every system; "Managed APIs" only thins the chart.
-  const shown = latest.filter((s) => scope === "all" || sys[s.system]?.hosting === "managed");
   const rankOf = visibleRanks(latest);
   const groups = tierGroups(latest);
   const [lens, setLens] = useState<Lens | null>(null);
@@ -92,6 +91,9 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
     if (p) setSelected(p.system);
   };
   const sel = scores.find((s) => s.system === selected) ?? scores[0];
+  // The table lists every system; the scope only thins the chart. "Top 10" keeps Bedrock as the reference and the
+  // selected and recommended systems wherever they rank.
+  const shown = chartSystems(latest, scope, sys, [sel?.system, pick?.system]);
   // Progressive disclosure: the first TOP_ROWS rows, plus the selected and recommended systems wherever they rank.
   const [allRows, setAllRows] = useState(false);
   const onShow = new Set(rowsOnShow(latest, TOP_ROWS, [sel?.system, pick?.system], allRows));
@@ -159,8 +161,9 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
           value={scope}
           onChange={setScope}
           options={[
+            { value: "top", label: "Top 10", short: "Top 10" },
             { value: "managed", label: "Managed APIs", short: "Managed" },
-            { value: "all", label: "All systems", short: "All" },
+            { value: "all", label: `All ${latest.length}`, short: "All" },
           ]}
         />
       </div>
@@ -168,7 +171,7 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
         {job === "overall"
           ? `The overall score is the plain average of ${board.stats.suites} guardrail suites, which together cover the ${board.stats.jobs} use cases. The leaders change a lot from use case to use case. Select your use case above.`
           : `${JOB_BY_ID[job].sub}. The score is balanced accuracy on this use case. A score of 50 is a coin flip.`}
-        {axis === "cost" && scope === "all"
+        {axis === "cost" && shown.some((s) => sys[s.system]?.hosting === "self-hosted")
           ? " Dashed squares are self-hosted models. Their cost is our shared GPU time, so it tells you more about our setup than about the model."
           : ""}
       </p>
@@ -550,15 +553,21 @@ function Scatter({
   const pad = { l: 40, r: 28, t: 40, b: 34 };
   const xv = (s: Score) => (axis === "cost" ? s.cost ?? 0 : s.falseBlockRate);
   const xMax = niceMax(Math.max(...scores.map(xv), axis === "cost" ? 0.05 : 0.05) * 1.08);
+  // Cost spans two orders of magnitude, so it is drawn on a log axis: the cheap leaders spread out instead of sharing
+  // the left edge. A system with no cost sits at the left end.
+  const cost = logAxis(scores.map((s) => s.cost ?? 0), w < 560);
   const yMinRaw = Math.min(...scores.map((s) => s.ciLow), 90);
   const yMin = Math.max(0, Math.floor((yMinRaw - 1) / 5) * 5);
   const yMax = Math.min(100, Math.ceil((Math.max(...scores.map((s) => s.ciHigh), 60) + 1) / 5) * 5);
-  const px = (v: number) => pad.l + (v / xMax) * (w - pad.l - pad.r);
+  const px = (v: number) =>
+    axis === "cost"
+      ? pad.l + ((Math.log10(Math.max(v, cost.lo)) - Math.log10(cost.lo)) / (Math.log10(cost.hi) - Math.log10(cost.lo))) * (w - pad.l - pad.r)
+      : pad.l + (v / xMax) * (w - pad.l - pad.r);
   const py = (v: number) => pad.t + ((yMax - v) / (yMax - yMin)) * (h - pad.t - pad.b);
   const yTicks: number[] = [];
   for (let v = yMin; v <= yMax; v += yMax - yMin > 30 ? 10 : 5) yTicks.push(v);
-  const xTicks = ticks(xMax, w < 560 ? 3 : 4);
-  const fmtX = (v: number) => (axis === "cost" ? `$${v === 0 ? "0" : v < 0.01 ? v.toFixed(3) : v.toFixed(2)}` : `${Math.round(v * 100)}%`);
+  const xTicks = axis === "cost" ? cost.ticks : ticks(xMax, w < 560 ? 3 : 4);
+  const fmtX = (v: number) => (axis === "cost" ? `$${v === 0 ? "0" : v < 0.01 ? v.toFixed(3) : v < 1 ? v.toFixed(2) : String(v)}` : `${Math.round(v * 100)}%`);
 
   // Greedy label placement: right of the dot, else left, else nudged; dropped when nothing fits.
   const placed: Placed[] = [];
@@ -689,8 +698,9 @@ function Scatter({
       tries.push({ x: p.x + off, y: p.y + dy, anchor: "right" });
       tries.push({ x: p.x - off - lw, y: p.y + dy, anchor: "left" });
     }
-    // The selected system is always annotated: it may also sit centred above or below its square, or further out.
-    if (p.s.system === selected) {
+    // Then centred above or below its square, or further out: squares at nearly the same cost stack in a column, and
+    // a label beside one of them would cover its neighbour.
+    {
       const v = half(p.s) + 10;
       tries.push({ x: p.x - lw / 2, y: p.y - v, anchor: "right" }, { x: p.x - lw / 2, y: p.y + v, anchor: "right" });
       for (const dy of [-24, 24]) tries.push({ x: p.x + off, y: p.y + dy, anchor: "right" }, { x: p.x - off - lw, y: p.y + dy, anchor: "left" });
@@ -833,7 +843,7 @@ function Scatter({
       )}
       <figcaption className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[12px] text-muted">
         <span>
-          Score is balanced accuracy, where 50 is a coin flip. The horizontal axis is {axis === "cost" ? "USD per 1,000 checks" : "the share of safe rows blocked"}. Lines show the 95% interval; if a square had to move to stay readable, a dot marks its exact value.
+          Score is balanced accuracy, where 50 is a coin flip. The horizontal axis is {axis === "cost" ? "USD per 1,000 checks, on a log scale" : "the share of safe rows blocked"}. Lines show the 95% interval; if a square had to move to stay readable, a dot marks its exact value.
         </span>
         <span className="flex flex-wrap items-center gap-3" aria-label="Tier colours">
           {present.map((t) => (
