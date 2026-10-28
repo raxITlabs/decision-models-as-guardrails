@@ -2,7 +2,7 @@
 //
 // Inputs, relative to the benchmark repository root:
 //   benchmark/results/final/leaderboard.json
-//   benchmark/results/final/ledgers/{main-run,prompt-attacks,gpt-6-luna,jev-1.14.0,strands-deciders,microsoft-decision-1,pplx-decider-v1-2}/*.jsonl   (never the private/ folders)
+//   benchmark/results/final/ledgers/{main-run,prompt-attacks,gpt-6-luna,jev-1.14.0,strands-deciders,microsoft-decision-1,pplx-decider-v1-2,hosted-batch-2}/*.jsonl   (never the private/ folders)
 //   dataset/edition2/build/F*.test.jsonl                                           (never build/private/)
 //   dataset/release/redistribution.json                                            (which sources may ship text)
 //
@@ -29,7 +29,7 @@ import type {
   Turn,
 } from "../lib/types";
 
-export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna", "jev-1.14.0", "strands-deciders", "microsoft-decision-1", "pplx-decider-v1-2"];
+export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna", "jev-1.14.0", "strands-deciders", "microsoft-decision-1", "pplx-decider-v1-2", "hosted-batch-2"];
 export const RELEASE_VERSION = "1.0.0";
 
 /** Display names, makers and marks for the systems on the board. Ids not listed fall back to the id itself.
@@ -43,6 +43,14 @@ export const SYSTEM_DISPLAY: Record<string, { name: string; label?: string; shor
   "gpt-6-luna": { name: "Decisions API", label: "Decisions API · OpenAI", provider: "OpenAI", mono: "Oa", logo: "/logos/openai.svg", docs: "https://developers.openai.com/api/docs/guides/decisions", pricing: "https://developers.openai.com/api/docs/pricing" },
   clef: { name: "Clef", provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg", docs: "https://developers.cloudflare.com/workers-ai/models/clef/", pricing: "https://developers.cloudflare.com/workers-ai/platform/pricing/" },
   "microsoft-decision-1": { name: "Microsoft-Decision-1", isNew: true, provider: "Microsoft · via OpenRouter", mono: "Ms", logo: "/logos/microsoft.svg", docs: "https://openrouter.ai/microsoft/microsoft-decision-1", pricing: "https://openrouter.ai/microsoft/microsoft-decision-1" },
+  "drex-max": { name: "Drex Max", isNew: true, provider: "Nace.AI · via OpenRouter", mono: "Na", logo: "/logos/nace.svg", docs: "https://openrouter.ai/nace-ai/drex-max", pricing: "https://openrouter.ai/nace-ai/drex-max" },
+  "span-02": { name: "Span-02", isNew: true, provider: "Respan · via OpenRouter", mono: "Rs", logo: "/logos/respan.svg", docs: "https://openrouter.ai/respan/span-02", pricing: "https://openrouter.ai/respan/span-02" },
+  "liquid-d1-ultra": { name: "d1-ultra", isNew: true, provider: "Liquid AI · via OpenRouter", mono: "Lq", logo: "/logos/liquid.svg", docs: "https://openrouter.ai/liquid/d1-ultra", pricing: "https://openrouter.ai/liquid/d1-ultra" },
+  "liquid-d1.1": { name: "d1.1", isNew: true, provider: "Liquid AI · via OpenRouter", mono: "Lq", logo: "/logos/liquid.svg", docs: "https://openrouter.ai/liquid/d1.1", pricing: "https://openrouter.ai/liquid/d1.1" },
+  "solar-decide": { name: "Solar Decide", isNew: true, provider: "Upstage · via OpenRouter", mono: "Up", logo: "/logos/upstage.svg", docs: "https://openrouter.ai/upstage/solar-decide", pricing: "https://openrouter.ai/upstage/solar-decide" },
+  "solar-decide-flash": { name: "Solar Decide Flash", short: "Solar Flash", isNew: true, provider: "Upstage · via OpenRouter", mono: "Up", logo: "/logos/upstage.svg", docs: "https://openrouter.ai/upstage/solar-decide-flash", pricing: "https://openrouter.ai/upstage/solar-decide-flash" },
+  "mercury-decide": { name: "Mercury Decide", isNew: true, provider: "Inception · via OpenRouter", mono: "In", logo: "/logos/inception.svg", docs: "https://openrouter.ai/inception/mercury-decide", pricing: "https://openrouter.ai/inception/mercury-decide" },
+  "clef-omni": { name: "Clef Omni", isNew: true, provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg", docs: "https://developers.cloudflare.com/workers-ai/models/clef-omni/", pricing: "https://developers.cloudflare.com/workers-ai/platform/pricing/" },
   "jev-1.14.0": { name: "Jev 1.14.0", isNew: true, provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg", docs: "https://docs.typesafe.ai/models", pricing: "https://docs.typesafe.ai/models" },
   "jev-1.13.0": { name: "Jev 1.13.0", provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg", docs: "https://docs.typesafe.ai/models", pricing: "https://docs.typesafe.ai/models" },
   "clef-flash": { name: "Clef Flash", provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg", docs: "https://developers.cloudflare.com/workers-ai/models/clef-flash/", pricing: "https://developers.cloudflare.com/workers-ai/platform/pricing/" },
