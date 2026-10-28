@@ -6,7 +6,7 @@ import { JOBS, JOB_BY_ID, type JobId } from "@/lib/jobs";
 import { halfCi, listNames, maxTier, money, pct, score1, tierVar, oneLine } from "@/lib/format";
 import type { Board, LineageSummary, Score, SystemMeta, VersionChange, VersionStepSummary } from "@/lib/types";
 import { supersededBy, visibleRanks } from "@/lib/versions";
-import { type Lens, type Pick, pickFor, tierGroups } from "@/lib/picks";
+import { type Lens, type Pick, pickFor, rowsOnShow, tierGroups } from "@/lib/picks";
 import { ArrowRight, ArrowUpLeft, Chevron, External } from "./icons";
 import { Segmented } from "./segmented";
 import { NewTag } from "./new-tag";
@@ -20,6 +20,8 @@ type Scope = "managed" | "all";
 
 /** "All use cases" and the first three use cases show; the others sit behind "5 more". */
 const JOBS_SHOWN = 4;
+/** Rows the table shows before "Show all"; the rest fold below the last of them. */
+const TOP_ROWS = 20;
 const JOB_OPTIONS = [{ value: "overall" as JobPick, label: "All use cases", short: "All" }, ...JOBS.map((j) => ({ value: j.id as JobPick, label: j.title, short: j.short }))];
 
 // Label widths measured with the real font, so placement does not drop labels that fit.
@@ -90,6 +92,20 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
     if (p) setSelected(p.system);
   };
   const sel = scores.find((s) => s.system === selected) ?? scores[0];
+  // Progressive disclosure: the first TOP_ROWS rows, plus the selected and recommended systems wherever they rank.
+  const [allRows, setAllRows] = useState(false);
+  const onShow = new Set(rowsOnShow(latest, TOP_ROWS, [sel?.system, pick?.system], allRows));
+  const folded = latest.length - onShow.size;
+  const groupAt = groups.flatMap((g) => Array.from({ length: g.count }, () => g));
+  const firstOnShow = new Set<number>();
+  {
+    let last: (typeof groups)[number] | undefined;
+    latest.forEach((_, i) => {
+      if (!onShow.has(i)) return;
+      if (groupAt[i] !== last) firstOnShow.add(i);
+      last = groupAt[i];
+    });
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -180,8 +196,9 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
           </thead>
           <tbody>
             {latest.map((s, i) => {
+              if (!onShow.has(i)) return null;
               const m = sys[s.system];
-              const g = groups.find((x) => x.first === i);
+              const g = firstOnShow.has(i) ? groupAt[i] : undefined;
               const l = lineageOf[s.system];
               const isOpen = !!(l && open[l.key]);
               const earlier = l ? l.versions.slice(0, -1).reverse().map((v) => byId[v]).filter(Boolean) : [];
@@ -231,6 +248,19 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
           </tbody>
         </table>
       </div>
+      {latest.length > TOP_ROWS && (
+        <button
+          type="button"
+          aria-expanded={allRows}
+          onClick={() => setAllRows((v) => !v)}
+          className="group -mt-3 inline-flex min-h-11 items-center gap-1 self-start text-[14px] text-muted transition-colors hover:text-fg"
+        >
+          <span className="underline decoration-line-strong underline-offset-[3px] group-hover:decoration-fg">
+            {allRows ? `Show the top ${TOP_ROWS} only` : `Show all ${latest.length} systems (${folded} more)`}
+          </span>
+          <Chevron className={`size-3 transition-transform duration-200 ease-out motion-reduce:transition-none ${allRows ? "rotate-180" : ""}`} />
+        </button>
+      )}
 
       <p className="m-0 text-[13px] leading-relaxed text-muted">
         The shaded row is a guardrail service, not a decision model (<a href="#kinds">see the difference</a>). Every system answers the

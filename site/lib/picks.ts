@@ -36,3 +36,10 @@ export function tierGroups(rows: { tier: number }[]): { tier: number; first: num
   });
   return out;
 }
+
+/** The leaderboard shows its first `top` rows and folds the rest. A row named in `keep` (the selected system, a
+ *  recommendation) stays on show wherever it ranks, so nothing the page points at is hidden. Returns row indices. */
+export function rowsOnShow(rows: { system: string }[], top: number, keep: (string | undefined)[], all: boolean): number[] {
+  const pinned = new Set(keep.filter(Boolean));
+  return rows.flatMap((r, i) => (all || i < top || pinned.has(r.system) ? [i] : []));
+}
