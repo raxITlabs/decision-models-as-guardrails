@@ -38,6 +38,8 @@ export default function Home() {
   const board = loadBoard();
   const lineages = lineageSummaries(loadVersions());
   const older = supersededBy(lineages);
+  // The hero names the board's top ten, newest versions only, in rank order.
+  const heroTop = board.overall.filter((r) => !older[r.system]).sort((a, b) => a.rank - b.rank).slice(0, 10).map((r) => r.system);
   // A model with several versions on the board counts once.
   const models = board.stats.systems - lineages.reduce((n, l) => n + l.versions.length - 1, 0);
   const index = loadRowsIndex();
@@ -91,7 +93,7 @@ export default function Home() {
             </h1>
             {examples.length > 0 && (
               <div className="rise rise-2">
-                <DecisionSpace examples={examples} systems={board.systems} />
+                <DecisionSpace examples={examples} systems={board.systems} top={heroTop} />
               </div>
             )}
             <div className="rise rise-2 flex flex-wrap gap-3">
