@@ -30,19 +30,19 @@
    "planned": [],
    "board": {
     "jev-1.13.0": {
-     "rank": 7,
-     "tier": 2,
+     "rank": 10,
+     "tier": 3,
      "rank_interval": {
-      "low": 6.0,
-      "high": 7.0
+      "low": 9.0,
+      "high": 11.0
      }
     },
     "jev-1.14.0": {
-     "rank": 6,
-     "tier": 2,
+     "rank": 9,
+     "tier": 3,
      "rank_interval": {
-      "low": 5.0,
-      "high": 7.0
+      "low": 8.0,
+      "high": 10.0
      }
     }
    },
@@ -2391,7 +2391,7 @@
       "difference": 0.185258,
       "p_holm_board": 1.0,
       "separated_on_board": false,
-      "pairs_in_board_family": 231
+      "pairs_in_board_family": 435
      },
      "cost": {
       "old_usd_per_1000": 0.03856,
@@ -2427,27 +2427,27 @@
    "planned": [],
    "board": {
     "strands-decider-2b": {
-     "rank": 19,
-     "tier": 7,
+     "rank": 26,
+     "tier": 8,
      "rank_interval": {
-      "low": 19.0,
-      "high": 19.0
+      "low": 26.0,
+      "high": 26.0
      }
     },
     "strands-decider-2b-v21": {
-     "rank": 18,
-     "tier": 6,
+     "rank": 25,
+     "tier": 7,
      "rank_interval": {
-      "low": 18.0,
-      "high": 18.0
+      "low": 25.0,
+      "high": 25.0
      }
     },
     "strands-decider-2b-qwen35": {
-     "rank": 17,
-     "tier": 6,
+     "rank": 24,
+     "tier": 7,
      "rank_interval": {
-      "low": 16.0,
-      "high": 17.0
+      "low": 23.0,
+      "high": 24.0
      }
     }
    },
@@ -4822,9 +4822,9 @@
      "kind": "step",
      "board": {
       "difference": 1.880308,
-      "p_holm_board": 3e-06,
+      "p_holm_board": 5e-06,
       "separated_on_board": true,
-      "pairs_in_board_family": 231
+      "pairs_in_board_family": 435
      },
      "cost": {
       "old_usd_per_1000": 0.12415,
@@ -7167,9 +7167,9 @@
      "kind": "step",
      "board": {
       "difference": 0.957184,
-      "p_holm_board": 0.215154,
+      "p_holm_board": 0.430307,
       "separated_on_board": false,
-      "pairs_in_board_family": 231
+      "pairs_in_board_family": 435
      },
      "cost": {
       "old_usd_per_1000": 0.36771,
@@ -9513,7 +9513,7 @@
       "difference": 2.837492,
       "p_holm_board": 0.0,
       "separated_on_board": true,
-      "pairs_in_board_family": 231
+      "pairs_in_board_family": 435
      },
      "cost": {
       "old_usd_per_1000": 0.12415,
@@ -9549,19 +9549,19 @@
    "planned": [],
    "board": {
     "pplx-decider-v1-27b": {
-     "rank": 2,
-     "tier": 1,
+     "rank": 3,
+     "tier": 2,
      "rank_interval": {
-      "low": 1.0,
-      "high": 3.0
+      "low": 2.0,
+      "high": 5.0
      }
     },
     "pplx-decider-v1-2-27b": {
-     "rank": 1,
+     "rank": 2,
      "tier": 1,
      "rank_interval": {
-      "low": 1.0,
-      "high": 3.0
+      "low": 2.0,
+      "high": 4.0
      }
     }
    },
@@ -11897,7 +11897,7 @@
       "difference": 0.270379,
       "p_holm_board": 1.0,
       "separated_on_board": false,
-      "pairs_in_board_family": 231
+      "pairs_in_board_family": 435
      },
      "cost": {
       "old_usd_per_1000": 0.05615,
