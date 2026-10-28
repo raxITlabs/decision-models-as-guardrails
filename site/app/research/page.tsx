@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageOpenGraph, pageTwitter } from "@/lib/og";
 import Link from "next/link";
 import { External } from "@/components/icons";
 
@@ -6,7 +7,8 @@ export const metadata: Metadata = {
   title: "Research",
   description: "Studies that go beyond the leaderboard: independent benchmarks of the same systems, and experiments that use training or model internals.",
   alternates: { canonical: "/research" },
-  openGraph: { url: "/research", siteName: "decision-models-as-guardrails", type: "website", images: [{ url: "/opengraph-image", width: 1200, height: 630 }] },
+  openGraph: pageOpenGraph("/research"),
+  twitter: pageTwitter(),
 };
 
 const RED_HAT = "https://developers.redhat.com/articles/2026/10/02/benchmarking-ai-decision-models-against-traditional-guardrails";

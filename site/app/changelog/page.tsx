@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageOpenGraph, pageTwitter } from "@/lib/og";
 import Link from "next/link";
 import { loadBoard, loadRowsIndex } from "@/lib/data";
 import { HF_URL, REPO_URL, int, longDate } from "@/lib/format";
@@ -7,7 +8,8 @@ export const metadata: Metadata = {
   title: "Changelog",
   description: "Releases of the decision-models-as-guardrails benchmark.",
   alternates: { canonical: "/changelog" },
-  openGraph: { url: "/changelog", siteName: "decision-models-as-guardrails", type: "website", images: [{ url: "/opengraph-image", width: 1200, height: 630 }] },
+  openGraph: pageOpenGraph("/changelog"),
+  twitter: pageTwitter(),
 };
 
 export default function Changelog() {

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageOpenGraph, pageTwitter } from "@/lib/og";
 import Link from "next/link";
 import { loadBoard, loadVersions } from "@/lib/data";
 import { REPO_URL, int, oneLine, systemMap } from "@/lib/format";
@@ -9,7 +10,8 @@ export const metadata: Metadata = {
   title: "Versions",
   description: "Each new version of a model, compared with the last on the same checks, with intervals and a plain verdict.",
   alternates: { canonical: "/versions" },
-  openGraph: { url: "/versions", siteName: "decision-models-as-guardrails", type: "website", images: [{ url: "/opengraph-image", width: 1200, height: 630 }] },
+  openGraph: pageOpenGraph("/versions"),
+  twitter: pageTwitter(),
 };
 
 const WORD: Record<Verdict, string> = { better: "Better", worse: "Worse", "within noise": "No clear change", "not tested": "Not tested" };

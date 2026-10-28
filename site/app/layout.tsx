@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { pageOpenGraph, pageTwitter } from "@/lib/og";
 import { Geist_Mono, Inter } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -9,7 +10,8 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dm-as-guardrails.raxitlabs.com"),
-  openGraph: { siteName: "decision-models-as-guardrails", type: "website" },
+  openGraph: pageOpenGraph("/"),
+  twitter: pageTwitter(),
   title: { default: "decision-models-as-guardrails", template: "%s · decision-models-as-guardrails" },
   description:
     "Can a decision model replace your guardrail? Thirty systems answer the same guardrail checks under one fixed rule. raxIT Labs compares them on accuracy and cost.",
