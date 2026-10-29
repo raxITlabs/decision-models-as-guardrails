@@ -25,10 +25,11 @@ arms with this model's name and VM endpoint. The config hash is the scorer's (``
 model, endpoint, question set), so it is known before any call; ``run`` refuses a model whose VM smoke test does not
 reproduce it, and refuses to send anything until the manifest is committed. Nothing is fitted.
 
-Hardware. Both models fit one 24 GB L4 card each in bf16 (d1-2B about 3.8 GB, d1-3B about 6.2 GB), so they run in one
-pass on g2-standard-24 (two L4) in us-east4, the machine the full run's VM models used: their cost is an
-equal-hardware comparison with those. Self-hosted cost is the pass's VM up-to-paused time split across the two models
-by their run seconds.
+Hardware. Both models fit together on one 24 GB L4 card in bf16 (d1-2B about 3.8 GB, d1-3B about 6.2 GB), so they
+run in one pass on g2-standard-8 (one L4), each in its own server process on the shared card. The full run's VM models
+used g2-standard-24 (two L4), but on 29 and 30 October 2026 no US or EU zone had g2-standard-24 capacity, and the owner
+chose the one-card machine instead. Self-hosted cost is the pass's VM up-to-paused time split across the two models by
+their run seconds, at the g2-standard-8 price of the region the VM lands in.
 
 Raw ledgers (unpublished ids) stay in the git-ignored ``benchmark/results/final/ledgers/liquid-open-d1/private/``;
 ``report`` and ``score`` write committed ledgers with public test rows only and run the privacy checks.
@@ -38,6 +39,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import signal
 import subprocess
 import sys
@@ -57,7 +59,7 @@ REPO = full.REPO
 # name: (Hugging Face repo, commit, VM port, GPU, display name)
 SYSTEMS = {
     "liquid-d1-2b": ("LiquidAI/d1-2B", "cfe5760ff5d5998f91d9ac56bd4b2dbd96996d41", 8031, 0, "d1-2B"),
-    "liquid-d1-3b": ("LiquidAI/d1-3B", "051bcc464b01b9f92942b364d9586b0ef5912432", 8032, 1, "d1-3B"),
+    "liquid-d1-3b": ("LiquidAI/d1-3B", "051bcc464b01b9f92942b364d9586b0ef5912432", 8032, 0, "d1-3B"),
 }
 NAMES = {k: v[4] for k, v in SYSTEMS.items()}
 KIND = "liquid"
@@ -73,8 +75,18 @@ MANIFEST = REPO / "benchmark" / "subsets" / "edition2" / "freeze-manifest-liquid
 PRIMARY = ar.PRIMARY
 R26 = ar.MANIFEST
 ROSTER = REPO / "infra" / "gcp" / "terraform.tfvars.liquid-open-d1.example"
-MACHINE = "g2-standard-24"
-HARDWARE = "g2-standard-24/us-east4/on-demand/third-party"
+MACHINE = "g2-standard-8"
+HARDWARE = "g2-standard-8/us-east4/on-demand/third-party"   # the first zone tried
+# On 29 and 30 October 2026 no US or EU zone had g2-standard-24 capacity, so the owner chose g2-standard-8 (one L4,
+# both models on it) across US and EU zones; the VM's actual region names the tariff (one entry per region in
+# goldrails_bench/tariffs.json, added once the VM has landed).
+ZONES = ("us-east4-a us-east4-c us-central1-a us-central1-b us-central1-c us-east1-b us-east1-c us-east1-d "
+         "us-west1-a us-west1-b us-west4-a europe-west4-a europe-west4-b europe-west4-c europe-west1-b europe-west1-c")
+ZONE_PREFIXES = ("us-east4-", "us-central1-", "us-east1-", "us-west1-", "us-west4-", "europe-west4-", "europe-west1-")
+
+
+def hardware_of(zone: str) -> str:
+    return f"{MACHINE}/{zone.rsplit('-', 1)[0]}/on-demand/third-party"
 DISK = "pd-balanced/us-east4/third-party"
 LABEL = "Liquid AI open d1 extension run: d1-2B and d1-3B on every edition 2 test row and the unpublished slice"
 APPROVAL = "Liquid AI's open d1-2B and d1-3B added on the owner's request of 29 October 2026, on the project VM"
@@ -87,7 +99,8 @@ DISCLOSURES = [
     "committed before their first test call (benchmark/subsets/edition2/freeze-manifest-liquid-open-d1.json). They use "
     "every Noul model's question sets, request and fixed 0.5 rule.",
     "Both are open weights (LFM Open License v1.0). OpenRouter does not serve them, so they ran on the project VM "
-    "(g2-standard-24, two NVIDIA L4, us-east4), one model per card in bf16, served by infra/gcp/liquid_server.py with "
+    "(g2-standard-8, one NVIDIA L4, us-east4), both models on the one card in bf16, each served by "
+    "infra/gcp/liquid_server.py with "
     "the model card's call: Transformers with the checkpoint's own model code (trust_remote_code) at the pinned commit, "
     "and model.system_one(state, questions). The unpublished slice went only to that VM.",
     "d1-2B reads up to 128K tokens (the card notes answers get less reliable past about 64K) and d1-3B 32,768; no test "
@@ -338,7 +351,8 @@ def _spawn(args: list, log: Path, source: str | None) -> subprocess.Popen:
 
 def _ctl(cmd: str) -> tuple[int, str]:
     LOGS.mkdir(parents=True, exist_ok=True)
-    p = subprocess.run(["make", cmd], cwd=REPO, capture_output=True, text=True)
+    p = subprocess.run(["make", cmd], cwd=REPO, capture_output=True, text=True,
+                       env={**os.environ, "GOLDRAILS_ZONES": ZONES})
     text = p.stdout + p.stderr
     with (LOGS / f"make-{cmd}.log").open("a", encoding="utf-8") as fh:
         fh.write(f"\n=== {_now()} make {cmd} (exit {p.returncode})\n{text}")
@@ -380,8 +394,9 @@ def vm_pass(source: str | None) -> dict:
             raise RuntimeError(f"make up failed (exit {code}): {text.strip().splitlines()[-1:]}")
         vt = _vm_times()
         res["vm"] = vt
-        if vt["machine_type"] != MACHINE or not vt["zone"].startswith("us-east4"):
-            raise RuntimeError(f"the VM is {vt['machine_type']} in {vt['zone']}, not {MACHINE} in us-east4")
+        if vt["machine_type"] != MACHINE or not vt["zone"].startswith(ZONE_PREFIXES):
+            raise RuntimeError(f"the VM is {vt['machine_type']} in {vt['zone']}, not {MACHINE} in {ZONE_PREFIXES}")
+        res["hardware"] = hardware_of(vt["zone"])
         todo = [n for n in names if not smoke_serving(n)]
         if todo:
             run_smoke(todo)
@@ -423,7 +438,8 @@ def vm_pass(source: str | None) -> dict:
             res["terminated"] = vt["status"] == "TERMINATED"
             up = (res.get("vm") or {}).get("last_start")
             if up and vt["status"] == "TERMINATED":
-                log_event("vm", {"up": up, "paused": vt["last_stop"], "systems": names, "hardware": HARDWARE})
+                log_event("vm", {"up": up, "paused": vt["last_stop"], "systems": names, "zone": vt["zone"],
+                                 "hardware": hardware_of(vt["zone"])})
         except Exception as e:  # noqa: BLE001
             res["vm_after_error"] = f"{type(e).__name__}: {str(e)[:200]}"
         res.update(finished=_now(), seconds=round(time.time() - t0, 1))

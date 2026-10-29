@@ -31,18 +31,18 @@ def test_select_keeps_the_unpublished_slice(monkeypatch):
     assert [x["id"] for x in r.select(FakeRows())[("content", "request")]] == ["pub-1", "unp-1"]
 
 
-def test_two_pinned_models_on_their_own_cards_and_ports():
+def test_two_pinned_models_on_one_card_and_their_own_ports():
     r = _load("e2_liquid_run")
     assert set(r.SYSTEMS) == {"liquid-d1-2b", "liquid-d1-3b"}
     for ref, rev, port, gpu, _ in r.SYSTEMS.values():
         assert ref.startswith("LiquidAI/") and len(rev) == 40 and int(rev, 16) >= 0
-    assert len({v[2] for v in r.SYSTEMS.values()}) == 2 and {v[3] for v in r.SYSTEMS.values()} == {0, 1}
+    assert len({v[2] for v in r.SYSTEMS.values()}) == 2 and {v[3] for v in r.SYSTEMS.values()} == {0}
 
 
 def test_roster_example_matches_the_run_module():
     r = _load("e2_liquid_run")
     text = r.ROSTER.read_text()
-    assert 'machine_type  = "g2-standard-24"' in text and 'zone          = "us-east4-a"' in text
+    assert 'machine_type  = "g2-standard-8"' in text and 'zone          = "us-east4-a"' in text
     for name, (ref, rev, port, gpu, _) in r.SYSTEMS.items():
         assert (f'{{ name = "{name}", kind = "liquid", ref = "{ref}", revision = "{rev}", port = {port}, gpu = {gpu} }}'
                 in text)
@@ -101,6 +101,10 @@ def test_self_hosted_cost_uses_the_full_runs_vm_tariff():
     assert "liquid" in lb.SELF_HOSTED_KINDS
     hits = [e for e in lb.load_tariffs()["entries"] if r.HARDWARE in e["match"].get("hardware", [])]
     assert len(hits) == 1 and hits[0]["usd_per_hour"]
+    for z in r.ZONES.split():
+        assert z.startswith(r.ZONE_PREFIXES)
+        h = r.hardware_of(z)
+        assert len([e for e in lb.load_tariffs()["entries"] if h in e["match"].get("hardware", [])]) == 1, h
 
 
 def test_score_is_the_full_rescore_with_this_run_last(monkeypatch):
