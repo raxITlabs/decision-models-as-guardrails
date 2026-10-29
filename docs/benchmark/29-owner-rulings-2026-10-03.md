@@ -72,3 +72,9 @@ Decided by the project owner on 3 October 2026, through the edition 2 decisions 
 | # | Question | Ruling |
 |---|---|---|
 | 38 | Eight more hosted decision models on the full benchmark (28 October 2026) | Score Drex Max, Span-02, d1-ultra, d1.1, Solar Decide, Solar Decide Flash and Mercury Decide (through OpenRouter's Decisions endpoint, each pinned to its dated snapshot) and Clef Omni (Cloudflare Workers AI) like every other system: all 10,053 test rows, the held-back slice included, so they join the ranked board. The owner approves sending the held-back rows to OpenRouter and the providers it routes to (Nace.AI through DeepInfra, Respan, Liquid AI, Upstage, Inception) and to Cloudflare for Clef Omni. Each provider's default API data handling applies; their data policies were not readable without an OpenRouter login and no zero-retention agreement is in place. The run gets its own freeze manifest, committed before its first test call. |
+
+## Additional ruling, 29 October 2026
+
+| # | Question | Ruling |
+|---|---|---|
+| 39 | Liquid AI's open d1-2B and d1-3B on the full benchmark (29 October 2026) | Score `LiquidAI/d1-2B` (1.92B, released 24 October 2026) and `LiquidAI/d1-3B` (released 5 October 2026), open weights under the LFM Open License v1.0, like every other system: all 10,053 test rows, the held-back slice included, so both join the ranked board. OpenRouter does not serve either model (its Decisions endpoint answered "Model liquid/d1-2b does not exist" on 29 October 2026), so both run on the project VM, pinned to their Hugging Face commits, one per L4 card on g2-standard-24 in us-east4 (the machine type the full run's VM models used), served by `infra/gcp/liquid_server.py` with the model card's call. The held-back slice goes only to that VM. The run gets its own freeze manifest, committed before its first test call. |

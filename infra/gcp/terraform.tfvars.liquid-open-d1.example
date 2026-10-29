@@ -1,0 +1,13 @@
+# Liquid AI's open d1 models (benchmark/runs/e2_liquid_run.py), one per L4 card in bf16, on the machine type and
+# region the full run's VM models used (g2-standard-24, two L4, us-east4), so their cost compares on equal hardware.
+# Copy over terraform.tfvars (keep your own project_id and access settings) and apply with the VM stopped.
+project_id    = "raxit-ai"
+zone          = "us-east4-a"
+machine_type  = "g2-standard-24"
+spot          = false
+max_run_hours = 4
+models = [
+  { name = "liquid-d1-2b", kind = "liquid", ref = "LiquidAI/d1-2B", revision = "cfe5760ff5d5998f91d9ac56bd4b2dbd96996d41", port = 8031, gpu = 0 },
+  { name = "liquid-d1-3b", kind = "liquid", ref = "LiquidAI/d1-3B", revision = "051bcc464b01b9f92942b364d9586b0ef5912432", port = 8032, gpu = 1 },
+]
+attach_service_account = false

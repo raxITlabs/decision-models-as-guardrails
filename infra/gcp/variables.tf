@@ -58,8 +58,8 @@ variable "models" {
     error_message = "model.name: lowercase letters, digits, hyphen; max 41 chars; no dots."
   }
   validation {
-    condition     = alltrue([for m in var.models : contains(["kev", "openjev", "laya", "strands"], m.kind)])
-    error_message = "model.kind must be kev, openjev, laya or strands."
+    condition     = alltrue([for m in var.models : contains(["kev", "openjev", "laya", "strands", "liquid"], m.kind)])
+    error_message = "model.kind must be kev, openjev, laya, strands or liquid."
   }
   validation {
     condition     = alltrue([for m in var.models : can(regex("^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$", m.ref))])
