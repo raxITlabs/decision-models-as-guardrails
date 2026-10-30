@@ -80,7 +80,7 @@ HARDWARE = "g2-standard-8/us-east4/on-demand/third-party"   # the first zone tri
 # On 29 and 30 October 2026 no US or EU zone had g2-standard-24 capacity, so the owner chose g2-standard-8 (one L4,
 # both models on it) across US and EU zones; the VM's actual region names the tariff (one entry per region in
 # goldrails_bench/tariffs.json, added once the VM has landed).
-ZONES = ("us-east4-a us-east4-c us-central1-a us-central1-b us-central1-c us-east1-b us-east1-c us-east1-d "
+ZONES = ("us-east4-a us-east4-c us-central1-a us-central1-b us-central1-c us-east1-b us-east1-c "
          "us-west1-a us-west1-b us-west4-a europe-west4-a europe-west4-b europe-west4-c europe-west1-b europe-west1-c")
 ZONE_PREFIXES = ("us-east4-", "us-central1-", "us-east1-", "us-west1-", "us-west4-", "europe-west4-", "europe-west1-")
 
@@ -352,7 +352,7 @@ def _spawn(args: list, log: Path, source: str | None) -> subprocess.Popen:
 def _ctl(cmd: str) -> tuple[int, str]:
     LOGS.mkdir(parents=True, exist_ok=True)
     p = subprocess.run(["make", cmd], cwd=REPO, capture_output=True, text=True,
-                       env={**os.environ, "GOLDRAILS_ZONES": ZONES})
+                       env={**os.environ, "GOLDRAILS_ZONES": ZONES, "GOLDRAILS_PROJECT": "raxit-ai"})
     text = p.stdout + p.stderr
     with (LOGS / f"make-{cmd}.log").open("a", encoding="utf-8") as fh:
         fh.write(f"\n=== {_now()} make {cmd} (exit {p.returncode})\n{text}")
