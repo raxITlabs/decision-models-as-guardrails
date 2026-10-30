@@ -90,6 +90,10 @@ _OR = {"drex-max": 262144, "span-02": 131072, "liquid-d1-ultra": 32768, "liquid-
        "solar-decide-flash": 524288, "mercury-decide": 65536}
 LIMITS.update({k: (v, "hosted context (OpenRouter listing, 28 October 2026)") for k, v in _OR.items()})
 WHOLE_REQUEST_USAGE |= set(_OR)
+# Liquid AI's open d1 models on the project VM (benchmark/runs/e2_liquid_run.py): the model cards' windows; the server
+# does not cut input.
+LIMITS.update({"liquid-d1-2b": (128000, "documented context (model card); less reliable past about 64K"),
+               "liquid-d1-3b": (32768, "documented context (model card)")})
 DEFAULT_LIMIT = (4096, "proxy: undocumented, 4096 reference")
 NEAR = 0.8   # a row is near the limit at >= 80% of it
 CHARS_PER_TOKEN = 3.5   # conservative (over-)estimate for English with a BPE tokenizer
@@ -229,7 +233,7 @@ def leak_check(paths, rows_by_id: dict) -> list:
 
 NEW_KINDS = ("clef", "clef-flash", "clef-omni", "perplexity", "strands", "openai", "jev-1.14", "microsoft", "perplexity-v1.2",
              "perplexity-flash-v1.2", "drex-max", "span-02", "liquid-d1-ultra", "liquid-d1.1", "solar-decide",
-             "solar-decide-flash", "mercury-decide")
+             "solar-decide-flash", "mercury-decide", "liquid")
 KINDS = ("jev", "open", "bedrock") + NEW_KINDS
 JEV_114 = "jev-1.14.0"   # the versioned id; jev-preview points at it today but moves with the next release
 
@@ -314,6 +318,16 @@ def build_new_systems(kinds: set, env) -> tuple[dict, dict]:
             c = SystemOneClient(m["name"], base_url=m["url"], model=m["model"], identity=m["identity"], timeout=300)
             out[m["name"]] = (NoulAdapter(c, endpoint=m["url"]), 2)
     return out, skipped
+
+
+def liquid_models() -> tuple[list, str | None]:
+    """([served kind=liquid models], why there are none)."""
+    try:
+        from goldrails_bench.endpoints import resolve_models
+        found = [m for m in resolve_models(mode="tunnel") if m["kind"] == "liquid"]
+    except Exception as e:  # noqa: BLE001  no gcloud, no VM, VM stopped: the system is not configured
+        return [], f"{type(e).__name__}: {str(e)[:160]}"
+    return found, None if found else "the VM serves no kind=liquid model; add it to terraform.tfvars and apply"
 
 
 def strands_models() -> tuple[list, str | None]:

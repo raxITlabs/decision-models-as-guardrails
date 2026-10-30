@@ -2,7 +2,7 @@
 //
 // Inputs, relative to the benchmark repository root:
 //   benchmark/results/final/leaderboard.json
-//   benchmark/results/final/ledgers/{main-run,prompt-attacks,gpt-6-luna,jev-1.14.0,strands-deciders,microsoft-decision-1,pplx-decider-v1-2,hosted-batch-2}/*.jsonl   (never the private/ folders)
+//   benchmark/results/final/ledgers/{main-run,prompt-attacks,gpt-6-luna,jev-1.14.0,strands-deciders,microsoft-decision-1,pplx-decider-v1-2,hosted-batch-2,liquid-open-d1}/*.jsonl   (never the private/ folders)
 //   dataset/edition2/build/F*.test.jsonl                                           (never build/private/)
 //   dataset/release/redistribution.json                                            (which sources may ship text)
 //
@@ -29,7 +29,7 @@ import type {
   Turn,
 } from "../lib/types";
 
-export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna", "jev-1.14.0", "strands-deciders", "microsoft-decision-1", "pplx-decider-v1-2", "hosted-batch-2"];
+export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna", "jev-1.14.0", "strands-deciders", "microsoft-decision-1", "pplx-decider-v1-2", "hosted-batch-2", "liquid-open-d1"];
 export const RELEASE_VERSION = "1.0.0";
 
 /** Display names, makers and marks for the systems on the board. Ids not listed fall back to the id itself.
@@ -50,6 +50,8 @@ export const SYSTEM_DISPLAY: Record<string, { name: string; label?: string; shor
   "solar-decide": { name: "Solar Decide", isNew: true, provider: "Upstage · via OpenRouter", mono: "Up", logo: "/logos/upstage.svg", docs: "https://openrouter.ai/upstage/solar-decide", pricing: "https://openrouter.ai/upstage/solar-decide" },
   "solar-decide-flash": { name: "Solar Decide Flash", short: "Solar Flash", isNew: true, provider: "Upstage · via OpenRouter", mono: "Up", logo: "/logos/upstage.svg", docs: "https://openrouter.ai/upstage/solar-decide-flash", pricing: "https://openrouter.ai/upstage/solar-decide-flash" },
   "mercury-decide": { name: "Mercury Decide", isNew: true, provider: "Inception · via OpenRouter", mono: "In", logo: "/logos/inception.svg", docs: "https://openrouter.ai/inception/mercury-decide", pricing: "https://openrouter.ai/inception/mercury-decide" },
+  "liquid-d1-2b": { name: "d1-2B", isNew: true, provider: "Liquid AI · open weights", mono: "Lq", logo: "/logos/liquid.svg", docs: "https://huggingface.co/LiquidAI/d1-2B", pricing: "https://cloud.google.com/compute/gpus-pricing" },
+  "liquid-d1-3b": { name: "d1-3B", isNew: true, provider: "Liquid AI · open weights", mono: "Lq", logo: "/logos/liquid.svg", docs: "https://huggingface.co/LiquidAI/d1-3B", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   "clef-omni": { name: "Clef-omni", isNew: true, provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg", docs: "https://developers.cloudflare.com/workers-ai/models/clef-omni/", pricing: "https://developers.cloudflare.com/workers-ai/platform/pricing/" },
   "jev-1.14.0": { name: "Jev 1.14", provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg", docs: "https://docs.typesafe.ai/models", pricing: "https://docs.typesafe.ai/models" },
   "jev-1.13.0": { name: "Jev 1.13", provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg", docs: "https://docs.typesafe.ai/models", pricing: "https://docs.typesafe.ai/models" },

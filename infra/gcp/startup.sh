@@ -103,6 +103,35 @@ PY
   done
 fi
 
+# Liquid AI open d1 servers (kind=liquid, LiquidAI/d1-2B and d1-3B): infra/gcp/liquid_server.py from instance metadata,
+# in its own venv at pinned versions (the ones the laptop smoke test ran on 29 October 2026). The checkpoint, with the
+# model code that trust_remote_code runs, is downloaded here at its pinned revision; the server then runs offline.
+if echo "$MODELS_JSON" | jq -e 'any(.[]; .kind == "liquid")' >/dev/null; then
+  LIQUID_PIN="transformers==5.21.0 torch==2.15.0 torchvision==0.29.2 pillow==13.0.0 huggingface_hub==2.3.0"
+  mkdir -p /opt/goldrails/liquid && md liquid-server-py > /opt/goldrails/liquid/liquid_server.py && chown -R goldrails:goldrails /opt/goldrails/liquid
+  if [ "$(cat /opt/goldrails/liquid/.venv/.goldrails-pin 2>/dev/null || true)" != "$LIQUID_PIN" ] || [ ! -x /opt/goldrails/liquid/.venv/bin/python ]; then
+    sudo -u goldrails -H bash -c "cd /opt/goldrails/liquid && rm -rf .venv && /usr/local/bin/uv venv -q --python 3.12 .venv && /usr/local/bin/uv pip install -q $LIQUID_PIN && echo '$LIQUID_PIN' > .venv/.goldrails-pin" \
+      && echo "liquid venv ready" || echo "liquid venv build FAILED (service will not start)"
+  else
+    echo "liquid venv present"
+  fi
+  echo "$MODELS_JSON" | jq -c '.[] | select(.kind == "liquid")' | while read -r m; do
+    lname=$(echo "$m" | jq -r '.name'); lref=$(echo "$m" | jq -r '.ref'); lrev=$(echo "$m" | jq -r '.revision')
+    [[ "$lname" =~ ^[a-z0-9][a-z0-9-]{0,40}$ && "$lref" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ && "$lrev" =~ ^[0-9a-f]{40}$ ]] \
+      || { echo "refusing liquid model entry: $lname"; exit 1; }
+    sudo -u goldrails -H env HF_HOME=/opt/goldrails/.cache/huggingface /opt/goldrails/liquid/.venv/bin/python - "$lref" "$lrev" "/opt/goldrails/checkpoints/$lname" <<'PY' \
+      && echo "liquid checkpoint $lname at $lrev ready" || echo "liquid checkpoint download FAILED for $lname"
+import pathlib, sys
+from huggingface_hub import snapshot_download
+ref, rev, out = sys.argv[1:4]
+marker = pathlib.Path(out) / ".goldrails-revision"
+if not (marker.exists() and marker.read_text().strip() == rev):
+    snapshot_download(ref, revision=rev, local_dir=out)
+    marker.write_text(rev)
+PY
+  done
+fi
+
 # Triton builds its CUDA driver shim with gcc on first use. Do that here, outside the service sandbox, into the cache
 # the units share, and let any compiler error reach the serial console instead of a bare 500 from the server.
 dpkg -s python3-dev >/dev/null 2>&1 || { apt-get update -q >/dev/null; apt-get install -y -q python3-dev build-essential >/dev/null; }
@@ -173,7 +202,18 @@ split=(); [ "${MODEL_GPU_COUNT:-1}" -gt 1 ] && split=(--split-gpus "$MODEL_GPU_C
 exec env CUDA_VISIBLE_DEVICES="$devices" HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python strands_server.py \
   --checkpoint "$ckpt" --model-name "$MODEL_NAME" --device cuda:0 --host 0.0.0.0 --port "$MODEL_PORT" "${split[@]}"
 RUN
-chmod +x /usr/local/bin/goldrails-run-kev /usr/local/bin/goldrails-run-openjev /usr/local/bin/goldrails-run-laya /usr/local/bin/goldrails-run-strands
+cat > /usr/local/bin/goldrails-run-liquid <<'RUN'
+#!/usr/bin/env bash
+set -euo pipefail
+cd /opt/goldrails/liquid
+ckpt="/opt/goldrails/checkpoints/${MODEL_NAME}"
+# Serve only the pinned revision that startup.sh downloaded (weights and model code); never fetch at serve time.
+[ "$(cat "$ckpt/.goldrails-revision" 2>/dev/null || true)" = "$MODEL_REVISION" ] || { echo "checkpoint $ckpt is not at $MODEL_REVISION"; exit 1; }
+exec env CUDA_VISIBLE_DEVICES="$MODEL_GPU" HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python liquid_server.py \
+  --checkpoint "$ckpt" --ref "$MODEL_REF" --revision "$MODEL_REVISION" --model-name "$MODEL_NAME" --device cuda:0 \
+  --host 0.0.0.0 --port "$MODEL_PORT"
+RUN
+chmod +x /usr/local/bin/goldrails-run-kev /usr/local/bin/goldrails-run-openjev /usr/local/bin/goldrails-run-laya /usr/local/bin/goldrails-run-strands /usr/local/bin/goldrails-run-liquid
 
 # A model that left the roster keeps its unit from an earlier boot: stop and disable it, or it loads on a card the new
 # roster needs (the Strands pass-2 swap of 15 October 2026 found all six models loading at once).
@@ -191,7 +231,7 @@ echo "$MODELS_JSON" | jq -c '.[]' | while read -r m; do
   name=$(echo "$m" | jq -r '.name'); kind=$(echo "$m" | jq -r '.kind')
   # Allowlist: lowercase alnum and hyphen only, no dots, so the name is safe as a path component.
   [[ "$name" =~ ^[a-z0-9][a-z0-9-]{0,40}$ ]] || { echo "refusing model name: $name"; exit 1; }
-  [[ "$kind" =~ ^(kev|openjev|laya|strands)$ ]] || { echo "refusing model kind: $kind"; exit 1; }
+  [[ "$kind" =~ ^(kev|openjev|laya|strands|liquid)$ ]] || { echo "refusing model kind: $kind"; exit 1; }
   echo "$m" | jq -r '@sh "MODEL_NAME=\(.name)\nMODEL_REF=\(.ref)\nMODEL_REVISION=\(.revision)\nMODEL_PORT=\(.port|tostring)\nMODEL_GPU=\(.gpu|tostring)\nMODEL_GPU_COUNT=\((.gpu_count // 1)|tostring)"' > "/tmp/${name}.env"
   install -m 0640 -o root -g goldrails -T "/tmp/${name}.env" "/etc/goldrails/${name}.env"
   # Strands servers also write to the serial console, so a failure can be read with get-serial-port-output when SSH

@@ -101,7 +101,7 @@ DEFAULT_CONTRACT = {
 }
 
 FEATURE_SUITE = {v["feature"]: k for k, v in DEFAULT_CONTRACT["suites"].items()}
-SELF_HOSTED_KINDS = ("kev", "laya", "openjev", "open-jev", "strands")
+SELF_HOSTED_KINDS = ("kev", "laya", "openjev", "open-jev", "strands", "liquid")
 
 
 # --- small helpers ---------------------------------------------------------------------------------------------------
