@@ -434,6 +434,18 @@
       "status": "third-party list price; confirm against https://cloud.google.com/spot-vms/pricing before publishing"
     },
     {
+      "id": "gcp/pd-balanced/us-central1/third-party",
+      "provider": "Google Compute Engine",
+      "kind": "per_gb_month",
+      "match": {"hardware": ["pd-balanced/us-central1/third-party"]},
+      "region": "us-central1",
+      "usd_per_gb_month": 0.10,
+      "note": "Zonal balanced persistent disk, the boot disk of the Liquid AI open d1 run's VM (us-central1-c). A month is 730 hours.",
+      "checked_on": "2026-09-23",
+      "source": "https://gcloud-compute.com/diskpricing.html (page last updated 2026-09-21)",
+      "status": "third-party list price; confirm against https://cloud.google.com/compute/disks-image-pricing before publishing"
+    },
+    {
       "id": "gcp/pd-balanced/us-east4/third-party",
       "provider": "Google Compute Engine",
       "kind": "per_gb_month",

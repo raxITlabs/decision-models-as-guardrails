@@ -87,7 +87,7 @@ ZONE_PREFIXES = ("us-east4-", "us-central1-", "us-east1-", "us-west1-", "us-west
 
 def hardware_of(zone: str) -> str:
     return f"{MACHINE}/{zone.rsplit('-', 1)[0]}/on-demand/third-party"
-DISK = "pd-balanced/us-east4/third-party"
+DISK = "pd-balanced/us-central1/third-party"   # the VM landed in us-central1-c on 30 October 2026
 LABEL = "Liquid AI open d1 extension run: d1-2B and d1-3B on every edition 2 test row and the unpublished slice"
 APPROVAL = "Liquid AI's open d1-2B and d1-3B added on the owner's request of 29 October 2026, on the project VM"
 NOUL_ADAPTER = {"name": "noul-e2", "version": "1"}
@@ -99,7 +99,7 @@ DISCLOSURES = [
     "committed before their first test call (benchmark/subsets/edition2/freeze-manifest-liquid-open-d1.json). They use "
     "every Noul model's question sets, request and fixed 0.5 rule.",
     "Both are open weights (LFM Open License v1.0). OpenRouter does not serve them, so they ran on the project VM "
-    "(g2-standard-8, one NVIDIA L4, us-east4), both models on the one card in bf16, each served by "
+    "(g2-standard-8, one NVIDIA L4, us-central1-c, the first zone with capacity), both models on the one card in bf16, each served by "
     "infra/gcp/liquid_server.py with "
     "the model card's call: Transformers with the checkpoint's own model code (trust_remote_code) at the pinned commit, "
     "and model.system_one(state, questions). The unpublished slice went only to that VM.",
