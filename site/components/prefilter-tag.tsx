@@ -1,22 +1,42 @@
-import type { SystemMeta } from "../lib/types";
+"use client";
 
-/** "Pre-filtered" after the name of a system whose provider refused some inputs before the model answered (owner
- *  ruling 41). The refused rows are scored as wrong; this says so where the score is read. Styles in globals.css. */
+import type { SystemMeta } from "../lib/types";
+import { Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTitle, PopoverTrigger } from "./ui/popover";
+
+function makerOf(m: SystemMeta): string {
+  return m.provider.split(" · ")[0] || "The provider";
+}
+
+/** "Pre-filtered" marker for a system whose provider refused some checks before the model answered (owner ruling 41).
+ *  A button that opens a short shadcn popover saying what that means. Never put it inside another button: the
+ *  leaderboard row renders it beside its select button. Styles in globals.css. */
 export function PrefilterTag({ m, onArt = false }: { m?: SystemMeta; onArt?: boolean }) {
   if (!m?.prefiltered) return null;
   const { rows, of } = m.prefiltered;
   return (
-    <span
-      className={onArt ? "prefilter-tag prefilter-tag-art" : "prefilter-tag"}
-      title={`${makerOf(m)}'s safety filter returned an error instead of an answer on ${rows.toLocaleString("en-US")} of ${of.toLocaleString("en-US")} checks. Counted as wrong.`}
-    >
-      Pre-filtered
-    </span>
+    <Popover>
+      <PopoverTrigger
+        className={onArt ? "prefilter-tag prefilter-tag-art" : "prefilter-tag"}
+        aria-label={`Pre-filtered: what this means for ${m.name}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        Pre-filtered
+        <span aria-hidden="true" className="prefilter-tag-i">i</span>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="text-[13px] leading-relaxed" onClick={(e) => e.stopPropagation()}>
+        <PopoverHeader>
+          <PopoverTitle className="text-[14px] font-semibold">Pre-filtered</PopoverTitle>
+          <PopoverDescription>
+            {makerOf(m)} runs its own safety filter before the model sees a check. On {rows.toLocaleString("en-US")} of{" "}
+            {of.toLocaleString("en-US")} checks it returned an error instead of an answer.
+          </PopoverDescription>
+          <PopoverDescription>
+            We count those as wrong, so the score includes them. You can&apos;t configure this filter or see why it fired.
+          </PopoverDescription>
+        </PopoverHeader>
+      </PopoverContent>
+    </Popover>
   );
-}
-
-function makerOf(m: SystemMeta): string {
-  return m.provider.split(" · ")[0] || "The provider";
 }
 
 /** The longer note for the system's detail panel. */

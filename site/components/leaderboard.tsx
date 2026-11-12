@@ -327,7 +327,6 @@ function Row({
               <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
                 <span className={earlier ? "text-fg-2" : "whitespace-nowrap font-semibold text-fg"}>{m?.name ?? s.system}</span>
                 {m?.isNew && !earlier && <NewTag />}
-                {!earlier && <PrefilterTag m={m} />}
               </span>
               <span className="text-[12px] text-muted">
                 {picked && <span className="font-medium text-accent">Our pick · </span>}
@@ -335,6 +334,7 @@ function Row({
               </span>
             </span>
           </button>
+          {!earlier && m?.prefiltered ? <span className="-mt-1.5 pl-12"><PrefilterTag m={m} /></span> : null}
           {toggle ? <span className="pl-12" onClick={(e) => e.stopPropagation()}>{toggle}</span> : null}
         </div>
       </th>

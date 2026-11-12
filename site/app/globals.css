@@ -172,7 +172,13 @@ details[open] > summary .chev {
 .prefilter-tag {
   display: inline-flex; flex-shrink: 0; align-items: center;
   font-size: 11px; font-weight: 600; line-height: 1; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--warn); cursor: help;
+  color: var(--warn); cursor: pointer; background: none; border: 0; padding: 0; gap: 0.375rem;
+}
+.prefilter-tag:hover { text-decoration: underline; text-underline-offset: 3px; }
+.prefilter-tag:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; border-radius: 2px; }
+.prefilter-tag-i {
+  display: inline-grid; place-items: center; width: 13px; height: 13px; border-radius: 9999px;
+  border: 1px solid currentColor; font-size: 9px; letter-spacing: 0; text-transform: none; font-style: italic;
 }
 .prefilter-tag-art { font-size: 12px; color: var(--warn-art); }
 
