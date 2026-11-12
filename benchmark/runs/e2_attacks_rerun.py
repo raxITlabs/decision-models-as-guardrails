@@ -626,7 +626,7 @@ NAMES.update({"strands-decider-2b-v21": "Strands Decider 2B v21", "strands-decid
               "pplx-decider-flash-v1-2": "pplx-decider-flash-v1.2", "drex-max": "Drex Max", "span-02": "Span-02",
               "liquid-d1-ultra": "d1-ultra", "liquid-d1.1": "d1.1", "solar-decide": "Solar Decide",
               "solar-decide-flash": "Solar Decide Flash", "mercury-decide": "Mercury Decide", "clef-omni": "Clef-omni",
-              "liquid-d1-2b": "d1-2B", "liquid-d1-3b": "d1-3B"})
+              "liquid-d1-2b": "d1-2B", "liquid-d1-3b": "d1-3B", "gemini-decision-1": "Gemini Decision 1"})
 SUITE_COLS = (("content", "Content"), ("prompt_attacks", "Prompt attacks"), ("denied_topics", "Denied topics"),
               ("word_filters", "Profanity"), ("sensitive_info", "PII"), ("grounding", "Grounding"))
 

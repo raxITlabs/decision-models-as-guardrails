@@ -620,7 +620,9 @@ OR_NEW = {  # system -> (requested model, pinned snapshot, context, input USD pe
     "solar-decide": ("upstage/solar-decide", "upstage/solar-decide-20260928", 524288, 0.05),
     "solar-decide-flash": ("upstage/solar-decide-flash", "upstage/solar-decide-flash-20261008", 524288, 0.05),
     "mercury-decide": ("inception/mercury-decide", "inception/mercury-decide-20260930", 65536, 0.02),
+    "gemini-decision-1": ("google/gemini-decision-1", "google/gemini-decision-1-20261111", 262144, 0.10),
 }
+CHECKED_ON = {"gemini-decision-1": "2026-11-12"}   # tariff read date where it is not the batch's 28 October
 
 
 def test_openrouter_table_matches_the_probed_models():
@@ -698,7 +700,7 @@ def test_new_hosted_models_are_wired_into_the_smoke_and_tariffs():
     entries = lb.load_tariffs()["entries"]
     for s, (model, snap, _, usd) in OR_NEW.items():
         (e,) = [e for e in entries if snap in e["match"].get("models", [])]
-        assert model in e["match"]["models"] and e["checked_on"] == "2026-10-28"
+        assert model in e["match"]["models"] and e["checked_on"] == CHECKED_ON.get(s, "2026-10-28")
         assert e["prices"]["input_tokens"]["usd_per_million"] == usd and e["prices"]["output_tokens"]["usd_per_million"] == 0.0
     (e,) = [e for e in entries if "@cf/cloudflare/clef-omni" in e["match"].get("models", [])]
     assert e["prices"]["input_tokens"]["usd_per_million"] == 0.15

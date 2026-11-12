@@ -653,6 +653,11 @@ OPENROUTER_DECIDERS = {
                            "context": 524_288},
     "mercury-decide": {"model": "inception/mercury-decide", "snapshot": "inception/mercury-decide-20260930",
                        "context": 65_536},
+    # Google's Gemini Decision 1 (released 11 November 2026). OpenRouter serves it from Google AI Studio (the
+    # x-provider-name header on two canned calls, 12 November 2026). Google's own endpoint
+    # (generativelanguage.googleapis.com/v1beta/decisions) takes a different request shape and is not used here.
+    "gemini-decision-1": {"model": "google/gemini-decision-1", "snapshot": "google/gemini-decision-1-20261111",
+                          "context": 262_144},
 }
 
 

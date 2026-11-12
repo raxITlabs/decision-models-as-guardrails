@@ -236,6 +236,20 @@
       "status": "vendor list price; not reconciled against a billing statement"
     },
     {
+      "id": "openrouter/decisions/gemini-decision-1",
+      "provider": "OpenRouter Decisions API (alpha), served by Google AI Studio",
+      "kind": "per_token",
+      "match": {"models": ["google/gemini-decision-1", "google/gemini-decision-1-20261111"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.10},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter and Google list output tokens as free"}
+      },
+      "checked_on": "2026-11-12",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 12 November 2026), matching Google's launch post (blog.google, 11 November 2026); a canned call reported cost 0.0000119 for 119 input tokens",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
       "id": "cloudflare/workers-ai/clef-omni",
       "provider": "Cloudflare Workers AI",
       "kind": "per_token",
