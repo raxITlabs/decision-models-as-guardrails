@@ -2,7 +2,7 @@
 //
 // Inputs, relative to the benchmark repository root:
 //   benchmark/results/final/leaderboard.json
-//   benchmark/results/final/ledgers/{main-run,prompt-attacks,gpt-6-luna,jev-1.14.0,strands-deciders,microsoft-decision-1,pplx-decider-v1-2,hosted-batch-2,liquid-open-d1}/*.jsonl   (never the private/ folders)
+//   benchmark/results/final/ledgers/{main-run,prompt-attacks,gpt-6-luna,jev-1.14.0,strands-deciders,microsoft-decision-1,pplx-decider-v1-2,hosted-batch-2,liquid-open-d1,gemini-decision-1}/*.jsonl   (never the private/ folders)
 //   dataset/edition2/build/F*.test.jsonl                                           (never build/private/)
 //   dataset/release/redistribution.json                                            (which sources may ship text)
 //
@@ -29,7 +29,7 @@ import type {
   Turn,
 } from "../lib/types";
 
-export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna", "jev-1.14.0", "strands-deciders", "microsoft-decision-1", "pplx-decider-v1-2", "hosted-batch-2", "liquid-open-d1"];
+export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna", "jev-1.14.0", "strands-deciders", "microsoft-decision-1", "pplx-decider-v1-2", "hosted-batch-2", "liquid-open-d1", "gemini-decision-1"];
 export const RELEASE_VERSION = "1.0.0";
 
 /** Display names, makers and marks for the systems on the board. Ids not listed fall back to the id itself.
@@ -52,6 +52,7 @@ export const SYSTEM_DISPLAY: Record<string, { name: string; label?: string; shor
   "mercury-decide": { name: "Mercury Decide", isNew: true, provider: "Inception · via OpenRouter", mono: "In", logo: "/logos/inception.svg", docs: "https://openrouter.ai/inception/mercury-decide", pricing: "https://openrouter.ai/inception/mercury-decide" },
   "liquid-d1-2b": { name: "d1-2B", isNew: true, provider: "Liquid AI · open weights", mono: "Lq", logo: "/logos/liquid.svg", docs: "https://huggingface.co/LiquidAI/d1-2B", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   "liquid-d1-3b": { name: "d1-3B", isNew: true, provider: "Liquid AI · open weights", mono: "Lq", logo: "/logos/liquid.svg", docs: "https://huggingface.co/LiquidAI/d1-3B", pricing: "https://cloud.google.com/compute/gpus-pricing" },
+  "gemini-decision-1": { name: "Gemini Decision 1", short: "Gemini Decision", isNew: true, provider: "Google · via OpenRouter", mono: "Go", logo: "/logos/google.svg", docs: "https://aistudio.google.com/docs/decisions-api", pricing: "https://openrouter.ai/google/gemini-decision-1" },
   "clef-omni": { name: "Clef-omni", isNew: true, provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg", docs: "https://developers.cloudflare.com/workers-ai/models/clef-omni/", pricing: "https://developers.cloudflare.com/workers-ai/platform/pricing/" },
   "jev-1.14.0": { name: "Jev 1.14", provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg", docs: "https://docs.typesafe.ai/models", pricing: "https://docs.typesafe.ai/models" },
   "jev-1.13.0": { name: "Jev 1.13", provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg", docs: "https://docs.typesafe.ai/models", pricing: "https://docs.typesafe.ai/models" },
@@ -315,6 +316,16 @@ function latestDate(lb: Json): string {
   return dates.sort().at(-1) ?? new Date().toISOString().slice(0, 10);
 }
 
+/** Checks the provider refused before the model answered (owner ruling 41: scored wrong, off the failure cap), over the
+ *  system's arms in the six suites, out of the checks it was sent (``checks``; the arms' row counts are a fallback,
+ *  though they count a PII row once per entity type). Nothing when there were none. */
+export function prefilteredOf(arms: Json[], system: string, checks?: number): { prefiltered?: { rows: number; of: number } } {
+  const mine = arms.filter((a) => a.system === system);
+  const rows = mine.reduce((n, a) => n + (a.run?.provider_refusals ?? 0), 0);
+  const of = typeof checks === "number" ? checks : mine.reduce((n, a) => n + (a.run?.rows ?? 0), 0);
+  return rows > 0 ? { prefiltered: { rows, of } } : {};
+}
+
 export function buildBoard(lb: Json, source: Board["source"]): Board {
   const arms: Json[] = lb.arms ?? [];
   const ranking: Json[] = lb.overall.ranking;
@@ -333,6 +344,7 @@ export function buildBoard(lb: Json, source: Board["source"]): Board {
       ...(d?.docs ? { docs: d.docs } : {}),
       ...(d?.pricing ? { pricing: d.pricing } : {}),
       ...(d?.isNew ? { isNew: true } : {}),
+      ...prefilteredOf(arms, r.name, runCost[r.name]?.checks),
       hosting: hostingOf(arms, r.name),
       // Amazon Bedrock Guardrails is a configurable guardrail service, not a decision model.
       kind: GUARDRAIL_SERVICES.has(r.name) ? "service" : "decision",

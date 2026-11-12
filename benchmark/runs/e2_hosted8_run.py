@@ -54,10 +54,12 @@ from goldrails_bench import hosted  # noqa: E402
 CLEF_OMNI = "clef-omni"
 # system -> (model id sent and recorded, smoke kind); each system's kind is its own name. The config hash uses the model
 # id and the recorded endpoint (the Workers AI one without the account id).
-SYSTEMS = {s: (d["model"], s) for s, d in hosted.OPENROUTER_DECIDERS.items()}
+# The seven OpenRouter models this run froze (its manifest); models added to OPENROUTER_DECIDERS later are not in it.
+BATCH = ("drex-max", "span-02", "liquid-d1-ultra", "liquid-d1.1", "solar-decide", "solar-decide-flash", "mercury-decide")
+SYSTEMS = {s: (hosted.OPENROUTER_DECIDERS[s]["model"], s) for s in BATCH}
 SYSTEMS[CLEF_OMNI] = (hosted.CLEF[CLEF_OMNI][0], CLEF_OMNI)
 KINDS = {kind for _, kind in SYSTEMS.values()}
-PINS = {s: d["snapshot"] for s, d in hosted.OPENROUTER_DECIDERS.items()}
+PINS = {s: hosted.OPENROUTER_DECIDERS[s]["snapshot"] for s in BATCH}
 PINS[CLEF_OMNI] = f"not pinned on Workers AI; open weights {hosted.CLEF[CLEF_OMNI][1]} @ {hosted.CLEF[CLEF_OMNI][2]}"
 
 

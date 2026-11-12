@@ -11,6 +11,7 @@ import { type ChartScope, chartSystems, logAxis } from "@/lib/chart";
 import { ArrowRight, ArrowUpLeft, Chevron, External } from "./icons";
 import { Segmented } from "./segmented";
 import { NewTag } from "./new-tag";
+import { PrefilterNote, PrefilterTag } from "./prefilter-tag";
 import { SystemMark } from "./system-mark";
 import { SharePanel, ShareTrigger, useCaseParam } from "./share-panel";
 import { shareCard } from "@/lib/share";
@@ -320,11 +321,13 @@ function Row({
       {/* On a phone the name column stays put while the numbers scroll under it. */}
       <th scope="row" className={`sticky left-0 z-[1] py-2.5 pl-3 pr-3 text-left font-normal sm:static sm:pl-0 ${bg}`}>
         <div className={`flex flex-col ${earlier ? "pl-6" : ""}`}>
+          {/* The condition "i" is its own button, so it sits beside the select button, not inside it. */}
+          <span className="flex items-start gap-2">
           <button type="button" onClick={() => onSelect(s.system)} aria-pressed={on} className="flex min-h-11 items-center gap-3 text-left">
             {earlier ? null : <SystemMark m={m} size="md" />}
             <span className="flex flex-col items-start">
-              <span className="flex items-center gap-2">
-                <span className={earlier ? "text-fg-2" : "font-semibold text-fg"}>{m?.name ?? s.system}</span>
+              <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                <span className={earlier ? "text-fg-2" : "whitespace-nowrap font-semibold text-fg"}>{m?.name ?? s.system}</span>
                 {m?.isNew && !earlier && <NewTag />}
               </span>
               <span className="text-[12px] text-muted">
@@ -333,6 +336,8 @@ function Row({
               </span>
             </span>
           </button>
+          {!earlier && m?.prefiltered ? <span className="mt-[7px]"><PrefilterTag m={m} /></span> : null}
+          </span>
           {toggle ? <span className="pl-12" onClick={(e) => e.stopPropagation()}>{toggle}</span> : null}
         </div>
       </th>
@@ -894,6 +899,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
             <span className="flex items-center gap-2.5">
               <span className="text-[20px] font-semibold tracking-[-0.01em]">{m?.name ?? s.system}</span>
               {m?.isNew && <NewTag />}
+              <PrefilterTag m={m} />
             </span>
             <span className="text-[13px] text-muted">
               {m?.provider}
@@ -941,6 +947,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
             </dl>
           </div>
         )}
+        <PrefilterNote m={m} />
         <Link href={`/data?system=${encodeURIComponent(s.system)}${job === "overall" ? "" : `&job=${job}`}#rows`} className="inline-flex min-h-11 items-center gap-1.5 self-start text-[14px]">
           See the rows it got wrong <ArrowRight />
         </Link>

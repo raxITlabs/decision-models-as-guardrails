@@ -87,7 +87,7 @@ WHOLE_REQUEST_USAGE = {"clef", "clef-flash", "clef-omni", "pplx-decider-v1-27b",
                        "microsoft-decision-1"}
 # The OpenRouter decision models (goldrails_bench.hosted.OPENROUTER_DECIDERS): the listing's context, whole-request usage.
 _OR = {"drex-max": 262144, "span-02": 131072, "liquid-d1-ultra": 32768, "liquid-d1.1": 65536, "solar-decide": 524288,
-       "solar-decide-flash": 524288, "mercury-decide": 65536}
+       "solar-decide-flash": 524288, "mercury-decide": 65536, "gemini-decision-1": 262144}
 LIMITS.update({k: (v, "hosted context (OpenRouter listing, 28 October 2026)") for k, v in _OR.items()})
 WHOLE_REQUEST_USAGE |= set(_OR)
 # Liquid AI's open d1 models on the project VM (benchmark/runs/e2_liquid_run.py): the model cards' windows; the server
@@ -233,7 +233,7 @@ def leak_check(paths, rows_by_id: dict) -> list:
 
 NEW_KINDS = ("clef", "clef-flash", "clef-omni", "perplexity", "strands", "openai", "jev-1.14", "microsoft", "perplexity-v1.2",
              "perplexity-flash-v1.2", "drex-max", "span-02", "liquid-d1-ultra", "liquid-d1.1", "solar-decide",
-             "solar-decide-flash", "mercury-decide", "liquid")
+             "solar-decide-flash", "mercury-decide", "liquid", "gemini-decision-1")
 KINDS = ("jev", "open", "bedrock") + NEW_KINDS
 JEV_114 = "jev-1.14.0"   # the versioned id; jev-preview points at it today but moves with the next release
 

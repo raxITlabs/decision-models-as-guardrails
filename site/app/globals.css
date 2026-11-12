@@ -168,6 +168,17 @@ details[open] > summary .chev {
   70%, 100% { transform: scale(2.8); opacity: 0; }
 }
 
+/* Condition marker (components/prefilter-tag.tsx): an "i" that opens a popover. The provider refused some checks
+   before the model answered (owner ruling 41). */
+.prefilter-tag {
+  display: inline-grid; flex-shrink: 0; place-items: center; width: 16px; height: 16px; padding: 0;
+  border: 1px solid currentColor; border-radius: 9999px; background: none; cursor: pointer;
+  font: italic 600 10px/1 Georgia, serif; color: var(--warn);
+}
+.prefilter-tag:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
+.prefilter-tag:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.prefilter-tag-art { color: var(--warn-art); }
+
 @media (prefers-reduced-motion: reduce) {
   .new-tag-dot::after { animation: none; opacity: 0; }
   *,
