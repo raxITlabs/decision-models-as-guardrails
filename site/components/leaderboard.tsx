@@ -321,6 +321,8 @@ function Row({
       {/* On a phone the name column stays put while the numbers scroll under it. */}
       <th scope="row" className={`sticky left-0 z-[1] py-2.5 pl-3 pr-3 text-left font-normal sm:static sm:pl-0 ${bg}`}>
         <div className={`flex flex-col ${earlier ? "pl-6" : ""}`}>
+          {/* The condition "i" is its own button, so it sits beside the select button, not inside it. */}
+          <span className="flex items-start gap-2">
           <button type="button" onClick={() => onSelect(s.system)} aria-pressed={on} className="flex min-h-11 items-center gap-3 text-left">
             {earlier ? null : <SystemMark m={m} size="md" />}
             <span className="flex flex-col items-start">
@@ -334,7 +336,8 @@ function Row({
               </span>
             </span>
           </button>
-          {!earlier && m?.prefiltered ? <span className="-mt-1.5 pl-12"><PrefilterTag m={m} /></span> : null}
+          {!earlier && m?.prefiltered ? <span className="mt-[7px]"><PrefilterTag m={m} /></span> : null}
+          </span>
           {toggle ? <span className="pl-12" onClick={(e) => e.stopPropagation()}>{toggle}</span> : null}
         </div>
       </th>
