@@ -2,13 +2,13 @@
  "source": "real",
  "release": {
   "version": "1.0.0",
-  "date": "2026-10-29"
+  "date": "2026-11-12"
  },
  "stats": {
   "checks": 9975,
   "publicRows": 7706,
   "heldBackRows": 2269,
-  "systems": 32,
+  "systems": 33,
   "suites": 6,
   "jobs": 8,
   "threshold": 0.5
@@ -102,6 +102,23 @@
    "logo": "/logos/microsoft.svg",
    "docs": "https://openrouter.ai/microsoft/microsoft-decision-1",
    "pricing": "https://openrouter.ai/microsoft/microsoft-decision-1",
+   "hosting": "managed",
+   "kind": "decision"
+  },
+  {
+   "id": "gemini-decision-1",
+   "name": "Gemini Decision 1",
+   "provider": "Google · via OpenRouter",
+   "mono": "Go",
+   "short": "Gemini Decision",
+   "logo": "/logos/google.svg",
+   "docs": "https://aistudio.google.com/docs/decisions-api",
+   "pricing": "https://openrouter.ai/google/gemini-decision-1",
+   "isNew": true,
+   "prefiltered": {
+    "rows": 72,
+    "of": 9975
+   },
    "hosting": "managed",
    "kind": "decision"
   },
@@ -473,8 +490,19 @@
    "cost": 0.02599
   },
   {
-   "system": "jev-1.14.0",
+   "system": "gemini-decision-1",
    "rank": 9,
+   "tier": 3,
+   "score": 89.22,
+   "ciLow": 88.55,
+   "ciHigh": 89.86,
+   "catchRate": 0.8555,
+   "falseBlockRate": 0.0711,
+   "cost": 0.08182
+  },
+  {
+   "system": "jev-1.14.0",
+   "rank": 10,
    "tier": 3,
    "score": 88.65,
    "ciLow": 87.95,
@@ -485,7 +513,7 @@
   },
   {
    "system": "jev-1.13.0",
-   "rank": 10,
+   "rank": 11,
    "tier": 3,
    "score": 88.47,
    "ciLow": 87.76,
@@ -496,8 +524,8 @@
   },
   {
    "system": "mercury-decide",
-   "rank": 11,
-   "tier": 3,
+   "rank": 12,
+   "tier": 4,
    "score": 87.74,
    "ciLow": 87,
    "ciHigh": 88.45,
@@ -507,7 +535,7 @@
   },
   {
    "system": "pplx-decider-flash-v1-2",
-   "rank": 12,
+   "rank": 13,
    "tier": 4,
    "score": 86.54,
    "ciLow": 85.8,
@@ -518,7 +546,7 @@
   },
   {
    "system": "strands-decider-12b",
-   "rank": 13,
+   "rank": 14,
    "tier": 4,
    "score": 86.4,
    "ciLow": 85.65,
@@ -529,7 +557,7 @@
   },
   {
    "system": "span-02",
-   "rank": 14,
+   "rank": 15,
    "tier": 4,
    "score": 86.21,
    "ciLow": 85.48,
@@ -540,8 +568,8 @@
   },
   {
    "system": "strands-decider-26b-a4b",
-   "rank": 15,
-   "tier": 4,
+   "rank": 16,
+   "tier": 5,
    "score": 86.14,
    "ciLow": 85.42,
    "ciHigh": 86.94,
@@ -551,8 +579,8 @@
   },
   {
    "system": "liquid-d1-2b",
-   "rank": 16,
-   "tier": 5,
+   "rank": 17,
+   "tier": 6,
    "score": 83.78,
    "ciLow": 82.93,
    "ciHigh": 84.58,
@@ -562,8 +590,8 @@
   },
   {
    "system": "clef-omni",
-   "rank": 17,
-   "tier": 5,
+   "rank": 18,
+   "tier": 6,
    "score": 82.86,
    "ciLow": 82.13,
    "ciHigh": 83.56,
@@ -573,8 +601,8 @@
   },
   {
    "system": "solar-decide",
-   "rank": 18,
-   "tier": 5,
+   "rank": 19,
+   "tier": 6,
    "score": 82.67,
    "ciLow": 81.89,
    "ciHigh": 83.49,
@@ -584,8 +612,8 @@
   },
   {
    "system": "strands-decider-e4b",
-   "rank": 19,
-   "tier": 6,
+   "rank": 20,
+   "tier": 7,
    "score": 81.95,
    "ciLow": 81.1,
    "ciHigh": 82.81,
@@ -595,8 +623,8 @@
   },
   {
    "system": "clef-flash",
-   "rank": 20,
-   "tier": 6,
+   "rank": 21,
+   "tier": 7,
    "score": 81.93,
    "ciLow": 81.07,
    "ciHigh": 82.8,
@@ -606,8 +634,8 @@
   },
   {
    "system": "kev-4b",
-   "rank": 21,
-   "tier": 6,
+   "rank": 22,
+   "tier": 7,
    "score": 81.41,
    "ciLow": 80.68,
    "ciHigh": 82.17,
@@ -617,8 +645,8 @@
   },
   {
    "system": "kev-9b",
-   "rank": 22,
-   "tier": 7,
+   "rank": 23,
+   "tier": 8,
    "score": 80.31,
    "ciLow": 79.5,
    "ciHigh": 81.1,
@@ -628,8 +656,8 @@
   },
   {
    "system": "strands-decider-e2b",
-   "rank": 23,
-   "tier": 7,
+   "rank": 24,
+   "tier": 8,
    "score": 80.11,
    "ciLow": 79.19,
    "ciHigh": 80.99,
@@ -639,8 +667,8 @@
   },
   {
    "system": "liquid-d1-3b",
-   "rank": 24,
-   "tier": 7,
+   "rank": 25,
+   "tier": 8,
    "score": 79.69,
    "ciLow": 78.87,
    "ciHigh": 80.49,
@@ -650,8 +678,8 @@
   },
   {
    "system": "bedrock-guardrails",
-   "rank": 25,
-   "tier": 7,
+   "rank": 26,
+   "tier": 8,
    "score": 79.04,
    "ciLow": 78.16,
    "ciHigh": 79.95,
@@ -661,8 +689,8 @@
   },
   {
    "system": "strands-decider-2b-qwen35",
-   "rank": 26,
-   "tier": 8,
+   "rank": 27,
+   "tier": 9,
    "score": 78.19,
    "ciLow": 77.33,
    "ciHigh": 79.12,
@@ -672,8 +700,8 @@
   },
   {
    "system": "strands-decider-2b-v21",
-   "rank": 27,
-   "tier": 8,
+   "rank": 28,
+   "tier": 9,
    "score": 77.24,
    "ciLow": 76.31,
    "ciHigh": 78.11,
@@ -683,8 +711,8 @@
   },
   {
    "system": "strands-decider-2b",
-   "rank": 28,
-   "tier": 9,
+   "rank": 29,
+   "tier": 10,
    "score": 75.36,
    "ciLow": 74.51,
    "ciHigh": 76.23,
@@ -694,8 +722,8 @@
   },
   {
    "system": "solar-decide-flash",
-   "rank": 29,
-   "tier": 9,
+   "rank": 30,
+   "tier": 10,
    "score": 74.04,
    "ciLow": 73.21,
    "ciHigh": 74.88,
@@ -705,8 +733,8 @@
   },
   {
    "system": "open-jev-2b",
-   "rank": 30,
-   "tier": 10,
+   "rank": 31,
+   "tier": 11,
    "score": 66.62,
    "ciLow": 65.89,
    "ciHigh": 67.36,
@@ -716,8 +744,8 @@
   },
   {
    "system": "kev-0-8b",
-   "rank": 31,
-   "tier": 10,
+   "rank": 32,
+   "tier": 11,
    "score": 66.19,
    "ciLow": 65.29,
    "ciHigh": 67.05,
@@ -727,8 +755,8 @@
   },
   {
    "system": "laya",
-   "rank": 32,
-   "tier": 11,
+   "rank": 33,
+   "tier": 12,
    "score": 61.14,
    "ciLow": 60.14,
    "ciHigh": 62.16,
@@ -773,8 +801,19 @@
     "cost": 0.01782
    },
    {
-    "system": "strands-decider-12b",
+    "system": "gemini-decision-1",
     "rank": 4,
+    "tier": 2,
+    "score": 92.04,
+    "ciLow": 89.89,
+    "ciHigh": 93.92,
+    "catchRate": 0.8618,
+    "falseBlockRate": 0.021,
+    "cost": 0.04735
+   },
+   {
+    "system": "strands-decider-12b",
+    "rank": 5,
     "tier": 2,
     "score": 90.73,
     "ciLow": 89.02,
@@ -785,7 +824,7 @@
    },
    {
     "system": "clef",
-    "rank": 5,
+    "rank": 6,
     "tier": 2,
     "score": 89.45,
     "ciLow": 86.89,
@@ -796,8 +835,8 @@
    },
    {
     "system": "jev-1.14.0",
-    "rank": 6,
-    "tier": 2,
+    "rank": 7,
+    "tier": 3,
     "score": 87.23,
     "ciLow": 84.72,
     "ciHigh": 89.99,
@@ -807,7 +846,7 @@
    },
    {
     "system": "gpt-6-luna",
-    "rank": 7,
+    "rank": 8,
     "tier": 3,
     "score": 86.91,
     "ciLow": 84.35,
@@ -818,7 +857,7 @@
    },
    {
     "system": "microsoft-decision-1",
-    "rank": 8,
+    "rank": 9,
     "tier": 3,
     "score": 86.32,
     "ciLow": 84.01,
@@ -829,7 +868,7 @@
    },
    {
     "system": "pplx-decider-v1-27b",
-    "rank": 9,
+    "rank": 10,
     "tier": 3,
     "score": 85.88,
     "ciLow": 83.41,
@@ -840,7 +879,7 @@
    },
    {
     "system": "jev-1.13.0",
-    "rank": 10,
+    "rank": 11,
     "tier": 3,
     "score": 84.9,
     "ciLow": 82.16,
@@ -851,7 +890,7 @@
    },
    {
     "system": "liquid-d1.1",
-    "rank": 11,
+    "rank": 12,
     "tier": 3,
     "score": 84.86,
     "ciLow": 82.14,
@@ -862,8 +901,8 @@
    },
    {
     "system": "pplx-decider-flash-v1-2",
-    "rank": 12,
-    "tier": 3,
+    "rank": 13,
+    "tier": 4,
     "score": 82.41,
     "ciLow": 79.52,
     "ciHigh": 85.73,
@@ -873,7 +912,7 @@
    },
    {
     "system": "strands-decider-26b-a4b",
-    "rank": 13,
+    "rank": 14,
     "tier": 4,
     "score": 81.33,
     "ciLow": 78.88,
@@ -884,7 +923,7 @@
    },
    {
     "system": "mercury-decide",
-    "rank": 14,
+    "rank": 15,
     "tier": 4,
     "score": 80.41,
     "ciLow": 77.16,
@@ -895,7 +934,7 @@
    },
    {
     "system": "strands-decider-e4b",
-    "rank": 15,
+    "rank": 16,
     "tier": 4,
     "score": 79.89,
     "ciLow": 77.67,
@@ -906,7 +945,7 @@
    },
    {
     "system": "liquid-d1-2b",
-    "rank": 16,
+    "rank": 17,
     "tier": 4,
     "score": 76.36,
     "ciLow": 73.2,
@@ -917,7 +956,7 @@
    },
    {
     "system": "clef-flash",
-    "rank": 17,
+    "rank": 18,
     "tier": 5,
     "score": 73.66,
     "ciLow": 70.85,
@@ -928,7 +967,7 @@
    },
    {
     "system": "span-02",
-    "rank": 18,
+    "rank": 19,
     "tier": 5,
     "score": 70.77,
     "ciLow": 68.2,
@@ -939,7 +978,7 @@
    },
    {
     "system": "bedrock-guardrails",
-    "rank": 19,
+    "rank": 20,
     "tier": 5,
     "score": 70.05,
     "ciLow": 67.25,
@@ -950,7 +989,7 @@
    },
    {
     "system": "solar-decide",
-    "rank": 20,
+    "rank": 21,
     "tier": 6,
     "score": 68.08,
     "ciLow": 65.9,
@@ -961,7 +1000,7 @@
    },
    {
     "system": "strands-decider-2b-v21",
-    "rank": 21,
+    "rank": 22,
     "tier": 7,
     "score": 62,
     "ciLow": 59.77,
@@ -972,7 +1011,7 @@
    },
    {
     "system": "strands-decider-e2b",
-    "rank": 22,
+    "rank": 23,
     "tier": 7,
     "score": 61.5,
     "ciLow": 59.43,
@@ -983,7 +1022,7 @@
    },
    {
     "system": "liquid-d1-3b",
-    "rank": 23,
+    "rank": 24,
     "tier": 7,
     "score": 60.98,
     "ciLow": 58.72,
@@ -994,7 +1033,7 @@
    },
    {
     "system": "kev-4b",
-    "rank": 24,
+    "rank": 25,
     "tier": 7,
     "score": 60.68,
     "ciLow": 58.64,
@@ -1005,7 +1044,7 @@
    },
    {
     "system": "solar-decide-flash",
-    "rank": 25,
+    "rank": 26,
     "tier": 7,
     "score": 57.91,
     "ciLow": 55.86,
@@ -1016,7 +1055,7 @@
    },
    {
     "system": "clef-omni",
-    "rank": 26,
+    "rank": 27,
     "tier": 8,
     "score": 56.79,
     "ciLow": 55.47,
@@ -1027,7 +1066,7 @@
    },
    {
     "system": "strands-decider-2b-qwen35",
-    "rank": 27,
+    "rank": 28,
     "tier": 8,
     "score": 53.35,
     "ciLow": 51.21,
@@ -1038,7 +1077,7 @@
    },
    {
     "system": "kev-9b",
-    "rank": 28,
+    "rank": 29,
     "tier": 9,
     "score": 52.38,
     "ciLow": 51.63,
@@ -1049,7 +1088,7 @@
    },
    {
     "system": "laya",
-    "rank": 29,
+    "rank": 30,
     "tier": 9,
     "score": 51.68,
     "ciLow": 50.29,
@@ -1060,7 +1099,7 @@
    },
    {
     "system": "open-jev-2b",
-    "rank": 30,
+    "rank": 31,
     "tier": 10,
     "score": 50.61,
     "ciLow": 50.24,
@@ -1071,7 +1110,7 @@
    },
    {
     "system": "kev-0-8b",
-    "rank": 31,
+    "rank": 32,
     "tier": 10,
     "score": 50.58,
     "ciLow": 48.54,
@@ -1082,7 +1121,7 @@
    },
    {
     "system": "strands-decider-2b",
-    "rank": 32,
+    "rank": 33,
     "tier": 10,
     "score": 49.7,
     "ciLow": 48.8,
@@ -1206,7 +1245,7 @@
    {
     "system": "liquid-d1.1",
     "rank": 11,
-    "tier": 3,
+    "tier": 2,
     "score": 70.58,
     "ciLow": 69.21,
     "ciHigh": 71.94,
@@ -1215,8 +1254,19 @@
     "cost": 0.01134
    },
    {
-    "system": "jev-1.13.0",
+    "system": "gemini-decision-1",
     "rank": 12,
+    "tier": 2,
+    "score": 70.38,
+    "ciLow": 68.92,
+    "ciHigh": 71.79,
+    "catchRate": 0.902,
+    "falseBlockRate": 0.4944,
+    "cost": 0.07
+   },
+   {
+    "system": "jev-1.13.0",
+    "rank": 13,
     "tier": 3,
     "score": 70.25,
     "ciLow": 68.82,
@@ -1227,7 +1277,7 @@
    },
    {
     "system": "jev-1.14.0",
-    "rank": 13,
+    "rank": 14,
     "tier": 3,
     "score": 70.22,
     "ciLow": 68.71,
@@ -1238,7 +1288,7 @@
    },
    {
     "system": "gpt-6-luna",
-    "rank": 14,
+    "rank": 15,
     "tier": 3,
     "score": 69.74,
     "ciLow": 68.29,
@@ -1249,7 +1299,7 @@
    },
    {
     "system": "clef-omni",
-    "rank": 15,
+    "rank": 16,
     "tier": 3,
     "score": 69.57,
     "ciLow": 67.92,
@@ -1260,7 +1310,7 @@
    },
    {
     "system": "pplx-decider-v1-2-27b",
-    "rank": 16,
+    "rank": 17,
     "tier": 3,
     "score": 68.97,
     "ciLow": 67.73,
@@ -1271,7 +1321,7 @@
    },
    {
     "system": "bedrock-guardrails",
-    "rank": 17,
+    "rank": 18,
     "tier": 3,
     "score": 68.84,
     "ciLow": 66.99,
@@ -1282,7 +1332,7 @@
    },
    {
     "system": "strands-decider-26b-a4b",
-    "rank": 18,
+    "rank": 19,
     "tier": 4,
     "score": 67.98,
     "ciLow": 66.56,
@@ -1293,7 +1343,7 @@
    },
    {
     "system": "liquid-d1-ultra",
-    "rank": 19,
+    "rank": 20,
     "tier": 4,
     "score": 67.59,
     "ciLow": 66.27,
@@ -1304,7 +1354,7 @@
    },
    {
     "system": "strands-decider-e4b",
-    "rank": 20,
+    "rank": 21,
     "tier": 4,
     "score": 67.33,
     "ciLow": 65.58,
@@ -1315,7 +1365,7 @@
    },
    {
     "system": "strands-decider-2b-qwen35",
-    "rank": 21,
+    "rank": 22,
     "tier": 4,
     "score": 66.87,
     "ciLow": 65.01,
@@ -1326,7 +1376,7 @@
    },
    {
     "system": "liquid-d1-3b",
-    "rank": 22,
+    "rank": 23,
     "tier": 4,
     "score": 66.6,
     "ciLow": 64.89,
@@ -1337,7 +1387,7 @@
    },
    {
     "system": "pplx-decider-flash-v1-2",
-    "rank": 23,
+    "rank": 24,
     "tier": 4,
     "score": 66.59,
     "ciLow": 65.25,
@@ -1348,7 +1398,7 @@
    },
    {
     "system": "drex-max",
-    "rank": 24,
+    "rank": 25,
     "tier": 4,
     "score": 65.86,
     "ciLow": 64.7,
@@ -1359,7 +1409,7 @@
    },
    {
     "system": "microsoft-decision-1",
-    "rank": 25,
+    "rank": 26,
     "tier": 5,
     "score": 65.58,
     "ciLow": 64.33,
@@ -1370,7 +1420,7 @@
    },
    {
     "system": "solar-decide-flash",
-    "rank": 26,
+    "rank": 27,
     "tier": 5,
     "score": 65,
     "ciLow": 63.35,
@@ -1381,7 +1431,7 @@
    },
    {
     "system": "strands-decider-2b-v21",
-    "rank": 27,
+    "rank": 28,
     "tier": 5,
     "score": 64.09,
     "ciLow": 62.17,
@@ -1392,7 +1442,7 @@
    },
    {
     "system": "liquid-d1-2b",
-    "rank": 28,
+    "rank": 29,
     "tier": 6,
     "score": 63.21,
     "ciLow": 61.84,
@@ -1403,7 +1453,7 @@
    },
    {
     "system": "strands-decider-2b",
-    "rank": 29,
+    "rank": 30,
     "tier": 6,
     "score": 61.29,
     "ciLow": 59.53,
@@ -1414,7 +1464,7 @@
    },
    {
     "system": "laya",
-    "rank": 30,
+    "rank": 31,
     "tier": 7,
     "score": 58.19,
     "ciLow": 56.7,
@@ -1425,7 +1475,7 @@
    },
    {
     "system": "kev-0-8b",
-    "rank": 31,
+    "rank": 32,
     "tier": 8,
     "score": 53.79,
     "ciLow": 52.71,
@@ -1436,7 +1486,7 @@
    },
    {
     "system": "open-jev-2b",
-    "rank": 32,
+    "rank": 33,
     "tier": 8,
     "score": 52.38,
     "ciLow": 51.63,
@@ -1525,8 +1575,19 @@
     "cost": 0.01479
    },
    {
-    "system": "pplx-decider-v1-2-27b",
+    "system": "gemini-decision-1",
     "rank": 8,
+    "tier": 2,
+    "score": 85.06,
+    "ciLow": 83.29,
+    "ciHigh": 86.78,
+    "catchRate": 0.8284,
+    "falseBlockRate": 0.1272,
+    "cost": 0.07949
+   },
+   {
+    "system": "pplx-decider-v1-2-27b",
+    "rank": 9,
     "tier": 2,
     "score": 85.04,
     "ciLow": 83.4,
@@ -1537,7 +1598,7 @@
    },
    {
     "system": "gpt-6-luna",
-    "rank": 9,
+    "rank": 10,
     "tier": 2,
     "score": 84.81,
     "ciLow": 82.94,
@@ -1548,7 +1609,7 @@
    },
    {
     "system": "liquid-d1.1",
-    "rank": 10,
+    "rank": 11,
     "tier": 2,
     "score": 84.46,
     "ciLow": 82.89,
@@ -1559,7 +1620,7 @@
    },
    {
     "system": "kev-9b",
-    "rank": 11,
+    "rank": 12,
     "tier": 2,
     "score": 84.05,
     "ciLow": 82.32,
@@ -1570,7 +1631,7 @@
    },
    {
     "system": "microsoft-decision-1",
-    "rank": 12,
+    "rank": 13,
     "tier": 2,
     "score": 83.99,
     "ciLow": 82.3,
@@ -1581,7 +1642,7 @@
    },
    {
     "system": "jev-1.14.0",
-    "rank": 13,
+    "rank": 14,
     "tier": 2,
     "score": 83.85,
     "ciLow": 82.16,
@@ -1592,7 +1653,7 @@
    },
    {
     "system": "kev-4b",
-    "rank": 14,
+    "rank": 15,
     "tier": 2,
     "score": 83.66,
     "ciLow": 81.89,
@@ -1603,7 +1664,7 @@
    },
    {
     "system": "jev-1.13.0",
-    "rank": 15,
+    "rank": 16,
     "tier": 2,
     "score": 83.52,
     "ciLow": 81.82,
@@ -1614,7 +1675,7 @@
    },
    {
     "system": "strands-decider-e4b",
-    "rank": 16,
+    "rank": 17,
     "tier": 2,
     "score": 83.38,
     "ciLow": 81.68,
@@ -1625,7 +1686,7 @@
    },
    {
     "system": "pplx-decider-flash-v1-2",
-    "rank": 17,
+    "rank": 18,
     "tier": 2,
     "score": 83.22,
     "ciLow": 81.53,
@@ -1636,7 +1697,7 @@
    },
    {
     "system": "mercury-decide",
-    "rank": 18,
+    "rank": 19,
     "tier": 2,
     "score": 83.07,
     "ciLow": 81.39,
@@ -1647,7 +1708,7 @@
    },
    {
     "system": "solar-decide",
-    "rank": 19,
+    "rank": 20,
     "tier": 2,
     "score": 82.98,
     "ciLow": 81.12,
@@ -1658,7 +1719,7 @@
    },
    {
     "system": "liquid-d1-2b",
-    "rank": 20,
+    "rank": 21,
     "tier": 2,
     "score": 82.26,
     "ciLow": 80.36,
@@ -1669,7 +1730,7 @@
    },
    {
     "system": "strands-decider-e2b",
-    "rank": 21,
+    "rank": 22,
     "tier": 2,
     "score": 81.59,
     "ciLow": 79.59,
@@ -1680,7 +1741,7 @@
    },
    {
     "system": "clef",
-    "rank": 22,
+    "rank": 23,
     "tier": 3,
     "score": 81.2,
     "ciLow": 79.41,
@@ -1691,7 +1752,7 @@
    },
    {
     "system": "clef-omni",
-    "rank": 23,
+    "rank": 24,
     "tier": 3,
     "score": 80.7,
     "ciLow": 78.85,
@@ -1702,7 +1763,7 @@
    },
    {
     "system": "clef-flash",
-    "rank": 24,
+    "rank": 25,
     "tier": 3,
     "score": 80.03,
     "ciLow": 78.16,
@@ -1713,7 +1774,7 @@
    },
    {
     "system": "liquid-d1-3b",
-    "rank": 25,
+    "rank": 26,
     "tier": 3,
     "score": 79.99,
     "ciLow": 78.21,
@@ -1724,7 +1785,7 @@
    },
    {
     "system": "strands-decider-2b-qwen35",
-    "rank": 26,
+    "rank": 27,
     "tier": 3,
     "score": 79.57,
     "ciLow": 77.55,
@@ -1735,7 +1796,7 @@
    },
    {
     "system": "solar-decide-flash",
-    "rank": 27,
+    "rank": 28,
     "tier": 3,
     "score": 79.06,
     "ciLow": 77.08,
@@ -1746,7 +1807,7 @@
    },
    {
     "system": "strands-decider-2b-v21",
-    "rank": 28,
+    "rank": 29,
     "tier": 4,
     "score": 76.62,
     "ciLow": 74.61,
@@ -1757,7 +1818,7 @@
    },
    {
     "system": "strands-decider-2b",
-    "rank": 29,
+    "rank": 30,
     "tier": 5,
     "score": 73.88,
     "ciLow": 71.94,
@@ -1768,7 +1829,7 @@
    },
    {
     "system": "laya",
-    "rank": 30,
+    "rank": 31,
     "tier": 5,
     "score": 71.85,
     "ciLow": 69.75,
@@ -1779,7 +1840,7 @@
    },
    {
     "system": "kev-0-8b",
-    "rank": 31,
+    "rank": 32,
     "tier": 5,
     "score": 70.82,
     "ciLow": 68.67,
@@ -1790,7 +1851,7 @@
    },
    {
     "system": "open-jev-2b",
-    "rank": 32,
+    "rank": 33,
     "tier": 6,
     "score": 60.93,
     "ciLow": 59.07,
@@ -1934,8 +1995,19 @@
     "cost": 0.13295
    },
    {
-    "system": "mercury-decide",
+    "system": "gemini-decision-1",
     "rank": 13,
+    "tier": 3,
+    "score": 84.61,
+    "ciLow": 82.1,
+    "ciHigh": 87.16,
+    "catchRate": 0.7596,
+    "falseBlockRate": 0.0674,
+    "cost": 0.09686
+   },
+   {
+    "system": "mercury-decide",
+    "rank": 14,
     "tier": 3,
     "score": 84.29,
     "ciLow": 81.84,
@@ -1946,7 +2018,7 @@
    },
    {
     "system": "jev-1.13.0",
-    "rank": 14,
+    "rank": 15,
     "tier": 3,
     "score": 82.44,
     "ciLow": 79.86,
@@ -1957,7 +2029,7 @@
    },
    {
     "system": "strands-decider-26b-a4b",
-    "rank": 15,
+    "rank": 16,
     "tier": 3,
     "score": 82.17,
     "ciLow": 79.42,
@@ -1968,7 +2040,7 @@
    },
    {
     "system": "kev-4b",
-    "rank": 16,
+    "rank": 17,
     "tier": 3,
     "score": 81.91,
     "ciLow": 79.21,
@@ -1979,7 +2051,7 @@
    },
    {
     "system": "jev-1.14.0",
-    "rank": 17,
+    "rank": 18,
     "tier": 3,
     "score": 81.29,
     "ciLow": 78.69,
@@ -1990,7 +2062,7 @@
    },
    {
     "system": "solar-decide",
-    "rank": 18,
+    "rank": 19,
     "tier": 3,
     "score": 81.12,
     "ciLow": 78.31,
@@ -2001,7 +2073,7 @@
    },
    {
     "system": "span-02",
-    "rank": 19,
+    "rank": 20,
     "tier": 3,
     "score": 80.81,
     "ciLow": 78.16,
@@ -2012,7 +2084,7 @@
    },
    {
     "system": "solar-decide-flash",
-    "rank": 20,
+    "rank": 21,
     "tier": 3,
     "score": 80.43,
     "ciLow": 77.68,
@@ -2023,7 +2095,7 @@
    },
    {
     "system": "liquid-d1-2b",
-    "rank": 21,
+    "rank": 22,
     "tier": 3,
     "score": 79.99,
     "ciLow": 77.06,
@@ -2034,7 +2106,7 @@
    },
    {
     "system": "strands-decider-12b",
-    "rank": 22,
+    "rank": 23,
     "tier": 4,
     "score": 79.8,
     "ciLow": 76.99,
@@ -2045,7 +2117,7 @@
    },
    {
     "system": "bedrock-guardrails",
-    "rank": 23,
+    "rank": 24,
     "tier": 4,
     "score": 78.98,
     "ciLow": 76.21,
@@ -2056,7 +2128,7 @@
    },
    {
     "system": "strands-decider-e4b",
-    "rank": 24,
+    "rank": 25,
     "tier": 4,
     "score": 76.13,
     "ciLow": 73.18,
@@ -2067,7 +2139,7 @@
    },
    {
     "system": "strands-decider-e2b",
-    "rank": 25,
+    "rank": 26,
     "tier": 5,
     "score": 74.87,
     "ciLow": 71.9,
@@ -2078,7 +2150,7 @@
    },
    {
     "system": "liquid-d1-3b",
-    "rank": 26,
+    "rank": 27,
     "tier": 5,
     "score": 73.77,
     "ciLow": 70.91,
@@ -2089,7 +2161,7 @@
    },
    {
     "system": "strands-decider-2b-qwen35",
-    "rank": 27,
+    "rank": 28,
     "tier": 5,
     "score": 73.01,
     "ciLow": 69.89,
@@ -2100,7 +2172,7 @@
    },
    {
     "system": "strands-decider-2b-v21",
-    "rank": 28,
+    "rank": 29,
     "tier": 6,
     "score": 68.9,
     "ciLow": 65.74,
@@ -2111,7 +2183,7 @@
    },
    {
     "system": "laya",
-    "rank": 29,
+    "rank": 30,
     "tier": 6,
     "score": 68.12,
     "ciLow": 64.86,
@@ -2122,7 +2194,7 @@
    },
    {
     "system": "open-jev-2b",
-    "rank": 30,
+    "rank": 31,
     "tier": 6,
     "score": 67.71,
     "ciLow": 64.46,
@@ -2133,7 +2205,7 @@
    },
    {
     "system": "strands-decider-2b",
-    "rank": 31,
+    "rank": 32,
     "tier": 6,
     "score": 66.55,
     "ciLow": 63.71,
@@ -2144,7 +2216,7 @@
    },
    {
     "system": "kev-0-8b",
-    "rank": 32,
+    "rank": 33,
     "tier": 7,
     "score": 57.76,
     "ciLow": 54.56,
@@ -2156,8 +2228,19 @@
   ],
   "topics": [
    {
-    "system": "clef",
+    "system": "gemini-decision-1",
     "rank": 1,
+    "tier": 1,
+    "score": 99.15,
+    "ciLow": 98.41,
+    "ciHigh": 99.75,
+    "catchRate": 0.9906,
+    "falseBlockRate": 0.0075,
+    "cost": 0.18053
+   },
+   {
+    "system": "clef",
+    "rank": 2,
     "tier": 1,
     "score": 98.84,
     "ciLow": 98.02,
@@ -2168,7 +2251,7 @@
    },
    {
     "system": "solar-decide",
-    "rank": 2,
+    "rank": 3,
     "tier": 1,
     "score": 98.65,
     "ciLow": 97.71,
@@ -2179,7 +2262,7 @@
    },
    {
     "system": "pplx-decider-v1-27b",
-    "rank": 3,
+    "rank": 4,
     "tier": 1,
     "score": 98.62,
     "ciLow": 97.77,
@@ -2190,7 +2273,7 @@
    },
    {
     "system": "drex-max",
-    "rank": 4,
+    "rank": 5,
     "tier": 1,
     "score": 98.37,
     "ciLow": 97.47,
@@ -2201,7 +2284,7 @@
    },
    {
     "system": "gpt-6-luna",
-    "rank": 4,
+    "rank": 5,
     "tier": 1,
     "score": 98.37,
     "ciLow": 97.4,
@@ -2212,7 +2295,7 @@
    },
    {
     "system": "liquid-d1-ultra",
-    "rank": 6,
+    "rank": 7,
     "tier": 1,
     "score": 98.18,
     "ciLow": 97.15,
@@ -2223,7 +2306,7 @@
    },
    {
     "system": "mercury-decide",
-    "rank": 6,
+    "rank": 7,
     "tier": 1,
     "score": 98.18,
     "ciLow": 97.16,
@@ -2234,7 +2317,7 @@
    },
    {
     "system": "span-02",
-    "rank": 8,
+    "rank": 9,
     "tier": 1,
     "score": 98.08,
     "ciLow": 97.09,
@@ -2245,7 +2328,7 @@
    },
    {
     "system": "kev-4b",
-    "rank": 9,
+    "rank": 10,
     "tier": 1,
     "score": 97.77,
     "ciLow": 96.67,
@@ -2256,7 +2339,7 @@
    },
    {
     "system": "pplx-decider-v1-2-27b",
-    "rank": 10,
+    "rank": 11,
     "tier": 1,
     "score": 97.74,
     "ciLow": 96.64,
@@ -2267,7 +2350,7 @@
    },
    {
     "system": "jev-1.13.0",
-    "rank": 11,
+    "rank": 12,
     "tier": 1,
     "score": 97.11,
     "ciLow": 95.85,
@@ -2278,7 +2361,7 @@
    },
    {
     "system": "jev-1.14.0",
-    "rank": 12,
+    "rank": 13,
     "tier": 1,
     "score": 96.86,
     "ciLow": 95.57,
@@ -2289,7 +2372,7 @@
    },
    {
     "system": "liquid-d1.1",
-    "rank": 13,
+    "rank": 14,
     "tier": 2,
     "score": 95.98,
     "ciLow": 94.55,
@@ -2300,7 +2383,7 @@
    },
    {
     "system": "microsoft-decision-1",
-    "rank": 14,
+    "rank": 15,
     "tier": 2,
     "score": 95.95,
     "ciLow": 94.51,
@@ -2311,7 +2394,7 @@
    },
    {
     "system": "clef-omni",
-    "rank": 15,
+    "rank": 16,
     "tier": 2,
     "score": 95.83,
     "ciLow": 94.29,
@@ -2322,7 +2405,7 @@
    },
    {
     "system": "kev-9b",
-    "rank": 16,
+    "rank": 17,
     "tier": 3,
     "score": 91.77,
     "ciLow": 89.89,
@@ -2333,7 +2416,7 @@
    },
    {
     "system": "solar-decide-flash",
-    "rank": 17,
+    "rank": 18,
     "tier": 3,
     "score": 90.38,
     "ciLow": 88.2,
@@ -2344,7 +2427,7 @@
    },
    {
     "system": "pplx-decider-flash-v1-2",
-    "rank": 18,
+    "rank": 19,
     "tier": 4,
     "score": 88.54,
     "ciLow": 86.52,
@@ -2355,7 +2438,7 @@
    },
    {
     "system": "liquid-d1-2b",
-    "rank": 19,
+    "rank": 20,
     "tier": 4,
     "score": 88.29,
     "ciLow": 86.11,
@@ -2366,7 +2449,7 @@
    },
    {
     "system": "strands-decider-12b",
-    "rank": 20,
+    "rank": 21,
     "tier": 4,
     "score": 86.93,
     "ciLow": 84.72,
@@ -2377,7 +2460,7 @@
    },
    {
     "system": "strands-decider-e2b",
-    "rank": 21,
+    "rank": 22,
     "tier": 4,
     "score": 86.19,
     "ciLow": 83.78,
@@ -2388,7 +2471,7 @@
    },
    {
     "system": "strands-decider-2b-v21",
-    "rank": 22,
+    "rank": 23,
     "tier": 4,
     "score": 85.95,
     "ciLow": 83.6,
@@ -2399,7 +2482,7 @@
    },
    {
     "system": "strands-decider-26b-a4b",
-    "rank": 23,
+    "rank": 24,
     "tier": 4,
     "score": 85.93,
     "ciLow": 83.7,
@@ -2410,7 +2493,7 @@
    },
    {
     "system": "liquid-d1-3b",
-    "rank": 24,
+    "rank": 25,
     "tier": 4,
     "score": 85.52,
     "ciLow": 83.34,
@@ -2421,7 +2504,7 @@
    },
    {
     "system": "strands-decider-2b",
-    "rank": 25,
+    "rank": 26,
     "tier": 4,
     "score": 85.25,
     "ciLow": 82.89,
@@ -2432,7 +2515,7 @@
    },
    {
     "system": "strands-decider-2b-qwen35",
-    "rank": 26,
+    "rank": 27,
     "tier": 4,
     "score": 85.03,
     "ciLow": 82.77,
@@ -2443,7 +2526,7 @@
    },
    {
     "system": "bedrock-guardrails",
-    "rank": 27,
+    "rank": 28,
     "tier": 4,
     "score": 84.56,
     "ciLow": 82.12,
@@ -2454,7 +2537,7 @@
    },
    {
     "system": "clef-flash",
-    "rank": 28,
+    "rank": 29,
     "tier": 5,
     "score": 84.3,
     "ciLow": 82.04,
@@ -2465,7 +2548,7 @@
    },
    {
     "system": "open-jev-2b",
-    "rank": 29,
+    "rank": 30,
     "tier": 5,
     "score": 81.39,
     "ciLow": 78.52,
@@ -2476,7 +2559,7 @@
    },
    {
     "system": "strands-decider-e4b",
-    "rank": 30,
+    "rank": 31,
     "tier": 5,
     "score": 81.16,
     "ciLow": 78.75,
@@ -2487,7 +2570,7 @@
    },
    {
     "system": "kev-0-8b",
-    "rank": 31,
+    "rank": 32,
     "tier": 6,
     "score": 69.64,
     "ciLow": 67.05,
@@ -2498,7 +2581,7 @@
    },
    {
     "system": "laya",
-    "rank": 32,
+    "rank": 33,
     "tier": 6,
     "score": 62.96,
     "ciLow": 60.14,
@@ -2620,8 +2703,19 @@
     "cost": 0.03893
    },
    {
-    "system": "liquid-d1.1",
+    "system": "gemini-decision-1",
     "rank": 11,
+    "tier": 2,
+    "score": 97.93,
+    "ciLow": 97.36,
+    "ciHigh": 98.46,
+    "catchRate": 0.9837,
+    "falseBlockRate": 0.025,
+    "cost": 0.14055
+   },
+   {
+    "system": "liquid-d1.1",
+    "rank": 12,
     "tier": 2,
     "score": 97.69,
     "ciLow": 97.12,
@@ -2632,7 +2726,7 @@
    },
    {
     "system": "mercury-decide",
-    "rank": 12,
+    "rank": 13,
     "tier": 2,
     "score": 97.69,
     "ciLow": 97.11,
@@ -2643,7 +2737,7 @@
    },
    {
     "system": "clef-flash",
-    "rank": 13,
+    "rank": 14,
     "tier": 2,
     "score": 97.66,
     "ciLow": 96.96,
@@ -2654,7 +2748,7 @@
    },
    {
     "system": "span-02",
-    "rank": 14,
+    "rank": 15,
     "tier": 2,
     "score": 97.57,
     "ciLow": 96.94,
@@ -2665,7 +2759,7 @@
    },
    {
     "system": "strands-decider-26b-a4b",
-    "rank": 15,
+    "rank": 16,
     "tier": 2,
     "score": 97.49,
     "ciLow": 97.07,
@@ -2676,7 +2770,7 @@
    },
    {
     "system": "kev-9b",
-    "rank": 16,
+    "rank": 17,
     "tier": 2,
     "score": 97.32,
     "ciLow": 96.82,
@@ -2687,7 +2781,7 @@
    },
    {
     "system": "clef-omni",
-    "rank": 17,
+    "rank": 18,
     "tier": 2,
     "score": 97.19,
     "ciLow": 96.43,
@@ -2698,7 +2792,7 @@
    },
    {
     "system": "strands-decider-12b",
-    "rank": 18,
+    "rank": 19,
     "tier": 3,
     "score": 97.06,
     "ciLow": 96.43,
@@ -2709,7 +2803,7 @@
    },
    {
     "system": "liquid-d1-2b",
-    "rank": 19,
+    "rank": 20,
     "tier": 3,
     "score": 96.71,
     "ciLow": 95.85,
@@ -2720,7 +2814,7 @@
    },
    {
     "system": "strands-decider-e4b",
-    "rank": 20,
+    "rank": 21,
     "tier": 3,
     "score": 96.16,
     "ciLow": 95.58,
@@ -2731,7 +2825,7 @@
    },
    {
     "system": "kev-4b",
-    "rank": 21,
+    "rank": 22,
     "tier": 3,
     "score": 96.06,
     "ciLow": 95.44,
@@ -2742,7 +2836,7 @@
    },
    {
     "system": "liquid-d1-3b",
-    "rank": 22,
+    "rank": 23,
     "tier": 4,
     "score": 95.69,
     "ciLow": 94.96,
@@ -2753,7 +2847,7 @@
    },
    {
     "system": "gpt-6-luna",
-    "rank": 23,
+    "rank": 24,
     "tier": 4,
     "score": 95.59,
     "ciLow": 94.34,
@@ -2764,7 +2858,7 @@
    },
    {
     "system": "strands-decider-2b-qwen35",
-    "rank": 24,
+    "rank": 25,
     "tier": 4,
     "score": 95.38,
     "ciLow": 94.39,
@@ -2775,7 +2869,7 @@
    },
    {
     "system": "strands-decider-2b",
-    "rank": 25,
+    "rank": 26,
     "tier": 4,
     "score": 95.12,
     "ciLow": 94.09,
@@ -2786,7 +2880,7 @@
    },
    {
     "system": "strands-decider-2b-v21",
-    "rank": 26,
+    "rank": 27,
     "tier": 4,
     "score": 94.47,
     "ciLow": 93.22,
@@ -2797,7 +2891,7 @@
    },
    {
     "system": "strands-decider-e2b",
-    "rank": 27,
+    "rank": 28,
     "tier": 4,
     "score": 94.34,
     "ciLow": 93.36,
@@ -2808,7 +2902,7 @@
    },
    {
     "system": "solar-decide",
-    "rank": 28,
+    "rank": 29,
     "tier": 5,
     "score": 90.96,
     "ciLow": 90.3,
@@ -2819,7 +2913,7 @@
    },
    {
     "system": "kev-0-8b",
-    "rank": 29,
+    "rank": 30,
     "tier": 5,
     "score": 90.7,
     "ciLow": 89.51,
@@ -2830,7 +2924,7 @@
    },
    {
     "system": "open-jev-2b",
-    "rank": 30,
+    "rank": 31,
     "tier": 5,
     "score": 89.94,
     "ciLow": 88.98,
@@ -2841,7 +2935,7 @@
    },
    {
     "system": "solar-decide-flash",
-    "rank": 31,
+    "rank": 32,
     "tier": 6,
     "score": 84.17,
     "ciLow": 83.34,
@@ -2852,7 +2946,7 @@
    },
    {
     "system": "laya",
-    "rank": 32,
+    "rank": 33,
     "tier": 7,
     "score": 71.66,
     "ciLow": 69.66,
@@ -2908,8 +3002,19 @@
     "cost": 0.03521
    },
    {
-    "system": "gpt-6-luna",
+    "system": "gemini-decision-1",
     "rank": 5,
+    "tier": 1,
+    "score": 89.17,
+    "ciLow": 86.94,
+    "ciHigh": 91.25,
+    "catchRate": 0.8142,
+    "falseBlockRate": 0.0307,
+    "cost": 0.09326
+   },
+   {
+    "system": "gpt-6-luna",
+    "rank": 6,
     "tier": 1,
     "score": 88.61,
     "ciLow": 86.1,
@@ -2920,7 +3025,7 @@
    },
    {
     "system": "pplx-decider-v1-27b",
-    "rank": 6,
+    "rank": 7,
     "tier": 1,
     "score": 88.1,
     "ciLow": 85.82,
@@ -2931,7 +3036,7 @@
    },
    {
     "system": "liquid-d1.1",
-    "rank": 7,
+    "rank": 8,
     "tier": 1,
     "score": 86.96,
     "ciLow": 84.45,
@@ -2942,7 +3047,7 @@
    },
    {
     "system": "mercury-decide",
-    "rank": 8,
+    "rank": 9,
     "tier": 2,
     "score": 86.36,
     "ciLow": 83.8,
@@ -2953,7 +3058,7 @@
    },
    {
     "system": "drex-max",
-    "rank": 9,
+    "rank": 10,
     "tier": 2,
     "score": 85.92,
     "ciLow": 83.34,
@@ -2964,7 +3069,7 @@
    },
    {
     "system": "clef",
-    "rank": 10,
+    "rank": 11,
     "tier": 2,
     "score": 85.5,
     "ciLow": 83.04,
@@ -2975,7 +3080,7 @@
    },
    {
     "system": "pplx-decider-v1-2-27b",
-    "rank": 11,
+    "rank": 12,
     "tier": 2,
     "score": 83.32,
     "ciLow": 80.86,
@@ -2986,7 +3091,7 @@
    },
    {
     "system": "strands-decider-26b-a4b",
-    "rank": 12,
+    "rank": 13,
     "tier": 2,
     "score": 83.31,
     "ciLow": 80.74,
@@ -2997,7 +3102,7 @@
    },
    {
     "system": "strands-decider-12b",
-    "rank": 13,
+    "rank": 14,
     "tier": 3,
     "score": 79.76,
     "ciLow": 77.1,
@@ -3008,7 +3113,7 @@
    },
    {
     "system": "pplx-decider-flash-v1-2",
-    "rank": 14,
+    "rank": 15,
     "tier": 3,
     "score": 78.81,
     "ciLow": 76.1,
@@ -3019,7 +3124,7 @@
    },
    {
     "system": "liquid-d1-2b",
-    "rank": 15,
+    "rank": 16,
     "tier": 3,
     "score": 75.87,
     "ciLow": 72.76,
@@ -3030,7 +3135,7 @@
    },
    {
     "system": "strands-decider-e4b",
-    "rank": 16,
+    "rank": 17,
     "tier": 4,
     "score": 75.06,
     "ciLow": 71.98,
@@ -3041,7 +3146,7 @@
    },
    {
     "system": "span-02",
-    "rank": 17,
+    "rank": 18,
     "tier": 4,
     "score": 74.44,
     "ciLow": 71.62,
@@ -3052,7 +3157,7 @@
    },
    {
     "system": "strands-decider-e2b",
-    "rank": 18,
+    "rank": 19,
     "tier": 4,
     "score": 72.91,
     "ciLow": 69.66,
@@ -3063,7 +3168,7 @@
    },
    {
     "system": "solar-decide",
-    "rank": 19,
+    "rank": 20,
     "tier": 4,
     "score": 72.02,
     "ciLow": 68.74,
@@ -3074,7 +3179,7 @@
    },
    {
     "system": "liquid-d1-3b",
-    "rank": 20,
+    "rank": 21,
     "tier": 4,
     "score": 71.95,
     "ciLow": 69.11,
@@ -3085,7 +3190,7 @@
    },
    {
     "system": "strands-decider-2b-qwen35",
-    "rank": 21,
+    "rank": 22,
     "tier": 5,
     "score": 69.98,
     "ciLow": 66.99,
@@ -3096,7 +3201,7 @@
    },
    {
     "system": "clef-omni",
-    "rank": 22,
+    "rank": 23,
     "tier": 5,
     "score": 69.23,
     "ciLow": 66.41,
@@ -3107,7 +3212,7 @@
    },
    {
     "system": "clef-flash",
-    "rank": 23,
+    "rank": 24,
     "tier": 5,
     "score": 68.97,
     "ciLow": 66.13,
@@ -3118,7 +3223,7 @@
    },
    {
     "system": "kev-9b",
-    "rank": 24,
+    "rank": 25,
     "tier": 5,
     "score": 68.54,
     "ciLow": 65.64,
@@ -3129,7 +3234,7 @@
    },
    {
     "system": "bedrock-guardrails",
-    "rank": 25,
+    "rank": 26,
     "tier": 5,
     "score": 67.73,
     "ciLow": 64.82,
@@ -3140,7 +3245,7 @@
    },
    {
     "system": "strands-decider-2b",
-    "rank": 26,
+    "rank": 27,
     "tier": 5,
     "score": 66.41,
     "ciLow": 63.43,
@@ -3151,7 +3256,7 @@
    },
    {
     "system": "strands-decider-2b-v21",
-    "rank": 27,
+    "rank": 28,
     "tier": 5,
     "score": 65.82,
     "ciLow": 62.68,
@@ -3162,7 +3267,7 @@
    },
    {
     "system": "kev-4b",
-    "rank": 28,
+    "rank": 29,
     "tier": 5,
     "score": 65.8,
     "ciLow": 63.07,
@@ -3173,7 +3278,7 @@
    },
    {
     "system": "kev-0-8b",
-    "rank": 29,
+    "rank": 30,
     "tier": 6,
     "score": 55.69,
     "ciLow": 53.03,
@@ -3184,7 +3289,7 @@
    },
    {
     "system": "solar-decide-flash",
-    "rank": 30,
+    "rank": 31,
     "tier": 6,
     "score": 54.87,
     "ciLow": 52.52,
@@ -3195,7 +3300,7 @@
    },
    {
     "system": "open-jev-2b",
-    "rank": 31,
+    "rank": 32,
     "tier": 6,
     "score": 53.13,
     "ciLow": 51.69,
@@ -3206,7 +3311,7 @@
    },
    {
     "system": "laya",
-    "rank": 32,
+    "rank": 33,
     "tier": 7,
     "score": 41.43,
     "ciLow": 38.35,
@@ -3438,8 +3543,19 @@
     "cost": 0.01772
    },
    {
-    "system": "strands-decider-e2b",
+    "system": "gemini-decision-1",
     "rank": 21,
+    "tier": 2,
+    "score": 83,
+    "ciLow": 80.55,
+    "ciHigh": 85.53,
+    "catchRate": 0.6686,
+    "falseBlockRate": 0.0085,
+    "cost": 0.02227
+   },
+   {
+    "system": "strands-decider-e2b",
+    "rank": 22,
     "tier": 2,
     "score": 82.78,
     "ciLow": 79.88,
@@ -3450,7 +3566,7 @@
    },
    {
     "system": "solar-decide",
-    "rank": 22,
+    "rank": 23,
     "tier": 2,
     "score": 82.62,
     "ciLow": 79.83,
@@ -3461,7 +3577,7 @@
    },
    {
     "system": "strands-decider-2b-qwen35",
-    "rank": 23,
+    "rank": 24,
     "tier": 3,
     "score": 82.37,
     "ciLow": 79.47,
@@ -3472,7 +3588,7 @@
    },
    {
     "system": "strands-decider-2b-v21",
-    "rank": 24,
+    "rank": 25,
     "tier": 3,
     "score": 81.37,
     "ciLow": 78.36,
@@ -3483,7 +3599,7 @@
    },
    {
     "system": "strands-decider-2b",
-    "rank": 25,
+    "rank": 26,
     "tier": 3,
     "score": 79.64,
     "ciLow": 76.53,
@@ -3494,7 +3610,7 @@
    },
    {
     "system": "kev-4b",
-    "rank": 26,
+    "rank": 27,
     "tier": 3,
     "score": 78.89,
     "ciLow": 76,
@@ -3505,7 +3621,7 @@
    },
    {
     "system": "kev-9b",
-    "rank": 27,
+    "rank": 28,
     "tier": 3,
     "score": 77.16,
     "ciLow": 74.39,
@@ -3516,7 +3632,7 @@
    },
    {
     "system": "solar-decide-flash",
-    "rank": 28,
+    "rank": 29,
     "tier": 4,
     "score": 73.64,
     "ciLow": 70.52,
@@ -3527,7 +3643,7 @@
    },
    {
     "system": "bedrock-guardrails",
-    "rank": 29,
+    "rank": 30,
     "tier": 4,
     "score": 71.61,
     "ciLow": 68.68,
@@ -3538,7 +3654,7 @@
    },
    {
     "system": "laya",
-    "rank": 30,
+    "rank": 31,
     "tier": 5,
     "score": 65.91,
     "ciLow": 62.99,
@@ -3549,7 +3665,7 @@
    },
    {
     "system": "kev-0-8b",
-    "rank": 31,
+    "rank": 32,
     "tier": 5,
     "score": 64.65,
     "ciLow": 61.55,
@@ -3560,7 +3676,7 @@
    },
    {
     "system": "open-jev-2b",
-    "rank": 32,
+    "rank": 33,
     "tier": 6,
     "score": 59.44,
     "ciLow": 57.25,
@@ -3608,7 +3724,7 @@
   "questionFormat": {
    "system": "jev-1.13.0",
    "tier": 3,
-   "tiers": 11
+   "tiers": 12
   },
   "labelReview": {
    "minWrong": 11,

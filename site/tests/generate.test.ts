@@ -2,7 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { generate, hasRealInputs, textCleared } from "../scripts/generate";
+import { generate, hasRealInputs, prefilteredOf, textCleared } from "../scripts/generate";
 import { JOBS } from "../lib/jobs";
 
 const FIXTURE = path.join(__dirname, "..", "fixtures", "source");
@@ -79,5 +79,20 @@ describe("generator on the synthetic fixture", () => {
     const res = g2.details[first.row_id].results.find((r) => r.system === "fixture-alpha");
     expect(res?.outcome).toBe("decided");
     expect(res?.score).toBe(0.9);
+  });
+});
+
+describe("prefilteredOf (owner ruling 41)", () => {
+  it("sums the provider's refusals over the system's arms", () => {
+    const arms = [
+      { system: "g", run: { rows: 100, provider_refusals: 3 } },
+      { system: "g", run: { rows: 50, provider_refusals: 1 } },
+      { system: "other", run: { rows: 10, provider_refusals: 9 } },
+    ];
+    expect(prefilteredOf(arms, "g")).toEqual({ prefiltered: { rows: 4, of: 150 } });
+    expect(prefilteredOf(arms, "g", 120)).toEqual({ prefiltered: { rows: 4, of: 120 } });
+  });
+  it("adds nothing for a system with no refusals", () => {
+    expect(prefilteredOf([{ system: "g", run: { rows: 100 } }], "g")).toEqual({});
   });
 });

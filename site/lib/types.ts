@@ -24,6 +24,8 @@ export interface SystemMeta {
   pricing?: string;
   /** joined the board after the first release; shown with a "New" marker */
   isNew?: boolean;
+  /** the provider's own safety filter refused these checks before the model answered (owner ruling 41); scored wrong */
+  prefiltered?: { rows: number; of: number };
 }
 
 export interface Score {

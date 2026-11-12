@@ -11,6 +11,7 @@ import { type ChartScope, chartSystems, logAxis } from "@/lib/chart";
 import { ArrowRight, ArrowUpLeft, Chevron, External } from "./icons";
 import { Segmented } from "./segmented";
 import { NewTag } from "./new-tag";
+import { PrefilterNote, PrefilterTag } from "./prefilter-tag";
 import { SystemMark } from "./system-mark";
 import { SharePanel, ShareTrigger, useCaseParam } from "./share-panel";
 import { shareCard } from "@/lib/share";
@@ -323,9 +324,10 @@ function Row({
           <button type="button" onClick={() => onSelect(s.system)} aria-pressed={on} className="flex min-h-11 items-center gap-3 text-left">
             {earlier ? null : <SystemMark m={m} size="md" />}
             <span className="flex flex-col items-start">
-              <span className="flex items-center gap-2">
-                <span className={earlier ? "text-fg-2" : "font-semibold text-fg"}>{m?.name ?? s.system}</span>
+              <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                <span className={earlier ? "text-fg-2" : "whitespace-nowrap font-semibold text-fg"}>{m?.name ?? s.system}</span>
                 {m?.isNew && !earlier && <NewTag />}
+                {!earlier && <PrefilterTag m={m} />}
               </span>
               <span className="text-[12px] text-muted">
                 {picked && <span className="font-medium text-accent">Our pick · </span>}
@@ -894,6 +896,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
             <span className="flex items-center gap-2.5">
               <span className="text-[20px] font-semibold tracking-[-0.01em]">{m?.name ?? s.system}</span>
               {m?.isNew && <NewTag />}
+              <PrefilterTag m={m} />
             </span>
             <span className="text-[13px] text-muted">
               {m?.provider}
@@ -941,6 +944,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
             </dl>
           </div>
         )}
+        <PrefilterNote m={m} />
         <Link href={`/data?system=${encodeURIComponent(s.system)}${job === "overall" ? "" : `&job=${job}`}#rows`} className="inline-flex min-h-11 items-center gap-1.5 self-start text-[14px]">
           See the rows it got wrong <ArrowRight />
         </Link>
