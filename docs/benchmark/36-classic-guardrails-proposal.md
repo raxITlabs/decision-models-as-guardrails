@@ -9,7 +9,7 @@ Results of the first batch (balanced accuracy, verdict rule, freeze manifest `fr
 
 | System | Overall | Content | Prompt attacks | Denied topics | Word filters | Sensitive info | Grounding |
 |---|---|---|---|---|---|---|---|
-| gpt-oss-safeguard-20b | 91.3, rank 2 of 34 | 86.7 | 77.8 | 98.2 | 95.4 | 99.1 | 90.5 |
+| gpt-oss-safeguard-20b | 91.3, rank 3 of 46 | 86.7 | 77.8 | 98.2 | 95.4 | 99.1 | 90.5 |
 | Llama Guard 4 12B | not ranked | 83.1 | not offered | not offered | not offered | not offered | not offered |
 
 Safeguard needed no failed rows after retries (86 transient Groq errors on the first pass, all recovered). Llama Guard

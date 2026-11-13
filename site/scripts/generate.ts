@@ -29,7 +29,7 @@ import type {
   Turn,
 } from "../lib/types";
 
-export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna", "jev-1.14.0", "strands-deciders", "microsoft-decision-1", "pplx-decider-v1-2", "hosted-batch-2", "liquid-open-d1", "gemini-decision-1", "classic-guards"];
+export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna", "jev-1.14.0", "strands-deciders", "microsoft-decision-1", "pplx-decider-v1-2", "hosted-batch-2", "liquid-open-d1", "gemini-decision-1", "hosted-batch-3", "pplx-decider-v1-3", "classic-guards"];
 export const RELEASE_VERSION = "1.0.0";
 
 /** Display names, makers and marks for the systems on the board. Ids not listed fall back to the id itself.
@@ -53,6 +53,18 @@ export const SYSTEM_DISPLAY: Record<string, { name: string; label?: string; shor
   "liquid-d1-2b": { name: "d1-2B", isNew: true, provider: "Liquid AI · open weights", mono: "Lq", logo: "/logos/liquid.svg", docs: "https://huggingface.co/LiquidAI/d1-2B", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   "liquid-d1-3b": { name: "d1-3B", isNew: true, provider: "Liquid AI · open weights", mono: "Lq", logo: "/logos/liquid.svg", docs: "https://huggingface.co/LiquidAI/d1-3B", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   "gemini-decision-1": { name: "Gemini Decision 1", short: "Gemini Decision", isNew: true, provider: "Google · via OpenRouter", mono: "Go", logo: "/logos/google.svg", docs: "https://aistudio.google.com/docs/decisions-api", pricing: "https://openrouter.ai/google/gemini-decision-1" },
+  "pplx-decider-v1-3": { name: "pplx-decider-v1.3", isNew: true, provider: "Perplexity · Decisions API", mono: "Px", logo: "/logos/perplexity.svg", docs: "https://huggingface.co/perplexity-ai/pplx-decider-v1.3", pricing: "https://docs.perplexity.ai/docs/getting-started/pricing" },
+  "pplx-decider-flash-v1-3": { name: "pplx-decider-flash-v1.3", short: "pplx-decider-flash v1.3", isNew: true, provider: "Perplexity · Decisions API", mono: "Px", logo: "/logos/perplexity.svg", docs: "https://huggingface.co/perplexity-ai/pplx-decider-flash-v1.3", pricing: "https://docs.perplexity.ai/docs/getting-started/pricing" },
+  "heygen-decision-1": { name: "HeyGen Decision 1", short: "HeyGen Decision", isNew: true, provider: "HeyGen · via OpenRouter", mono: "Hg", docs: "https://openrouter.ai/heygen/heygen-decision-1", pricing: "https://openrouter.ai/heygen/heygen-decision-1" },
+  "heygen-decision-1-turbo": { name: "HeyGen Decision 1 Turbo", short: "HeyGen Turbo", isNew: true, provider: "HeyGen · via OpenRouter", mono: "Hg", docs: "https://openrouter.ai/heygen/heygen-decision-1-turbo", pricing: "https://openrouter.ai/heygen/heygen-decision-1-turbo" },
+  "mammoth-1": { name: "Mammoth 1", isNew: true, provider: "Baseten · via OpenRouter", mono: "Bt", logo: "/logos/baseten.svg", docs: "https://openrouter.ai/baseten/mammoth-1", pricing: "https://openrouter.ai/baseten/mammoth-1" },
+  "elephant-1": { name: "Elephant 1", isNew: true, provider: "Baseten · via OpenRouter", mono: "Bt", logo: "/logos/baseten.svg", docs: "https://openrouter.ai/baseten/elephant-1", pricing: "https://openrouter.ai/baseten/elephant-1" },
+  "joey-1": { name: "Joey 1", isNew: true, provider: "Baseten · via OpenRouter", mono: "Bt", logo: "/logos/baseten.svg", docs: "https://openrouter.ai/baseten/joey-1", pricing: "https://openrouter.ai/baseten/joey-1" },
+  "morph-reflex": { name: "Reflex", isNew: true, provider: "Morph · via OpenRouter", mono: "Mo", logo: "/logos/morph.svg", docs: "https://openrouter.ai/morph/reflex", pricing: "https://openrouter.ai/morph/reflex" },
+  "drex-v2.0": { name: "Drex v2.0", isNew: true, provider: "Nace.AI · via OpenRouter", mono: "Na", logo: "/logos/nace.svg", docs: "https://openrouter.ai/nace-ai/drex-v2.0", pricing: "https://openrouter.ai/nace-ai/drex-v2.0" },
+  "drex-v1.5": { name: "Drex v1.5", isNew: true, provider: "Nace.AI · via OpenRouter", mono: "Na", logo: "/logos/nace.svg", docs: "https://openrouter.ai/nace-ai/drex-v1.5", pricing: "https://openrouter.ai/nace-ai/drex-v1.5" },
+  "tev1-4b": { name: "Tev1 4B Experimental", short: "Tev1 4B", isNew: true, provider: "Together AI · via OpenRouter", mono: "To", logo: "/logos/together.svg", docs: "https://openrouter.ai/togethercomputer/tev1-4b-experimental", pricing: "https://openrouter.ai/togethercomputer/tev1-4b-experimental" },
+  "liquid-d1": { name: "d1", isNew: true, provider: "Liquid AI · via OpenRouter", mono: "Lq", logo: "/logos/liquid.svg", docs: "https://openrouter.ai/liquid/d1", pricing: "https://openrouter.ai/liquid/d1" },
   "clef-omni": { name: "Clef-omni", isNew: true, provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg", docs: "https://developers.cloudflare.com/workers-ai/models/clef-omni/", pricing: "https://developers.cloudflare.com/workers-ai/platform/pricing/" },
   "jev-1.14.0": { name: "Jev 1.14", provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg", docs: "https://docs.typesafe.ai/models", pricing: "https://docs.typesafe.ai/models" },
   "jev-1.13.0": { name: "Jev 1.13", provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg", docs: "https://docs.typesafe.ai/models", pricing: "https://docs.typesafe.ai/models" },

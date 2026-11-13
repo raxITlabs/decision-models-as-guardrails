@@ -386,9 +386,10 @@ def extra_run(tr=None) -> dict:
 
 
 def score(replicates: int | None = None) -> Path:
-    """The full rescore: every run Gemini Decision 1's rescore covers, then this one."""
+    """The full rescore: every run Perplexity Decider v1.3's rescore covers (through hosted batch 3), then this one."""
     import e2_strands_run as strands
-    from e2_gemini_run import hosted8, liquid, msd1, pplx12
+    import e2_pplx13_run as pplx13
+    from e2_pplx13_run import batch3, hosted8, liquid, msd1, pplx12
     tr = full.TestRows()
     strands.luna.write_public(tr)
     strands.jev114.write_public(tr)
@@ -398,10 +399,13 @@ def score(replicates: int | None = None) -> Path:
     hosted8.write_public(tr)
     liquid.write_public(tr)
     gemini.write_public(tr)
+    batch3.write_public(tr)
+    pplx13.write_public(tr)
     write_public(tr)
     return ar.score(replicates, extra_runs=[strands.luna.extra_run(), strands.jev114.extra_run(), strands.extra_run(),
                                             msd1.extra_run(), pplx12.extra_run(), hosted8.extra_run(),
-                                            liquid.extra_run(), gemini.extra_run(), extra_run(tr)])
+                                            liquid.extra_run(), gemini.extra_run(), batch3.extra_run(),
+                                            pplx13.extra_run(), extra_run(tr)])
 
 
 def plan() -> None:
