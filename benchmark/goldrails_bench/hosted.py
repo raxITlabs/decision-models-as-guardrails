@@ -658,6 +658,20 @@ OPENROUTER_DECIDERS = {
     # (generativelanguage.googleapis.com/v1beta/decisions) takes a different request shape and is not used here.
     "gemini-decision-1": {"model": "google/gemini-decision-1", "snapshot": "google/gemini-decision-1-20261111",
                           "context": 262_144},
+    # Twelve more, from the same public list (13 November 2026). Each snapshot is the listing's canonical slug;
+    # the smoke test's first call confirms it, and any other reported name fails the call.
+    "heygen-decision-1": {"model": "heygen/heygen-decision-1", "snapshot": "heygen/heygen-decision-1-20261112", "context": 131_072},
+    "heygen-decision-1-turbo": {"model": "heygen/heygen-decision-1-turbo", "snapshot": "heygen/heygen-decision-1-turbo-20261112", "context": 262_144},
+    "pplx-decider-v1.3-free": {"model": "perplexity/pplx-decider-v1.3:free", "snapshot": "perplexity/pplx-decider-v1.3-20261112", "context": 262_144},
+    "pplx-decider-flash-v1.3-free": {"model": "perplexity/pplx-decider-flash-v1.3:free", "snapshot": "perplexity/pplx-decider-flash-v1.3-20261112", "context": 262_144},
+    "mammoth-1": {"model": "baseten/mammoth-1", "snapshot": "baseten/mammoth-1-20261021", "context": 16_384},
+    "elephant-1": {"model": "baseten/elephant-1", "snapshot": "baseten/elephant-1-20261021", "context": 16_384},
+    "joey-1": {"model": "baseten/joey-1", "snapshot": "baseten/joey-1-20261029", "context": 16_384},
+    "morph-reflex": {"model": "morph/reflex", "snapshot": "morph/reflex-20261103", "context": 65_536},
+    "drex-v2.0": {"model": "nace-ai/drex-v2.0", "snapshot": "nace-ai/drex-v2.0-20261009", "context": 131_072},
+    "drex-v1.5": {"model": "nace-ai/drex-v1.5", "snapshot": "nace-ai/drex-v1.5-20261009", "context": 131_072},
+    "tev1-4b": {"model": "togethercomputer/tev1-4b-experimental", "snapshot": "togethercomputer/tev1-4b-experimental-20260923", "context": 32_768},
+    "liquid-d1": {"model": "liquid/d1", "snapshot": "liquid/d1-20260930", "context": 65_536},
 }
 
 

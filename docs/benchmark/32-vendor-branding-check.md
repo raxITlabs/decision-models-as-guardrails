@@ -21,6 +21,16 @@ Sources were read on 28 Oct 2026. OpenRouter pages were read in the built-in bro
 | solar-decide | Solar Decide | Solar Decide | Upstage · via OpenRouter | same | no | OpenRouter: "Solar Decide is Upstage's structured decision model" (28 Sep 2026). upstage.ai footer: "© 2026 Upstage". The upstage.ai page title says "Upstage AI", but the footer and products use "Upstage". |
 | solar-decide-flash | Solar Decide Flash | Solar Decide Flash | Upstage · via OpenRouter | same | no | OpenRouter: "Solar Decide Flash is Upstage's low-latency structured decision model" (8 Oct 2026). |
 | gemini-decision-1 | Gemini Decision 1 | Gemini Decision 1 | Google · via OpenRouter | same | no | blog.google (11 Nov 2026, read 12 Nov): "powered by our new Gemini Decision 1 model (gemini-decision-1)". Added after this check. |
+| heygen-decision-1 | HeyGen Decision 1 | HeyGen Decision 1 | HeyGen · via OpenRouter | same | no | OpenRouter (read 13 Nov 2026): "HeyGen Decision 1 is a decision model from HeyGen". Added after this check. |
+| heygen-decision-1-turbo | HeyGen Decision 1 Turbo | HeyGen Decision 1 Turbo | HeyGen · via OpenRouter | same | no | OpenRouter: "HeyGen Decision 1 Turbo is a lower-cost variant". Added after this check. |
+| mammoth-1 | Mammoth 1 | Mammoth 1 | Baseten · via OpenRouter | same | no | OpenRouter: "Mammoth 1 is a 27B decision model from Base Labs, Baseten's research team". Added after this check. |
+| elephant-1 | Elephant 1 | Elephant 1 | Baseten · via OpenRouter | same | no | OpenRouter: "Elephant 1 is a 9B decision model from Base Labs". Added after this check. |
+| joey-1 | Joey 1 | Joey 1 | Baseten · via OpenRouter | same | no | OpenRouter: "Joey 1 is a 2B decision model from Base Labs". Added after this check. |
+| morph-reflex | Reflex | Reflex | Morph · via OpenRouter | same | no | OpenRouter lists it as "Morph: Reflex", described as "Morph's decision model". Added after this check. |
+| drex-v2.0 | Drex v2.0 | Drex v2.0 | Nace.AI · via OpenRouter | same | no | OpenRouter: "Drex v2.0 is a 35B mixture-of-experts decision model". Added after this check. |
+| drex-v1.5 | Drex v1.5 | Drex v1.5 | Nace.AI · via OpenRouter | same | no | OpenRouter: "Drex v1.5 is a 9B decision model from Nace.AI". Added after this check. |
+| tev1-4b | Tev1 4B Experimental | Tev1 4B Experimental | Together AI · via OpenRouter | same | no | OpenRouter: "Tev1 4B Experimental is an experimental decision model from Together AI". Added after this check. |
+| liquid-d1 | d1 | d1 | Liquid AI · via OpenRouter | same | no | OpenRouter: "d1 is Liquid AI's structured decision model". Added after this check. |
 | mercury-decide | Mercury Decide | Mercury Decide | Inception · via OpenRouter | same | no | inceptionlabs.ai: "© 2026 Inception" and "Mercury Decide". "Inception Labs" appears only in the domain. |
 | jev-1.14.0 | Jev 1.14.0 | **Jev 1.14** | TypeSafe | **TypeSafe AI** (see note) | yes | docs.typesafe.ai/models: prose says "Jev 1.14" and the id is `jev-1.14.0`. It is "available from October 14, 2026". The typesafe.ai title and footer read "TypeSafe AI". Prose uses the possessive "TypeSafe's". |
 | jev-1.13.0 | Jev 1.13.0 | **Jev 1.13** | TypeSafe | **TypeSafe AI** (see note) | yes | docs.typesafe.ai/models: prose says "Jev 1.13" and the id is `jev-1.13.0`. |

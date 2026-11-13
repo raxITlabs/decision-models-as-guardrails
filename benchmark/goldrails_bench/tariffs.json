@@ -250,6 +250,174 @@
       "status": "vendor list price; not reconciled against a billing statement"
     },
     {
+      "id": "openrouter/decisions/heygen-decision-1",
+      "provider": "OpenRouter Decisions API (alpha), served by HeyGen",
+      "kind": "per_token",
+      "match": {"models": ["heygen/heygen-decision-1", "heygen/heygen-decision-1-20261112"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.14},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-11-13",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 13 November 2026)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/heygen-decision-1-turbo",
+      "provider": "OpenRouter Decisions API (alpha), served by HeyGen",
+      "kind": "per_token",
+      "match": {"models": ["heygen/heygen-decision-1-turbo", "heygen/heygen-decision-1-turbo-20261112"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.09},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-11-13",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 13 November 2026)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/pplx-decider-v1.3-free",
+      "provider": "OpenRouter Decisions API (alpha), served by Perplexity",
+      "kind": "per_token",
+      "match": {"models": ["perplexity/pplx-decider-v1.3:free", "perplexity/pplx-decider-v1.3-20261112"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.0, "note": "the :free variant; OpenRouter lists no charge, with free-tier rate limits"},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-11-13",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 13 November 2026)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/pplx-decider-flash-v1.3-free",
+      "provider": "OpenRouter Decisions API (alpha), served by Perplexity",
+      "kind": "per_token",
+      "match": {"models": ["perplexity/pplx-decider-flash-v1.3:free", "perplexity/pplx-decider-flash-v1.3-20261112"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.0, "note": "the :free variant; OpenRouter lists no charge, with free-tier rate limits"},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-11-13",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 13 November 2026)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/mammoth-1",
+      "provider": "OpenRouter Decisions API (alpha), served by Baseten",
+      "kind": "per_token",
+      "match": {"models": ["baseten/mammoth-1", "baseten/mammoth-1-20261021"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.1},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-11-13",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 13 November 2026)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/elephant-1",
+      "provider": "OpenRouter Decisions API (alpha), served by Baseten",
+      "kind": "per_token",
+      "match": {"models": ["baseten/elephant-1", "baseten/elephant-1-20261021"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.035},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-11-13",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 13 November 2026)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/joey-1",
+      "provider": "OpenRouter Decisions API (alpha), served by Baseten",
+      "kind": "per_token",
+      "match": {"models": ["baseten/joey-1", "baseten/joey-1-20261029"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.01},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-11-13",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 13 November 2026)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/morph-reflex",
+      "provider": "OpenRouter Decisions API (alpha), served by Morph",
+      "kind": "per_token",
+      "match": {"models": ["morph/reflex", "morph/reflex-20261103"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.042, "note": "cached input lists at 0.002 USD per million; usage records only input tokens, so every token is priced at the uncached rate (an upper bound)"},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-11-13",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 13 November 2026)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/drex-v2.0",
+      "provider": "OpenRouter Decisions API (alpha), served by Nace.AI",
+      "kind": "per_token",
+      "match": {"models": ["nace-ai/drex-v2.0", "nace-ai/drex-v2.0-20261009"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.06},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-11-13",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 13 November 2026)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/drex-v1.5",
+      "provider": "OpenRouter Decisions API (alpha), served by Nace.AI",
+      "kind": "per_token",
+      "match": {"models": ["nace-ai/drex-v1.5", "nace-ai/drex-v1.5-20261009"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.04},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-11-13",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 13 November 2026)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/tev1-4b",
+      "provider": "OpenRouter Decisions API (alpha), served by Together AI",
+      "kind": "per_token",
+      "match": {"models": ["togethercomputer/tev1-4b-experimental", "togethercomputer/tev1-4b-experimental-20260923"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.042},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-11-13",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 13 November 2026)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/liquid-d1",
+      "provider": "OpenRouter Decisions API (alpha), served by Liquid AI",
+      "kind": "per_token",
+      "match": {"models": ["liquid/d1", "liquid/d1-20260930"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.02, "note": "cached input lists at 0.02 USD per million; usage records only input tokens, so every token is priced at the uncached rate (an upper bound)"},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-11-13",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=decisions (read 13 November 2026)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
       "id": "cloudflare/workers-ai/clef-omni",
       "provider": "Cloudflare Workers AI",
       "kind": "per_token",
