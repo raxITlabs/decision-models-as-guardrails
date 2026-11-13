@@ -19,6 +19,12 @@ result.serving       # endpoint, model_id, revision, precision, max_length, date
 | `NoulAdapter` | Jev, Kev, Open-Jev, Laya, any System One server | max over the frozen e2 set's decision Nouls >= 0.5 | that max |
 | `BedrockAdapter` | Amazon Bedrock Guardrails | the service's verdict at `FROZEN_SETTING` | severity/confidence (checks), 1 - grounding (grounding), None (binary topics, words) |
 | `VerdictAPIAdapter` | base for OpenAI moderation and other vendor APIs | the vendor's own flag | the vendor's category scores, where returned |
+| `guards.SafeguardAdapter` | gpt-oss-safeguard-20b (OpenRouter, Groq) | its `1`/`0` against the suite's policy file, sent verbatim as the system prompt | None |
+| `guards.LlamaGuardAdapter` | Llama Guard 4 12B (OpenRouter, DeepInfra bf16), content only | `unsafe` in a declared S-category | None |
+
+The two guard adapters (`goldrails_bench/guards.py`, docs/benchmark/36) record each answer as 1 or 0 with basis
+`vendor_verdict`, which the scorer treats as contract v2.0's verdict rule (binary scale, no curve metrics). Each call is
+pinned to one OpenRouter provider with fallbacks off; a response from another provider fails the row.
 
 Hosted decision models that take System One's request at a different URL use `NoulAdapter` too, through a client in
 `goldrails_bench/hosted.py` with the same `ask(state, questions)` shape as `SystemOneClient`:
