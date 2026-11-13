@@ -446,6 +446,34 @@
       "status": "vendor list price; not reconciled against a billing statement"
     },
     {
+      "id": "openrouter/chat/gpt-oss-safeguard-20b",
+      "provider": "OpenRouter chat completions, served by Groq (pinned, no fallback)",
+      "kind": "per_token",
+      "match": {"models": ["openai/gpt-oss-safeguard-20b"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.075},
+        "output_tokens": {"usd_per_million": 0.30, "note": "output includes the reasoning trace, billed as completion tokens"}
+      },
+      "checked_on": "2026-11-13",
+      "source": "https://openrouter.ai/api/v1/models/openai/gpt-oss-safeguard-20b/endpoints (read 13 November 2026; Groq is the only provider)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/chat/llama-guard-4-12b",
+      "provider": "OpenRouter chat completions, served by DeepInfra bf16 (pinned, no fallback)",
+      "kind": "per_token",
+      "match": {"models": ["meta-llama/llama-guard-4-12b"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.18},
+        "output_tokens": {"usd_per_million": 0.18}
+      },
+      "checked_on": "2026-11-13",
+      "source": "https://openrouter.ai/api/v1/models/meta-llama/llama-guard-4-12b/endpoints (read 13 November 2026; endpoint tag deepinfra/bf16); a canned call reported cost 0.00003996 for 216 input and 6 output tokens",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
       "id": "cloudflare/workers-ai/clef-omni",
       "provider": "Cloudflare Workers AI",
       "kind": "per_token",

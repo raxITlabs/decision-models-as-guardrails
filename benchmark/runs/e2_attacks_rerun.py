@@ -262,6 +262,18 @@ def _merge_summaries(old: dict, new: dict) -> dict:
     return out
 
 
+def _extension_summary(raw: list, x: dict, sel_all: dict) -> dict:
+    """``run_summary`` of an extension run. A run whose systems attempt only some suites gives ``selection``
+    (system -> its row selection), so the suites a system does not offer are not counted as never logged."""
+    pick = x.get("selection")
+    if pick is None:
+        return sample.run_summary(raw, sel_all)
+    out = {}
+    for sy in sorted({d["system"] for d in raw}):
+        out.update(sample.run_summary([d for d in raw if d["system"] == sy], pick(sy)))
+    return out
+
+
 def _with_log(path: Path, fn):
     keep = sample.RUN_LOG
     sample.RUN_LOG = path
@@ -447,7 +459,7 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
     for x in extra_runs:
         raw = full.amend_ledgers(sample.load_ledgers(x["work"]), tr)
         log = json.loads(Path(x["log"]).read_text(encoding="utf-8")) if Path(x["log"]).exists() else {"systems": {}}
-        s = _with_log(Path(x["log"]), lambda: sample.run_summary(raw, sel_all))
+        s = _with_log(Path(x["log"]), lambda: _extension_summary(raw, x, sel_all))
         unfinished_x = {k for k, v in s.items() if v["never_logged"] or v["failed"] > 0.02 * max(1, v["rows"])}
         if unfinished_x:
             raise SystemExit(f"extension run {x['label']}: unfinished systems {sorted(unfinished_x)} (never-logged "
@@ -480,8 +492,11 @@ def score(replicates: int | None = None, extra_runs=(), final: Path | None = Non
             arms_meta[(x["system"], x["config_hash"], x["dataset"]["sha256"])] = {
                 "system": x["system"], "model": x["model"], "identity": ident}
     cap = {}                                  # the scorer's rows and bootstrap draws, for the ruling 31 views
+    not_offered = {}                          # systems that attempt only some suites (docs/benchmark/36)
+    for x in extra_runs:
+        not_offered.update(x.get("not_offered") or {})
     doc = lv2.evaluate([dict(r) for r in records], lv2.load_contract(), implementations(records), None, "test",
-                       None, replicates, None, tariffs, serving, arms_meta, {}, frozen=full.frozen_rows(tr),
+                       None, replicates, None, tariffs, serving, arms_meta, not_offered, frozen=full.frozen_rows(tr),
                        manifest=pm, manifest_identity=pident, diagnostic=False, integrity=_primary_integrity(),
                        extensions=[(xm, xident)] + ext_manifests, capture=cap,
                        extension_integrity=[integ] + [x.get("integrity", integ) for x in extra_runs] if integ else None)

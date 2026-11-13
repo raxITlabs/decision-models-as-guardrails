@@ -98,6 +98,8 @@ WHOLE_REQUEST_USAGE |= set(_OR)
 # does not cut input.
 LIMITS.update({"liquid-d1-2b": (128000, "documented context (model card); less reliable past about 64K"),
                "liquid-d1-3b": (32768, "documented context (model card)")})
+LIMITS.update({"gpt-oss-safeguard-20b": (131072, "hosted context (OpenRouter listing, Groq, 13 November 2026)"),
+               "llama-guard-4-12b": (163840, "hosted context (OpenRouter listing, DeepInfra bf16, 13 November 2026)")})
 DEFAULT_LIMIT = (4096, "proxy: undocumented, 4096 reference")
 NEAR = 0.8   # a row is near the limit at >= 80% of it
 CHARS_PER_TOKEN = 3.5   # conservative (over-)estimate for English with a BPE tokenizer
@@ -239,6 +241,10 @@ NEW_KINDS = ("clef", "clef-flash", "clef-omni", "perplexity", "strands", "openai
              "perplexity-flash-v1.2", "perplexity-v1.3", "perplexity-flash-v1.3", "drex-max", "span-02", "liquid-d1-ultra", "liquid-d1.1", "solar-decide",
              "solar-decide-flash", "mercury-decide", "liquid", "gemini-decision-1",
              "heygen-decision-1", "heygen-decision-1-turbo", "pplx-decider-v1.3-free", "pplx-decider-flash-v1.3-free", "mammoth-1", "elephant-1", "joey-1", "morph-reflex", "drex-v2.0", "drex-v1.5", "tev1-4b", "liquid-d1")
+# Classic safety classifiers through OpenRouter's chat API (goldrails_bench.guards, docs/benchmark/36): their own
+# verdict, not Noul questions. Llama Guard 4 offers content only; its other subtasks are not_offered, no call made.
+GUARD_KINDS = ("gpt-oss-safeguard-20b", "llama-guard-4-12b")
+NEW_KINDS = NEW_KINDS + GUARD_KINDS
 KINDS = ("jev", "open", "bedrock") + NEW_KINDS
 JEV_114 = "jev-1.14.0"   # the versioned id; jev-preview points at it today but moves with the next release
 
@@ -314,6 +320,15 @@ def build_new_systems(kinds: set, env) -> tuple[dict, dict]:
             c = SystemOneClient(JEV_114, model=JEV_114, api_key=env["TYPESAFE_API_KEY"],
                                 identity={"model": JEV_114, "provider": "api.typesafe.ai"})
             out[JEV_114] = (NoulAdapter(c, endpoint="https://api.typesafe.ai"), 8)
+    for kind in GUARD_KINDS:
+        if kind in kinds:
+            from goldrails_bench import guards
+            rate, workers = guards.PACE[kind]   # Groq rate-limits safeguard upstream at 5/s (smoke, 13 November 2026)
+            a = guards.build(kind, env=env, throttle=hosted.Throttle(rate))
+            if a is None:
+                skipped[kind] = f"not_configured: {kind} needs OPENROUTER_API_KEY"
+            else:
+                out[kind] = (a, workers)
     if "strands" in kinds:
         found, why = strands_models()
         if not found:
