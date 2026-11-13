@@ -38,8 +38,9 @@ CHAT_URL = "https://openrouter.ai/api/v1/chat/completions"
 POLICIES = Path(__file__).resolve().parents[1] / "policies"
 BASIS = "vendor_verdict"
 # (request starts per second, workers) per system. At 5/s with 8 workers Groq answered 7 of 172 safeguard smoke rows
-# with an upstream 429 ("temporarily rate-limited upstream"); DeepInfra had none.
-PACE = {"gpt-oss-safeguard-20b": (2.0, 4), "llama-guard-4-12b": (5.0, 8)}
+# with an upstream 429 ("temporarily rate-limited upstream"); DeepInfra had none. Safeguard's reasoning takes seconds
+# per call, so it needs 12 workers to reach 2/s (4 gave about 0.5/s on the full run's first 260 rows).
+PACE = {"gpt-oss-safeguard-20b": (2.0, 12), "llama-guard-4-12b": (5.0, 8)}
 
 # system -> what is sent and pinned. Prices and providers read from OpenRouter's public listing, 13 November 2026.
 GUARD_MODELS = {
