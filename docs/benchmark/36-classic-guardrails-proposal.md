@@ -1,7 +1,20 @@
 # Classic safety classifiers on the board: a proposal
 
-Status: proposal, 13 November 2026. Nothing here is implemented. Nothing in it is approved. Every run it describes
-needs an owner ruling (the next is 42) and a freeze manifest committed before the first test call.
+Status, 13 November 2026: the first batch has run. gpt-oss-safeguard-20b (Groq) answered all 9,975 checks under
+ruling 44, and Llama Guard 4 (DeepInfra bf16) answered the 2,466 content checks under ruling 45. Both are on the board
+as safety classifiers. The self-hosted models and Cloudflare AI Gateway Guardrails are still proposals, and each needs
+its own ruling and a freeze manifest committed before the first test call.
+
+Results of the first batch (balanced accuracy, verdict rule, freeze manifest `freeze-manifest-classic-guards.json`):
+
+| System | Overall | Content | Prompt attacks | Denied topics | Word filters | Sensitive info | Grounding |
+|---|---|---|---|---|---|---|---|
+| gpt-oss-safeguard-20b | 91.3, rank 2 of 34 | 86.7 | 77.8 | 98.2 | 95.4 | 99.1 | 90.5 |
+| Llama Guard 4 12B | not ranked | 83.1 | not offered | not offered | not offered | not offered | not offered |
+
+Safeguard needed no failed rows after retries (86 transient Groq errors on the first pass, all recovered). Llama Guard
+4 returned an empty answer on the same 4 long HarmBench replies on every pass. Those 4 count as wrong, 0.3% of its
+reply checks, inside the 2% cap. The run cost about USD 1.7 against a USD 10 cap.
 
 ## The short version
 
