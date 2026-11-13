@@ -276,18 +276,26 @@ PPLX_RATE = 5.0          # requests/s, half the documented 10/s organisation lim
 # request naming pplx-decider-v1-27b or pplx-decider-v1.1-27b is now served by pplx-decider-v1.2.
 PPLX_V12_SYSTEM, PPLX_V12_MODEL = "pplx-decider-v1-2-27b", "pplx-decider-v1.2"
 PPLX_FLASH_SYSTEM, PPLX_FLASH_MODEL = "pplx-decider-flash-v1-2", "pplx-decider-flash-v1.2"
+# Decider v1.3 (released 12 November 2026). Both answer on the Decisions API under these ids and report them back
+# (probe of 13 November 2026); Perplexity's pricing page (read 13 November 2026) lists them at the v1.2 rates.
+PPLX_V13_SYSTEM, PPLX_V13_MODEL = "pplx-decider-v1-3", "pplx-decider-v1.3"
+PPLX_FLASH13_SYSTEM, PPLX_FLASH13_MODEL = "pplx-decider-flash-v1-3", "pplx-decider-flash-v1.3"
 # The open weights each hosted model id corresponds to (Hugging Face ref, commit), recorded for provenance.
 PPLX_WEIGHTS_BY_MODEL = {
     PPLX_MODEL: PPLX_WEIGHTS,
     PPLX_V12_MODEL: ("perplexity-ai/pplx-decider-v1.2", "225c913ddc8761a8264f04f64548e1f97e443eb3"),
     PPLX_FLASH_MODEL: ("perplexity-ai/pplx-decider-flash-v1.2", "6d771ad7b5ecff5e93b8fc7b90d4c5ccc341954d"),
+    PPLX_V13_MODEL: ("perplexity-ai/pplx-decider-v1.3", "9c2ebb27470d3dec2ad7ab727727e40d142c7213"),
+    PPLX_FLASH13_MODEL: ("perplexity-ai/pplx-decider-flash-v1.3", "d06fb3f2d97e0a52325a0d463c450cf0338f44fe"),
 }
 # Models whose responses must report exactly the requested id. v1 keeps its original check (no Jev name) only.
-PPLX_PINNED = {PPLX_V12_MODEL, PPLX_FLASH_MODEL}
+PPLX_PINNED = {PPLX_V12_MODEL, PPLX_FLASH_MODEL, PPLX_V13_MODEL, PPLX_FLASH13_MODEL}
 # Smoke and run kinds -> client arguments.
 PPLX_KINDS = {"perplexity": {"system": PPLX_MODEL, "model": PPLX_MODEL},
               "perplexity-v1.2": {"system": PPLX_V12_SYSTEM, "model": PPLX_V12_MODEL},
-              "perplexity-flash-v1.2": {"system": PPLX_FLASH_SYSTEM, "model": PPLX_FLASH_MODEL}}
+              "perplexity-flash-v1.2": {"system": PPLX_FLASH_SYSTEM, "model": PPLX_FLASH_MODEL},
+              "perplexity-v1.3": {"system": PPLX_V13_SYSTEM, "model": PPLX_V13_MODEL},
+              "perplexity-flash-v1.3": {"system": PPLX_FLASH13_SYSTEM, "model": PPLX_FLASH13_MODEL}}
 JEV_NAME = re.compile(r"^(open-)?jev([-_.].*)?$", re.I)
 
 
@@ -699,6 +707,7 @@ def not_configured(system: str) -> str:
             **{k: "OPENROUTER_API_KEY" for k in OPENROUTER_DECIDERS},
             "perplexity": "PERPLEXITY_API_KEY", "perplexity-v1.2": "PERPLEXITY_API_KEY",
             "perplexity-flash-v1.2": "PERPLEXITY_API_KEY",
+            "perplexity-v1.3": "PERPLEXITY_API_KEY", "perplexity-flash-v1.3": "PERPLEXITY_API_KEY",
             "openai": "OPENAI_API_KEY",
             "microsoft": "OPENROUTER_API_KEY"}
     return f"not_configured: {system} needs {need.get(system, 'credentials')}"

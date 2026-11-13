@@ -629,7 +629,8 @@ NAMES.update({"strands-decider-2b-v21": "Strands Decider 2B v21", "strands-decid
               "liquid-d1-2b": "d1-2B", "liquid-d1-3b": "d1-3B", "gemini-decision-1": "Gemini Decision 1",
               "heygen-decision-1": "HeyGen Decision 1", "heygen-decision-1-turbo": "HeyGen Decision 1 Turbo",
               "mammoth-1": "Mammoth 1", "elephant-1": "Elephant 1", "joey-1": "Joey 1", "morph-reflex": "Reflex",
-              "drex-v2.0": "Drex v2.0", "drex-v1.5": "Drex v1.5", "tev1-4b": "Tev1 4B Experimental", "liquid-d1": "d1"})
+              "drex-v2.0": "Drex v2.0", "drex-v1.5": "Drex v1.5", "tev1-4b": "Tev1 4B Experimental", "liquid-d1": "d1",
+              "pplx-decider-v1-3": "pplx-decider-v1.3", "pplx-decider-flash-v1-3": "pplx-decider-flash-v1.3"})
 SUITE_COLS = (("content", "Content"), ("prompt_attacks", "Prompt attacks"), ("denied_topics", "Denied topics"),
               ("word_filters", "Profanity"), ("sensitive_info", "PII"), ("grounding", "Grounding"))
 

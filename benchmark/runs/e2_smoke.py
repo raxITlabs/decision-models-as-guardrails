@@ -71,6 +71,8 @@ LIMITS = {"jev-1.13.0": (32000, "documented"), "jev-1.14.0": (32000, "documented
           "pplx-decider-v1-27b": (262144, "hosted input limit (Perplexity docs)"),
           "pplx-decider-v1-2-27b": (262144, "hosted 256K context (Perplexity docs, 27 October 2026)"),
           "pplx-decider-flash-v1-2": (262144, "hosted 256K context (Perplexity docs, 27 October 2026)"),
+          "pplx-decider-v1-3": (262144, "hosted 256K context (Perplexity docs, 13 November 2026)"),
+          "pplx-decider-flash-v1-3": (262144, "hosted 256K context (Perplexity docs, 13 November 2026)"),
           "strands-decider-2b": (4096, "documented window; cut silently, no truncation flag"),
           "microsoft-decision-1": (32768, "hosted context (OpenRouter model page)"),
           "gpt-6-luna": (None, "undocumented (the public beta docs give no input limit)"),
@@ -84,6 +86,7 @@ LIMITS.update({n: (4096, "documented window; cut silently, no truncation flag") 
 PER_PROMPT_USAGE = {"open-jev-2b", "laya"}
 # Hosted joint-schema models report one input count for the whole request: at the limit means the input was capped.
 WHOLE_REQUEST_USAGE = {"clef", "clef-flash", "clef-omni", "pplx-decider-v1-27b", "pplx-decider-v1-2-27b", "pplx-decider-flash-v1-2",
+                       "pplx-decider-v1-3", "pplx-decider-flash-v1-3",
                        "microsoft-decision-1"}
 # The OpenRouter decision models (goldrails_bench.hosted.OPENROUTER_DECIDERS): the listing's context, whole-request usage.
 _OR = {"drex-max": 262144, "span-02": 131072, "liquid-d1-ultra": 32768, "liquid-d1.1": 65536, "solar-decide": 524288,
@@ -233,7 +236,7 @@ def leak_check(paths, rows_by_id: dict) -> list:
 # --- systems ---------------------------------------------------------------------------------------------------
 
 NEW_KINDS = ("clef", "clef-flash", "clef-omni", "perplexity", "strands", "openai", "jev-1.14", "microsoft", "perplexity-v1.2",
-             "perplexity-flash-v1.2", "drex-max", "span-02", "liquid-d1-ultra", "liquid-d1.1", "solar-decide",
+             "perplexity-flash-v1.2", "perplexity-v1.3", "perplexity-flash-v1.3", "drex-max", "span-02", "liquid-d1-ultra", "liquid-d1.1", "solar-decide",
              "solar-decide-flash", "mercury-decide", "liquid", "gemini-decision-1",
              "heygen-decision-1", "heygen-decision-1-turbo", "pplx-decider-v1.3-free", "pplx-decider-flash-v1.3-free", "mammoth-1", "elephant-1", "joey-1", "morph-reflex", "drex-v2.0", "drex-v1.5", "tev1-4b", "liquid-d1")
 KINDS = ("jev", "open", "bedrock") + NEW_KINDS
