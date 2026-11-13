@@ -5,8 +5,10 @@ needs an owner ruling (the next is 42) and a freeze manifest committed before th
 
 ## The short version
 
-Five candidates were checked. Four can be called today. All four answer in text, none returns a probability through
-its hosted API, and three of them can attempt only one of our six suites.
+The proposal covers three groups of systems.
+
+**Hosted guard models.** Four can be called today. All four answer in text, none returns a probability through its
+hosted API, and three of them can attempt only one of our six suites.
 
 | Model | Where | Listed | Suites it can attempt | Output | Full-run cost |
 |---|---|---|---|---|---|
@@ -14,11 +16,30 @@ its hosted API, and three of them can attempt only one of our six suites.
 | `meta-llama/llama-guard-4-12b` | OpenRouter (DeepInfra) | yes | content only | `safe`, or `unsafe` plus `S1`..`S14` | under USD 0.50 |
 | `@cf/meta/llama-guard-3-8b` | Cloudflare Workers AI | yes | content only | `{safe, categories}` in JSON mode | under USD 1 |
 | `nvidia/nemotron-3.5-content-safety` | OpenRouter (DeepInfra) | yes | content only, as served | `User Safety: unsafe`, no categories | under USD 1 |
-| `@cf/meta/prompt-guard-2-86m` | Cloudflare Workers AI | no | prompt attacks, if we self-host | not callable: HTTP 403 | about USD 2 of VM time |
 
-My recommendation is to add gpt-oss-safeguard-20b first. It is the only candidate that can be ranked overall, and its
-adapter is simply our suite policy, sent as written. Llama Guard 4 should come second, as the fixed-taxonomy reference
-on the content board. The reasoning is in "Recommendation" below.
+**Self-hosted on the GPU VM.** These are open weights that no hosted API serves, plus two Meta models that we can
+score properly only by running them ourselves. On our own VM every one of them gives a probability, so the secondary
+metrics apply.
+
+| Model | Hugging Face access today | Suites it can attempt | Score |
+|---|---|---|---|
+| `ibm-granite/granite-guardian-4.1-8b` | yes, Apache 2.0, not gated | all six (built-in criteria where one fits, our policy text elsewhere) | P(`yes`) |
+| `google/shieldgemma-9b` | yes, Gemma terms | content | P(`Yes`), one policy per pass |
+| `Qwen/Qwen3Guard-Gen-8B` | yes, Apache 2.0, not gated | content, direct prompt attacks | P(`Unsafe`), plus `Controversial` |
+| `allenai/wildguard` | after accepting its terms (approved automatically) | content | P(`yes`) on the harmful-request or harmful-response line |
+| `meta-llama/Llama-Guard-4-12B` | after Meta approves the licence by hand | content; denied topics as a custom-category arm | P(`unsafe`) |
+| `meta-llama/Llama-Prompt-Guard-2-86M` | after Meta approves the licence by hand | prompt attacks | P(malicious), from a softmax |
+
+All six fit one VM session, for roughly USD 6 to 10 on demand, or under USD 4 on spot.
+
+**A guardrail service.** Cloudflare AI Gateway Guardrails runs Llama Guard 3 (S1 to S14) and Prompt Guard 2 (P1) in
+front of any model. It is a configurable service like Bedrock and would carry the same "not a decision model" label.
+It can attempt content and prompt attacks, and costs under USD 5. It needs a Cloudflare token with AI Gateway
+permissions, which the token in `.env` doesn't have.
+
+My recommendation is to add gpt-oss-safeguard-20b first among the hosted models and Granite Guardian 4.1 8B first on
+the VM. Each can attempt all six suites, so each could be ranked overall. Llama Guard 4 should come next, as the
+fixed-taxonomy reference on the content board. The reasoning is in "Recommendation" below.
 
 ## What was checked, and how
 
@@ -30,8 +51,11 @@ On 13 November 2026:
 - Two canned probes per model, to see the response shape. One probe asked how to bake sourdough bread. The other asked
   how to steal money from a bank without getting caught, the example style used in Nemotron's model card. No dataset
   row was sent. The probes cost under USD 0.001 in total. The script is not in the repository.
-- The Hugging Face model cards for Nemotron 3.5 Content Safety and gpt-oss-safeguard-20b. The Llama Guard and
-  Prompt Guard cards are gated, so their taxonomies here come from Meta's published documentation.
+- The Hugging Face model cards for Nemotron 3.5 Content Safety, gpt-oss-safeguard-20b, Granite Guardian 4.1 8B,
+  ShieldGemma 9B and Qwen3Guard-Gen-8B. The Llama Guard, Prompt Guard and WildGuard cards are gated, so those
+  sections rely on Meta's and AllenAI's published documentation.
+- Whether `HF_TOKEN` can download each self-hosted model (a request for `config.json`, no weights).
+- Cloudflare's AI Gateway Guardrails docs, and whether the `.env` token can list gateways. It can't.
 
 ### Prices and providers, as listed on 13 November 2026
 
@@ -114,7 +138,7 @@ Each model gets a `VerdictAPIAdapter` subclass and a client in `hosted.py`.
   roles to alternate. That case is counted and disclosed. Retrieved content (role `tool`) is only in prompt-attack
   rows, which the fixed-taxonomy guards don't attempt.
 
-## Per model
+## Hosted models
 
 ### gpt-oss-safeguard-20b (OpenRouter, Groq)
 
@@ -252,50 +276,249 @@ retries. About 10 minutes.
 3. Contamination: confirm the overlap scan and exclusions before a run, and decide whether to apply them to every
    system or only to Nemotron's arm. The pplx precedent applied them to everyone.
 
-### Prompt Guard 2 86M (Cloudflare, or self-hosted)
+### Prompt Guard 2 86M (Cloudflare)
 
-This one isn't callable here. Cloudflare returns 403 for this account, and the model isn't in the catalogue.
-If Cloudflare opens it up, or we self-host, here's how it would fit:
+Not callable as a model. Cloudflare returns 403 for this account, and the model isn't in the catalogue. Cloudflare's
+AI Gateway docs explain why: Prompt Guard 2 runs only inside AI Gateway Guardrails, as category P1. It appears twice
+below, once self-hosted and once as part of that service.
 
-- It is a text classifier with a softmax over two classes, benign and malicious. That makes it the only candidate
-  with a real probability. Decision at 0.5 under the contract's probability rule, and score = P(malicious), so the
-  secondary metrics apply.
-- It attempts prompt_attacks only. Prompt Guard 2 dropped the separate injection label that Prompt Guard 1 had and
-  targets explicit jailbreak techniques. Our policy counts injection without override wording, and leakage probes, as
-  attacks (rulings 2, 3 and 24), so expect it to miss many of those rows. That's a coverage gap to disclose, not a
-  reason to skip it.
-- The window is 512 tokens. Meta's guidance is to split long input into segments and take the highest score. That's a
-  different input mapping from Laya's cut-from-the-end (ruling 16), and it needs a ruling of its own. Indirect rows
-  with long documents will need several segments.
-- Self-hosting runs under the sandbox rules in the adapters README. The Hugging Face repo is gated under the Llama 4
-  licence, so someone has to accept that licence for the account behind `HF_TOKEN`. It's a standard DeBERTa-v3
-  classifier, so no `trust_remote_code`. At 86M parameters it would add minutes to an existing VM run, roughly
-  USD 1 to 3 of VM time.
+## Self-hosted models
 
-**Open questions.** Ask Cloudflare about access, or self-host? Segment-and-max, or truncate?
+These run on the project VM (`infra/gcp`), each behind a small server like `laya_server.py` or `liquid_server.py`,
+pinned to a Hugging Face commit, under the sandbox rules in the adapters README. None of them needs
+`trust_remote_code`, as far as their cards show. Check each repository at the pinned commit before the run.
+
+### Why self-host
+
+- Four of these models (Granite Guardian, ShieldGemma, Qwen3Guard, WildGuard) aren't served by OpenRouter or Cloudflare.
+- On our own server we can read the next-token distribution. Each of these models answers with a fixed first word, such
+  as `yes`, `Yes`, `unsafe` or `Unsafe`, so the probability of that word is a score. Meta's and Google's own papers
+  score their guards this way. With a probability, the arm gets the contract's probability rule (flag at 0.5) and the
+  secondary metrics: AUROC, recall at a 5% false-block rate, and calibration on single-question units.
+- The decision at 0.5 matches greedy decoding almost exactly. It differs only where the two candidate words are close.
+
+Each model's server returns `{"answers": {key: {"noul": p}}}`, the same shape `NoulAdapter` reads. That shape doesn't
+make these decision models. It only reuses the transport. Each adapter declares its keys per task, the way
+`BedrockAdapter.keys` does.
+
+### The VM
+
+| Model | Weights (bf16) | Fits one L4 (24 GB)? | Window |
+|---|---|---|---|
+| Granite Guardian 4.1 8B | about 16 GB | yes | the card's vLLM example sets 8,192; the base model's window needs checking |
+| ShieldGemma 9B | about 18 GB | yes | 8,192 (Gemma 2) |
+| Qwen3Guard-Gen-8B | about 16 GB | yes | 32,768 (the card's vLLM command) |
+| WildGuard 7B | about 14 GB | yes | 32,768 (Mistral 7B v0.3), to confirm from the card |
+| Llama Guard 4 12B | about 24 GB | no; needs two L4s (g2-standard-24) or fp8 | 163,840 per OpenRouter's listing |
+| Prompt Guard 2 86M | under 1 GB | yes, beside any of the others | 512 |
+
+`infra/gcp/README.md` lists g2-standard-8 (one L4) at about USD 0.85 an hour on demand and USD 0.28 on spot, and
+g2-standard-24 (two L4s) at about USD 1.90 and USD 0.60. Prefill at a few thousand tokens a second on an L4 puts a
+full 9,975-check run of an 8B model at one to two hours, and a content-only run at under 30 minutes. That's a guess
+from model size. The smoke run will measure it. One g2-standard-24 session with all six models, set-up included,
+comes to roughly 5 hours: USD 6 to 10 on demand, under USD 4 on spot.
+
+Rows longer than a model's window need the same kind of rule Laya has (ruling 16): truncate and record, or mark
+`not_offered` with the length, as Bedrock does for grounding over its caps. I'd use `not_offered` with the length for
+grounding sources and truncate-and-record for everything else, and disclose the counts.
+
+### Granite Guardian 4.1 8B (IBM)
+
+Released April 2026, Apache 2.0, not gated. The model judges whether the last user or assistant turn "meets the
+criteria", and the criteria are text. IBM ships built-in criteria (harm, social bias, jailbreaking, violence,
+profanity, unethical behaviour, groundedness, context relevance, answer relevance, function-call hallucination) and
+supports "bring your own criteria" (BYOC), which 4.1 improved. The answer is `<score>yes</score>` or
+`<score>no</score>`. In no-think mode the `<think>` tags come back empty, so the score word comes after a fixed prefix
+and its probability can be read.
+
+| Suite / subtask | Offered | Criteria | Input mapping | Score |
+|---|---|---|---|---|
+| content / request | yes | built-in harm | context turns, user turn last; prompt schema | P(`yes`) |
+| content / reply | yes | built-in harm | user turn, then assistant turn; response schema | P(`yes`) |
+| prompt_attacks / direct | yes | built-in jailbreaking, or our `direct.md` as BYOC | user turn last | P(`yes`) |
+| prompt_attacks / indirect | yes | our `indirect.md` as BYOC | the document passed as a `documents` entry, which the chat template supports | P(`yes`) |
+| denied_topics / topic | yes | BYOC: `topic.md` plus the eight definitions | user turn last | P(`yes`) |
+| word_filters / profanity | yes | built-in profanity | the judged message last | P(`yes`) |
+| sensitive_info / entity_detection | yes, at a cost | BYOC, one criterion per entity type (nine passes a row) | the judged message last | P(`yes`) per type |
+| grounding / grounding | yes | built-in groundedness | source as a `documents` entry, query, then the reply | P(`yes`) |
+| grounding / relevance | yes | built-in answer relevance | query, then the reply | P(`yes`) |
+
+It is the only self-hosted candidate that can attempt all six suites with something IBM trained or documents, and it
+returns a probability for each. The open choice is built-in criteria against our policy text as BYOC wherever both
+exist. The built-in criterion is what IBM evaluated, so it's closer to out of the box. Our text is closer to the
+task. I'd use built-in criteria where one matches the suite and BYOC elsewhere, and disclose which per subtask.
+Built-in "harm" is broader than our content policy, so expect false blocks on rows our policy calls out of scope.
+
+Nine passes a row for PII makes it the slowest suite. A single "contains personal information" criterion, as in the
+card's example, gives one answer a row, but our PII suite is scored per entity type.
+
+### ShieldGemma 9B (Google)
+
+Gemma terms, and the account already has access. The 2B and 27B sizes also exist. 27B won't fit an L4 at bf16, and
+2B is weaker by Google's own numbers. ShieldGemma 2 checks images only. The prompt holds one safety guideline, and the
+card scores it with a softmax over the `Yes` and `No` logits, so P(`Yes`) is the documented score.
+
+Google trained it on four harm types: dangerous content, harassment, hate speech and sexually explicit content, each
+with a prompt-only and a prompt-response wording.
+
+| Suite / subtask | Offered | Input mapping | Score |
+|---|---|---|---|
+| content / request | yes | four passes, one per Google guideline (prompt-only wording); the row's user turn | max of the four P(`Yes`) |
+| content / reply | yes | four passes, prompt-response wording; user turn and reply | max of the four |
+| everything else | no, out of the box | the guideline is free text, so our policies could go in, but Google evaluated only its four | `not_offered` |
+
+The four guidelines map well onto our content policy: harassment covers insults, hate speech covers hate, sexually
+explicit covers sexual, and dangerous content covers violence and much of misconduct. Fraud and theft without danger
+may slip through. A max over four probabilities is not itself a probability, so calibration isn't reported for this
+arm. Contract v2.0 says the same of the Noul max.
+
+A second arm with our policy text as the guideline is possible, and would give ShieldGemma all the text-only suites.
+That isn't how Google evaluated it, so I'd treat it as an experiment, not the headline arm.
+
+### Qwen3Guard-Gen-8B (Alibaba Qwen)
+
+Apache 2.0, not gated. The answer has two lines: `Safety: Safe`, `Unsafe` or `Controversial`, then `Categories:` from
+a fixed list (violent, non-violent illegal acts, sexual content or sexual acts, PII, suicide and self-harm, unethical
+acts, politically sensitive topics, copyright violation, and jailbreak, which applies to prompts only). Reply rows add
+a `Refusal:` line.
+
+| Suite / subtask | Offered | Input mapping | Decision and score |
+|---|---|---|---|
+| content / request | yes | context, user turn last | declared categories (all but PII, politically sensitive and copyright); P(`Unsafe`) or P(`Unsafe`) + P(`Controversial`) |
+| content / reply | yes | user turn, then reply | as above |
+| prompt_attacks / direct | yes | user turn last | `Jailbreak` category; same score |
+| prompt_attacks / indirect | open question | the document has no place except inside a user turn | |
+| sensitive_info | no | one `PII` category, not per entity type | `not_offered` |
+| denied_topics, word_filters, grounding | no | | `not_offered` |
+
+The third label needs a ruling. Qwen's report describes a strict mode, where `Controversial` counts as unsafe, and a
+loose mode, where it counts as safe. The probability follows the mode: P(`Unsafe`) alone for loose, the sum for strict.
+I'd take strict for content, because our content policy flags borderline harm. The category check needs the
+generated text. The score needs the first-token distribution. The server returns both.
+
+The `Jailbreak` category catches jailbreaks, not injection without override wording, so its prompt-attack catch rate
+will understate a general injection detector. Disclose it as a coverage gap.
+
+### WildGuard 7B (AllenAI)
+
+Apache 2.0, with terms to accept on Hugging Face (approved automatically). The card is behind that click, so this
+section uses AllenAI's WildGuard paper and must be checked against the card at the pinned commit. The model answers
+three lines: `Harmful request: yes/no`, `Response refusal: yes/no` and `Harmful response: yes/no`. It returns no
+categories.
+
+| Suite / subtask | Offered | Input mapping | Score |
+|---|---|---|---|
+| content / request | yes | the user turn in WildGuard's instruction format, no response | P(`yes`) after `Harmful request:` |
+| content / reply | yes | user turn and reply | P(`yes`) after `Harmful response:` |
+| prompt_attacks / direct | open question | WildGuard was trained to see through adversarial jailbreaks that hide a harmful goal, but it judges harm, not instruction override | P(`yes`) after `Harmful request:` |
+| everything else | no | | `not_offered` |
+
+**Contamination.** WildGuard trained on WildGuardMix. Our prompt-attack suite takes rows from
+`neuralchemy/Prompt-injection-dataset`, whose rows carry WildGuardMix as an upstream origin
+(`dataset/edition2/prompt_attacks/SOURCES.md`). Run the model-overlap scan against WildGuardMix before offering the
+prompt-attack suite. Content is likely cleaner, but scan it too.
+
+### Llama Guard 4 12B on the VM (Meta)
+
+This is the same model as the hosted arm, with two things the hosted API can't give.
+
+- **A score.** P(`unsafe`) at the first answer token, the score Meta's papers report. The decision at 0.5 should
+  agree with the hosted arm on nearly every row. Where it doesn't, the difference measures DeepInfra's serving.
+- **Custom categories.** Meta documents that Llama Guard takes a category list written into its prompt. A second arm
+  could add an insults category to fix the content gap, or replace the taxonomy with our eight topic definitions to
+  attempt denied topics. Each is a separate arm, and none of them is the out-of-the-box headline.
+
+It needs two L4s or fp8 weights. fp8 is a different precision, recorded in `serving.precision`. Meta's licence must be
+approved on the account behind `HF_TOKEN` first. That token gets a 403 today.
+
+### Prompt Guard 2 86M on the VM (Meta)
+
+A DeBERTa-v3 classifier with a softmax over two classes, benign and malicious. Score = P(malicious), decision at 0.5.
+
+| Suite / subtask | Offered | Input mapping | Score |
+|---|---|---|---|
+| prompt_attacks / direct | yes | the user turn | P(malicious) |
+| prompt_attacks / indirect | yes | the document text, which is where an indirect injection sits | P(malicious) |
+| everything else | no | | `not_offered` |
+
+- Prompt Guard 2 dropped the separate injection label that Prompt Guard 1 had and targets explicit jailbreak
+  techniques. Our policy counts injection without override wording, and leakage probes, as attacks (rulings 2, 3 and
+  24), so expect misses there. Disclose it as a coverage gap.
+- The window is 512 tokens. Meta's guidance is to split long input into segments and take the highest score, which is
+  also what Cloudflare's Guardrails does. That's a different mapping from Laya's cut-from-the-end (ruling 16) and
+  needs its own ruling. Indirect rows with long documents will need several segments. A max over segments is no
+  longer a calibrated probability.
+- It needs the same Meta licence approval as Llama Guard 4. At 86M parameters it adds minutes to a VM session.
+
+## Cloudflare AI Gateway Guardrails (a service, like Bedrock)
+
+AI Gateway is a proxy in front of model providers. With Guardrails on, it checks each prompt, and each response from
+the upstream model, before passing them on. The models behind it are Llama Guard 3 8B for S1 to S14 and Prompt Guard 2
+86M for P1, prompt injection. Each category is set per gateway to Flag, Block or ignore (omitted), separately for
+prompts and responses. A blocked request comes back as an error with code 2016 (prompt blocked) or 2017 (response
+blocked). Category detail is only in the gateway logs, linked by an `eventID`. Cloudflare's docs (read 13 November 2026)
+add that long content is split into chunks and each chunk is checked, that the underlying models may change without
+notice, and that a check adds about 500 ms.
+
+It belongs on the board for the same reason Bedrock does. Buyers use it as a configured product, not as a model, so it
+gets Bedrock's treatment. The kind is `service` ("not a decision model"), it's scored at a frozen, documented setting,
+and it's unversioned, with the observed date recorded.
+
+| Suite / subtask | Offered | Gateway setting | Input mapping | Decision |
+|---|---|---|---|---|
+| content / request | yes | prompt: S1, S2, S3, S4, S9, S10, S11, S12 on BLOCK, the rest omitted | the row's turns as a chat request to a small upstream model, user turn last | code 2016 is a block; a normal answer is a pass |
+| prompt_attacks / direct | yes | prompt: P1 on BLOCK, everything else omitted | as above | as above |
+| prompt_attacks / indirect | open question | as direct | depends on which messages Guardrails reads; the docs don't say | |
+| content / reply | open question | response: the content set on BLOCK | Guardrails checks the upstream model's answer, not a reply we supply | |
+| denied_topics, word_filters, grounding | no | | | `not_offered` |
+| sensitive_info | not checked | AI Gateway has a separate data loss prevention feature | | |
+
+Every row needs a real upstream call, so a passing row also costs a tiny generation. A small Workers AI model with
+`max_tokens: 1` keeps that near zero. Each suite needs its own gateway, so the categories it blocks match the policy.
+Scores are None, so the arm is binary.
+
+The reply subtask is the hard one. Guardrails only checks responses the upstream model produces. To score our reply
+rows, the upstream would have to return each row's reply verbatim, which means a custom provider we run. That's
+honest about what gets checked, but it's our plumbing in the measured path. I'd leave reply as `not_offered` at first
+and disclose it.
+
+**Before a run.**
+
+- The Cloudflare token in `.env` can't use AI Gateway: listing gateways returned "Authentication error". A token with
+  AI Gateway Read and Write is needed. Creating gateways changes the account, so it needs the owner's yes.
+- Read the logs API and the logging terms. Cloudflare's logging page says gateways created on or after
+  24 September 2026 use Workers Logs pricing and retention.
+- Check that chunking applies to both models, and how long rows behave.
+
+**Cost and time.** About 7,000 checks (content requests plus prompt attacks). The Llama Guard 3 check is billed as
+Workers AI usage, about USD 0.0001 a short row, and more for long attack rows that get chunked. Add the upstream
+1-token calls and the Prompt Guard 2 check, whose price Cloudflare doesn't list. Budget under USD 5. At about a second
+a request and ten workers, the run takes about 15 minutes, if the gateway's rate limits allow.
 
 ## Reporting suites a system can't attempt
 
 Follow the Bedrock precedent, with one difference: a whole-suite gap means no overall rank.
 
 - The adapter returns `not_offered` with no call. `offers()` is false because the subtask has no entry in
-  `CATEGORIES`.
+  `CATEGORIES`, or in the self-hosted adapter's key table.
 - The implementations file declares the suite as not offered (`leaderboard_v2.evaluate(not_offered=...)`). The
   system then shows on the boards of the suites it ran and appears in `overall.not_ranked` with the reason
   "capability not offered".
-- Site: the same kind of label as Bedrock ("not a decision model"), plus a note on the row such as "content only, not
-  ranked overall". Owner question: does a guard model share Bedrock's `service` kind, or get its own, such as "safety
-  classifier"? Bedrock is a configurable service, and these are models. I'd give them their own kind.
-- Disclosures: one line per system naming the suites it doesn't attempt and the coverage gaps inside the suites it
-  does, such as Llama Guard's missing insults category and Nemotron's lack of categories. The served mode goes in the
-  same line where it differs from the model card.
+- Site: guard models get a label like Bedrock's ("not a decision model") and a note on the row, such as "content only,
+  not ranked overall". Cloudflare AI Gateway Guardrails gets Bedrock's `service` kind. Owner question: do guard
+  models share that kind, or get their own, such as "safety classifier"? Bedrock and AI Gateway are configurable
+  services, and these are models. I'd give the models their own kind.
+- Disclosures: one line per system naming the suites it doesn't attempt and the gaps inside the suites it does, such
+  as Llama Guard's missing insults category, Nemotron's missing categories and Prompt Guard 2's jailbreak-only
+  training. The served mode goes in the same line where it differs from the model card. Self-hosted arms also list
+  their truncation counts.
 
 ## Recommendation
 
-**First: gpt-oss-safeguard-20b.**
+**Hosted, first: gpt-oss-safeguard-20b.**
 
-- It's the only candidate that can attempt every suite, so it's the only one that could be ranked overall and compared
-  head to head with the decision models.
+- It's the only hosted candidate that can attempt every suite, so it could be ranked overall and compared head to
+  head with the decision models.
 - Its input is our policy text, unchanged apart from the output section.
 - It's cheap and fast. The input price is the lowest of the four, and a full run costs USD 2 to 4 and takes under an
   hour.
@@ -304,12 +527,23 @@ Follow the Bedrock precedent, with one difference: a whole-suite gap means no ov
 The risks: a single provider (Groq) with unmeasured rate limits, a reasoning trace that has to be capped, and two open
 scope questions (PII and grounding). Settle those before the smoke run.
 
-**Second: Llama Guard 4 12B.** It's the classic fixed-taxonomy guard, the content adapter is a small
-`VerdictAPIAdapter` subclass with a two-line parser, and the run costs under USD 0.50. Its value is a reference row on the content board, since it
-won't be ranked overall.
+**Self-hosted, first: Granite Guardian 4.1 8B.** It can attempt all six suites with criteria IBM trained or
+documents, it gives a probability, so the secondary metrics apply, and it needs no licence approval. It's the
+self-hosted counterpart of safeguard. Run ShieldGemma 9B and Qwen3Guard-Gen-8B in the same VM session, since each
+adds under an hour for content (and direct prompt attacks, for Qwen3Guard). Add WildGuard after its overlap scan.
+Llama Guard 4 and Prompt Guard 2 join once Meta approves the licence.
 
-Nemotron and Llama Guard 3 can wait. Nemotron as served loses the categories and policy mode that make it interesting.
-Llama Guard 3 duplicates Llama Guard 4 on a slower, dearer endpoint. Prompt Guard 2 waits on access or a VM.
+**Then: Llama Guard 4 12B, hosted.** It's the classic fixed-taxonomy guard, the content adapter is a small
+`VerdictAPIAdapter` subclass with a two-line parser, and the run costs under USD 0.50. Its value is a reference row on
+the content board, since it won't be ranked overall. Paired with the VM arm, it also shows what the hosted serving
+changes.
+
+**Cloudflare AI Gateway Guardrails** is worth adding once a token with AI Gateway access exists. It's the only other
+guardrail product besides Bedrock that buyers configure the same way.
+
+Nemotron and hosted Llama Guard 3 can wait. Nemotron as served loses the categories and policy mode that make it
+interesting. Llama Guard 3 duplicates Llama Guard 4 on a slower, dearer endpoint, and AI Gateway Guardrails already
+measures it in the setting buyers use.
 
 ## Rulings the owner would need (from 42)
 
@@ -319,15 +553,29 @@ Llama Guard 3 duplicates Llama Guard 4 on a slower, dearer endpoint. Prompt Guar
 2. Add Llama Guard 4 12B on the content suite, pinned to `deepinfra/bf16`, with the declared category set (S1, S2, S3,
    S4, S9, S10, S11, S12), and approve sending held-back content rows to OpenRouter and DeepInfra.
 3. Show a system that is not ranked overall on the per-suite boards, with its own kind label.
-4. If Nemotron is added: the contamination scan and exclusion rule, and the served-mode disclosure.
-5. If Prompt Guard 2 is added: the 512-token rule, either segment-and-max or truncate.
+4. Add the self-hosted guards on the VM, each pinned to a Hugging Face commit, on every suite they attempt, with the
+   held-back slice going only to the VM. This settles:
+   - Granite Guardian: built-in criteria or our policy text, per subtask; the nine-pass PII design.
+   - ShieldGemma: Google's four guidelines as the headline arm.
+   - Qwen3Guard: strict or loose for `Controversial`, and whether indirect prompt attacks are offered.
+   - WildGuard: whether direct prompt attacks are offered, after the overlap scan.
+   - Every model: the rule for rows longer than its window.
+   - The VM machine type and spend cap.
+5. Add Cloudflare AI Gateway Guardrails as a service on content requests and prompt attacks, with the frozen gateway
+   settings above. This approves creating the gateways and a token with AI Gateway access, and sending the held-back
+   rows to Cloudflare. It also decides whether reply rows stay `not_offered`.
+6. If Nemotron or WildGuard is added: the contamination scan and exclusion rule. The pplx-decider precedent excluded
+   matching rows for every system.
+7. If Prompt Guard 2 is added: the 512-token rule, either segment-and-max or truncate.
 
 Each run then gets its own freeze manifest under `benchmark/subsets/edition2/`, committed before its first test call,
-and tariff entries in `tariffs.json` checked on the day.
+and tariff entries in `tariffs.json` checked on the day. The VM runs' cost entries follow the Strands and Liquid
+precedent: a share of the GPU hours.
 
 ## Later
 
-- Self-host Llama Guard 4 and Nemotron on the GPU VM with vLLM, and read the probability of the first `unsafe` token.
-  That gives a score for the secondary metrics. For Nemotron it also unlocks the categories and the custom-policy mode,
-  which would let Nemotron attempt topics, prompt attacks and profanity with our policy text. Each is a new arm.
+- Nemotron 3.5 Content Safety on the VM, with the documented template arguments. That unlocks its categories and
+  custom-policy mode, which would let it attempt topics, prompt attacks and profanity with our policy text.
+- Custom-category arms for Llama Guard 4 and ShieldGemma (see their sections).
 - gpt-oss-safeguard-120b, if the 20B result is worth following up. I didn't check whether OpenRouter lists it.
+- Granite Guardian 4.1's GGUF build or the smaller Granite Guardian 3.2 models, if a cheaper self-hosted arm is wanted.
