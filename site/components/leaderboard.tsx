@@ -267,9 +267,9 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
       )}
 
       <p className="m-0 text-[13px] leading-relaxed text-muted">
-        The shaded row is a guardrail service, not a decision model (<a href="#kinds">see the difference</a>). Every system answers the
-        same {board.stats.checks.toLocaleString("en-US")} checks under one fixed rule: a probability of{" "}
-        {board.stats.threshold} or more blocks. <a
+        Shaded rows are not decision models: a guardrail service and safety classifiers (<a href="#kinds">see the difference</a>).
+        Every ranked system answers the same {board.stats.checks.toLocaleString("en-US")} checks under one fixed rule: a
+        probability of {board.stats.threshold} or more blocks, or the system&apos;s own verdict when it gives no probability. <a
           href="#fixed-rule"
           onClick={() => {
             const d = document.querySelector<HTMLDetailsElement>("#fixed-rule details");
@@ -280,6 +280,7 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
         </a> Our statistical tests cannot tell the
         systems in one tier apart from that tier&apos;s leader. Self-hosted cost is our
         shared GPU time.
+        {board.systems.some((x) => x.unranked) ? " A system that runs only some suites appears on those boards and is not ranked overall." : ""}
         {lineages.length ? " Earlier versions of a model are folded under its newest version; the rank counts the rows on show, and tiers are as published." : ""}
       </p>
 
@@ -311,11 +312,12 @@ function Row({
   toggle?: React.ReactNode;
   earlier?: boolean;
 }) {
-  const bg = on ? "bg-selected" : m?.kind === "service" ? "bg-raised" : "bg-bg";
+  const shaded = m?.kind === "service" || m?.kind === "classifier";   // not a decision model
+  const bg = on ? "bg-selected" : shaded ? "bg-raised" : "bg-bg";
   return (
     <tr
       onClick={() => onSelect(s.system)}
-      className={`cursor-pointer border-t transition-colors ${border} ${on ? "bg-selected" : m?.kind === "service" ? "bg-raised hover:bg-raised" : "hover:bg-raised/60"}`}
+      className={`cursor-pointer border-t transition-colors ${border} ${on ? "bg-selected" : shaded ? "bg-raised hover:bg-raised" : "hover:bg-raised/60"}`}
     >
       <td className="num hidden py-2.5 pl-5 text-muted sm:table-cell">{rank ?? <span className="sr-only">Earlier version, not ranked separately</span>}</td>
       {/* On a phone the name column stays put while the numbers scroll under it. */}
@@ -510,8 +512,9 @@ function ScoreBar({ s }: { s: Score }) {
 }
 
 /** Decision model or guardrail service, as plain text in the Type column. The service row itself is shaded. */
-export function KindTag({ kind }: { kind?: "decision" | "service" }) {
-  return <span className={`text-[13px] ${kind === "service" ? "font-medium text-fg" : "text-fg-2"}`}>{kind === "service" ? "Not a decision model" : "Decision model"}</span>;
+export function KindTag({ kind }: { kind?: "decision" | "service" | "classifier" }) {
+  const not = kind === "service" || kind === "classifier";
+  return <span className={`text-[13px] ${not ? "font-medium text-fg" : "text-fg-2"}`}>{not ? "Not a decision model" : "Decision model"}</span>;
 }
 
 interface Placed {
@@ -880,7 +883,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
   const refMeta = board.systems.find((x) => x.kind === "service");
   const ref = refMeta ? (job === "overall" ? board.overall : board.jobs[job]).find((x) => x.system === refMeta.id) : undefined;
   const vs =
-    ref && m?.kind !== "service"
+    ref && m?.kind === "decision"
       ? [
           { label: "Score", value: s.score - ref.score, unit: "points", better: s.score >= ref.score },
           { label: "Catches harmful", value: (s.catchRate - ref.catchRate) * 100, unit: "points", better: s.catchRate >= ref.catchRate },
@@ -904,7 +907,8 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
             <span className="text-[13px] text-muted">
               {m?.provider}
               {m ? (m.hosting === "managed" ? " · managed API" : " · self-hosted on our GPUs") : ""}
-              {m && m.kind !== "service" ? " · decision model" : ""}
+              {m && m.kind === "decision" ? " · decision model" : ""}
+              {m?.unranked ? ` · runs ${m.unranked.suites.length === 1 ? "one suite" : `${m.unranked.suites.length} suites`} of six, not ranked overall` : ""}
             </span>
             {(m?.docs || m?.pricing) && (
               <span className="flex flex-wrap gap-x-3 text-[13px]">

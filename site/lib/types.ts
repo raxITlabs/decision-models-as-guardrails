@@ -8,8 +8,11 @@ export interface SystemMeta {
   name: string;
   provider: string;
   hosting: Hosting;
-  /** decision model (answers yes/no questions with a probability) or managed guardrail service (fixed safeguards) */
-  kind: "decision" | "service";
+  /** decision model (answers yes/no questions with a probability), managed guardrail service (fixed safeguards), or
+   *  safety classifier (a model that labels content with its own verdict, no probability) */
+  kind: "decision" | "service" | "classifier";
+  /** not ranked overall because it does not attempt every suite; the suites it ran (contract v2.0 coverage rule) */
+  unranked?: { suites: string[] };
   /** optional one-line name; unused now that every name is the vendor's own and unique on the board */
   label?: string;
   /** shorter name for chart labels */

@@ -9,6 +9,7 @@ import { listNames, oneLine } from "@/lib/format";
 export function TwoKinds({ board }: { board: Board }) {
   const decision = board.systems.filter((s) => s.kind === "decision");
   const service = board.systems.filter((s) => s.kind === "service");
+  const classifiers = board.systems.filter((s) => s.kind === "classifier");
   const rows: { label: string; model: string; svc: string }[] = [
     {
       label: "How you set the policy",
@@ -40,6 +41,9 @@ export function TwoKinds({ board }: { board: Board }) {
         <p className="m-0 text-[16px] leading-relaxed text-fg-2">
           {decision.length} of the {board.systems.length} systems are decision models, including the hosted Decisions APIs from
           Perplexity and OpenAI. Amazon Bedrock Guardrails is a managed guardrail service. Both block harmful traffic, but you set them up and tune them in different ways.
+          {classifiers.length
+            ? ` ${listNames(classifiers.map((c) => c.name))} ${classifiers.length === 1 ? "is a safety classifier" : "are safety classifiers"}: models that label content against their own categories or a written policy and answer with a verdict, not a probability. We score that verdict as it comes.`
+            : ""}
         </p>
       </div>
 
