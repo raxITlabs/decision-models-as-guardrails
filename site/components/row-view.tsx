@@ -6,9 +6,12 @@ import { JOB_BY_ID } from "@/lib/jobs";
 import { shardUrl } from "@/lib/shard";
 import type { Board, RowDetail, RowResult } from "@/lib/types";
 import { SOURCES, REASON_TEXT } from "@/lib/sources";
+import { oneLine } from "@/lib/format";
 import { ContentWarning, Sensitive } from "./sensitive";
 import { SystemMark } from "./system-mark";
 import { Check, Cross, External, Lock } from "./icons";
+import { GuardTag, KindLegend } from "./guard-tag";
+import { KIND_LABEL } from "@/lib/kind";
 
 function rowIdFromLocation(): string {
   const parts = window.location.pathname.replace(/\/+$/, "").split("/");
@@ -91,12 +94,19 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
   const sys = Object.fromEntries(board.systems.map((s) => [s.id, s]));
   const job = JOB_BY_ID[row.job];
   const src = SOURCES[row.source];
-  const results = board.overall.map((o) => row.results.find((r) => r.system === o.system)).filter(Boolean) as RowResult[];
+  // Ranked systems in board order, then systems not ranked overall (they run only some suites) where they ran this row.
+  const ranked = new Set(board.overall.map((o) => o.system));
+  const order = [...board.overall.map((o) => o.system), ...board.systems.filter((s) => !ranked.has(s.id)).map((s) => s.id)];
+  const results = order
+    .map((id) => row.results.find((r) => r.system === id))
+    .filter((r): r is RowResult => !!r && (ranked.has(r.system) || r.outcome !== "missing"));
   const judged = results.map((r) => verdict(r, row.label));
   const answered = judged.filter((v) => v.right !== null).length;
   const right = judged.filter((v) => v.right).length;
   const roleName: Record<string, string> = { user: "user message", assistant: "assistant reply", tool: "retrieved content" };
   const t = board.stats.threshold;
+  const kinds = [...new Set(results.map((r) => sys[r.system]?.kind ?? "decision"))];
+  const service = board.systems.find((s) => s.kind === "service");
 
   return (
     <>
@@ -208,7 +218,10 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
                       <span className="flex items-center gap-2.5">
                         <SystemMark m={m} />
                         <span>
-                          <span className="block font-semibold">{m?.name ?? r.system}</span>
+                          <span className="flex items-center gap-1.5 font-semibold">
+                            {m?.name ?? r.system}
+                            <GuardTag m={m} />
+                          </span>
                           <span className="block text-[12px] text-muted">
                             {m?.provider}
                             {m ? (m.hosting === "managed" ? " · managed API" : " · self-hosted") : ""}
@@ -218,7 +231,8 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
                     </th>
                     <td className="py-2.5 pr-3">
                       {p === null ? (
-                        <span className="text-muted">none</span>
+                        // A safety classifier (and Bedrock on some safeguards) returns a verdict with no score.
+                        <span className="text-muted">{r.outcome === "decided" ? "Verdict only" : "none"}</span>
                       ) : (
                         <span className="flex items-center gap-3">
                           {/* 0 to 1 on a hairline: the tick is the blocking threshold, the dot is this system's probability. */}
@@ -247,9 +261,13 @@ function RowBody({ board, row }: { board: Board; row: RowDetail }) {
             </tbody>
           </table>
         </div>
+        <KindLegend kinds={kinds} />
         <p className="m-0 max-w-[72ch] text-[13px] text-muted">
-          A decision model&apos;s score is its highest probability across the job&apos;s questions. Amazon Bedrock Guardrails reports a
-          severity or confidence step instead. Verdict APIs report their own flag. A failed call counts as wrong.
+          {KIND_LABEL.decision}: the score is its highest probability across the use case&apos;s questions, and {t} or more blocks.{" "}
+          {kinds.includes("classifier") && `${KIND_LABEL.classifier}: it returns its own verdict and no probability, so the score reads "Verdict only". `}
+          {kinds.includes("service") &&
+            `${KIND_LABEL.service}: ${service ? oneLine(service, service.id) : "the service"} reports a severity or confidence step where it has one, not a probability. `}
+          A failed call counts as wrong.
         </p>
       </section>
     </>

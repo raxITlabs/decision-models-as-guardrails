@@ -1,6 +1,7 @@
 // Page copy that depends on the data. Every number comes from the generated board, never from this file.
 import type { QA } from "@/components/faq";
 import { int, listNames, oneLine, pct, systemMap } from "./format";
+import { KIND_GLOSS, KIND_LABEL } from "./kind";
 import type { Board } from "./types";
 
 export function faqItems(board: Board): QA[] {
@@ -14,6 +15,8 @@ export function faqItems(board: Board): QA[] {
   const managedVendors = listNames(
     [...new Set(board.systems.filter((s) => s.hosting === "managed").map((s) => s.provider.split(" · ")[0]).filter(Boolean))].sort(),
   );
+  const classifiers = listNames(board.systems.filter((s) => s.kind === "classifier").map((s) => s.label ?? s.name));
+  const services = listNames(board.systems.filter((s) => s.kind === "service").map((s) => s.label ?? s.name));
   return [
     {
       q: "Who funded this, and are you tied to any vendor?",
@@ -44,10 +47,24 @@ export function faqItems(board: Board): QA[] {
       q: "Did you tune thresholds for anyone?",
       a: (
         <p className="m-0">
-          No. Every system uses the same fixed rule: a probability of {board.stats.threshold} or more blocks. This shows how each
-          system behaves by default. Some models rank risk well but have a poor default threshold. If you tune on your own labelled
-          data, you can gain several points. The smaller models gain the most. The results files report AUROC, so you can see how much
-          room each model has.
+          No. Every decision model uses the same fixed rule: a probability of {board.stats.threshold} or more blocks. Safety
+          classifiers and guardrail services return a verdict with no probability, so we score the verdict as it comes. This shows
+          how each system behaves by default. Some models rank risk well but have a poor default threshold. If you tune on your own
+          labelled data, you can gain several points. The smaller models gain the most. The results files report AUROC for the
+          decision models, so you can see how much room each one has.
+        </p>
+      ),
+    },
+    {
+      q: "What's the difference between a decision model and a safety classifier?",
+      a: (
+        <p className="m-0">
+          A decision model {KIND_GLOSS.decision}. We write the questions for each use case, and the fixed rule turns the
+          probability into a block. A safety classifier {KIND_GLOSS.classifier}. We take that verdict as it comes.
+          {classifiers ? ` The safety classifiers on the board are ${classifiers}.` : ""}
+          {services ? ` A third kind, the ${KIND_LABEL.service.toLowerCase()}, is ${KIND_GLOSS.service}. On the board that is ${services}.` : ""}{" "}
+          Safety classifiers and guardrail services are the classic guardrails. The leaderboard marks them with a symbol after the
+          name.
         </p>
       ),
     },

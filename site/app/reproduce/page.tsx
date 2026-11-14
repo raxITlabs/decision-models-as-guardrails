@@ -87,7 +87,7 @@ export default function Reproduce() {
         <H2 id="scope">What you can reproduce</H2>
         <ul className="m-0 flex max-w-[64ch] flex-col gap-3 pl-5 text-[16px] leading-[1.7] text-fg-2 marker:text-muted">
           <li>
-            Each system answers {int(board.stats.checks)} checks. {int(board.stats.publicRows)} are public test rows. We do not
+            The full set is {int(board.stats.checks)} checks, and each system answers every check in the use cases it covers. {int(board.stats.publicRows)} are public test rows. We do not
             publish the other {int(board.stats.heldBackRows)}. A rerun from a fresh clone covers the public rows only. Expect scores
             that are close to the board but not identical.
           </li>
@@ -222,7 +222,8 @@ uv run python benchmark/runs/e2_full.py report      # run summary, public ledger
         <ul className="m-0 flex max-w-[64ch] flex-col gap-3 pl-5 text-[16px] leading-[1.7] text-fg-2 marker:text-muted">
           <li>
             <strong className="font-semibold text-fg">One rule.</strong> A decision model answers yes/no questions with a probability. We
-            block a row when any of its questions reaches {t}. Verdict APIs use their own flag. Amazon Bedrock Guardrails runs at one
+            block a row when any of its questions reaches {t}. A safety classifier returns a verdict with no probability, so its flag
+            blocks the row and there is no threshold to set. Verdict APIs use their own flag too. Amazon Bedrock Guardrails runs at one
             documented setting. We tune nothing per system.
           </li>
           <li>
@@ -274,6 +275,8 @@ uv run python benchmark/runs/e2_full.py report      # run summary, public ledger
               <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">NoulAdapter</td><td className="py-2.5 pr-4">Decision models that answer yes/no questions with a probability</td><td className="py-2.5 pr-4 sm:pr-0">highest probability ≥ {t}</td></tr>
               <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">BedrockAdapter</td><td className="py-2.5 pr-4">Amazon Bedrock Guardrails</td><td className="py-2.5 pr-4 sm:pr-0">the service&apos;s verdict at its frozen setting</td></tr>
               <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">VerdictAPIAdapter</td><td className="py-2.5 pr-4">Vendor APIs with their own categories</td><td className="py-2.5 pr-4 sm:pr-0">the vendor&apos;s own flag</td></tr>
+              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">SafeguardAdapter</td><td className="py-2.5 pr-4">Safety classifier gpt-oss-safeguard-20b. It reads each use case&apos;s written policy as its system prompt.</td><td className="py-2.5 pr-4 sm:pr-0">1 flags the row, 0 passes it</td></tr>
+              <tr className="border-t border-line"><td className="mono py-2.5 pl-4 pr-4 text-fg sm:pl-0">LlamaGuardAdapter</td><td className="py-2.5 pr-4">Safety classifier Llama Guard 4, content only, with its own fixed categories</td><td className="py-2.5 pr-4 sm:pr-0">&quot;unsafe&quot; in a category the use case maps to</td></tr>
             </tbody>
           </table>
         </div>

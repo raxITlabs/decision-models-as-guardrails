@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { listNames, oneLine } from "@/lib/format";
 import { NewTag } from "./new-tag";
-import { GuardTag } from "./guard-tag";
+import { GuardTag, KindLegend } from "./guard-tag";
 import { PrefilterTag } from "./prefilter-tag";
 import { JOB_BY_ID, type JobId } from "@/lib/jobs";
 import type { SystemMeta } from "@/lib/types";
@@ -84,6 +84,7 @@ export function DecisionSpace({ examples, systems, top }: { examples: Example[];
         </summary>
         <div className="grid grid-cols-1 pb-2 min-[400px]:grid-cols-2">{lists}</div>
       </details>
+      <KindLegend kinds={[...new Set(named.map((s) => s.kind))]} onArt />
 
       {rest.length > 0 && (
         <p className="over-art-86 num m-0 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-[14px] lg:text-[15px]">

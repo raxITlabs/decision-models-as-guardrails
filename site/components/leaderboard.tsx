@@ -11,8 +11,8 @@ import { type ChartScope, chartSystems, logAxis } from "@/lib/chart";
 import { ArrowRight, ArrowUpLeft, Chevron, External } from "./icons";
 import { Segmented } from "./segmented";
 import { NewTag } from "./new-tag";
-import { GuardTag } from "./guard-tag";
-import { classicType, isClassic } from "@/lib/kind";
+import { KindLegend, NameWithKind } from "./guard-tag";
+import { isClassic, kindLabel } from "@/lib/kind";
 import { coverageNote } from "@/lib/coverage";
 import { PrefilterNote, PrefilterTag } from "./prefilter-tag";
 import { SystemMark } from "./system-mark";
@@ -212,7 +212,7 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
               <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">Catch rate</th>
               <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">False-block rate</th>
               <th scope="col" className="hidden py-2.5 pr-3 text-right font-medium sm:table-cell">$ per 1,000 checks</th>
-              <th scope="col" className="hidden py-3 pr-4 font-medium sm:table-cell sm:pr-5">Type</th>
+              <th scope="col" className="hidden py-3 pr-4 font-medium sm:table-cell sm:pr-5">Hosting</th>
             </tr>
           </thead>
           <tbody>
@@ -299,9 +299,8 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
                   <SystemMark m={m} size="md" />
                   <span className="flex flex-col">
                     <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                      <span className="whitespace-nowrap font-semibold">{m.name}</span>
+                      <span className="font-semibold"><NameWithKind name={m.name} m={m} /></span>
                       {m.isNew && <NewTag />}
-                      <GuardTag m={m} />
                     </span>
                     <span className="text-[12px] text-muted">
                       {m.provider} · runs {m.unranked?.suites.length === 1 ? "one suite" : `${m.unranked?.suites.length} suites`} of six
@@ -329,9 +328,10 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
         </div>
       )}
 
+      <KindLegend kinds={[...latest.map((s) => sys[s.system]?.kind ?? "decision"), ...unranked.map(({ m }) => m.kind)]} className="-mb-3" />
       <p className="m-0 text-[13px] leading-relaxed text-muted">
-        Rows with a teal rule are classic guardrails, not decision models: a managed guardrail service and safety
-        classifiers (<a href="#kinds">see the difference</a>).
+        Rows with a teal rule are classic guardrails: they return their own verdict, while a decision model answers the
+        yes/no questions you write with a probability (<a href="#kinds">see the difference</a>).
         Every ranked system answers the same {board.stats.checks.toLocaleString("en-US")} checks under one fixed rule: a
         probability of {board.stats.threshold} or more blocks, or the system&apos;s own verdict when it gives no probability. <a
           href="#fixed-rule"
@@ -393,9 +393,11 @@ function Row({
             {earlier ? null : <SystemMark m={m} size="md" />}
             <span className="flex flex-col items-start">
               <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <span className={earlier ? "text-fg-2" : "whitespace-nowrap font-semibold text-fg"}>{m?.name ?? s.system}</span>
+                {/* The kind symbol rides with the name so it never wraps onto a line of its own. */}
+                <span className={earlier ? "text-fg-2" : "font-semibold text-fg"}>
+                  {earlier ? (m?.name ?? s.system) : <NameWithKind name={m?.name ?? s.system} m={m} />}
+                </span>
                 {m?.isNew && !earlier && <NewTag />}
-                {!earlier && <GuardTag m={m} />}
               </span>
               <span className="text-[12px] text-muted">
                 {picked && <span className="font-medium text-accent">Our pick · </span>}
@@ -412,18 +414,15 @@ function Row({
       <td className="py-2.5 pr-3 text-right sm:text-left">
         <ScoreBar s={s} />
         {/* Phones: cost and false blocks sit under the score instead of in columns off-screen. */}
-        <span className={`num mt-0.5 block whitespace-nowrap text-[12px] sm:hidden ${s.falseBlockRate >= 0.25 ? "text-warn" : "text-muted"}`}>
-          {money(s.cost)} · {pct(s.falseBlockRate)} blocked
+        <span className={`num mt-0.5 block text-[12px] sm:hidden ${s.falseBlockRate >= 0.25 ? "text-warn" : "text-muted"}`}>
+          <span className="whitespace-nowrap">{money(s.cost)} ·</span> <span className="whitespace-nowrap">{pct(s.falseBlockRate)} blocked</span>
         </span>
       </td>
       <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{pct(s.catchRate)}</td>
       <td className={`num hidden py-2.5 pr-3 text-right sm:table-cell ${s.falseBlockRate >= 0.25 ? "text-warn" : ""}`}>{pct(s.falseBlockRate)}</td>
       <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{money(s.cost)}</td>
       <td className="hidden py-2.5 pr-4 text-[13px] sm:table-cell sm:pr-5">
-        <KindTag kind={m?.kind} />
-        <span className={`block text-[12px] ${classic ? "text-guard" : "text-muted"}`}>
-          {classic ? classicType(m) : m?.hosting === "managed" ? "Managed API" : "Self-hosted"}
-        </span>
+        <span className="text-fg-2">{m?.hosting === "self-hosted" ? "Self-hosted" : "Managed API"}</span>
       </td>
     </tr>
   );
@@ -577,12 +576,6 @@ function ScoreBar({ s }: { s: Score }) {
       </span>
     </div>
   );
-}
-
-/** Decision model or classic guardrail, as plain text in the Type column. Classic rows also carry a teal rule. */
-export function KindTag({ kind }: { kind?: "decision" | "service" | "classifier" }) {
-  const classic = isClassic({ kind: kind ?? "decision" });
-  return <span className={`text-[13px] ${classic ? "font-semibold text-guard" : "text-fg-2"}`}>{classic ? "Classic guardrail" : "Decision model"}</span>;
 }
 
 interface Placed {
@@ -935,10 +928,14 @@ function Scatter({
             </span>
           ))}
           <span className="sr-only">of {tiers}</span>
+          {/* The teal ring groups both classic kinds; the same key as the table names which is which. */}
           {placed.some((p) => isClassic(sys[p.s.system])) && (
-            <span className="inline-flex items-center gap-1.5 font-medium text-guard">
-              <span className="size-2.5 rounded-[3px] bg-bg" style={{ boxShadow: "0 0 0 2px var(--guard)" }} aria-hidden="true" />
-              Classic guardrail
+            <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span className="inline-flex items-center gap-1.5 font-medium text-guard">
+                <span className="size-2.5 rounded-[3px] bg-bg" style={{ boxShadow: "0 0 0 2px var(--guard)" }} aria-hidden="true" />
+                Classic guardrail:
+              </span>
+              <KindLegend kinds={placed.map((p) => sys[p.s.system]?.kind ?? "decision").filter((k) => k !== "decision")} />
             </span>
           )}
         </span>
@@ -979,15 +976,14 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
           <SystemMark m={m} size="lg" />
           <span className="flex flex-col">
             <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-              <span className="text-[20px] font-semibold tracking-[-0.01em]">{m?.name ?? s.system}</span>
+              <span className="text-[20px] font-semibold tracking-[-0.01em]"><NameWithKind name={m?.name ?? s.system} m={m} /></span>
               {m?.isNew && <NewTag />}
-              <GuardTag m={m} />
               <PrefilterTag m={m} />
             </span>
             <span className="text-[13px] text-muted">
               {m?.provider}
               {m ? (m.hosting === "managed" ? " · managed API" : " · self-hosted on our GPUs") : ""}
-              {m ? (m.kind === "decision" ? " · decision model" : ` · ${classicType(m).toLowerCase()}`) : ""}
+              {m ? ` · ${kindLabel(m).toLowerCase()}` : ""}
               {m?.unranked ? ` · runs ${m.unranked.suites.length === 1 ? "one suite" : `${m.unranked.suites.length} suites`} of six, not ranked overall` : ""}
             </span>
             {(m?.docs || m?.pricing) && (

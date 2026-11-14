@@ -173,14 +173,18 @@ details[open] > summary .chev {
   70%, 100% { transform: scale(2.8); opacity: 0; }
 }
 
-/* "Classic guardrail" marker (components/guard-tag.tsx): a small shield, then the words, in the guard teal. */
+/* Classic guardrail marker (components/guard-tag.tsx): a symbol only, in the guard teal. A shield for a safety
+   classifier, a cloud for a guardrail service; the words are in KindLegend. */
 .guard-tag {
-  display: inline-flex; flex-shrink: 0; align-items: center; gap: 0.3rem;
-  font-size: 11px; font-weight: 600; line-height: 1; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap;
-  color: var(--guard);
+  display: inline-flex; flex-shrink: 0; align-items: center; line-height: 1; color: var(--guard);
 }
-.guard-tag-art { font-size: 12px; color: var(--guard-art); }
+.guard-tag-art { color: var(--guard-art); }
 .guard-tag-icon { width: 9px; height: 10.5px; flex-shrink: 0; }
+.guard-tag-icon-wide { width: 13px; height: 9.75px; }
+/* Key to the kind symbols (components/guard-tag.tsx, KindLegend): one line, small, under the thing it explains. */
+.kind-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 1.1rem; font-size: 12px; color: var(--muted); }
+.kind-legend-item { display: inline-flex; align-items: center; gap: 0.4rem; }
+.kind-legend-art { color: rgba(250, 248, 244, 0.78); }
 
 /* Condition marker (components/prefilter-tag.tsx): an "i" that opens a popover. The provider refused some checks
    before the model answered (owner ruling 41). */

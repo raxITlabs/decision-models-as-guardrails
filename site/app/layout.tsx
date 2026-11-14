@@ -3,18 +3,25 @@ import { pageOpenGraph, pageTwitter } from "@/lib/og";
 import { Geist_Mono, Inter } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { loadBoard } from "@/lib/data";
+import { isClassic } from "@/lib/kind";
 import "./globals.css";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+
+// Counted from the board, so the description never goes stale: decision models and classic guardrails (safety
+// classifiers and guardrail services) separately, since only the first answer with a probability.
+const systems = loadBoard().systems;
+const classic = systems.filter((s) => isClassic(s)).length;
+const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dm-as-guardrails.raxitlabs.com"),
   openGraph: pageOpenGraph("/"),
   twitter: pageTwitter(),
   title: { default: "decision-models-as-guardrails", template: "%s · decision-models-as-guardrails" },
-  description:
-    "Can a decision model replace your guardrail? Thirty systems answer the same guardrail checks under one fixed rule. raxIT Labs compares them on accuracy and cost.",
+  description: `Can a decision model replace your guardrail? raxIT Labs runs ${plural(systems.length - classic, "decision model", "decision models")}${classic ? ` and ${plural(classic, "classic guardrail", "classic guardrails")}` : ""} on the same guardrail checks and compares them on accuracy and cost.`,
 };
 
 // Matches --bg in globals.css; the site has one light theme.

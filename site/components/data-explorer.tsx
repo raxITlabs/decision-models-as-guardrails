@@ -9,6 +9,8 @@ import { Chevron, External, Lock } from "./icons";
 import { SOURCES } from "@/lib/sources";
 import { Sensitive } from "./sensitive";
 import { SystemMark } from "./system-mark";
+import { GuardTag, KindLegend } from "./guard-tag";
+import { classicType, isClassic } from "@/lib/kind";
 import { Segmented, Select } from "./segmented";
 
 type Colour = "score" | "catch" | "fbr";
@@ -419,6 +421,12 @@ function Heatmap({
     for (const j of JOBS) for (const s of board.jobs[j.id]) (m[s.system] ??= {})[j.id] = s;
     return m;
   }, [board]);
+  // Every system: ranked ones in board order, then those not ranked overall (they run only some suites; n/a elsewhere).
+  const ids = useMemo(() => {
+    const ranked = board.overall.map((o) => o.system);
+    return [...ranked, ...board.systems.filter((s) => !ranked.includes(s.id) && lookup[s.id]).map((s) => s.id)];
+  }, [board, lookup]);
+  const kinds = [...new Set(ids.map((id) => board.systems.find((s) => s.id === id)?.kind ?? "decision"))];
   // intensity 0..1: score from 50 (coin flip) to 100; catch from 0 to 100; false blocks from 0 to 50%
   const intensity = (v: number) => (colour === "score" ? (v - 50) / 50 : colour === "catch" ? v / 100 : v / 50);
   const hue = colour === "fbr" ? "var(--heat-warn)" : "var(--heat-accent)";
@@ -456,9 +464,9 @@ function Heatmap({
           options={JOBS.map((j) => ({ value: j.id, label: j.title }))}
         />
         <ol className="m-0 flex list-none flex-col border-t border-line-strong p-0">
-          {board.overall
-            .map((o) => ({ o, v: cellValue(lookup[o.system]?.[phoneJob], colour) }))
-            .filter((x): x is { o: Score; v: number } => x.v !== null)
+          {ids
+            .map((id) => ({ o: { system: id }, v: cellValue(lookup[id]?.[phoneJob], colour) }))
+            .filter((x): x is { o: { system: string }; v: number } => x.v !== null)
             .sort((a, b) => (colour === "fbr" ? a.v - b.v : b.v - a.v))
             .map(({ o, v }) => {
               const m = board.systems.find((s) => s.id === o.system);
@@ -474,7 +482,10 @@ function Heatmap({
                     <span className="flex min-w-0 items-center gap-2.5">
                       <SystemMark m={m} />
                       <span className="flex min-w-0 flex-col">
-                        <span className="truncate text-[14px] font-semibold text-fg">{m?.name ?? o.system}</span>
+                        <span className="flex min-w-0 items-center gap-1.5 text-[14px] font-semibold text-fg">
+                          <span className="truncate">{m?.name ?? o.system}</span>
+                          <GuardTag m={m} />
+                        </span>
                         <span className="truncate text-[12px] text-muted">{m?.provider}</span>
                       </span>
                     </span>
@@ -506,7 +517,8 @@ function Heatmap({
             </tr>
           </thead>
           <tbody>
-            {board.overall.map((o) => {
+            {ids.map((id) => {
+              const o = { system: id };
               const m = board.systems.find((s) => s.id === o.system);
               return (
                 <tr key={o.system}>
@@ -514,7 +526,10 @@ function Heatmap({
                     <span className="flex items-center gap-2">
                       <SystemMark m={m} />
                       <span>
-                        <span className="block max-w-[9rem] font-semibold leading-tight text-fg sm:max-w-none">{m?.name ?? o.system}</span>
+                        <span className="flex max-w-[9rem] items-center gap-1.5 font-semibold leading-tight text-fg sm:max-w-none">
+                          {m?.name ?? o.system}
+                          <GuardTag m={m} />
+                        </span>
                         <span className="block text-[12px] text-muted">{m?.provider}</span>
                       </span>
                     </span>
@@ -522,7 +537,12 @@ function Heatmap({
                   {JOBS.map((j) => {
                     const s = lookup[o.system]?.[j.id];
                     const v = cellValue(s, colour);
-                    if (v === null) return <td key={j.id} className="rounded-md text-center text-muted">n/a</td>;
+                    if (v === null)
+                      return (
+                        <td key={j.id} className="rounded-md text-center text-muted" title={m?.unranked ? `${oneLine(m, o.system)} does not offer this use case` : undefined}>
+                          n/a
+                        </td>
+                      );
                     const a = Math.max(0.05, Math.min(1, intensity(v)));
                     const on = active?.system === o.system && active?.job === j.id;
                     return (
@@ -559,6 +579,7 @@ function Heatmap({
             : "Share of safe rows that the system blocked. Your users see these as refusals. Darker is worse."}{" "}
         We score personal data per entity type.
       </p>
+      <KindLegend kinds={kinds} />
     </section>
   );
 }
@@ -595,7 +616,7 @@ function Split({
     return (
       <span
         key={s}
-        title={`${sysName(s)}: ${d === "1" ? "blocked" : d === "0" ? "let through" : "no answer"}${wrong ? ", wrong" : ", right"}`}
+        title={`${sysName(s)}${isClassic(m) ? ` (${classicType(m).toLowerCase()})` : ""}: ${d === "1" ? "blocked" : d === "0" ? "let through" : "no answer"}${wrong ? ", wrong" : ", right"}`}
         className={`grid size-6 place-items-center border-b-2 ${wrong ? "border-warn" : "border-transparent"} ${s === highlight ? "rounded-sm ring-2 ring-fg ring-offset-1 ring-offset-[var(--bg)]" : ""}`}
       >
         {m?.logo ? (
