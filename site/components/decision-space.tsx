@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { listNames, oneLine } from "@/lib/format";
 import { NewTag } from "./new-tag";
+import { GuardTag } from "./guard-tag";
 import { PrefilterTag } from "./prefilter-tag";
 import { JOB_BY_ID, type JobId } from "@/lib/jobs";
 import type { SystemMeta } from "@/lib/types";
@@ -154,9 +155,13 @@ function Side({ title, items, wrong, border = false }: { title: string; items: S
                 <span className="size-2 rounded-full border border-current opacity-80" />
               )}
             </span>
-            <span className="min-w-0 break-words">{oneLine(s, s.id)}</span>
-            {s.isNew && <NewTag onArt />}
-            <PrefilterTag m={s} onArt />
+            {/* The name stays on one line; tags wrap under it rather than breaking the name. */}
+            <span className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-0.5">
+              <span className="min-w-0 break-words sm:whitespace-nowrap">{oneLine(s, s.id)}</span>
+              {s.isNew && <NewTag onArt />}
+              <GuardTag m={s} onArt />
+              <PrefilterTag m={s} onArt />
+            </span>
             {wrong && (
               <span className="ml-auto shrink-0 pl-2 text-[13px]">
                 <span aria-hidden="true">✕</span>

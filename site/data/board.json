@@ -41,7 +41,7 @@
   {
    "id": "gpt-oss-safeguard-20b",
    "name": "gpt-oss-safeguard-20b",
-   "provider": "OpenAI · safety classifier, not a decision model",
+   "provider": "OpenAI · via OpenRouter",
    "mono": "Oa",
    "short": "gpt-oss-safeguard",
    "logo": "/logos/openai.svg",
@@ -126,6 +126,7 @@
    "provider": "HeyGen · via OpenRouter",
    "mono": "Hg",
    "short": "HeyGen Decision",
+   "logo": "/logos/heygen.svg",
    "docs": "https://openrouter.ai/heygen/heygen-decision-1",
    "pricing": "https://openrouter.ai/heygen/heygen-decision-1",
    "isNew": true,
@@ -138,6 +139,7 @@
    "provider": "HeyGen · via OpenRouter",
    "mono": "Hg",
    "short": "HeyGen Turbo",
+   "logo": "/logos/heygen.svg",
    "docs": "https://openrouter.ai/heygen/heygen-decision-1-turbo",
    "pricing": "https://openrouter.ai/heygen/heygen-decision-1-turbo",
    "isNew": true,
@@ -469,7 +471,7 @@
   {
    "id": "bedrock-guardrails",
    "name": "Amazon Bedrock Guardrails",
-   "provider": "AWS · not a decision model",
+   "provider": "AWS · managed service",
    "mono": "Aw",
    "short": "Bedrock Guardrails",
    "logo": "/logos/aws.svg",
@@ -561,7 +563,7 @@
   {
    "id": "llama-guard-4-12b",
    "name": "Llama Guard 4",
-   "provider": "Meta · safety classifier, not a decision model",
+   "provider": "Meta · via OpenRouter",
    "mono": "Me",
    "short": "Llama Guard 4",
    "logo": "/logos/meta.svg",

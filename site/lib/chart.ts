@@ -2,7 +2,7 @@
 
 export type ChartScope = "top" | "managed" | "all";
 
-/** The chart's default: the top systems by rank, plus the guardrail service as the reference and any system the page
+/** The chart's default: the top systems by rank, plus the classic guardrails (the guardrail service is the reference) and any system the page
  *  points at (the selected one, a recommendation), so nothing the reader picked disappears from the chart. */
 export function chartSystems<T extends { system: string; rank: number }>(
   rows: T[],
@@ -15,7 +15,8 @@ export function chartSystems<T extends { system: string; rank: number }>(
   if (scope === "managed") return rows.filter((r) => meta[r.system]?.hosting === "managed");
   const best = new Set([...rows].sort((a, b) => a.rank - b.rank).slice(0, top).map((r) => r.system));
   const pinned = new Set(keep.filter(Boolean));
-  return rows.filter((r) => best.has(r.system) || pinned.has(r.system) || meta[r.system]?.kind === "service");
+  const classic = (k?: string) => k === "service" || k === "classifier";
+  return rows.filter((r) => best.has(r.system) || pinned.has(r.system) || classic(meta[r.system]?.kind));
 }
 
 const STEPS = [1, 2, 5];

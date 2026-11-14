@@ -5,6 +5,7 @@ import type { Board } from "@/lib/types";
 import { oneLine, score1 } from "@/lib/format";
 import { Segmented } from "./segmented";
 import { External } from "./icons";
+import { isClassic } from "@/lib/kind";
 import { SystemMark } from "./system-mark";
 
 const PRESETS = [100_000, 1_000_000, 10_000_000, 100_000_000];
@@ -104,7 +105,7 @@ export function CostCalculator({ board }: { board: Board }) {
                     <span className="text-[12px] text-muted">
                       {m?.provider.split(" · ")[0]} · score {score1(s.score)}
                       {m?.hosting === "self-hosted" ? " · our GPU time" : ""}
-                      {m?.kind === "service" || m?.kind === "classifier" ? " · not a decision model" : ""}
+                      {isClassic(m) ? <span className="font-medium text-guard"> · classic guardrail</span> : ""}
                       {m?.pricing ? (
                         <>
                           {" · "}

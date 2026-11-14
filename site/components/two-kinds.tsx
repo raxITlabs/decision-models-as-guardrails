@@ -36,7 +36,7 @@ export function TwoKinds({ board }: { board: Board }) {
     <section id="kinds" aria-labelledby="kinds-h" className="flex scroll-mt-24 flex-col gap-8">
       <div className="flex max-w-[760px] flex-col gap-2.5">
         <h2 id="kinds-h" className="m-0 text-[clamp(1.75rem,3.4vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.02em] text-balance">
-          A decision model is not a guardrail service
+          A decision model is not a classic guardrail
         </h2>
         <p className="m-0 text-[16px] leading-relaxed text-fg-2">
           {decision.length} of the {board.systems.length} systems are decision models, including the hosted Decisions APIs from

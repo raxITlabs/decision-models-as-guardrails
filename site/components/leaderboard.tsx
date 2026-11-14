@@ -11,6 +11,8 @@ import { type ChartScope, chartSystems, logAxis } from "@/lib/chart";
 import { ArrowRight, ArrowUpLeft, Chevron, External } from "./icons";
 import { Segmented } from "./segmented";
 import { NewTag } from "./new-tag";
+import { GuardTag } from "./guard-tag";
+import { classicType, isClassic } from "@/lib/kind";
 import { PrefilterNote, PrefilterTag } from "./prefilter-tag";
 import { SystemMark } from "./system-mark";
 import { SharePanel, ShareTrigger, useCaseParam } from "./share-panel";
@@ -92,6 +94,20 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
     if (p) setSelected(p.system);
   };
   const sel = scores.find((s) => s.system === selected) ?? scores[0];
+  // Systems with no overall score (they ran only some suites), with where they do rank.
+  const unranked = useMemo(
+    () =>
+      board.systems
+        .filter((m) => m.unranked)
+        .map((m) => ({
+          m,
+          runs: JOBS.flatMap((j) => {
+            const r = board.jobs[j.id].find((x) => x.system === m.id);
+            return r ? [{ job: j.id, score: r.score, rank: r.rank }] : [];
+          }),
+        })),
+    [board],
+  );
   // The table lists every system; the scope only thins the chart. "Top 10" keeps Bedrock as the reference and the
   // selected and recommended systems wherever they rank.
   const shown = chartSystems(latest, scope, sys, [sel?.system, pick?.system]);
@@ -266,8 +282,55 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
         </button>
       )}
 
+      {/* Systems that run only some suites have no overall score. On the overall board they are listed here, ruled off
+          from the ranking, each with its score on the use cases it ran and a link to that use case's board. */}
+      {job === "overall" && unranked.length > 0 && (
+        <div className="-mt-2 border-t border-line-strong pt-4">
+          <h3 className="m-0 text-[13px] font-medium text-fg">Not ranked overall</h3>
+          <ul className="m-0 mt-1 flex list-none flex-col p-0">
+            {unranked.map(({ m, runs }) => (
+              <li
+                key={m.id}
+                className="flex flex-wrap items-center gap-x-4 gap-y-1.5 border-b border-line py-3 pl-3"
+                style={isClassic(m) ? { boxShadow: "inset 3px 0 0 var(--guard)" } : undefined}
+              >
+                <span className="flex min-w-0 items-center gap-3">
+                  <SystemMark m={m} size="md" />
+                  <span className="flex flex-col">
+                    <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <span className="whitespace-nowrap font-semibold">{m.name}</span>
+                      {m.isNew && <NewTag />}
+                      <GuardTag m={m} />
+                    </span>
+                    <span className="text-[12px] text-muted">
+                      {m.provider} · runs {m.unranked?.suites.length === 1 ? "one suite" : `${m.unranked?.suites.length} suites`} of six
+                    </span>
+                  </span>
+                </span>
+                <span className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] sm:ml-auto">
+                  {runs.map((r) => (
+                    <button
+                      key={r.job}
+                      type="button"
+                      onClick={() => setJob(r.job)}
+                      className="group inline-flex min-h-11 items-center gap-1.5 text-left sm:min-h-0"
+                    >
+                      <span className="text-muted">{JOB_BY_ID[r.job].title}</span>
+                      <span className="num font-semibold text-fg">{score1(r.score)}</span>
+                      <span className="text-muted">rank {r.rank}</span>
+                      <ArrowRight className="size-3 text-link transition-transform group-hover:translate-x-0.5" />
+                    </button>
+                  ))}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <p className="m-0 text-[13px] leading-relaxed text-muted">
-        Shaded rows are not decision models: a guardrail service and safety classifiers (<a href="#kinds">see the difference</a>).
+        Rows with a teal rule are classic guardrails, not decision models: a managed guardrail service and safety
+        classifiers (<a href="#kinds">see the difference</a>).
         Every ranked system answers the same {board.stats.checks.toLocaleString("en-US")} checks under one fixed rule: a
         probability of {board.stats.threshold} or more blocks, or the system&apos;s own verdict when it gives no probability. <a
           href="#fixed-rule"
@@ -312,16 +375,16 @@ function Row({
   toggle?: React.ReactNode;
   earlier?: boolean;
 }) {
-  const shaded = m?.kind === "service" || m?.kind === "classifier";   // not a decision model
-  const bg = on ? "bg-selected" : shaded ? "bg-raised" : "bg-bg";
+  const classic = isClassic(m);   // not a decision model: a teal rule down the left edge and a teal tint
+  const bg = on ? "bg-selected" : classic ? "bg-guard-tint" : "bg-bg";
   return (
     <tr
       onClick={() => onSelect(s.system)}
-      className={`cursor-pointer border-t transition-colors ${border} ${on ? "bg-selected" : shaded ? "bg-raised hover:bg-raised" : "hover:bg-raised/60"}`}
+      className={`cursor-pointer border-t transition-colors ${border} ${on ? "bg-selected" : classic ? "bg-guard-tint hover:bg-[color-mix(in_srgb,var(--guard)_16%,var(--bg))]" : "hover:bg-raised/60"}`}
     >
-      <td className="num hidden py-2.5 pl-5 text-muted sm:table-cell">{rank ?? <span className="sr-only">Earlier version, not ranked separately</span>}</td>
+      <td className="num hidden py-2.5 pl-5 text-muted sm:table-cell" style={classic ? { boxShadow: "inset 3px 0 0 var(--guard)" } : undefined}>{rank ?? <span className="sr-only">Earlier version, not ranked separately</span>}</td>
       {/* On a phone the name column stays put while the numbers scroll under it. */}
-      <th scope="row" className={`sticky left-0 z-[1] py-2.5 pl-3 pr-3 text-left font-normal sm:static sm:pl-0 ${bg}`}>
+      <th scope="row" className={`sticky left-0 z-[1] py-2.5 pl-3 pr-3 text-left font-normal sm:static sm:pl-0 ${bg} ${classic ? "max-sm:shadow-[inset_3px_0_0_var(--guard)]" : ""}`}>
         <div className={`flex flex-col ${earlier ? "pl-6" : ""}`}>
           {/* The condition "i" is its own button, so it sits beside the select button, not inside it. */}
           <span className="flex items-start gap-2">
@@ -331,6 +394,7 @@ function Row({
               <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
                 <span className={earlier ? "text-fg-2" : "whitespace-nowrap font-semibold text-fg"}>{m?.name ?? s.system}</span>
                 {m?.isNew && !earlier && <NewTag />}
+                {!earlier && <GuardTag m={m} />}
               </span>
               <span className="text-[12px] text-muted">
                 {picked && <span className="font-medium text-accent">Our pick · </span>}
@@ -355,7 +419,9 @@ function Row({
       <td className="num hidden py-2.5 pr-3 text-right sm:table-cell">{money(s.cost)}</td>
       <td className="hidden py-2.5 pr-4 text-[13px] sm:table-cell sm:pr-5">
         <KindTag kind={m?.kind} />
-        <span className="block text-[12px] text-muted">{m?.hosting === "managed" ? "Managed API" : "Self-hosted"}</span>
+        <span className={`block text-[12px] ${classic ? "text-guard" : "text-muted"}`}>
+          {classic ? classicType(m) : m?.hosting === "managed" ? "Managed API" : "Self-hosted"}
+        </span>
       </td>
     </tr>
   );
@@ -511,10 +577,10 @@ function ScoreBar({ s }: { s: Score }) {
   );
 }
 
-/** Decision model or guardrail service, as plain text in the Type column. The service row itself is shaded. */
+/** Decision model or classic guardrail, as plain text in the Type column. Classic rows also carry a teal rule. */
 export function KindTag({ kind }: { kind?: "decision" | "service" | "classifier" }) {
-  const not = kind === "service" || kind === "classifier";
-  return <span className={`text-[13px] ${not ? "font-medium text-fg" : "text-fg-2"}`}>{not ? "Not a decision model" : "Decision model"}</span>;
+  const classic = isClassic({ kind: kind ?? "decision" });
+  return <span className={`text-[13px] ${classic ? "font-semibold text-guard" : "text-fg-2"}`}>{classic ? "Classic guardrail" : "Decision model"}</span>;
 }
 
 interface Placed {
@@ -567,11 +633,14 @@ function Scatter({
   const yMinRaw = Math.min(...scores.map((s) => s.ciLow), 90);
   const yMin = Math.max(0, Math.floor((yMinRaw - 1) / 5) * 5);
   const yMax = Math.min(100, Math.ceil((Math.max(...scores.map((s) => s.ciHigh), 60) + 1) / 5) * 5);
+  // Positions are rounded to 1/100 px: Math.log10 can differ in the last bit between the server and the browser, and an
+  // unrounded coordinate then fails hydration.
+  const r2 = (v: number) => Math.round(v * 100) / 100;
   const px = (v: number) =>
-    axis === "cost"
+    r2(axis === "cost"
       ? pad.l + ((Math.log10(Math.max(v, cost.lo)) - Math.log10(cost.lo)) / (Math.log10(cost.hi) - Math.log10(cost.lo))) * (w - pad.l - pad.r)
-      : pad.l + (v / xMax) * (w - pad.l - pad.r);
-  const py = (v: number) => pad.t + ((yMax - v) / (yMax - yMin)) * (h - pad.t - pad.b);
+      : pad.l + (v / xMax) * (w - pad.l - pad.r));
+  const py = (v: number) => r2(pad.t + ((yMax - v) / (yMax - yMin)) * (h - pad.t - pad.b));
   const yTicks: number[] = [];
   for (let v = yMin; v <= yMax; v += yMax - yMin > 30 ? 10 : 5) yTicks.push(v);
   const xTicks = axis === "cost" ? cost.ticks : ticks(xMax, w < 560 ? 3 : 4);
@@ -788,6 +857,7 @@ function Scatter({
           const m = sys[p.s.system];
           const on = p.s.system === selected;
           const self = m?.hosting === "self-hosted";
+          const classic = isClassic(m);
 
           return (
             <button
@@ -807,7 +877,8 @@ function Scatter({
                 style={{
                   background: `color-mix(in srgb, ${tierVar(p.s.tier)} 14%, var(--bg))`,
                   border: `2px ${self && axis === "cost" ? "dashed" : "solid"} ${tierVar(p.s.tier)}`,
-                  boxShadow: on ? "0 0 0 2px var(--bg), 0 0 0 4px var(--fg)" : "0 0 0 2px var(--bg)",
+                  // Classic guardrails carry a teal ring outside the tier border; the selected square's ink ring wins.
+                  boxShadow: on ? "0 0 0 2px var(--bg), 0 0 0 4px var(--fg)" : classic ? "0 0 0 2px var(--bg), 0 0 0 4px var(--guard)" : "0 0 0 2px var(--bg)",
                 }}
               >
                 {m?.logo ? (
@@ -862,6 +933,12 @@ function Scatter({
             </span>
           ))}
           <span className="sr-only">of {tiers}</span>
+          {placed.some((p) => isClassic(sys[p.s.system])) && (
+            <span className="inline-flex items-center gap-1.5 font-medium text-guard">
+              <span className="size-2.5 rounded-[3px] bg-bg" style={{ boxShadow: "0 0 0 2px var(--guard)" }} aria-hidden="true" />
+              Classic guardrail
+            </span>
+          )}
         </span>
       </figcaption>
     </figure>
@@ -899,15 +976,16 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
         <div className="flex items-center gap-3">
           <SystemMark m={m} size="lg" />
           <span className="flex flex-col">
-            <span className="flex items-center gap-2.5">
+            <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
               <span className="text-[20px] font-semibold tracking-[-0.01em]">{m?.name ?? s.system}</span>
               {m?.isNew && <NewTag />}
+              <GuardTag m={m} />
               <PrefilterTag m={m} />
             </span>
             <span className="text-[13px] text-muted">
               {m?.provider}
               {m ? (m.hosting === "managed" ? " · managed API" : " · self-hosted on our GPUs") : ""}
-              {m && m.kind === "decision" ? " · decision model" : ""}
+              {m ? (m.kind === "decision" ? " · decision model" : ` · ${classicType(m).toLowerCase()}`) : ""}
               {m?.unranked ? ` · runs ${m.unranked.suites.length === 1 ? "one suite" : `${m.unranked.suites.length} suites`} of six, not ranked overall` : ""}
             </span>
             {(m?.docs || m?.pricing) && (
