@@ -13,6 +13,7 @@ import { Segmented } from "./segmented";
 import { NewTag } from "./new-tag";
 import { GuardTag } from "./guard-tag";
 import { classicType, isClassic } from "@/lib/kind";
+import { coverageNote } from "@/lib/coverage";
 import { PrefilterNote, PrefilterTag } from "./prefilter-tag";
 import { SystemMark } from "./system-mark";
 import { SharePanel, ShareTrigger, useCaseParam } from "./share-panel";
@@ -400,6 +401,7 @@ function Row({
                 {picked && <span className="font-medium text-accent">Our pick · </span>}
                 {earlier ? `Earlier version · tier ${s.tier}` : m?.provider}
               </span>
+              {!earlier && m?.unranked ? <span className="text-[12px] font-medium text-fg-2">{coverageNote(m.unranked.suites)}</span> : null}
             </span>
           </button>
           {!earlier && m?.prefiltered ? <span className="mt-[7px]"><PrefilterTag m={m} /></span> : null}
