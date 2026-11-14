@@ -43,7 +43,7 @@ export default function Home() {
   const older = supersededBy(lineages);
   // The hero names the board's top ten, newest versions only, in rank order.
   const heroTop = board.overall.filter((r) => !older[r.system]).sort((a, b) => a.rank - b.rank).slice(0, 10).map((r) => r.system);
-  // A model with several versions on the board counts once.
+  // A system with several versions on the board counts once. "Systems", not "models": the board includes a guardrail service.
   const models = board.stats.systems - lineages.reduce((n, l) => n + l.versions.length - 1, 0);
   const index = loadRowsIndex();
   const sys = systemMap(board);
@@ -71,12 +71,12 @@ export default function Home() {
     {
       title: "Same checks for all",
       big: `${int(board.stats.systems)} systems`,
-      body: "Every system answers every row. A failed call counts as wrong. We do not rank a run with more than 2% failures.",
+      body: "Every system gets the same rows. A failed call counts as wrong. We do not rank a run with more than 2% failures. A system that does not cover every use case gets no overall rank.",
     },
     {
       title: "One fixed rule",
       big: `≥ ${board.stats.threshold} blocks`,
-      body: "We tune no threshold on the test rows, so you see each system's default. Verdict APIs use their own flag. Amazon Bedrock Guardrails runs at one documented setting.",
+      body: "Decision models block at this probability. We tune no threshold on the test rows, so you see each system's default. Safety classifiers return a verdict with no probability, and we take it as it comes. Amazon Bedrock Guardrails runs at one documented setting.",
     },
     {
       title: "Score and cost",
@@ -127,7 +127,7 @@ export default function Home() {
             <h2 id="lb-h" className="m-0 text-[clamp(1.75rem,3.4vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.02em]">Overall ranking</h2>
           </div>
           <p className="m-0 text-[14px] text-muted">
-            {models} {models === 1 ? "model" : "models"} · version {board.release.version} · {longDate(board.release.date)} ·{" "}
+            {models} {models === 1 ? "system" : "systems"} · version {board.release.version} · {longDate(board.release.date)} ·{" "}
             <Link href="/changelog">changelog</Link>
           </p>
         </div>

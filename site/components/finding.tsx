@@ -24,14 +24,22 @@ function facts(board: Board, hide: Record<string, string> = {}) {
 const N = ({ children }: { children: React.ReactNode }) => <span className="num font-medium text-fg">{children}</span>;
 
 export function BedrockFinding({ board, hide = {} }: { board: Board; hide?: Record<string, string> }) {
-  const { overall, ref, decisions } = facts(board, hide);
+  const { sys, overall, ref, decisions, name } = facts(board, hide);
   if (!ref) return null;
   const beat = decisions.filter((s) => s.score > ref.score);
-  const top = overall.slice(0, 4);
+  // Decision models only: a safety classifier can rank among them, and this finding compares decision models with Bedrock.
+  const top = decisions.slice(0, 4);
+  const classifiers = overall.filter((s) => sys[s.system]?.kind === "classifier");
   return (
     <Band label="Finding: decision models against Amazon Bedrock Guardrails" statement={`${beat.length} of ${decisions.length} decision models beat Amazon Bedrock Guardrails.`}>
-      The top four score <N>{score1(Math.min(...top.map((s) => s.score)))}</N> to <N>{score1(Math.max(...top.map((s) => s.score)))}</N> overall.
-      Amazon Bedrock Guardrails scores <N>{score1(ref.score)}</N>. Scores are balanced accuracy across all {board.stats.jobs} use cases, where 50 is a coin
+      The top four decision models score <N>{score1(Math.min(...top.map((s) => s.score)))}</N> to <N>{score1(Math.max(...top.map((s) => s.score)))}</N> overall.
+      Amazon Bedrock Guardrails scores <N>{score1(ref.score)}</N>.
+      {classifiers.map((c) => (
+        <span key={c.system}>
+          {" "}The safety classifier {name(c.system)} scores <N>{score1(c.score)}</N>.
+        </span>
+      ))}{" "}
+      Scores are balanced accuracy across all {board.stats.jobs} use cases, where 50 is a coin
       flip.
     </Band>
   );

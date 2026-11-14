@@ -5,6 +5,7 @@ import type { Board } from "@/lib/types";
 import { oneLine, score1 } from "@/lib/format";
 import { Segmented } from "./segmented";
 import { External } from "./icons";
+import { GuardTag, KindLegend } from "./guard-tag";
 import { SystemMark } from "./system-mark";
 
 const PRESETS = [100_000, 1_000_000, 10_000_000, 100_000_000];
@@ -100,11 +101,13 @@ export function CostCalculator({ board }: { board: Board }) {
                 <span className="flex min-w-0 items-center gap-2.5">
                   <SystemMark m={m} />
                   <span className="flex min-w-0 flex-col">
-                    <span className="truncate text-[14px] font-semibold">{m?.name ?? s.system}</span>
+                    <span className="flex min-w-0 items-center gap-1.5 text-[14px] font-semibold">
+                      <span className="truncate">{m?.name ?? s.system}</span>
+                      <GuardTag m={m} />
+                    </span>
                     <span className="text-[12px] text-muted">
                       {m?.provider.split(" · ")[0]} · score {score1(s.score)}
                       {m?.hosting === "self-hosted" ? " · our GPU time" : ""}
-                      {m?.kind === "service" ? " · not a decision model" : ""}
                       {m?.pricing ? (
                         <>
                           {" · "}
@@ -148,6 +151,7 @@ export function CostCalculator({ board }: { board: Board }) {
             );
           })}
         </ol>
+        <KindLegend kinds={[...new Set(rows.map(({ s }) => sys[s.system]?.kind ?? "decision"))]} />
 
         <p className="m-0 text-[13px] leading-relaxed text-muted">
           Measured on our test rows and priced at each vendor&apos;s list price on 7 October 2026; each row links to the vendor&apos;s

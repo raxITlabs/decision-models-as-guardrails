@@ -3,7 +3,10 @@
 // and the tests read the same card. Newest versions only; intervals and tiers on every row, so an image cannot
 // overclaim a lead the tests cannot separate.
 import { JOBS, JOB_BY_ID, type JobId } from "./jobs";
-import type { Board, Hosting } from "./types";
+import { KIND_LABEL, isClassic } from "./kind";
+import type { Board, Hosting, SystemMeta } from "./types";
+
+type Kind = SystemMeta["kind"];
 
 export const SITE_HOST = "dm-as-guardrails.raxitlabs.com";
 /** The benchmark's name, written as the site writes it. */
@@ -37,8 +40,8 @@ export interface ShareRow {
   ciLow: number;
   ciHigh: number;
   tier: number;
-  /** a guardrail service, not a decision model */
-  service: boolean;
+  /** decision model, safety classifier or guardrail service; the image marks the last two with a glyph */
+  kind: Kind;
 }
 
 export interface ShareCard {
@@ -49,6 +52,9 @@ export interface ShareCard {
   rows: ShareRow[];
   /** systems ranked below the rows shown */
   more: number;
+  /** the kinds among the rows shown, decision first, for the image's key; empty when every row is a decision model
+   *  (no glyph on the image, so nothing to explain) */
+  kinds: Kind[];
   /** how many systems share tier 1 (the tests cannot separate them) */
   topTier: number;
   footer: { site: string; checks: string; version: string; date: string; rule: string };
@@ -58,7 +64,7 @@ export interface ShareCard {
 }
 
 /** Bump when the image design changes, so browsers holding an earlier image fetch the new one. */
-export const SHARE_REV = 3;
+export const SHARE_REV = 4;
 
 /** The PNG's path on the site: /share/overall/landscape.png, or landscape@2x.png at twice the pixels (downloads). */
 export const shareFile = (view: ShareView, size: ShareSize, scale: 1 | 2 = 1) =>
@@ -91,7 +97,7 @@ export function shareCard(board: Board, older: Record<string, string>, view: Sha
       rank: rankOf(s.rank), system: s.system, name: m?.label ?? m?.name ?? s.system, provider: m?.provider ?? "",
       hosting: m?.hosting ?? "managed", logo: m?.logo, mono: m?.mono ?? s.system.slice(0, 2), score: s.score,
       half: Math.max(s.score - s.ciLow, s.ciHigh - s.score),
-      ciLow: s.ciLow, ciHigh: s.ciHigh, tier: s.tier, service: m?.kind === "service",
+      ciLow: s.ciLow, ciHigh: s.ciHigh, tier: s.tier, kind: m?.kind ?? "decision",
     };
   });
   const top = scores.length ? scores[0].tier : 1;
@@ -110,7 +116,9 @@ export function shareCard(board: Board, older: Record<string, string>, view: Sha
       ? `Overall ranking, balanced accuracy across ${board.stats.jobs} guardrail use cases`
       : JOB_BY_ID[view].sub;
   const card: ShareCard = {
-    view, size, title, subtitle, rows, more: Math.max(0, scores.length - rows.length),
+    view, size, title, subtitle, rows,
+    kinds: rows.some((r) => isClassic(r)) ? (["decision", "classifier", "service"] as const).filter((k) => rows.some((r) => r.kind === k)) : [],
+    more: Math.max(0, scores.length - rows.length),
     topTier: scores.filter((s) => s.tier === top).length,
     footer: {
       site: SITE_HOST,
@@ -122,6 +130,6 @@ export function shareCard(board: Board, older: Record<string, string>, view: Sha
     url: shareLink(view),
     alt: "",
   };
-  card.alt = `${BRAND}, ${title}: ${rows.map((r) => `${r.rank}. ${r.name} ${r.score.toFixed(1)}`).join(", ")}. ${card.footer.site}, ${card.footer.date}.`;
+  card.alt = `${BRAND}, ${title}: ${rows.map((r) => `${r.rank}. ${r.name}${isClassic(r) ? ` (${KIND_LABEL[r.kind].toLowerCase()})` : ""} ${r.score.toFixed(1)}`).join(", ")}. ${card.footer.site}, ${card.footer.date}.`;
   return card;
 }

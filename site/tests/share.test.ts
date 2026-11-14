@@ -26,6 +26,26 @@ describe("shareCard", () => {
       }
   });
 
+  it("carries each row's kind, keys only the kinds shown, and counts decision models alone in the Bedrock title", () => {
+    const kindOf = Object.fromEntries(board.systems.map((s) => [s.id, s.kind]));
+    for (const view of SHARE_VIEWS)
+      for (const size of SHARE_SIZE_IDS) {
+        const c = shareCard(board, older, view, size);
+        for (const r of c.rows) expect(r.kind).toBe(kindOf[r.system] ?? "decision");
+        const shown = new Set(c.rows.map((r) => r.kind));
+        if (c.rows.every((r) => r.kind === "decision")) expect(c.kinds).toEqual([]);
+        else expect(new Set(c.kinds)).toEqual(shown);
+        for (const r of c.rows.filter((r) => r.kind !== "decision"))
+          expect(c.alt).toContain(`${r.name} (${r.kind === "service" ? "guardrail service" : "safety classifier"})`);
+      }
+    const overall = shareCard(board, older, "overall", "portrait");
+    const ref = board.systems.find((s) => s.kind === "service");
+    if (ref && board.overall.some((s) => s.system === ref.id)) {
+      const decisions = board.overall.filter((s) => !older[s.system] && kindOf[s.system] === "decision");
+      expect(overall.title).toMatch(new RegExp(`^\\d+ of ${decisions.length} decision models beat `));
+    }
+  });
+
   it("names files and links per view", () => {
     expect(shareFile("overall", "square")).toBe("/share/overall/square.png");
     expect(shareLink("overall")).toMatch(/#leaderboard$/);

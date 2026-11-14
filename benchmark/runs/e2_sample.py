@@ -192,7 +192,8 @@ def scorer_record(d: dict, pt: PublicDev) -> dict | None:
     feat = pt.feature[d["row_id"]]
     srv = d.get("serving") or {}
     bedrock = d["system"] == "bedrock-guardrails"
-    basis = BEDROCK_BASIS.get((d["suite"], d["subtask"])) if bedrock else None
+    # Bedrock's bases are keyed by task; a vendor verdict adapter (goldrails_bench.guards) names its basis in serving
+    basis = BEDROCK_BASIS.get((d["suite"], d["subtask"])) if bedrock else srv.get("answer_basis")
     qs = BEDROCK_QSET[d["suite"]] if bedrock else srv.get("question_set")
     keys = list(srv.get("decision_keys") or [])
     if bedrock and d["suite"] == "sensitive_info":

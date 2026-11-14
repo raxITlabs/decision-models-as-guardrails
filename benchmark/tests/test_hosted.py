@@ -621,8 +621,21 @@ OR_NEW = {  # system -> (requested model, pinned snapshot, context, input USD pe
     "solar-decide-flash": ("upstage/solar-decide-flash", "upstage/solar-decide-flash-20261008", 524288, 0.05),
     "mercury-decide": ("inception/mercury-decide", "inception/mercury-decide-20260930", 65536, 0.02),
     "gemini-decision-1": ("google/gemini-decision-1", "google/gemini-decision-1-20261111", 262144, 0.10),
+    "heygen-decision-1": ("heygen/heygen-decision-1", "heygen/heygen-decision-1-20261112", 131072, 0.14),
+    "heygen-decision-1-turbo": ("heygen/heygen-decision-1-turbo", "heygen/heygen-decision-1-turbo-20261112", 262144, 0.09),
+    "pplx-decider-v1.3-free": ("perplexity/pplx-decider-v1.3:free", "perplexity/pplx-decider-v1.3-20261112", 262144, 0.0),
+    "pplx-decider-flash-v1.3-free": ("perplexity/pplx-decider-flash-v1.3:free", "perplexity/pplx-decider-flash-v1.3-20261112", 262144, 0.0),
+    "mammoth-1": ("baseten/mammoth-1", "baseten/mammoth-1-20261021", 16384, 0.1),
+    "elephant-1": ("baseten/elephant-1", "baseten/elephant-1-20261021", 16384, 0.035),
+    "joey-1": ("baseten/joey-1", "baseten/joey-1-20261029", 16384, 0.01),
+    "morph-reflex": ("morph/reflex", "morph/reflex-20261103", 65536, 0.042),
+    "drex-v2.0": ("nace-ai/drex-v2.0", "nace-ai/drex-v2.0-20261009", 131072, 0.06),
+    "drex-v1.5": ("nace-ai/drex-v1.5", "nace-ai/drex-v1.5-20261009", 131072, 0.04),
+    "tev1-4b": ("togethercomputer/tev1-4b-experimental", "togethercomputer/tev1-4b-experimental-20260923", 32768, 0.042),
+    "liquid-d1": ("liquid/d1", "liquid/d1-20260930", 65536, 0.02),
 }
-CHECKED_ON = {"gemini-decision-1": "2026-11-12"}   # tariff read date where it is not the batch's 28 October
+CHECKED_ON = {"gemini-decision-1": "2026-11-12", **{s: "2026-11-13" for s in (
+    "heygen-decision-1", "heygen-decision-1-turbo", "pplx-decider-v1.3-free", "pplx-decider-flash-v1.3-free", "mammoth-1", "elephant-1", "joey-1", "morph-reflex", "drex-v2.0", "drex-v1.5", "tev1-4b", "liquid-d1")}}   # tariff read date where it is not the batch's 28 October
 
 
 def test_openrouter_table_matches_the_probed_models():
@@ -655,7 +668,7 @@ def test_openrouter_decider_fails_any_other_snapshot_without_retry(reported):
 
 def test_openrouter_decider_unknown_system_is_refused():
     with pytest.raises(ValueError):
-        hosted.OpenRouterDecisionClient("k", system="mammoth-1")
+        hosted.OpenRouterDecisionClient("k", system="parallel-decisions-fast")
 
 
 def test_msd1_identity_is_unchanged_by_the_generalisation():

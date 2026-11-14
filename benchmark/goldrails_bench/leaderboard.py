@@ -485,16 +485,26 @@ class Arm:
         return f"{s}|{qs}|{cfg or 'nocfg'}|{(dsha or 'nodata')[:12]}"
 
 
+# A verdict API's own flag, recorded as 1 flagged and 0 passed (contract v2.0 headline_rule.verdict). The contract's
+# binary_bases list names Bedrock's binary outputs; a vendor verdict is binary by that rule whatever the vendor, so it
+# needs no contract entry (docs/benchmark/36: Llama Guard 4 and gpt-oss-safeguard through OpenRouter).
+VERDICT_BASES = ("vendor_verdict",)
+
+
+def _binary_basis(b, contract: dict) -> bool:
+    return b in contract["binary_bases"] or b in VERDICT_BASES
+
+
 def is_binary(arm: Arm, contract: dict) -> bool:
     bases = {a.get("basis") for r in arm.records for a in (r.get("answers") or {}).values() if isinstance(a, dict)}
     bases.discard(None)
-    return bool(bases) and all(b in contract["binary_bases"] for b in bases)
+    return bool(bases) and all(_binary_basis(b, contract) for b in bases)
 
 
 def score_scale(arm: Arm, contract: dict) -> str:
     bases = {a.get("basis") for r in arm.records for a in (r.get("answers") or {}).values() if isinstance(a, dict)}
     bases.discard(None)
-    if bases and all(b in contract["binary_bases"] for b in bases):
+    if bases and all(_binary_basis(b, contract) for b in bases):
         return "binary"
     if bases and all(b in contract["step_bases"] for b in bases):
         return "ordered_steps"

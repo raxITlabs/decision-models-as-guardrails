@@ -71,6 +71,8 @@ LIMITS = {"jev-1.13.0": (32000, "documented"), "jev-1.14.0": (32000, "documented
           "pplx-decider-v1-27b": (262144, "hosted input limit (Perplexity docs)"),
           "pplx-decider-v1-2-27b": (262144, "hosted 256K context (Perplexity docs, 27 October 2026)"),
           "pplx-decider-flash-v1-2": (262144, "hosted 256K context (Perplexity docs, 27 October 2026)"),
+          "pplx-decider-v1-3": (262144, "hosted 256K context (Perplexity docs, 13 November 2026)"),
+          "pplx-decider-flash-v1-3": (262144, "hosted 256K context (Perplexity docs, 13 November 2026)"),
           "strands-decider-2b": (4096, "documented window; cut silently, no truncation flag"),
           "microsoft-decision-1": (32768, "hosted context (OpenRouter model page)"),
           "gpt-6-luna": (None, "undocumented (the public beta docs give no input limit)"),
@@ -84,16 +86,20 @@ LIMITS.update({n: (4096, "documented window; cut silently, no truncation flag") 
 PER_PROMPT_USAGE = {"open-jev-2b", "laya"}
 # Hosted joint-schema models report one input count for the whole request: at the limit means the input was capped.
 WHOLE_REQUEST_USAGE = {"clef", "clef-flash", "clef-omni", "pplx-decider-v1-27b", "pplx-decider-v1-2-27b", "pplx-decider-flash-v1-2",
+                       "pplx-decider-v1-3", "pplx-decider-flash-v1-3",
                        "microsoft-decision-1"}
 # The OpenRouter decision models (goldrails_bench.hosted.OPENROUTER_DECIDERS): the listing's context, whole-request usage.
 _OR = {"drex-max": 262144, "span-02": 131072, "liquid-d1-ultra": 32768, "liquid-d1.1": 65536, "solar-decide": 524288,
-       "solar-decide-flash": 524288, "mercury-decide": 65536, "gemini-decision-1": 262144}
+       "solar-decide-flash": 524288, "mercury-decide": 65536, "gemini-decision-1": 262144,
+       "heygen-decision-1": 131072, "heygen-decision-1-turbo": 262144, "pplx-decider-v1.3-free": 262144, "pplx-decider-flash-v1.3-free": 262144, "mammoth-1": 16384, "elephant-1": 16384, "joey-1": 16384, "morph-reflex": 65536, "drex-v2.0": 131072, "drex-v1.5": 131072, "tev1-4b": 32768, "liquid-d1": 65536}
 LIMITS.update({k: (v, "hosted context (OpenRouter listing, 28 October 2026)") for k, v in _OR.items()})
 WHOLE_REQUEST_USAGE |= set(_OR)
 # Liquid AI's open d1 models on the project VM (benchmark/runs/e2_liquid_run.py): the model cards' windows; the server
 # does not cut input.
 LIMITS.update({"liquid-d1-2b": (128000, "documented context (model card); less reliable past about 64K"),
                "liquid-d1-3b": (32768, "documented context (model card)")})
+LIMITS.update({"gpt-oss-safeguard-20b": (131072, "hosted context (OpenRouter listing, Groq, 13 November 2026)"),
+               "llama-guard-4-12b": (163840, "hosted context (OpenRouter listing, DeepInfra bf16, 13 November 2026)")})
 DEFAULT_LIMIT = (4096, "proxy: undocumented, 4096 reference")
 NEAR = 0.8   # a row is near the limit at >= 80% of it
 CHARS_PER_TOKEN = 3.5   # conservative (over-)estimate for English with a BPE tokenizer
@@ -232,8 +238,13 @@ def leak_check(paths, rows_by_id: dict) -> list:
 # --- systems ---------------------------------------------------------------------------------------------------
 
 NEW_KINDS = ("clef", "clef-flash", "clef-omni", "perplexity", "strands", "openai", "jev-1.14", "microsoft", "perplexity-v1.2",
-             "perplexity-flash-v1.2", "drex-max", "span-02", "liquid-d1-ultra", "liquid-d1.1", "solar-decide",
-             "solar-decide-flash", "mercury-decide", "liquid", "gemini-decision-1")
+             "perplexity-flash-v1.2", "perplexity-v1.3", "perplexity-flash-v1.3", "drex-max", "span-02", "liquid-d1-ultra", "liquid-d1.1", "solar-decide",
+             "solar-decide-flash", "mercury-decide", "liquid", "gemini-decision-1",
+             "heygen-decision-1", "heygen-decision-1-turbo", "pplx-decider-v1.3-free", "pplx-decider-flash-v1.3-free", "mammoth-1", "elephant-1", "joey-1", "morph-reflex", "drex-v2.0", "drex-v1.5", "tev1-4b", "liquid-d1")
+# Classic safety classifiers through OpenRouter's chat API (goldrails_bench.guards, docs/benchmark/36): their own
+# verdict, not Noul questions. Llama Guard 4 offers content only; its other subtasks are not_offered, no call made.
+GUARD_KINDS = ("gpt-oss-safeguard-20b", "llama-guard-4-12b")
+NEW_KINDS = NEW_KINDS + GUARD_KINDS
 KINDS = ("jev", "open", "bedrock") + NEW_KINDS
 JEV_114 = "jev-1.14.0"   # the versioned id; jev-preview points at it today but moves with the next release
 
@@ -309,6 +320,15 @@ def build_new_systems(kinds: set, env) -> tuple[dict, dict]:
             c = SystemOneClient(JEV_114, model=JEV_114, api_key=env["TYPESAFE_API_KEY"],
                                 identity={"model": JEV_114, "provider": "api.typesafe.ai"})
             out[JEV_114] = (NoulAdapter(c, endpoint="https://api.typesafe.ai"), 8)
+    for kind in GUARD_KINDS:
+        if kind in kinds:
+            from goldrails_bench import guards
+            rate, workers = guards.PACE[kind]   # Groq rate-limits safeguard upstream at 5/s (smoke, 13 November 2026)
+            a = guards.build(kind, env=env, throttle=hosted.Throttle(rate))
+            if a is None:
+                skipped[kind] = f"not_configured: {kind} needs OPENROUTER_API_KEY"
+            else:
+                out[kind] = (a, workers)
     if "strands" in kinds:
         found, why = strands_models()
         if not found:

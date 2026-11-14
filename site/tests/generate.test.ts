@@ -2,7 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { generate, hasRealInputs, prefilteredOf, textCleared } from "../scripts/generate";
+import { buildBoard, generate, hasRealInputs, prefilteredOf, textCleared } from "../scripts/generate";
 import { JOBS } from "../lib/jobs";
 
 const FIXTURE = path.join(__dirname, "..", "fixtures", "source");
@@ -94,5 +94,26 @@ describe("prefilteredOf (owner ruling 41)", () => {
   });
   it("adds nothing for a system with no refusals", () => {
     expect(prefilteredOf([{ system: "g", run: { rows: 100 } }], "g")).toEqual({});
+  });
+});
+
+describe("systems not ranked overall (contract v2.0 coverage rule, docs/benchmark/36)", () => {
+  const entry = (name: string) => ({ name, rank: 1, tier: 1, balanced_accuracy: 80, ci: [78, 82], catch_rate: 0.8, false_block_rate: 0.2 });
+  const lb = {
+    arms: [],
+    overall: { ranking: [entry("fixture-alpha")], not_ranked: [{ name: "llama-guard-4-12b", status: "not ranked" }, { name: "never-ran" }] },
+    suites: { content: { ranking: [entry("fixture-alpha"), entry("llama-guard-4-12b")] } },
+    subtasks: {},
+    run: { cost: {} },
+  };
+  const board = buildBoard(lb, "fixture");
+
+  it("lists a system that ran some suites after the ranked ones, marked unranked with its suites", () => {
+    expect(board.systems.map((s) => s.id)).toEqual(["fixture-alpha", "llama-guard-4-12b"]);
+    const lg = board.systems[1];
+    expect(lg.kind).toBe("classifier");
+    expect(lg.unranked).toEqual({ suites: ["content"] });
+    expect(board.systems[0].unranked).toBeUndefined();
+    expect(board.overall.map((s) => s.system)).toEqual(["fixture-alpha"]);
   });
 });

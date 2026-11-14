@@ -6,6 +6,8 @@ import { ArrowRight } from "./icons";
 import { follow, podiums } from "@/lib/leaders";
 import { int, oneLine, score1, tierVar } from "@/lib/format";
 import type { Score, SystemMeta } from "@/lib/types";
+import { isClassic, kindLabel } from "@/lib/kind";
+import { GuardTag, KindLegend } from "./guard-tag";
 
 const TOP = 5;
 const PLACE = ["Leader", "2nd", "3rd", "4th", "5th"];
@@ -31,6 +33,7 @@ export function UseCaseLeaders({
   const active = hover ?? picked;
   const name = (id: string) => sys[id]?.short ?? oneLine(sys[id], id);
   const f = picked ? follow(table, picked) : null;
+  const kinds = [...new Set(table.flatMap((r) => r.top).map((s) => sys[s.system]?.kind ?? "decision"))];
   const tier = picked ? table.flatMap((r) => r.top).find((s) => s.system === picked)?.tier ?? 1 : 1;
 
   return (
@@ -99,14 +102,19 @@ export function UseCaseLeaders({
                         <button
                           type="button"
                           aria-pressed={picked === s.system}
-                          aria-label={`${oneLine(sys[s.system], s.system)}: ${p === "Leader" ? "leads" : p} ${j.title}, score ${score1(s.score)}, tier ${s.tier}. Follow it across the use cases.`}
+                          aria-label={`${oneLine(sys[s.system], s.system)}, ${kindLabel(sys[s.system]).toLowerCase()}: ${p === "Leader" ? "leads" : p} ${j.title}, score ${score1(s.score)}, tier ${s.tier}. Follow it across the use cases.`}
                           onClick={() => setPicked((v) => (v === s.system ? null : s.system))}
                           onPointerEnter={(e) => e.pointerType === "mouse" && setHover(s.system)}
                           onPointerLeave={(e) => e.pointerType === "mouse" && setHover(null)}
                           className={`group mx-auto flex w-full max-w-[96px] flex-col items-center gap-1.5 rounded-md py-1 transition-opacity duration-200 ease-out motion-reduce:transition-none ${dim ? "opacity-25" : ""}`}
                         >
                           <Mark id={s.system} tier={s.tier} sys={sys} on={on} />
-                          <span className={`num text-[13px] leading-none sm:text-[14px] ${n === 0 ? "font-semibold text-fg" : "text-fg-2"}`}>{score1(s.score)}</span>
+                          <span className={`num inline-flex items-center gap-[3px] text-[13px] leading-none sm:text-[14px] ${n === 0 ? "font-semibold text-fg" : "text-fg-2"}`}>
+                            {score1(s.score)}
+                            <span aria-hidden="true" className="inline-flex">
+                              <GuardTag m={sys[s.system]} />
+                            </span>
+                          </span>
                           <span className="hidden w-full truncate text-[12px] leading-tight text-muted lg:block">{name(s.system)}</span>
                         </button>
                       </td>
@@ -127,12 +135,20 @@ export function UseCaseLeaders({
             {t === 5 ? "+" : ""}
           </span>
         ))}
+        {kinds.some((k) => k !== "decision") && (
+          <span className="inline-flex items-center gap-1.5 font-medium text-guard">
+            <span className="size-2.5 rounded-[3px] bg-bg" style={{ boxShadow: "0 0 0 2px var(--guard)" }} aria-hidden="true" />
+            Classic guardrail
+          </span>
+        )}
+        <KindLegend kinds={kinds} />
       </p>
     </div>
   );
 }
 
-/** One system's logo square, tier colour on the border. `on` marks the followed system with a heavy ring. */
+/** One system's logo square, tier colour on the border. `on` marks the followed system with a heavy ring; a classic
+ *  guardrail otherwise gets a teal ring. */
 function Mark({ id, tier, sys, on }: { id: string; tier: number; sys: Record<string, SystemMeta>; on: boolean }) {
   return (
     <span
@@ -140,7 +156,8 @@ function Mark({ id, tier, sys, on }: { id: string; tier: number; sys: Record<str
       style={{
         background: `color-mix(in srgb, ${tierVar(tier)} 14%, var(--bg))`,
         border: `2px solid ${tierVar(tier)}`,
-        boxShadow: on ? "0 0 0 2px var(--bg), 0 0 0 5px var(--fg)" : undefined,
+        // Classic guardrails carry the leaderboard chart's teal ring outside the tier border; the followed square's ink ring wins.
+        boxShadow: on ? "0 0 0 2px var(--bg), 0 0 0 5px var(--fg)" : isClassic(sys[id]) ? "0 0 0 2px var(--bg), 0 0 0 4px var(--guard)" : undefined,
       }}
     >
       {sys[id]?.logo ? (

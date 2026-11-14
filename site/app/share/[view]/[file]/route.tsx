@@ -4,6 +4,7 @@ import { cloneElement } from "react";
 import { ImageResponse } from "next/og";
 import { BenchmarksLogo } from "@/components/benchmarks-logo";
 import { loadBoard, loadVersions } from "@/lib/data";
+import { KIND_LABEL } from "@/lib/kind";
 import { BRAND, SHARE_SIZES, SHARE_SIZE_IDS, SHARE_VIEWS, isShareView, shareCard, type ShareCard, type ShareRow, type ShareSize, type ShareView } from "@/lib/share";
 import { lineageSummaries, supersededBy } from "@/lib/versions";
 import { artDataUri, shareFonts } from "../../assets";
@@ -25,6 +26,7 @@ const C = {
   rest: "#8a8174",
   onArt: "#f2efea",
   onArtMuted: "rgba(242,239,234,0.8)",
+  guard: "#17605c", // --guard in globals.css: classic guardrails (safety classifiers and guardrail services)
 };
 const MONO = "Geist Mono";
 /** The benchmark's name as an eyebrow over the title: plain words, no hyphens, spaced capitals. */
@@ -37,8 +39,8 @@ const LAYOUT: Record<ShareSize, {
   score: number; half: number; nameW: number; scoreW: number; small: number; dot: number; rowGap: number;
 }> = {
   landscape: { pad: 52, split: true, art: 450, mark: 46, brand: 13, title: 38, sub: 18, name: 24, score: 25, half: 15, nameW: 300, scoreW: 118, small: 16, dot: 13, rowGap: 0 },
-  square: { pad: 72, split: false, art: 410, mark: 52, brand: 15, title: 52, sub: 22, name: 28, score: 29, half: 17, nameW: 370, scoreW: 132, small: 19, dot: 15, rowGap: 0 },
-  portrait: { pad: 72, split: false, art: 500, mark: 56, brand: 16, title: 56, sub: 23, name: 29, score: 30, half: 18, nameW: 380, scoreW: 138, small: 19, dot: 16, rowGap: 0 },
+  square: { pad: 72, split: false, art: 410, mark: 52, brand: 15, title: 52, sub: 22, name: 28, score: 29, half: 17, nameW: 400, scoreW: 132, small: 19, dot: 15, rowGap: 0 },
+  portrait: { pad: 72, split: false, art: 500, mark: 56, brand: 16, title: 56, sub: 23, name: 29, score: 30, half: 18, nameW: 420, scoreW: 138, small: 19, dot: 16, rowGap: 0 },
 };
 type Layout = (typeof LAYOUT)[ShareSize];
 const RULE = 4; // the tie rule's width; every row keeps the same inset so names line up
@@ -66,12 +68,50 @@ function Plot({ row, ax, L }: { row: ShareRow; ax: Axis; L: Layout }) {
   );
 }
 
+/** The kind's symbol, as GuardTag draws it on the site (components/guard-tag.tsx): a shield for a safety classifier,
+ *  a cloud for a guardrail service, in the guard teal. A decision model has none. ``h``: the glyph's height in px. */
+function Glyph({ kind, h }: { kind: ShareRow["kind"]; h: number }) {
+  if (kind === "classifier")
+    return (
+      <svg width={Math.round((h * 12) / 14)} height={h} viewBox="0 0 12 14" style={{ flexShrink: 0 }}>
+        <path d="M6 0.75 11 2.6v3.9c0 3.1-2.1 5.6-5 6.75C3.1 12.1 1 9.6 1 6.5V2.6Z" fill={C.guard} />
+      </svg>
+    );
+  if (kind === "service")
+    return (
+      <svg width={Math.round((h * 16) / 12)} height={h} viewBox="0 0 16 12" style={{ flexShrink: 0 }}>
+        <path d="M4.2 11.25a3.45 3.45 0 0 1-.55-6.86A4.6 4.6 0 0 1 12.4 3.6a3.85 3.85 0 0 1-.35 7.65Z" fill={C.guard} />
+      </svg>
+    );
+  return null;
+}
+
+/** The key to the glyphs, one line, listing only the kinds on the image (as KindLegend does on the site). */
+function Key({ card, L }: { card: ShareCard; L: Layout }) {
+  if (!card.kinds.length) return null;
+  const h = Math.round(L.small * 0.8);
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: Math.round(L.small * 1.2), fontSize: L.small, color: C.muted, flexShrink: 0 }}>
+      {card.kinds.map((k) =>
+        k === "decision" ? (
+          <span key={k} style={{ display: "flex" }}>{`No symbol: ${KIND_LABEL.decision.toLowerCase()}`}</span>
+        ) : (
+          <span key={k} style={{ display: "flex", alignItems: "center", gap: Math.round(L.small * 0.4) }}>
+            <Glyph kind={k} h={h} />
+            {KIND_LABEL[k]}
+          </span>
+        ),
+      )}
+    </div>
+  );
+}
+
 function Row({ row, ax, L }: { row: ShareRow; ax: Axis; L: Layout }) {
   return (
     <div style={{ display: "flex", alignItems: "center", flexGrow: 1, flexBasis: 0, gap: 24 }}>
-      <div style={{ display: "flex", flexDirection: "column", width: L.nameW, flexShrink: 0, whiteSpace: "nowrap", overflow: "hidden" }}>
-        <div style={{ display: "flex", fontSize: L.name, fontWeight: 500, color: C.ink, letterSpacing: -0.4 }}>{row.name}</div>
-        {row.service ? <div style={{ display: "flex", fontSize: L.small, color: C.muted, marginTop: 2 }}>Not a decision model</div> : null}
+      <div style={{ display: "flex", alignItems: "center", gap: Math.round(L.name * 0.3), width: L.nameW, flexShrink: 0, whiteSpace: "nowrap", overflow: "hidden" }}>
+        <div style={{ display: "block", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", fontSize: L.name, fontWeight: 500, color: C.ink, letterSpacing: -0.4 }}>{row.name}</div>
+        <Glyph kind={row.kind} h={Math.round(L.name * 0.62)} />
       </div>
       <Plot row={row} ax={ax} L={L} />
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "flex-end", gap: 6, width: L.scoreW, flexShrink: 0, fontFamily: MONO, color: C.ink }}>
@@ -165,6 +205,7 @@ function Card({ card, bare = false }: { card: ShareCard; bare?: boolean }) {
       <Art card={card} L={L} w={L.split ? L.art : "100%"} h={L.split ? "100%" : L.art} bare={bare} />
       <div style={{ display: "flex", flexDirection: "column", flexGrow: 1, padding: L.pad, paddingTop: Math.round(L.pad * (L.split ? 1 : 0.8)), gap: Math.round(L.pad * 0.45) }}>
         <Ranking card={card} L={L} />
+        <Key card={card} L={L} />
         <Footer card={card} L={L} />
       </div>
     </div>

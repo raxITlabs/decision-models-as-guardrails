@@ -2,7 +2,7 @@
 //
 // Inputs, relative to the benchmark repository root:
 //   benchmark/results/final/leaderboard.json
-//   benchmark/results/final/ledgers/{main-run,prompt-attacks,gpt-6-luna,jev-1.14.0,strands-deciders,microsoft-decision-1,pplx-decider-v1-2,hosted-batch-2,liquid-open-d1,gemini-decision-1}/*.jsonl   (never the private/ folders)
+//   benchmark/results/final/ledgers/{main-run,prompt-attacks,gpt-6-luna,jev-1.14.0,strands-deciders,microsoft-decision-1,pplx-decider-v1-2,hosted-batch-2,liquid-open-d1,gemini-decision-1,classic-guards}/*.jsonl   (never the private/ folders)
 //   dataset/edition2/build/F*.test.jsonl                                           (never build/private/)
 //   dataset/release/redistribution.json                                            (which sources may ship text)
 //
@@ -29,7 +29,7 @@ import type {
   Turn,
 } from "../lib/types";
 
-export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna", "jev-1.14.0", "strands-deciders", "microsoft-decision-1", "pplx-decider-v1-2", "hosted-batch-2", "liquid-open-d1", "gemini-decision-1"];
+export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna", "jev-1.14.0", "strands-deciders", "microsoft-decision-1", "pplx-decider-v1-2", "hosted-batch-2", "liquid-open-d1", "gemini-decision-1", "hosted-batch-3", "pplx-decider-v1-3", "classic-guards"];
 export const RELEASE_VERSION = "1.0.0";
 
 /** Display names, makers and marks for the systems on the board. Ids not listed fall back to the id itself.
@@ -53,13 +53,27 @@ export const SYSTEM_DISPLAY: Record<string, { name: string; label?: string; shor
   "liquid-d1-2b": { name: "d1-2B", isNew: true, provider: "Liquid AI · open weights", mono: "Lq", logo: "/logos/liquid.svg", docs: "https://huggingface.co/LiquidAI/d1-2B", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   "liquid-d1-3b": { name: "d1-3B", isNew: true, provider: "Liquid AI · open weights", mono: "Lq", logo: "/logos/liquid.svg", docs: "https://huggingface.co/LiquidAI/d1-3B", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   "gemini-decision-1": { name: "Gemini Decision 1", short: "Gemini Decision", isNew: true, provider: "Google · via OpenRouter", mono: "Go", logo: "/logos/google.svg", docs: "https://aistudio.google.com/docs/decisions-api", pricing: "https://openrouter.ai/google/gemini-decision-1" },
+  "pplx-decider-v1-3": { name: "pplx-decider-v1.3", isNew: true, provider: "Perplexity · Decisions API", mono: "Px", logo: "/logos/perplexity.svg", docs: "https://huggingface.co/perplexity-ai/pplx-decider-v1.3", pricing: "https://docs.perplexity.ai/docs/getting-started/pricing" },
+  "pplx-decider-flash-v1-3": { name: "pplx-decider-flash-v1.3", short: "pplx-decider-flash v1.3", isNew: true, provider: "Perplexity · Decisions API", mono: "Px", logo: "/logos/perplexity.svg", docs: "https://huggingface.co/perplexity-ai/pplx-decider-flash-v1.3", pricing: "https://docs.perplexity.ai/docs/getting-started/pricing" },
+  "heygen-decision-1": { name: "HeyGen Decision 1", short: "HeyGen Decision", isNew: true, provider: "HeyGen · via OpenRouter", mono: "Hg", logo: "/logos/heygen.svg", docs: "https://openrouter.ai/heygen/heygen-decision-1", pricing: "https://openrouter.ai/heygen/heygen-decision-1" },
+  "heygen-decision-1-turbo": { name: "HeyGen Decision 1 Turbo", short: "HeyGen Turbo", isNew: true, provider: "HeyGen · via OpenRouter", mono: "Hg", logo: "/logos/heygen.svg", docs: "https://openrouter.ai/heygen/heygen-decision-1-turbo", pricing: "https://openrouter.ai/heygen/heygen-decision-1-turbo" },
+  "mammoth-1": { name: "Mammoth 1", isNew: true, provider: "Baseten · via OpenRouter", mono: "Bt", logo: "/logos/baseten.svg", docs: "https://openrouter.ai/baseten/mammoth-1", pricing: "https://openrouter.ai/baseten/mammoth-1" },
+  "elephant-1": { name: "Elephant 1", isNew: true, provider: "Baseten · via OpenRouter", mono: "Bt", logo: "/logos/baseten.svg", docs: "https://openrouter.ai/baseten/elephant-1", pricing: "https://openrouter.ai/baseten/elephant-1" },
+  "joey-1": { name: "Joey 1", isNew: true, provider: "Baseten · via OpenRouter", mono: "Bt", logo: "/logos/baseten.svg", docs: "https://openrouter.ai/baseten/joey-1", pricing: "https://openrouter.ai/baseten/joey-1" },
+  "morph-reflex": { name: "Reflex", isNew: true, provider: "Morph · via OpenRouter", mono: "Mo", logo: "/logos/morph.svg", docs: "https://openrouter.ai/morph/reflex", pricing: "https://openrouter.ai/morph/reflex" },
+  "drex-v2.0": { name: "Drex v2.0", isNew: true, provider: "Nace.AI · via OpenRouter", mono: "Na", logo: "/logos/nace.svg", docs: "https://openrouter.ai/nace-ai/drex-v2.0", pricing: "https://openrouter.ai/nace-ai/drex-v2.0" },
+  "drex-v1.5": { name: "Drex v1.5", isNew: true, provider: "Nace.AI · via OpenRouter", mono: "Na", logo: "/logos/nace.svg", docs: "https://openrouter.ai/nace-ai/drex-v1.5", pricing: "https://openrouter.ai/nace-ai/drex-v1.5" },
+  "tev1-4b": { name: "Tev1 4B Experimental", short: "Tev1 4B", isNew: true, provider: "Together AI · via OpenRouter", mono: "To", logo: "/logos/together.svg", docs: "https://openrouter.ai/togethercomputer/tev1-4b-experimental", pricing: "https://openrouter.ai/togethercomputer/tev1-4b-experimental" },
+  "liquid-d1": { name: "d1", isNew: true, provider: "Liquid AI · via OpenRouter", mono: "Lq", logo: "/logos/liquid.svg", docs: "https://openrouter.ai/liquid/d1", pricing: "https://openrouter.ai/liquid/d1" },
   "clef-omni": { name: "Clef-omni", isNew: true, provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg", docs: "https://developers.cloudflare.com/workers-ai/models/clef-omni/", pricing: "https://developers.cloudflare.com/workers-ai/platform/pricing/" },
   "jev-1.14.0": { name: "Jev 1.14", provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg", docs: "https://docs.typesafe.ai/models", pricing: "https://docs.typesafe.ai/models" },
   "jev-1.13.0": { name: "Jev 1.13", provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg", docs: "https://docs.typesafe.ai/models", pricing: "https://docs.typesafe.ai/models" },
   "clef-flash": { name: "Clef-flash", provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg", docs: "https://developers.cloudflare.com/workers-ai/models/clef-flash/", pricing: "https://developers.cloudflare.com/workers-ai/platform/pricing/" },
   "kev-4b": { name: "Kev-4B", provider: "Jared Palmer · open weights", mono: "JP", docs: "https://huggingface.co/jaredpalmer/kev-4b", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   "kev-9b": { name: "Kev-9B v1", provider: "Jared Palmer · open weights", mono: "JP", docs: "https://huggingface.co/jaredpalmer/kev-9b", pricing: "https://cloud.google.com/compute/gpus-pricing" },
-  "bedrock-guardrails": { name: "Amazon Bedrock Guardrails", short: "Bedrock Guardrails", provider: "AWS · not a decision model", mono: "Aw", logo: "/logos/aws.svg", docs: "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html", pricing: "https://aws.amazon.com/bedrock/pricing/" },
+  "gpt-oss-safeguard-20b": { name: "gpt-oss-safeguard-20b", short: "gpt-oss-safeguard", isNew: true, provider: "OpenAI · via OpenRouter", mono: "Oa", logo: "/logos/openai.svg", docs: "https://huggingface.co/openai/gpt-oss-safeguard-20b", pricing: "https://openrouter.ai/openai/gpt-oss-safeguard-20b" },
+  "llama-guard-4-12b": { name: "Llama Guard 4", short: "Llama Guard 4", isNew: true, provider: "Meta · via OpenRouter", mono: "Me", logo: "/logos/meta.svg", docs: "https://huggingface.co/meta-llama/Llama-Guard-4-12B", pricing: "https://openrouter.ai/meta-llama/llama-guard-4-12b" },
+  "bedrock-guardrails": { name: "Amazon Bedrock Guardrails", short: "Bedrock Guardrails", provider: "AWS · managed service", mono: "Aw", logo: "/logos/aws.svg", docs: "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html", pricing: "https://aws.amazon.com/bedrock/pricing/" },
   "strands-decider-2b": { name: "Strands Decider 2B", short: "Strands 2B", provider: "Strands Agents · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-2B-hobson-v19", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   "strands-decider-2b-v21": { name: "Strands Decider 2B v21", short: "Strands 2B v21", provider: "Strands Agents · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-2B-hobson-v21", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   "strands-decider-2b-qwen35": { name: "Strands Decider 2B Qwen3.5", short: "Strands 2B Q3.5", provider: "Strands Agents · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-2B-qwen3.5-v1-2610", pricing: "https://cloud.google.com/compute/gpus-pricing" },
@@ -74,6 +88,18 @@ export const SYSTEM_DISPLAY: Record<string, { name: string; label?: string; shor
 
 /** Systems that are managed guardrail services with fixed safeguards rather than decision models. */
 export const GUARDRAIL_SERVICES = new Set(["bedrock-guardrails"]);
+/** Safety classifiers: models that label content against their own taxonomy or a written policy and answer with a
+ *  verdict, not a probability (docs/benchmark/36). Like Bedrock, they are not decision models. */
+export const SAFETY_CLASSIFIERS = new Set(["gpt-oss-safeguard-20b", "llama-guard-4-12b"]);
+
+/** The suites a system ran, as the leaderboard names them, for a system that is not ranked overall. */
+function suitesRun(lb: Json, system: string): string[] {
+  const out: string[] = [];
+  for (const [su, b] of Object.entries(lb.suites ?? {}) as [string, Json][]) {
+    if ((b?.ranking ?? []).some((r: Json) => r.name === system)) out.push(su);
+  }
+  return out;
+}
 
 /** The system whose native question format every decision model receives (disclosed in the FAQ). */
 export const QUESTION_FORMAT_SYSTEM = "jev-1.13.0";
@@ -331,8 +357,12 @@ export function buildBoard(lb: Json, source: Board["source"]): Board {
   const ranking: Json[] = lb.overall.ranking;
   const runCost: Json = lb.run?.cost ?? {};
 
-  const systems: SystemMeta[] = ranking.map((r) => {
+  // Systems on the suite boards with no overall rank (a capability not offered, contract v2.0): listed after the ranked
+  // ones, with the suites they ran, so the job boards can name them.
+  const unranked: Json[] = (lb.overall?.not_ranked ?? []).filter((e: Json) => suitesRun(lb, e.name).length > 0);
+  const systems: SystemMeta[] = [...ranking, ...unranked].map((r) => {
     const d = SYSTEM_DISPLAY[r.name] ?? lb.display?.[r.name];
+    const isUnranked = !ranking.some((x) => x.name === r.name);
     return {
       id: r.name,
       name: d?.name ?? r.name,
@@ -346,8 +376,10 @@ export function buildBoard(lb: Json, source: Board["source"]): Board {
       ...(d?.isNew ? { isNew: true } : {}),
       ...prefilteredOf(arms, r.name, runCost[r.name]?.checks),
       hosting: hostingOf(arms, r.name),
-      // Amazon Bedrock Guardrails is a configurable guardrail service, not a decision model.
-      kind: GUARDRAIL_SERVICES.has(r.name) ? "service" : "decision",
+      // Amazon Bedrock Guardrails is a configurable guardrail service; the safety classifiers are models with their
+      // own verdict. Neither is a decision model.
+      kind: GUARDRAIL_SERVICES.has(r.name) ? "service" : SAFETY_CLASSIFIERS.has(r.name) ? "classifier" : "decision",
+      ...(isUnranked ? { unranked: { suites: suitesRun(lb, r.name) } } : {}),
     };
   });
 
