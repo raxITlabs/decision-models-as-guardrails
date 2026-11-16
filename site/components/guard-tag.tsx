@@ -7,11 +7,11 @@ type ClassicKind = "classifier" | "service";
  *  Safety classifier: a shield. Guardrail service: a cloud (a managed service you configure). */
 function Glyph({ kind }: { kind: ClassicKind }) {
   return kind === "classifier" ? (
-    <svg aria-hidden="true" viewBox="0 0 12 14" className="guard-tag-icon">
+    <svg aria-hidden="true" viewBox="0 0 12 14" width="9" height="10.5" className="guard-tag-icon">
       <path d="M6 0.75 11 2.6v3.9c0 3.1-2.1 5.6-5 6.75C3.1 12.1 1 9.6 1 6.5V2.6Z" fill="currentColor" />
     </svg>
   ) : (
-    <svg aria-hidden="true" viewBox="0 0 16 12" className="guard-tag-icon guard-tag-icon-wide">
+    <svg aria-hidden="true" viewBox="0 0 16 12" width="13" height="9.75" className="guard-tag-icon guard-tag-icon-wide">
       <path d="M4.2 11.25a3.45 3.45 0 0 1-.55-6.86A4.6 4.6 0 0 1 12.4 3.6a3.85 3.85 0 0 1-.35 7.65Z" fill="currentColor" />
     </svg>
   );
