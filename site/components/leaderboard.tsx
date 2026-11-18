@@ -11,6 +11,7 @@ import { type ChartScope, chartSystems, logAxis } from "@/lib/chart";
 import { ArrowRight, ArrowUpLeft, Chevron, External } from "./icons";
 import { Segmented } from "./segmented";
 import { NewTag } from "./new-tag";
+import { RetiredTag } from "./retired-tag";
 import { KindLegend, NameWithKind } from "./guard-tag";
 import { isClassic, kindLabel } from "@/lib/kind";
 import { coverageNote } from "@/lib/coverage";
@@ -301,6 +302,7 @@ export function Leaderboard({ board, lineages = [] }: { board: Board; lineages?:
                     <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
                       <span className="font-semibold"><NameWithKind name={m.name} m={m} /></span>
                       {m.isNew && <NewTag />}
+                      <RetiredTag m={m} />
                     </span>
                     <span className="text-[12px] text-muted">
                       {m.provider} · runs {m.unranked?.suites.length === 1 ? "one suite" : `${m.unranked?.suites.length} suites`} of six
@@ -398,6 +400,7 @@ function Row({
                   {earlier ? (m?.name ?? s.system) : <NameWithKind name={m?.name ?? s.system} m={m} />}
                 </span>
                 {m?.isNew && !earlier && <NewTag />}
+                <RetiredTag m={m} />
               </span>
               <span className="text-[12px] text-muted">
                 {picked && <span className="font-medium text-accent">Our pick · </span>}
@@ -978,6 +981,7 @@ function SystemPanel({ board, s, m, tiers, job }: { board: Board; s: Score; m?: 
             <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
               <span className="text-[20px] font-semibold tracking-[-0.01em]"><NameWithKind name={m?.name ?? s.system} m={m} /></span>
               {m?.isNew && <NewTag />}
+              <RetiredTag m={m} />
               <PrefilterTag m={m} />
             </span>
             <span className="text-[13px] text-muted">

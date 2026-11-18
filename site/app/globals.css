@@ -173,6 +173,13 @@ details[open] > summary .chev {
   70%, 100% { transform: scale(2.8); opacity: 0; }
 }
 
+/* "Retired" marker (components/retired-tag.tsx): the endpoint is gone. Muted small caps, no dot. */
+.retired-tag {
+  display: inline-flex; flex-shrink: 0; align-items: center; line-height: 1;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+}
+.retired-tag-art { font-size: 12px; color: inherit; opacity: 0.75; }
+
 /* Classic guardrail marker (components/guard-tag.tsx): a symbol only, in the guard teal. A shield for a safety
    classifier, a cloud for a guardrail service; the words are in KindLegend. */
 .guard-tag {
