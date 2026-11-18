@@ -49,7 +49,11 @@ LINEAGES = {
                            "versions": ["pplx-decider-v1-27b", "pplx-decider-v1-2-27b", "pplx-decider-v1-3"]},
     "perplexity-decider-flash": {"label": "Perplexity Decider Flash", "vendor": "Perplexity",
                                  "versions": ["pplx-decider-flash-v1-2", "pplx-decider-flash-v1-3"]},
-    "liquid-d1": {"label": "Liquid AI d1 (hosted)", "vendor": "Liquid AI", "versions": ["liquid-d1", "liquid-d1.1"]},
+    "liquid-d1": {"label": "Liquid AI d1 (hosted)", "vendor": "Liquid AI", "versions": ["liquid-d1", "liquid-d1.1", "liquid-d1.2"]},
+    "liquid-d1-ultra": {"label": "Liquid AI d1-ultra (hosted)", "vendor": "Liquid AI",
+                        "versions": ["liquid-d1-ultra", "liquid-d1.2-ultra"]},
+    "microsoft-decision": {"label": "Microsoft-Decision", "vendor": "Microsoft",
+                           "versions": ["microsoft-decision-1", "microsoft-decision-1.1"]},
     "drex": {"label": "Nace.AI Drex", "vendor": "Nace.AI", "versions": ["drex-v1.5", "drex-v2.0"]},
 }
 VERDICTS = ("better", "worse", "within noise", "not tested")

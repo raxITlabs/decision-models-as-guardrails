@@ -91,7 +91,8 @@ WHOLE_REQUEST_USAGE = {"clef", "clef-flash", "clef-omni", "pplx-decider-v1-27b",
 # The OpenRouter decision models (goldrails_bench.hosted.OPENROUTER_DECIDERS): the listing's context, whole-request usage.
 _OR = {"drex-max": 262144, "span-02": 131072, "liquid-d1-ultra": 32768, "liquid-d1.1": 65536, "solar-decide": 524288,
        "solar-decide-flash": 524288, "mercury-decide": 65536, "gemini-decision-1": 262144,
-       "heygen-decision-1": 131072, "heygen-decision-1-turbo": 262144, "pplx-decider-v1.3-free": 262144, "pplx-decider-flash-v1.3-free": 262144, "mammoth-1": 16384, "elephant-1": 16384, "joey-1": 16384, "morph-reflex": 65536, "drex-v2.0": 131072, "drex-v1.5": 131072, "tev1-4b": 32768, "liquid-d1": 65536}
+       "heygen-decision-1": 131072, "heygen-decision-1-turbo": 262144, "pplx-decider-v1.3-free": 262144, "pplx-decider-flash-v1.3-free": 262144, "mammoth-1": 16384, "elephant-1": 16384, "joey-1": 16384, "morph-reflex": 65536, "drex-v2.0": 131072, "drex-v1.5": 131072, "tev1-4b": 32768, "liquid-d1": 65536,
+       "microsoft-decision-1.1": 32768, "liquid-d1.2": 65536, "liquid-d1.2-ultra": 65536}
 LIMITS.update({k: (v, "hosted context (OpenRouter listing, 28 October 2026)") for k, v in _OR.items()})
 WHOLE_REQUEST_USAGE |= set(_OR)
 # Liquid AI's open d1 models on the project VM (benchmark/runs/e2_liquid_run.py): the model cards' windows; the server
@@ -240,7 +241,8 @@ def leak_check(paths, rows_by_id: dict) -> list:
 NEW_KINDS = ("clef", "clef-flash", "clef-omni", "perplexity", "strands", "openai", "jev-1.14", "microsoft", "perplexity-v1.2",
              "perplexity-flash-v1.2", "perplexity-v1.3", "perplexity-flash-v1.3", "drex-max", "span-02", "liquid-d1-ultra", "liquid-d1.1", "solar-decide",
              "solar-decide-flash", "mercury-decide", "liquid", "gemini-decision-1",
-             "heygen-decision-1", "heygen-decision-1-turbo", "pplx-decider-v1.3-free", "pplx-decider-flash-v1.3-free", "mammoth-1", "elephant-1", "joey-1", "morph-reflex", "drex-v2.0", "drex-v1.5", "tev1-4b", "liquid-d1")
+             "heygen-decision-1", "heygen-decision-1-turbo", "pplx-decider-v1.3-free", "pplx-decider-flash-v1.3-free", "mammoth-1", "elephant-1", "joey-1", "morph-reflex", "drex-v2.0", "drex-v1.5", "tev1-4b", "liquid-d1",
+             "microsoft-decision-1.1", "liquid-d1.2", "liquid-d1.2-ultra")
 # Classic safety classifiers through OpenRouter's chat API (goldrails_bench.guards, docs/benchmark/36): their own
 # verdict, not Noul questions. Llama Guard 4 offers content only; its other subtasks are not_offered, no call made.
 GUARD_KINDS = ("gpt-oss-safeguard-20b", "llama-guard-4-12b")

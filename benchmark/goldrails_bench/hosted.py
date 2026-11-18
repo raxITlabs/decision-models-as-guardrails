@@ -680,6 +680,25 @@ OPENROUTER_DECIDERS = {
     "drex-v1.5": {"model": "nace-ai/drex-v1.5", "snapshot": "nace-ai/drex-v1.5-20261009", "context": 131_072},
     "tev1-4b": {"model": "togethercomputer/tev1-4b-experimental", "snapshot": "togethercomputer/tev1-4b-experimental-20260923", "context": 32_768},
     "liquid-d1": {"model": "liquid/d1", "snapshot": "liquid/d1-20260930", "context": 65_536},
+    # Hosted batch 4 (ruling 47): three successors listed on 16 and 17 November 2026. Each snapshot is the name a
+    # canned call (no dataset rows) reported on 18 November 2026. OpenRouter retires liquid/d1 on 20 November and
+    # liquid/d1.1 and liquid/d1-ultra on 24 November 2026; those systems keep their scored ledgers but can no longer
+    # be rerun (``RETIRED``).
+    "microsoft-decision-1.1": {"model": "microsoft/microsoft-decision-1.1",
+                               "snapshot": "microsoft/microsoft-decision-1.1-20261117", "context": 32_768},
+    "liquid-d1.2": {"model": "liquid/d1.2", "snapshot": "liquid/d1.2-20261116", "context": 65_536},
+    "liquid-d1.2-ultra": {"model": "liquid/d1.2-ultra", "snapshot": "liquid/d1.2-ultra-20261116", "context": 65_536},
+}
+
+# Systems whose hosted endpoint the provider has shut down or announced it will shut down (the date it goes away).
+# Their scores stay on the board; a rerun is no longer possible.
+RETIRED = {
+    "liquid-d1": {"date": "2026-11-20", "successor": "liquid-d1.2",
+                  "source": "OpenRouter model listing, read 18 November 2026: 'Going away November 20, 2026'"},
+    "liquid-d1.1": {"date": "2026-11-24", "successor": "liquid-d1.2",
+                    "source": "OpenRouter model listing, read 18 November 2026: 'Going away November 24, 2026'"},
+    "liquid-d1-ultra": {"date": "2026-11-24", "successor": "liquid-d1.2-ultra",
+                        "source": "OpenRouter model listing, read 18 November 2026: 'Going away November 24, 2026'"},
 }
 
 

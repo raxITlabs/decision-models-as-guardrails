@@ -50,7 +50,8 @@ SUITE_FOLDER = {"content": "content", "prompt_attacks": "prompt_attacks", "denie
 SOURCES = (("main-run", lambda s: s != "prompt_attacks"), ("prompt-attacks", lambda s: s == "prompt_attacks"),
            ("jev-1.14.0", lambda s: True), ("strands-deciders", lambda s: True),
            ("pplx-decider-v1-2", lambda s: True), ("hosted-batch-2", lambda s: True),
-           ("hosted-batch-3", lambda s: True), ("pplx-decider-v1-3", lambda s: True))
+           ("hosted-batch-3", lambda s: True), ("pplx-decider-v1-3", lambda s: True),
+           ("microsoft-decision-1", lambda s: True), ("hosted-batch-4", lambda s: True))
 
 
 def systems() -> list[str]:

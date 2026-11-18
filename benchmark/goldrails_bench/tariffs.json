@@ -292,6 +292,48 @@
       "status": "vendor list price; not reconciled against a billing statement"
     },
     {
+      "id": "openrouter/decisions/microsoft-decision-1.1",
+      "provider": "OpenRouter Decisions API (alpha), served by Azure",
+      "kind": "per_token",
+      "match": {"models": ["microsoft/microsoft-decision-1.1", "microsoft/microsoft-decision-1.1-20261117"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.042},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-11-18",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=all (read 18 November 2026)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/liquid-d1.2",
+      "provider": "OpenRouter Decisions API (alpha), served by Liquid AI",
+      "kind": "per_token",
+      "match": {"models": ["liquid/d1.2", "liquid/d1.2-20261116"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.02},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-11-18",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=all (read 18 November 2026)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
+      "id": "openrouter/decisions/liquid-d1.2-ultra",
+      "provider": "OpenRouter Decisions API (alpha), served by Liquid AI",
+      "kind": "per_token",
+      "match": {"models": ["liquid/d1.2-ultra", "liquid/d1.2-ultra-20261116"]},
+      "region": null,
+      "prices": {
+        "input_tokens": {"usd_per_million": 0.042},
+        "output_tokens": {"usd_per_million": 0.0, "note": "OpenRouter lists output tokens as free"}
+      },
+      "checked_on": "2026-11-18",
+      "source": "https://openrouter.ai/api/v1/models?output_modalities=all (read 18 November 2026)",
+      "status": "vendor list price; not reconciled against a billing statement"
+    },
+    {
       "id": "openrouter/decisions/heygen-decision-1-turbo",
       "provider": "OpenRouter Decisions API (alpha), served by HeyGen",
       "kind": "per_token",

@@ -32,7 +32,7 @@ const HERO_EXAMPLES = [
   "f3-e2_denied_topics-562f7db27d",
   "f2-lakera_mosscap-54ec17149d",
   "f5-e2_pii_controls-4a5261be86",
-  "f2-e2_attack_controls-7eee9c9a91",
+  "f2-e2_attack_controls-e5e84a0306",
   "f3-e2_denied_topics-0e521b9985",
   "f5-e2_pii_controls-ff89af5c10",
 ];

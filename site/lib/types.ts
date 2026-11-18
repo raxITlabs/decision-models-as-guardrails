@@ -27,6 +27,8 @@ export interface SystemMeta {
   pricing?: string;
   /** joined the board after the first release; shown with a "New" marker */
   isNew?: boolean;
+  /** the provider shut down (or will shut down) this hosted endpoint on this date (ISO); the score stays, a rerun is not possible */
+  retired?: string;
   /** the provider's own safety filter refused these checks before the model answered (owner ruling 41); scored wrong */
   prefiltered?: { rows: number; of: number };
 }
