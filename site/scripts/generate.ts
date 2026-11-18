@@ -29,7 +29,7 @@ import type {
   Turn,
 } from "../lib/types";
 
-export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna", "jev-1.14.0", "strands-deciders", "microsoft-decision-1", "pplx-decider-v1-2", "hosted-batch-2", "liquid-open-d1", "gemini-decision-1", "hosted-batch-3", "pplx-decider-v1-3", "classic-guards"];
+export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna", "jev-1.14.0", "strands-deciders", "microsoft-decision-1", "pplx-decider-v1-2", "hosted-batch-2", "liquid-open-d1", "gemini-decision-1", "hosted-batch-3", "pplx-decider-v1-3", "hosted-batch-4", "classic-guards"];
 export const RELEASE_VERSION = "1.0.0";
 
 /** Display names, makers and marks for the systems on the board. Ids not listed fall back to the id itself.
