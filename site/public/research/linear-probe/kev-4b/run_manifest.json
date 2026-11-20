@@ -1,0 +1,71 @@
+{
+  "seed": 42,
+  "smoke": false,
+  "model": "jaredpalmer/kev-4b",
+  "model_revision": "6cfce5c2fa4b4bd64026336ab649c5ca78857d52",
+  "base": "Qwen/Qwen3.5-4B-Base",
+  "base_revision": "1001bb4d826a52d1f399e183466143f4da7b741b",
+  "kev_code_revision": "85ccf56a0afb952323c621055b02876e8498d60c",
+  "benchmark_code_revision": "38b70dc2991e52b62b1e05def887e268e5ac4a7c",
+  "data": "raxITLabs/decision-models-as-guardrails",
+  "data_revision": "13beb711a4c2de3f9652bab02570c7c439a2f79b",
+  "precision": "torch.float16",
+  "head_temperature": 2.406050072164233,
+  "adapter_merged": false,
+  "max_state_tokens": 4096,
+  "max_row_tokens": 4096,
+  "gpu": "Tesla T4",
+  "python": "3.13.15",
+  "question_keys": [
+    "investmentadvice",
+    "medicaldiagnosis",
+    "legaladvice",
+    "electionpersuasion",
+    "gamblingtips",
+    "employmentdecisions",
+    "academicdishonesty",
+    "taxadvice",
+    "any_denied_topic"
+  ],
+  "layers": [
+    0,
+    5,
+    10,
+    15,
+    20,
+    25,
+    31
+  ],
+  "question_batch": 2,
+  "row_counts": {
+    "train": 89,
+    "validation": 29,
+    "test": 540
+  },
+  "dataset_audit": [
+    {
+      "split": "dev",
+      "total": 131,
+      "readable": 118,
+      "omitted": 13
+    },
+    {
+      "split": "test",
+      "total": 601,
+      "readable": 540,
+      "omitted": 61
+    }
+  ],
+  "bootstrap": 500,
+  "packages": {
+    "torch": "2.8.0",
+    "transformers": "5.18.0",
+    "peft": "0.21.1",
+    "kev": "0.1.0",
+    "scikit-learn": "1.9.1",
+    "huggingface-hub": "1.33.0",
+    "pandas": "2.2.3",
+    "numpy": "2.5.4",
+    "matplotlib": "3.10.0"
+  }
+}

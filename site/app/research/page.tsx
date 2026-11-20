@@ -31,14 +31,14 @@ export default function Research() {
 
         <ol className="m-0 list-none border-t border-line-strong p-0">
           <li className="flex flex-col gap-3 border-b border-line py-8">
-            <span className="text-[13px] text-muted">In review · community study</span>
+            <span className="text-[13px] text-muted">14 October 2026 · Community study</span>
             <h2 className="m-0 text-[22px] font-semibold tracking-[-0.01em]">Linear probes on two open models</h2>
             <p className="m-0 max-w-[68ch] text-[15px] leading-relaxed text-fg-2">
-              A reviewer trained a linear probe on the hidden activations of Strands Decider 2B and Kev. On a denied-topic dataset, the
-              probe classified held-out rows better than Strands&apos; own score, including that score with a tuned threshold.
-              Kev&apos;s own score was already strong. The probe needs labelled rows and access to the model&apos;s weights, so it
-              cannot apply to hosted APIs. We will publish the full method and numbers here once we have reviewed them.
+              Aditya Shrivastava trained a small classifier to read signals inside Strands Decider 2B and Kev 4B.
+              On 540 denied-topic prompts, it caught more violations and blocked fewer safe prompts than Strands’s own score.
+              Kev’s own score already caught all but one violation.
             </p>
+            <Link href="/research/linear-probe" className="inline-flex min-h-11 w-fit items-center text-[15px]">Read the study →</Link>
           </li>
           <li className="flex flex-col gap-3 border-b border-line py-8">
             <span className="text-[13px] text-muted">2 October 2026 · Red Hat, independent</span>
