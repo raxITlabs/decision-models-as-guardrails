@@ -15,12 +15,17 @@
     "data:fixture": "tsx scripts/make-fixture.ts && tsx scripts/build-data.ts --fixture"
   },
   "dependencies": {
+    "@visx/axis": "^4.0.0",
+    "@visx/grid": "^4.0.0",
+    "@visx/scale": "^4.0.0",
+    "@visx/shape": "^4.0.0",
     "clsx": "^2.1.1",
     "next": "16.4.3",
     "posthog-js": "^1.438.9",
     "radix-ui": "^1.8.1",
     "react": "19.3.1",
     "react-dom": "19.3.1",
+    "recharts": "^3.11.0",
     "server-only": "^0.0.1",
     "tailwind-merge": "^3.7.0"
   },

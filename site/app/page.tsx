@@ -8,6 +8,7 @@ import { DecisionSpace, type Example } from "@/components/decision-space";
 import { TwoKinds } from "@/components/two-kinds";
 import { CostCalculator } from "@/components/cost-calculator";
 import { HeroPlate, Plate } from "@/components/plate";
+import { ResearchNote } from "@/components/research-note";
 import { Faq } from "@/components/faq";
 import { Leaderboard } from "@/components/leaderboard";
 import { UseCaseLeaders } from "@/components/use-case-leaders";
@@ -90,6 +91,12 @@ export default function Home() {
     <ContactPrompt />
     <HeroPlate src="/plates/hero-fork.webp">
           {/* One column on the left: the question, then one message the systems disagree on, then the way in. */}
+          {/* The announcement sits on the full hero rail, not the headline column, so it stays on one line wherever it fits. */}
+          <div className="rise rise-1 mb-10 flex">
+            <ResearchNote href="/research/linear-probe" label="New research">
+              A linear probe cut an open model’s missed violations from 42 to 13.
+            </ResearchNote>
+          </div>
           <div className="flex max-w-[720px] flex-col gap-7">
             <h1 id="hero-h" className="rise rise-1 over-art plate-title m-0 text-[clamp(2.25rem,5.2vw,4rem)] font-semibold leading-[1.05] tracking-[-0.025em] text-balance">
               Can a decision model replace your guardrail?

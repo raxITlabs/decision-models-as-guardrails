@@ -1,0 +1,25 @@
+{
+  "probes": {
+    "MM": {
+      "feature": "answer_mean",
+      "layer": 15,
+      "kind": "MM",
+      "C": null,
+      "threshold": 0.07702429294586192,
+      "validation_BA": 1.0,
+      "validation_AUROC": 1.0
+    },
+    "LR": {
+      "feature": "answer_mean",
+      "layer": 15,
+      "kind": "LR",
+      "C": 0.001,
+      "threshold": 0.3232637780341874,
+      "validation_BA": 1.0,
+      "validation_AUROC": 1.0
+    }
+  },
+  "native_threshold": 0.5799431920051575,
+  "text_C": 0.1,
+  "text_threshold": 0.4939741946940136
+}
