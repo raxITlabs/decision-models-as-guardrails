@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { pageOpenGraph, pageTwitter } from "@/lib/og";
 import Link from "next/link";
 import { External } from "@/components/icons";
+import { AuthorLink } from "@/components/author-link";
 
 export const metadata: Metadata = {
   title: "Research",
@@ -31,10 +32,10 @@ export default function Research() {
 
         <ol className="m-0 list-none border-t border-line-strong p-0">
           <li className="flex flex-col gap-3 border-b border-line py-8">
-            <span className="text-[13px] text-muted">14 October 2026 · Community study</span>
+            <span className="text-[13px] text-muted">14 October 2026 · Study by <AuthorLink name="Aditya Shrivastava" href="https://www.linkedin.com/in/aditya-shrivastava-1966b0265" />, AI safety researcher</span>
             <h2 className="m-0 text-[22px] font-semibold tracking-[-0.01em]">Linear probes on Strands and Kev</h2>
             <p className="m-0 max-w-[68ch] text-[15px] leading-relaxed text-fg-2">
-              Aditya Shrivastava trained a small classifier to read signals inside Strands Decider 2B and Kev 4B.
+              Shrivastava trained a small classifier to read signals inside Strands Decider 2B and Kev 4B.
               On 540 denied-topic prompts, it caught more violations and blocked fewer safe prompts than Strands’s own score.
               Kev’s own score already caught all but one violation.
             </p>
