@@ -328,7 +328,8 @@ SKIP_PARTS = ("edition2", ".venv", "__pycache__", "node_modules", ".git")
 SKIP_PREFIXES = ("dataset/publish/v2", "dataset/publish/release-", "benchmark/results/final",   # the frozen test runs, after their freezes
                  "benchmark/results/edition2-full",
                  "benchmark/results/edition2-attacks-r26", "benchmark/results/edition2-final",   # the ruling 28 rerun
-                 "benchmark/results/edition2-openai")   # gpt-6-luna's run on the frozen test rows, after its freeze
+                 "benchmark/results/edition2-openai",   # gpt-6-luna's run on the frozen test rows, after its freeze
+                 "benchmark/results/versions")   # version comparisons, built from the frozen test runs' ledgers
 HF_REPOS = ("raxITLabs/gold-rails", "raxITLabs/goldrails", "raxITLabs/goldrail", "raxITLabs/jev-as-a-guardrails",
             "raxITLabs/decision-models-as-guardrails")
 

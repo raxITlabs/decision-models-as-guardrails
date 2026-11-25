@@ -925,6 +925,7 @@ def leak_needles(root: Path = E2, withheld: bool = True, build_private: Path = B
     public row of a cleared source carries the same text. A field value that BOILERPLATE_ROWS or more rows share (the
     fixed SummEdits query) is not a row's text and is left out."""
     slice_ids = private_slice_ids(root, build_private)
+    pol = policy()
     out = [("held_out_text", k, t) for k, t in sorted(held_out_texts(root).items())]
     shared, cleared, rows = {}, set(), []
     for s, sroot, retired in ([(s, scored_root(s, root), False) for s in SUITES]
@@ -949,7 +950,10 @@ def leak_needles(root: Path = E2, withheld: bool = True, build_private: Path = B
                 out.append(("private_id", c["id"], c["id"]))
                 rows += [("private_text", c["id"], t) for t in _field_texts(*_fields(c)) if t and t.strip()]
         if withheld:
+            # a cached text whose source the policy now clears (ruling 34) is not withheld
             for e in _jsonl(text_cache(s, sroot)):
+                if text_cleared(e.get("source") or "", pol):
+                    continue
                 rows += [("withheld_text", e["id"], t) for f in e["fields"] for t in _field_texts(f)
                          if t and t.strip() and _nws(t) not in cleared]
     for e in _jsonl(Path(build_private) / "needs-owner-review.jsonl"):

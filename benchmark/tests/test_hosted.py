@@ -633,9 +633,13 @@ OR_NEW = {  # system -> (requested model, pinned snapshot, context, input USD pe
     "drex-v1.5": ("nace-ai/drex-v1.5", "nace-ai/drex-v1.5-20261009", 131072, 0.04),
     "tev1-4b": ("togethercomputer/tev1-4b-experimental", "togethercomputer/tev1-4b-experimental-20260923", 32768, 0.042),
     "liquid-d1": ("liquid/d1", "liquid/d1-20260930", 65536, 0.02),
+    "microsoft-decision-1.1": ("microsoft/microsoft-decision-1.1", "microsoft/microsoft-decision-1.1-20261117", 32768, 0.042),
+    "liquid-d1.2": ("liquid/d1.2", "liquid/d1.2-20261116", 65536, 0.02),
+    "liquid-d1.2-ultra": ("liquid/d1.2-ultra", "liquid/d1.2-ultra-20261116", 65536, 0.042),
 }
 CHECKED_ON = {"gemini-decision-1": "2026-11-12", **{s: "2026-11-13" for s in (
-    "heygen-decision-1", "heygen-decision-1-turbo", "pplx-decider-v1.3-free", "pplx-decider-flash-v1.3-free", "mammoth-1", "elephant-1", "joey-1", "morph-reflex", "drex-v2.0", "drex-v1.5", "tev1-4b", "liquid-d1")}}   # tariff read date where it is not the batch's 28 October
+    "heygen-decision-1", "heygen-decision-1-turbo", "pplx-decider-v1.3-free", "pplx-decider-flash-v1.3-free", "mammoth-1", "elephant-1", "joey-1", "morph-reflex", "drex-v2.0", "drex-v1.5", "tev1-4b", "liquid-d1")},
+              **{s: "2026-11-18" for s in ("microsoft-decision-1.1", "liquid-d1.2", "liquid-d1.2-ultra")}}   # tariff read date where it is not the batch's 28 October
 
 
 def test_openrouter_table_matches_the_probed_models():
