@@ -2,7 +2,7 @@
 //
 // Inputs, relative to the benchmark repository root:
 //   benchmark/results/final/leaderboard.json
-//   benchmark/results/final/ledgers/{main-run,prompt-attacks,gpt-6-luna,jev-1.14.0,strands-deciders,microsoft-decision-1,pplx-decider-v1-2,hosted-batch-2,liquid-open-d1,gemini-decision-1,classic-guards}/*.jsonl   (never the private/ folders)
+//   benchmark/results/final/ledgers/{main-run,prompt-attacks,gpt-6-luna,jev-1.14.0,strands-deciders,microsoft-decision-1,pplx-decider-v1-2,hosted-batch-2,liquid-open-d1,gemini-decision-1,hosted-batch-3,pplx-decider-v1-3,hosted-batch-4,strands-deciders-v2,classic-guards}/*.jsonl   (never the private/ folders)
 //   dataset/edition2/build/F*.test.jsonl                                           (never build/private/)
 //   dataset/release/redistribution.json                                            (which sources may ship text)
 //
@@ -29,7 +29,7 @@ import type {
   Turn,
 } from "../lib/types";
 
-export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna", "jev-1.14.0", "strands-deciders", "microsoft-decision-1", "pplx-decider-v1-2", "hosted-batch-2", "liquid-open-d1", "gemini-decision-1", "hosted-batch-3", "pplx-decider-v1-3", "hosted-batch-4", "classic-guards"];
+export const LEDGER_RUNS = ["main-run", "prompt-attacks", "gpt-6-luna", "jev-1.14.0", "strands-deciders", "microsoft-decision-1", "pplx-decider-v1-2", "hosted-batch-2", "liquid-open-d1", "gemini-decision-1", "hosted-batch-3", "pplx-decider-v1-3", "hosted-batch-4", "strands-deciders-v2", "classic-guards"];
 export const RELEASE_VERSION = "1.0.0";
 
 /** Display names, makers and marks for the systems on the board. Ids not listed fall back to the id itself.
@@ -64,9 +64,9 @@ export const SYSTEM_DISPLAY: Record<string, { name: string; label?: string; shor
   "drex-v2.0": { name: "Drex v2.0", provider: "Nace.AI · via OpenRouter", mono: "Na", logo: "/logos/nace.svg", docs: "https://openrouter.ai/nace-ai/drex-v2.0", pricing: "https://openrouter.ai/nace-ai/drex-v2.0" },
   "drex-v1.5": { name: "Drex v1.5", provider: "Nace.AI · via OpenRouter", mono: "Na", logo: "/logos/nace.svg", docs: "https://openrouter.ai/nace-ai/drex-v1.5", pricing: "https://openrouter.ai/nace-ai/drex-v1.5" },
   "tev1-4b": { name: "Tev1 4B Experimental", short: "Tev1 4B", provider: "Together AI · via OpenRouter", mono: "To", logo: "/logos/together.svg", docs: "https://openrouter.ai/togethercomputer/tev1-4b-experimental", pricing: "https://openrouter.ai/togethercomputer/tev1-4b-experimental" },
-  "microsoft-decision-1.1": { name: "Microsoft-Decision-1.1", isNew: true, provider: "Microsoft · via OpenRouter", mono: "Ms", logo: "/logos/microsoft.svg", docs: "https://openrouter.ai/microsoft/microsoft-decision-1.1", pricing: "https://openrouter.ai/microsoft/microsoft-decision-1.1" },
-  "liquid-d1.2": { name: "d1.2", isNew: true, provider: "Liquid AI · via OpenRouter", mono: "Lq", logo: "/logos/liquid.svg", docs: "https://openrouter.ai/liquid/d1.2", pricing: "https://openrouter.ai/liquid/d1.2" },
-  "liquid-d1.2-ultra": { name: "d1.2-ultra", isNew: true, provider: "Liquid AI · via OpenRouter", mono: "Lq", logo: "/logos/liquid.svg", docs: "https://openrouter.ai/liquid/d1.2-ultra", pricing: "https://openrouter.ai/liquid/d1.2-ultra" },
+  "microsoft-decision-1.1": { name: "Microsoft-Decision-1.1", provider: "Microsoft · via OpenRouter", mono: "Ms", logo: "/logos/microsoft.svg", docs: "https://openrouter.ai/microsoft/microsoft-decision-1.1", pricing: "https://openrouter.ai/microsoft/microsoft-decision-1.1" },
+  "liquid-d1.2": { name: "d1.2", provider: "Liquid AI · via OpenRouter", mono: "Lq", logo: "/logos/liquid.svg", docs: "https://openrouter.ai/liquid/d1.2", pricing: "https://openrouter.ai/liquid/d1.2" },
+  "liquid-d1.2-ultra": { name: "d1.2-ultra", provider: "Liquid AI · via OpenRouter", mono: "Lq", logo: "/logos/liquid.svg", docs: "https://openrouter.ai/liquid/d1.2-ultra", pricing: "https://openrouter.ai/liquid/d1.2-ultra" },
   "liquid-d1": { name: "d1", retired: "2026-11-20", provider: "Liquid AI · via OpenRouter", mono: "Lq", logo: "/logos/liquid.svg", docs: "https://openrouter.ai/liquid/d1", pricing: "https://openrouter.ai/liquid/d1" },
   "clef-omni": { name: "Clef-omni", provider: "Cloudflare · Workers AI", mono: "Cf", logo: "/logos/cloudflare.svg", docs: "https://developers.cloudflare.com/workers-ai/models/clef-omni/", pricing: "https://developers.cloudflare.com/workers-ai/platform/pricing/" },
   "jev-1.14.0": { name: "Jev 1.14", provider: "TypeSafe", mono: "Ts", logo: "/logos/typesafe.svg", docs: "https://docs.typesafe.ai/models", pricing: "https://docs.typesafe.ai/models" },
@@ -84,6 +84,11 @@ export const SYSTEM_DISPLAY: Record<string, { name: string; label?: string; shor
   "strands-decider-e4b": { name: "Strands Decider E4B", short: "Strands E4B", provider: "Strands Agents · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-E4B-gemma4-v1-2610", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   "strands-decider-12b": { name: "Strands Decider 12B", short: "Strands 12B", provider: "Strands Agents · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-12B-gemma4-v1-2610", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   "strands-decider-26b-a4b": { name: "Strands Decider 26B-A4B", short: "Strands 26B", provider: "Strands Agents · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-26B-A4B-gemma4-v1-2610", pricing: "https://cloud.google.com/compute/gpus-pricing" },
+  "strands-decider-e2b-v2": { name: "Strands Decider v2 E2B", short: "Strands v2 E2B", isNew: true, provider: "Strands Agents · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-E2B-gemma4-v2-2611", pricing: "https://cloud.google.com/compute/gpus-pricing" },
+  "strands-decider-e4b-v2": { name: "Strands Decider v2 E4B", short: "Strands v2 E4B", isNew: true, provider: "Strands Agents · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-E4B-gemma4-v2-2611", pricing: "https://cloud.google.com/compute/gpus-pricing" },
+  "strands-decider-12b-v2": { name: "Strands Decider v2 12B", short: "Strands v2 12B", isNew: true, provider: "Strands Agents · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-12B-gemma4-v2-2611", pricing: "https://cloud.google.com/compute/gpus-pricing" },
+  "strands-decider-26b-a4b-v2": { name: "Strands Decider v2 26B-A4B", short: "Strands v2 26B", isNew: true, provider: "Strands Agents · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-26B-A4B-gemma4-v2-2611", pricing: "https://cloud.google.com/compute/gpus-pricing" },
+  "strands-decider-31b-v2": { name: "Strands Decider v2 31B", short: "Strands v2 31B", isNew: true, provider: "Strands Agents · open weights", mono: "St", logo: "/logos/aws.svg", docs: "https://huggingface.co/StrandsAgents/strands-decider-31B-gemma4-v2-2611", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   "open-jev-2b": { name: "Open-Jev-2B", provider: "Zefan Cai · open weights", mono: "ZC", docs: "https://huggingface.co/ZefanCai/Open-Jev-2B", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   "kev-0-8b": { name: "Kev-0.8B", provider: "Jared Palmer · open weights", mono: "JP", docs: "https://huggingface.co/jaredpalmer/kev-0.8b", pricing: "https://cloud.google.com/compute/gpus-pricing" },
   laya: { name: "Laya", provider: "Convai Innovations · open weights", mono: "CI", logo: "/logos/laya.svg", docs: "https://huggingface.co/convaiinnovations/laya", pricing: "https://cloud.google.com/compute/gpus-pricing" },
