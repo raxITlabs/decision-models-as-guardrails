@@ -505,11 +505,11 @@ def roster(pass_no: int) -> None:
             int((re.search(r"^boot_disk_gb\s*=\s*(\d+)", tf, re.M) or [0, 0])[1]) < 300:
         raise SystemExit(f"{full._rel(TFVARS)} is not set up for this run ({want}, boot_disk_gb >= 300): copy "
                          f"{full._rel(ROSTER)} over it, keeping your own project and access settings")
-    tf = re.sub(r"^models = \[\n.*?^\]\n", "models = [\n" + body + "\n]\n", tf, count=1, flags=re.S | re.M)
-    TFVARS.write_text(tf, encoding="utf-8")
-    vt = _vm_times()
+    vt = _vm_times()                         # before writing: a refusal must leave tfvars as the VM was built
     if vt["status"] != "TERMINATED":
         raise SystemExit(f"the VM is {vt['status']}; run make pause first")
+    tf = re.sub(r"^models = \[\n.*?^\]\n", "models = [\n" + body + "\n]\n", tf, count=1, flags=re.S | re.M)
+    TFVARS.write_text(tf, encoding="utf-8")
     p = subprocess.run(["terraform", "apply", "-input=false", "-auto-approve", "-no-color"], cwd=TFVARS.parent,
                        capture_output=True, text=True)
     print(p.stdout[-1500:], p.stderr[-1500:])
