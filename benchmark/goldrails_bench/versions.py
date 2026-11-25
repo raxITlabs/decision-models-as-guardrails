@@ -54,6 +54,14 @@ LINEAGES = {
                         "versions": ["liquid-d1-ultra", "liquid-d1.2-ultra"]},
     "microsoft-decision": {"label": "Microsoft-Decision", "vendor": "Microsoft",
                            "versions": ["microsoft-decision-1", "microsoft-decision-1.1"]},
+    "strands-decider-e2b": {"label": "Strands Decider E2B (AWS)", "vendor": "AWS",
+           "versions": ["strands-decider-e2b", "strands-decider-e2b-v2"]},
+    "strands-decider-e4b": {"label": "Strands Decider E4B (AWS)", "vendor": "AWS",
+           "versions": ["strands-decider-e4b", "strands-decider-e4b-v2"]},
+    "strands-decider-12b": {"label": "Strands Decider 12B (AWS)", "vendor": "AWS",
+           "versions": ["strands-decider-12b", "strands-decider-12b-v2"]},
+    "strands-decider-26b-a4b": {"label": "Strands Decider 26B-A4B (AWS)", "vendor": "AWS",
+           "versions": ["strands-decider-26b-a4b", "strands-decider-26b-a4b-v2"]},
     "drex": {"label": "Nace.AI Drex", "vendor": "Nace.AI", "versions": ["drex-v1.5", "drex-v2.0"]},
 }
 VERDICTS = ("better", "worse", "within noise", "not tested")
