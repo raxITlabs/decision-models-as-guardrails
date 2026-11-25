@@ -89,8 +89,13 @@ marker = pathlib.Path(out) / ".goldrails-revision"
 if not (marker.exists() and marker.read_text().strip() == rev):
     snapshot_download(ref, revision=rev, local_dir=out)
     marker.write_text(rev + "\n")
-# The checkpoint is a LoRA adapter; the server loads its base model by name with the Hub offline, so the base must be in
+# A v1 checkpoint is a LoRA adapter; the server loads its base model by name with the Hub offline, so the base must be in
 # the shared cache. Pin it to the revision provenance.json records and point the cache's refs/main at that commit.
+# A v2 checkpoint (decision_config.json, no provenance.json) holds the merged weights and needs no base model.
+if not (pathlib.Path(out) / "provenance.json").exists():
+    assert (pathlib.Path(out) / "decision_config.json").exists(), f"{out}: neither provenance.json nor decision_config.json"
+    print(f"strands {ref} is a merged checkpoint; no base model to cache")
+    sys.exit(0)
 prov = json.loads((pathlib.Path(out) / "provenance.json").read_text())
 base, base_rev = prov["base_model"], prov["base_model_revision"]
 assert re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", base) and re.fullmatch(r"[0-9a-f]{40}", base_rev), (base, base_rev)
@@ -199,8 +204,10 @@ ckpt="/opt/goldrails/checkpoints/${MODEL_NAME}"
 # A model split over several GPUs (MODEL_GPU_COUNT > 1) sees them all and loads with a balanced device map.
 devices=$(seq -s, "$MODEL_GPU" $((MODEL_GPU + ${MODEL_GPU_COUNT:-1} - 1)))
 split=(); [ "${MODEL_GPU_COUNT:-1}" -gt 1 ] && split=(--split-gpus "$MODEL_GPU_COUNT")
+# A pinned prompt limit (models[].max_length) is passed on; without one the server uses the checkpoint's own window.
+maxlen=(); [ -n "${MODEL_MAX_LENGTH:-}" ] && { [[ "$MODEL_MAX_LENGTH" =~ ^[0-9]+$ ]] || { echo "refusing max_length: $MODEL_MAX_LENGTH"; exit 1; }; maxlen=(--max-length "$MODEL_MAX_LENGTH"); }
 exec env CUDA_VISIBLE_DEVICES="$devices" HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python strands_server.py \
-  --checkpoint "$ckpt" --model-name "$MODEL_NAME" --device cuda:0 --host 0.0.0.0 --port "$MODEL_PORT" "${split[@]}"
+  --checkpoint "$ckpt" --model-name "$MODEL_NAME" --device cuda:0 --host 0.0.0.0 --port "$MODEL_PORT" "${split[@]}" "${maxlen[@]}"
 RUN
 cat > /usr/local/bin/goldrails-run-liquid <<'RUN'
 #!/usr/bin/env bash
@@ -232,7 +239,7 @@ echo "$MODELS_JSON" | jq -c '.[]' | while read -r m; do
   # Allowlist: lowercase alnum and hyphen only, no dots, so the name is safe as a path component.
   [[ "$name" =~ ^[a-z0-9][a-z0-9-]{0,40}$ ]] || { echo "refusing model name: $name"; exit 1; }
   [[ "$kind" =~ ^(kev|openjev|laya|strands|liquid)$ ]] || { echo "refusing model kind: $kind"; exit 1; }
-  echo "$m" | jq -r '@sh "MODEL_NAME=\(.name)\nMODEL_REF=\(.ref)\nMODEL_REVISION=\(.revision)\nMODEL_PORT=\(.port|tostring)\nMODEL_GPU=\(.gpu|tostring)\nMODEL_GPU_COUNT=\((.gpu_count // 1)|tostring)"' > "/tmp/${name}.env"
+  echo "$m" | jq -r '@sh "MODEL_NAME=\(.name)\nMODEL_REF=\(.ref)\nMODEL_REVISION=\(.revision)\nMODEL_PORT=\(.port|tostring)\nMODEL_GPU=\(.gpu|tostring)\nMODEL_GPU_COUNT=\((.gpu_count // 1)|tostring)\nMODEL_MAX_LENGTH=\((.max_length // "")|tostring)"' > "/tmp/${name}.env"
   install -m 0640 -o root -g goldrails -T "/tmp/${name}.env" "/etc/goldrails/${name}.env"
   # Strands servers also write to the serial console, so a failure can be read with get-serial-port-output when SSH
   # (OS Login) is out of reach.

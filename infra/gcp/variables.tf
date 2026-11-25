@@ -38,7 +38,7 @@ variable "boot_disk_gb" {
 }
 
 variable "models" {
-  description = "Models to serve, one systemd service each. ref is a Hugging Face repo, revision its commit sha, gpu the first CUDA device index and gpu_count how many consecutive devices the model is split over (kind strands only). code_sha (kind strands only) pins github.com/strands-labs/strands-decider to a commit instead of the PyPI release in strands_decider_version. Values are validated because they reach a shell on the VM."
+  description = "Models to serve, one systemd service each. ref is a Hugging Face repo, revision its commit sha, gpu the first CUDA device index and gpu_count how many consecutive devices the model is split over (kind strands only). code_sha (kind strands only) pins github.com/strands-labs/strands-decider to a commit instead of the PyPI release in strands_decider_version. max_length (kind strands only) is the longest prompt in tokens that the server takes; it is passed to the server and recorded in the identity, and left out the server uses the window the package documents for the checkpoint. Values are validated because they reach a shell on the VM."
   type = list(object({
     name      = string
     kind      = string
@@ -48,6 +48,7 @@ variable "models" {
     gpu       = number
     gpu_count = optional(number, 1)
     code_sha  = optional(string)
+    max_length = optional(number)
   }))
   default = [
     { name = "kev-9b", kind = "kev", ref = "jaredpalmer/kev-9b", revision = "2629c06a5aeb0feb3b9783bafed17ed8f39ecf5c", port = 8009, gpu = 0 },
@@ -84,6 +85,10 @@ variable "models" {
   validation {
     condition     = length(distinct([for m in var.models : coalesce(m.code_sha, "pypi") if m.kind == "strands"])) <= 1
     error_message = "every strands model shares one venv: give them all the same code_sha, or none."
+  }
+  validation {
+    condition     = alltrue([for m in var.models : m.max_length == null || (m.kind == "strands" && coalesce(m.max_length, 0) >= 512 && coalesce(m.max_length, 0) <= 131072 && floor(coalesce(m.max_length, 0)) == coalesce(m.max_length, 0))])
+    error_message = "model.max_length: a whole number of tokens in 512..131072, kind strands only."
   }
 }
 

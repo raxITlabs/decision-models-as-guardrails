@@ -1,0 +1,32 @@
+# Strands Decider v2 (benchmark/runs/e2_strands_v2_run.py): five checkpoints released 17 November 2026. The model cards
+# say the 26B-A4B and 31B need one 80 GB GPU and cannot be split, and the 12B one 48 GB GPU, so every pass runs on one
+# A100 80 GB (a2-ultragpu-1g). Every strands model pins the same package commit (one venv) and max_length = 32768, the
+# checkpoints' validated window.
+#
+# Pass 1: E2B, E4B and 12B together on the card (about 50 GB of weights).
+# Pass 2: the 26B-A4B alone (52 GB).  Pass 3: the 31B alone (63 GB).
+# `e2_strands_v2_run.py roster --pass N` swaps in the Nth models block below and applies, with the VM stopped. The
+# checkpoints of earlier passes stay on the disk, so the disk is 300 GB (about 165 GB of weights in all).
+# The run has A100 tariffs for us-central1, us-east4 and us-east5 only: run `make up` with
+# GOLDRAILS_ZONES="us-central1-c us-central1-a us-east4-c us-east5-a us-east5-b" (the zones there that offer
+# a2-ultragpu-1g) so the zone fallback stays in those regions; vm-pass refuses a VM elsewhere.
+project_id    = "raxit-ai"
+zone          = "us-central1-c"
+machine_type  = "a2-ultragpu-1g"
+spot          = false
+max_run_hours = 8
+boot_disk_gb  = 300
+models = [
+  { name = "strands-decider-e2b-v2", kind = "strands", ref = "StrandsAgents/strands-decider-E2B-gemma4-v2-2611", revision = "eca68159a790d1e7ff93559d166dc3fbe24d5975", port = 8040, gpu = 0, code_sha = "6d85079caf1f1906ebb0f1370b56ef28ba7aa93e", max_length = 32768 },
+  { name = "strands-decider-e4b-v2", kind = "strands", ref = "StrandsAgents/strands-decider-E4B-gemma4-v2-2611", revision = "1717bca732ba4ef8c8c531fbc9875fafaf858811", port = 8041, gpu = 0, code_sha = "6d85079caf1f1906ebb0f1370b56ef28ba7aa93e", max_length = 32768 },
+  { name = "strands-decider-12b-v2", kind = "strands", ref = "StrandsAgents/strands-decider-12B-gemma4-v2-2611", revision = "41d5dc0d20a4deb2835690eb7529ee92463f6c9f", port = 8042, gpu = 0, code_sha = "6d85079caf1f1906ebb0f1370b56ef28ba7aa93e", max_length = 32768 },
+]
+# Pass 2:
+# models = [
+#   { name = "strands-decider-26b-a4b-v2", kind = "strands", ref = "StrandsAgents/strands-decider-26B-A4B-gemma4-v2-2611", revision = "099eb33e6c4ac0dafc967f73c0042a0cf3e78758", port = 8043, gpu = 0, code_sha = "6d85079caf1f1906ebb0f1370b56ef28ba7aa93e", max_length = 32768 },
+# ]
+# Pass 3:
+# models = [
+#   { name = "strands-decider-31b-v2", kind = "strands", ref = "StrandsAgents/strands-decider-31B-gemma4-v2-2611", revision = "ddaf9e068f5277e17a3e1d7ae7ffdecbd67fbebb", port = 8044, gpu = 0, code_sha = "6d85079caf1f1906ebb0f1370b56ef28ba7aa93e", max_length = 32768 },
+# ]
+attach_service_account = false

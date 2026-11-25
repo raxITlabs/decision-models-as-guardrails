@@ -75,7 +75,9 @@ KIND_MAX_LENGTH = {"strands": 4096}
 
 def identity_of(m: dict) -> dict:
     ident = {"ref": m.get("ref"), "revision": m.get("revision"), "kind": m["kind"]}
-    if m["kind"] in KIND_MAX_LENGTH:
+    if m.get("max_length"):          # a limit pinned per model (Strands Decider v2: 32,768) wins over the kind's
+        ident["max_length"] = int(m["max_length"])
+    elif m["kind"] in KIND_MAX_LENGTH:
         ident["max_length"] = KIND_MAX_LENGTH[m["kind"]]
     # A model served from a pinned commit of its package (strands-decider's Gemma 4 support is not on PyPI) records it,
     # and so does a model split over several GPUs. Models without either keep the identity, and config hash, they had.

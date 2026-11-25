@@ -762,6 +762,42 @@
       "status": "Google list price from the billing catalog; not reconciled against a billing statement"
     },
     {
+      "id": "gcp/a2-ultragpu-1g/us-east4/on-demand",
+      "provider": "Google Compute Engine",
+      "kind": "per_hour",
+      "match": {"hardware": ["a2-ultragpu-1g/us-east4/on-demand"]},
+      "region": "us-east4",
+      "usd_per_hour": 5.6625,
+      "note": "One A100 80 GB, 12 vCPU, 170 GiB: 12 x $0.035605 (A2 Instance Core running in Virginia, SKU 5EF9-7776-45FD) + 170 x $0.004771 (A2 Instance Ram running in Virginia, A592-E65A-C71A) + $4.424197 (Nvidia Tesla A100 80GB GPU running in Virginia, 7DB9-FA3F-C73C). Fallback region for the Strands Decider v2 run when us-central1 had no A100 capacity (25 November 2026).",
+      "checked_on": "2026-11-25",
+      "source": "Cloud Billing Catalog API, service 6F81-5844-456A (Compute Engine) SKUs",
+      "status": "Google list price from the billing catalog; not reconciled against a billing statement"
+    },
+    {
+      "id": "gcp/a2-ultragpu-1g/us-east5/on-demand",
+      "provider": "Google Compute Engine",
+      "kind": "per_hour",
+      "match": {"hardware": ["a2-ultragpu-1g/us-east5/on-demand"]},
+      "region": "us-east5",
+      "usd_per_hour": 5.5238,
+      "note": "One A100 80 GB, 12 vCPU, 170 GiB: 12 x $0.031611 (A2 Instance Core running in Columbus, SKU 0514-BECA-FCF2) + 170 x $0.004237 (A2 Instance Ram running in Columbus, 04E2-007C-D4D7) + $4.424197 (Nvidia Tesla A100 80GB GPU running in Columbus, 7AE6-A1F9-277A). Fallback region for the Strands Decider v2 run when us-central1 had no A100 capacity (25 November 2026).",
+      "checked_on": "2026-11-25",
+      "source": "Cloud Billing Catalog API, service 6F81-5844-456A (Compute Engine) SKUs",
+      "status": "Google list price from the billing catalog; not reconciled against a billing statement"
+    },
+    {
+      "id": "gcp/pd-balanced/us-east5/catalog",
+      "provider": "Google Compute Engine",
+      "kind": "per_gb_month",
+      "match": {"hardware": ["pd-balanced/us-east5/catalog"]},
+      "region": "us-east5",
+      "usd_per_gb_month": 0.1,
+      "note": "Zonal balanced persistent disk (Balanced PD Capacity in Columbus, SKU B5F4-F738-1AA4). A month is 730 hours. The same catalog gives $0.11 in us-east4 (7D52-6D58-14FF), matching the third-party us-east4 entry above.",
+      "checked_on": "2026-11-25",
+      "source": "Cloud Billing Catalog API, service 6F81-5844-456A (Compute Engine) SKUs",
+      "status": "Google list price from the billing catalog; not reconciled against a billing statement"
+    },
+    {
       "id": "local/cpu",
       "provider": "Local CPU for deterministic code (regex baseline)",
       "kind": "per_hour",

@@ -648,7 +648,11 @@ NAMES.update({"strands-decider-2b-v21": "Strands Decider 2B v21", "strands-decid
               "pplx-decider-v1-3": "pplx-decider-v1.3", "pplx-decider-flash-v1-3": "pplx-decider-flash-v1.3",
               "gpt-oss-safeguard-20b": "gpt-oss-safeguard-20b", "llama-guard-4-12b": "Llama Guard 4",
               "microsoft-decision-1.1": "Microsoft-Decision-1.1", "liquid-d1.2": "d1.2",
-              "liquid-d1.2-ultra": "d1.2-ultra"})
+              "liquid-d1.2-ultra": "d1.2-ultra",
+              "strands-decider-e2b-v2": "Strands Decider v2 E2B", "strands-decider-e4b-v2": "Strands Decider v2 E4B",
+              "strands-decider-12b-v2": "Strands Decider v2 12B",
+              "strands-decider-26b-a4b-v2": "Strands Decider v2 26B-A4B",
+              "strands-decider-31b-v2": "Strands Decider v2 31B"})
 SUITE_COLS = (("content", "Content"), ("prompt_attacks", "Prompt attacks"), ("denied_topics", "Denied topics"),
               ("word_filters", "Profanity"), ("sensitive_info", "PII"), ("grounding", "Grounding"))
 
