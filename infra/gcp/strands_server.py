@@ -24,7 +24,14 @@ import argparse
 import importlib
 import inspect
 
-CONTEXT_TOKENS = 4096   # the model's window (model card and package README); the server cuts silently beyond it
+# v1 checkpoints: a 4,096-token window, input beyond it cut silently (package 0.1.0 README). v2 checkpoints
+# (strands-decider-*-v2-2611): the window is decision_config.json's max_length_validated (32,768), and a longer prompt
+# is refused with HTTP 422, never cut. ``--max-length`` pins the limit; it must not exceed the validated window.
+CONTEXT_TOKENS = 4096
+V2_CONTEXT_TOKENS = 32768
+# A v2 engine answers one request at a time and refuses one that waited longer than this for its slot (HTTP 503). The
+# package default is 60 s; the run's four workers per model can queue behind a long row on a shared card.
+QUEUE_TIMEOUT_S = 600.0
 APP_MODULES = ("strands_decider.server", "strands_decider.serve", "strands_decider.app", "strands_decider")
 PATH_ARGS = ("checkpoint", "checkpoint_path", "model_path", "model_dir", "path", "model", "model_id", "model_name_or_path")
 DEVICE_ARGS = ("device",)
@@ -59,6 +66,21 @@ def app_kwargs(create_app, checkpoint: str, device: str, model_name: str | None)
             kw[p] = model_name
     if "trust_remote_code" in params:
         kw["trust_remote_code"] = False
+    return kw
+
+
+def limit_kwargs(create_app, max_length: int | None, queue_timeout: float | None) -> dict:
+    """``max_length`` and ``queue_timeout`` for a create_app that takes them. A pinned ``max_length`` that the package
+    cannot take stops the launcher rather than serving a different window than the identity records."""
+    params = inspect.signature(create_app).parameters
+    kw = {}
+    if max_length is not None:
+        if "max_length" not in params:
+            raise SystemExit(f"strands-decider: --max-length {max_length} given, but create_app takes no max_length: "
+                             f"create_app{inspect.signature(create_app)}")
+        kw["max_length"] = max_length
+    if queue_timeout is not None and "queue_timeout" in params:
+        kw["queue_timeout"] = queue_timeout
     return kw
 
 
@@ -138,11 +160,15 @@ def main(argv=None) -> None:
     ap.add_argument("--host", default="0.0.0.0")
     ap.add_argument("--port", type=int, default=8013)
     ap.add_argument("--split-gpus", type=int, default=1, help="split the model over this many visible GPUs")
+    ap.add_argument("--max-length", type=int, default=None, help="longest prompt in tokens (v2 checkpoints)")
+    ap.add_argument("--queue-timeout", type=float, default=QUEUE_TIMEOUT_S,
+                    help="seconds a request may wait for the engine (v2 checkpoints)")
     a = ap.parse_args(argv)
     if a.split_gpus > 1:
         split_over_gpus(a.split_gpus)
     create_app = find_create_app()
     kw = app_kwargs(create_app, a.checkpoint, a.device, a.model_name)
+    kw.update(limit_kwargs(create_app, a.max_length, a.queue_timeout))
     if a.split_gpus > 1 and "use_prefix_cache" in inspect.signature(create_app).parameters:
         # A split model forwards each question with the whole prompt instead of reusing one KV cache across cards: the
         # shared-prefix path hit "CUDA error: an illegal memory access" after about ten requests on four L4 cards, even

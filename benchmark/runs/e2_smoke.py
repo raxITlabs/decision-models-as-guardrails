@@ -82,6 +82,10 @@ LIMITS = {"jev-1.13.0": (32000, "documented"), "jev-1.14.0": (32000, "documented
 LIMITS.update({n: (4096, "documented window; cut silently, no truncation flag") for n in (
     "strands-decider-2b-v21", "strands-decider-2b-qwen35", "strands-decider-e2b", "strands-decider-e4b",
     "strands-decider-12b", "strands-decider-26b-a4b")})
+# Strands Decider v2 (benchmark/runs/e2_strands_v2_run.py): decision_config.json's validated window, served pinned.
+LIMITS.update({n: (32768, "validated window (decision_config.json); a longer prompt is refused with HTTP 422, not cut")
+               for n in ("strands-decider-e2b-v2", "strands-decider-e4b-v2", "strands-decider-12b-v2",
+                         "strands-decider-26b-a4b-v2", "strands-decider-31b-v2")})
 # Servers whose usage.input_tokens is the sum over one prompt per question: per-prompt tokens = usage / questions.
 PER_PROMPT_USAGE = {"open-jev-2b", "laya"}
 # Hosted joint-schema models report one input count for the whole request: at the limit means the input was capped.

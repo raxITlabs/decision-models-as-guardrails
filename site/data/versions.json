@@ -13,19 +13,19 @@
    "planned": [],
    "board": {
     "jev-1.13.0": {
-     "rank": 21,
+     "rank": 24,
      "tier": 3,
      "rank_interval": {
-      "low": 20.0,
-      "high": 22.0
+      "low": 23.0,
+      "high": 25.0
      }
     },
     "jev-1.14.0": {
-     "rank": 20,
+     "rank": 23,
      "tier": 3,
      "rank_interval": {
-      "low": 18.0,
-      "high": 21.0
+      "low": 21.0,
+      "high": 24.0
      }
     }
    },
@@ -76,7 +76,7 @@
       "difference": 0.185258,
       "p_holm_board": 1.0,
       "separated_on_board": false,
-      "pairs_in_board_family": 1176
+      "pairs_in_board_family": 1431
      },
      "suites": {
       "content": {
@@ -421,27 +421,27 @@
    "planned": [],
    "board": {
     "strands-decider-2b": {
-     "rank": 45,
-     "tier": 9,
+     "rank": 50,
+     "tier": 10,
      "rank_interval": {
-      "low": 45.0,
-      "high": 45.0
+      "low": 50.0,
+      "high": 50.0
      }
     },
     "strands-decider-2b-v21": {
-     "rank": 44,
-     "tier": 8,
+     "rank": 49,
+     "tier": 9,
      "rank_interval": {
-      "low": 44.0,
-      "high": 44.0
+      "low": 49.0,
+      "high": 49.0
      }
     },
     "strands-decider-2b-qwen35": {
-     "rank": 43,
-     "tier": 8,
+     "rank": 48,
+     "tier": 9,
      "rank_interval": {
-      "low": 42.0,
-      "high": 43.0
+      "low": 47.0,
+      "high": 48.0
      }
     }
    },
@@ -490,9 +490,9 @@
      },
      "board": {
       "difference": 1.880308,
-      "p_holm_board": 1.6e-05,
+      "p_holm_board": 2e-05,
       "separated_on_board": true,
-      "pairs_in_board_family": 1176
+      "pairs_in_board_family": 1431
      },
      "suites": {
       "content": {
@@ -870,7 +870,7 @@
       "difference": 0.957184,
       "p_holm_board": 1.0,
       "separated_on_board": false,
-      "pairs_in_board_family": 1176
+      "pairs_in_board_family": 1431
      },
      "suites": {
       "content": {
@@ -1247,7 +1247,7 @@
       "difference": 2.837492,
       "p_holm_board": 0.0,
       "separated_on_board": true,
-      "pairs_in_board_family": 1176
+      "pairs_in_board_family": 1431
      },
      "suites": {
       "content": {
@@ -1593,19 +1593,19 @@
    "planned": [],
    "board": {
     "pplx-decider-v1-27b": {
-     "rank": 7,
+     "rank": 9,
      "tier": 2,
      "rank_interval": {
-      "low": 5.0,
-      "high": 11.0
+      "low": 6.0,
+      "high": 13.0
      }
     },
     "pplx-decider-v1-2-27b": {
-     "rank": 5,
+     "rank": 6,
      "tier": 2,
      "rank_interval": {
-      "low": 4.0,
-      "high": 8.0
+      "low": 5.0,
+      "high": 10.0
      }
     },
     "pplx-decider-v1-3": {
@@ -1613,7 +1613,7 @@
      "tier": 1,
      "rank_interval": {
       "low": 1.0,
-      "high": 3.0
+      "high": 4.0
      }
     }
    },
@@ -1664,7 +1664,7 @@
       "difference": 0.270379,
       "p_holm_board": 1.0,
       "separated_on_board": false,
-      "pairs_in_board_family": 1176
+      "pairs_in_board_family": 1431
      },
      "suites": {
       "content": {
@@ -2041,7 +2041,7 @@
       "difference": 1.297807,
       "p_holm_board": 1e-06,
       "separated_on_board": true,
-      "pairs_in_board_family": 1176
+      "pairs_in_board_family": 1431
      },
      "suites": {
       "content": {
@@ -2416,9 +2416,9 @@
      },
      "board": {
       "difference": 1.568186,
-      "p_holm_board": 1.1e-05,
+      "p_holm_board": 1.4e-05,
       "separated_on_board": true,
-      "pairs_in_board_family": 1176
+      "pairs_in_board_family": 1431
      },
      "suites": {
       "content": {
@@ -2762,19 +2762,19 @@
    "planned": [],
    "board": {
     "pplx-decider-flash-v1-2": {
-     "rank": 24,
+     "rank": 28,
      "tier": 4,
      "rank_interval": {
-      "low": 23.0,
-      "high": 28.0
+      "low": 27.0,
+      "high": 32.0
      }
     },
     "pplx-decider-flash-v1-3": {
-     "rank": 16,
+     "rank": 19,
      "tier": 3,
      "rank_interval": {
-      "low": 11.0,
-      "high": 19.0
+      "low": 14.0,
+      "high": 22.0
      }
     }
    },
@@ -2825,7 +2825,7 @@
       "difference": 2.862699,
       "p_holm_board": 0.0,
       "separated_on_board": true,
-      "pairs_in_board_family": 1176
+      "pairs_in_board_family": 1431
      },
      "suites": {
       "content": {
@@ -3170,27 +3170,27 @@
    "planned": [],
    "board": {
     "liquid-d1": {
-     "rank": 23,
+     "rank": 27,
      "tier": 4,
      "rank_interval": {
-      "low": 23.0,
-      "high": 26.0
+      "low": 26.0,
+      "high": 30.0
      }
     },
     "liquid-d1.1": {
-     "rank": 10,
+     "rank": 12,
      "tier": 2,
      "rank_interval": {
-      "low": 7.0,
-      "high": 15.0
+      "low": 8.0,
+      "high": 18.0
      }
     },
     "liquid-d1.2": {
-     "rank": 6,
+     "rank": 8,
      "tier": 2,
      "rank_interval": {
-      "low": 5.0,
-      "high": 11.0
+      "low": 6.0,
+      "high": 13.0
      }
     }
    },
@@ -3241,7 +3241,7 @@
       "difference": 3.202429,
       "p_holm_board": 0.0,
       "separated_on_board": true,
-      "pairs_in_board_family": 1176
+      "pairs_in_board_family": 1431
      },
      "suites": {
       "content": {
@@ -3618,7 +3618,7 @@
       "difference": 0.424184,
       "p_holm_board": 1.0,
       "separated_on_board": false,
-      "pairs_in_board_family": 1176
+      "pairs_in_board_family": 1431
      },
      "suites": {
       "content": {
@@ -3995,7 +3995,7 @@
       "difference": 3.626613,
       "p_holm_board": 0.0,
       "separated_on_board": true,
-      "pairs_in_board_family": 1176
+      "pairs_in_board_family": 1431
      },
      "suites": {
       "content": {
@@ -4339,11 +4339,11 @@
    "planned": [],
    "board": {
     "liquid-d1-ultra": {
-     "rank": 3,
+     "rank": 4,
      "tier": 1,
      "rank_interval": {
       "low": 2.0,
-      "high": 4.0
+      "high": 5.0
      }
     },
     "liquid-d1.2-ultra": {
@@ -4351,7 +4351,7 @@
      "tier": 1,
      "rank_interval": {
       "low": 1.0,
-      "high": 2.0
+      "high": 3.0
      }
     }
    },
@@ -4402,7 +4402,7 @@
       "difference": 0.595245,
       "p_holm_board": 1.0,
       "separated_on_board": false,
-      "pairs_in_board_family": 1176
+      "pairs_in_board_family": 1431
      },
      "suites": {
       "content": {
@@ -4746,19 +4746,19 @@
    "planned": [],
    "board": {
     "microsoft-decision-1": {
-     "rank": 17,
+     "rank": 20,
      "tier": 3,
      "rank_interval": {
-      "low": 11.0,
-      "high": 19.0
+      "low": 14.0,
+      "high": 22.0
      }
     },
     "microsoft-decision-1.1": {
-     "rank": 11,
+     "rank": 13,
      "tier": 2,
      "rank_interval": {
-      "low": 6.0,
-      "high": 16.0
+      "low": 8.0,
+      "high": 19.0
      }
     }
    },
@@ -4809,7 +4809,7 @@
       "difference": 0.597496,
       "p_holm_board": 1.0,
       "separated_on_board": false,
-      "pairs_in_board_family": 1176
+      "pairs_in_board_family": 1431
      },
      "suites": {
       "content": {
@@ -5143,6 +5143,1637 @@
    ]
   },
   {
+   "key": "strands-decider-e2b",
+   "label": "Strands Decider E2B (AWS)",
+   "vendor": "AWS",
+   "versions": [
+    "strands-decider-e2b",
+    "strands-decider-e2b-v2"
+   ],
+   "planned": [],
+   "board": {
+    "strands-decider-e2b": {
+     "rank": 45,
+     "tier": 8,
+     "rank_interval": {
+      "low": 44.0,
+      "high": 46.0
+     }
+    },
+    "strands-decider-e2b-v2": {
+     "rank": 33,
+     "tier": 5,
+     "rank_interval": {
+      "low": 31.0,
+      "high": 33.0
+     }
+    }
+   },
+   "comparisons": [
+    {
+     "from": "strands-decider-e2b",
+     "to": "strands-decider-e2b-v2",
+     "kind": "step",
+     "overall": {
+      "balanced_accuracy": {
+       "old": 80.105727,
+       "new": 85.474182,
+       "point": 5.368455,
+       "ci": {
+        "low": 4.439,
+        "high": 6.305
+       },
+       "p": 3.663357628132151e-30,
+       "p_holm": 3.663357628132151e-30,
+       "verdict": "better"
+      },
+      "catch_rate": {
+       "old": 0.749407,
+       "new": 0.824797,
+       "point": 0.07539,
+       "ci": {
+        "low": 0.0609,
+        "high": 0.0897
+       },
+       "p": 2.4235882064304683e-24,
+       "p_holm": 2.4235882064304683e-24,
+       "verdict": "better"
+      },
+      "false_block_rate": {
+       "old": 0.147292,
+       "new": 0.115313,
+       "point": -0.031979,
+       "ci": {
+        "low": -0.0434,
+        "high": -0.02
+       },
+       "p": 1.528635255560617e-07,
+       "p_holm": 1.528635255560617e-07,
+       "verdict": "better"
+      }
+     },
+     "board": {
+      "difference": 5.368455,
+      "p_holm_board": 0.0,
+      "separated_on_board": true,
+      "pairs_in_board_family": 1431
+     },
+     "suites": {
+      "content": {
+       "old": 78.229705,
+       "new": 81.053978,
+       "point": 2.824273,
+       "ci": {
+        "low": 0.9866,
+        "high": 4.6445
+       },
+       "p": 0.0019332819529072275,
+       "p_holm": 0.003866563905814455,
+       "verdict": "better",
+       "false_block_rate": {
+        "point": 0.100752,
+        "ci": {
+         "low": 0.0763,
+         "high": 0.1255
+        },
+        "p": 2.8595191536289603e-15,
+        "p_holm": 1.1438076614515841e-14,
+        "verdict": "worse"
+       }
+      },
+      "prompt_attacks": {
+       "old": 66.183619,
+       "new": 72.497324,
+       "point": 6.313706,
+       "ci": {
+        "low": 4.6131,
+        "high": 8.0924
+       },
+       "p": 1.16272532211015e-13,
+       "p_holm": 5.81362661055075e-13,
+       "verdict": "better",
+       "false_block_rate": {
+        "point": 0.128823,
+        "ci": {
+         "low": 0.1142,
+         "high": 0.1427
+        },
+        "p": 1.4285489382461299e-70,
+        "p_holm": 8.57129362947678e-70,
+        "verdict": "worse"
+       }
+      },
+      "denied_topics": {
+       "old": 86.190327,
+       "new": 97.061872,
+       "point": 10.871545,
+       "ci": {
+        "low": 8.5138,
+        "high": 13.4532
+       },
+       "p": 2.3027288260453968e-17,
+       "p_holm": 1.381637295627238e-16,
+       "verdict": "better",
+       "false_block_rate": {
+        "point": -0.236181,
+        "ci": {
+         "low": -0.2803,
+         "high": -0.194
+        },
+        "p": 6.104340318231215e-27,
+        "p_holm": 3.052170159115607e-26,
+        "verdict": "better"
+       }
+      },
+      "word_filters": {
+       "old": 82.77724,
+       "new": 80.881356,
+       "point": -1.895884,
+       "ci": {
+        "low": -4.3441,
+        "high": 0.6979
+       },
+       "p": 0.14283853278105418,
+       "p_holm": 0.14283853278105418,
+       "verdict": "within noise",
+       "false_block_rate": {
+        "point": -0.067797,
+        "ci": {
+         "low": -0.0952,
+         "high": -0.0411
+        },
+        "p": 8.446858086982255e-07,
+        "p_holm": 1.689371617396451e-06,
+        "verdict": "better"
+       }
+      },
+      "sensitive_info": {
+       "old": 94.343101,
+       "new": 97.540992,
+       "point": 3.197891,
+       "ci": {
+        "low": 2.2352,
+        "high": 4.1373
+       },
+       "p": 6.062353278715461e-11,
+       "p_holm": 2.4249413114861845e-10,
+       "verdict": "better",
+       "false_block_rate": {
+        "point": -0.019705,
+        "ci": {
+         "low": -0.0251,
+         "high": -0.0147
+        },
+        "p": 4.7765558907995486e-14,
+        "p_holm": 1.4329667672398647e-13,
+        "verdict": "better"
+       }
+      },
+      "grounding": {
+       "old": 72.91037,
+       "new": 83.809567,
+       "point": 10.899197,
+       "ci": {
+        "low": 7.5925,
+        "high": 14.2302
+       },
+       "p": 1.8449728220867345e-10,
+       "p_holm": 5.534918466260203e-10,
+       "verdict": "better",
+       "false_block_rate": {
+        "point": -0.097765,
+        "ci": {
+         "low": -0.1393,
+         "high": -0.0559
+        },
+        "p": 6.521789731575052e-06,
+        "p_holm": 6.521789731575052e-06,
+        "verdict": "better"
+       }
+      }
+     },
+     "subtasks": {
+      "content/request": {
+       "old": 81.585405,
+       "new": 82.570031,
+       "point": 0.984626,
+       "ci": {
+        "low": -1.2362,
+        "high": 3.0978
+       },
+       "p": 0.3728614227855543,
+       "p_holm": 0.7457228455711086,
+       "verdict": "within noise",
+       "fixed": 163,
+       "broke": 202
+      },
+      "content/reply": {
+       "old": 74.874005,
+       "new": 79.537926,
+       "point": 4.66392,
+       "ci": {
+        "low": 1.8297,
+        "high": 7.5384
+       },
+       "p": 0.0016163065566498773,
+       "p_holm": 0.006465226226599509,
+       "verdict": "better",
+       "fixed": 84,
+       "broke": 51
+      },
+      "prompt_attacks/direct": {
+       "old": 70.862346,
+       "new": 70.305149,
+       "point": -0.557197,
+       "ci": {
+        "low": -2.3392,
+        "high": 1.1967
+       },
+       "p": 0.5349420554746542,
+       "p_holm": 0.7457228455711086,
+       "verdict": "within noise",
+       "fixed": 398,
+       "broke": 537
+      },
+      "prompt_attacks/indirect": {
+       "old": 61.504892,
+       "new": 74.6895,
+       "point": 13.184608,
+       "ci": {
+        "low": 10.3752,
+        "high": 16.1796
+       },
+       "p": 1.8460254251534615e-19,
+       "p_holm": 1.4768203401227692e-18,
+       "verdict": "better",
+       "fixed": 231,
+       "broke": 55
+      },
+      "denied_topics/topic": {
+       "old": 86.190327,
+       "new": 97.061872,
+       "point": 10.871545,
+       "ci": {
+        "low": 8.5138,
+        "high": 13.4532
+       },
+       "p": 2.3027288260453968e-17,
+       "p_holm": 1.6119101782317778e-16,
+       "verdict": "better",
+       "fixed": 103,
+       "broke": 15
+      },
+      "word_filters/profanity": {
+       "old": 82.77724,
+       "new": 80.881356,
+       "point": -1.895884,
+       "ci": {
+        "low": -4.3441,
+        "high": 0.6979
+       },
+       "p": 0.14283853278105418,
+       "p_holm": 0.42851559834316255,
+       "verdict": "within noise",
+       "fixed": 37,
+       "broke": 50
+      },
+      "sensitive_info/entity_detection": {
+       "old": 94.343101,
+       "new": 97.540992,
+       "point": 3.197891,
+       "ci": {
+        "low": 2.2352,
+        "high": 4.1373
+       },
+       "p": 6.062353278715461e-11,
+       "p_holm": 3.6374119672292765e-10,
+       "verdict": "better",
+       "fixed": 158,
+       "broke": 33
+      },
+      "grounding/grounding": {
+       "old": 72.91037,
+       "new": 83.809567,
+       "point": 10.899197,
+       "ci": {
+        "low": 7.5925,
+        "high": 14.2302
+       },
+       "p": 1.8449728220867345e-10,
+       "p_holm": 9.224864110433673e-10,
+       "verdict": "better",
+       "fixed": 117,
+       "broke": 38
+      }
+     },
+     "flips": {
+      "fixed": 1291,
+      "broke": 981,
+      "catches_gained": 901,
+      "catches_lost": 173,
+      "false_blocks_cleared": 390,
+      "false_blocks_added": 808,
+      "judgments": 14915
+     },
+     "mcnemar_p": 8.442554713569104e-11,
+     "calibration": {
+      "prompt_attacks/indirect": {
+       "old_ece": 0.116921,
+       "new_ece": 0.187726,
+       "point": 0.070804,
+       "ci": {
+        "low": 0.045,
+        "high": 0.0918
+       },
+       "p": 2.1201906695578436e-09,
+       "p_holm": 6.3605720086735304e-09,
+       "verdict": "worse"
+      },
+      "word_filters/profanity": {
+       "old_ece": 0.09494,
+       "new_ece": 0.131777,
+       "point": 0.036836,
+       "ci": {
+        "low": 0.003,
+        "high": 0.0526
+       },
+       "p": 0.0034391414856722313,
+       "p_holm": 0.006878282971344463,
+       "verdict": "worse"
+      },
+      "sensitive_info/entity_detection": {
+       "old_ece": 0.216666,
+       "new_ece": 0.032268,
+       "point": -0.184399,
+       "ci": {
+        "low": -0.1886,
+        "high": -0.1794
+       },
+       "p": 0.0,
+       "p_holm": 0.0,
+       "verdict": "better"
+      },
+      "grounding/grounding": {
+       "old_ece": 0.107763,
+       "new_ece": 0.101227,
+       "point": -0.006536,
+       "ci": {
+        "low": -0.0304,
+        "high": 0.0277
+       },
+       "p": 0.6586645351949061,
+       "p_holm": 0.6586645351949061,
+       "verdict": "within noise"
+      }
+     },
+     "cost": {
+      "old_usd_per_1000": 0.46098,
+      "new_usd_per_1000": 0.15585,
+      "delta_usd_per_1000": -0.30513,
+      "delta_pct": -66.19,
+      "old_usd_total": 4.5982,
+      "new_usd_total": 1.5546,
+      "old_basis": "allocated VM time (3731 s) x g2-standard-48/northamerica-northeast2/on-demand/third-party $4.4062/h + disk $0.030/h",
+      "new_basis": "allocated VM time (1106 s) x a2-ultragpu-1g/us-central1/on-demand $5.0277/h + disk $0.030/h",
+      "comparable": false,
+      "why_not_comparable": "g2-standard-48/northamerica-northeast2/on-demand/third-party vs a2-ultragpu-1g/us-central1/on-demand"
+     },
+     "tokens": {
+      "checks": 9975,
+      "old_mean": 770.7,
+      "new_mean": 816.4,
+      "delta_mean": 45.7,
+      "delta_pct": 5.94,
+      "old_total": 7687610,
+      "new_total": 8143885
+     }
+    }
+   ]
+  },
+  {
+   "key": "strands-decider-e4b",
+   "label": "Strands Decider E4B (AWS)",
+   "vendor": "AWS",
+   "versions": [
+    "strands-decider-e4b",
+    "strands-decider-e4b-v2"
+   ],
+   "planned": [],
+   "board": {
+    "strands-decider-e4b": {
+     "rank": 40,
+     "tier": 7,
+     "rank_interval": {
+      "low": 39.0,
+      "high": 43.0
+     }
+    },
+    "strands-decider-e4b-v2": {
+     "rank": 26,
+     "tier": 4,
+     "rank_interval": {
+      "low": 25.0,
+      "high": 27.0
+     }
+    }
+   },
+   "comparisons": [
+    {
+     "from": "strands-decider-e4b",
+     "to": "strands-decider-e4b-v2",
+     "kind": "step",
+     "overall": {
+      "balanced_accuracy": {
+       "old": 81.946309,
+       "new": 87.459496,
+       "point": 5.513187,
+       "ci": {
+        "low": 4.6729,
+        "high": 6.3734
+       },
+       "p": 2.7572483829669525e-36,
+       "p_holm": 2.7572483829669525e-36,
+       "verdict": "better"
+      },
+      "catch_rate": {
+       "old": 0.845571,
+       "new": 0.851864,
+       "point": 0.006293,
+       "ci": {
+        "low": -0.0071,
+        "high": 0.0178
+       },
+       "p": 0.3260191619765992,
+       "p_holm": 0.3260191619765992,
+       "verdict": "within noise"
+      },
+      "false_block_rate": {
+       "old": 0.206645,
+       "new": 0.102674,
+       "point": -0.10397,
+       "ci": {
+        "low": -0.1176,
+        "high": -0.092
+       },
+       "p": 3.8718426428338556e-56,
+       "p_holm": 3.8718426428338556e-56,
+       "verdict": "better"
+      }
+     },
+     "board": {
+      "difference": 5.513187,
+      "p_holm_board": 0.0,
+      "separated_on_board": true,
+      "pairs_in_board_family": 1431
+     },
+     "suites": {
+      "content": {
+       "old": 79.752333,
+       "new": 86.633823,
+       "point": 6.881491,
+       "ci": {
+        "low": 5.3429,
+        "high": 8.5166
+       },
+       "p": 9.064075298196581e-18,
+       "p_holm": 4.532037649098291e-17,
+       "verdict": "better",
+       "false_block_rate": {
+        "point": -0.13012,
+        "ci": {
+         "low": -0.1574,
+         "high": -0.1054
+        },
+        "p": 8.52478835501134e-23,
+        "p_holm": 4.262394177505671e-22,
+        "verdict": "better"
+       }
+      },
+      "prompt_attacks": {
+       "old": 73.608229,
+       "new": 72.696516,
+       "point": -0.911712,
+       "ci": {
+        "low": -2.415,
+        "high": 0.6252
+       },
+       "p": 0.23882695005116686,
+       "p_holm": 0.23882695005116686,
+       "verdict": "within noise",
+       "false_block_rate": {
+        "point": -0.017292,
+        "ci": {
+         "low": -0.0392,
+         "high": 0.0031
+        },
+        "p": 0.10641533420084352,
+        "p_holm": 0.21283066840168705,
+        "verdict": "within noise"
+       }
+      },
+      "denied_topics": {
+       "old": 81.155779,
+       "new": 98.054334,
+       "point": 16.898555,
+       "ci": {
+        "low": 14.5477,
+        "high": 19.3796
+       },
+       "p": 9.068591986975548e-44,
+       "p_holm": 5.4411551921853295e-43,
+       "verdict": "better",
+       "false_block_rate": {
+        "point": -0.344221,
+        "ci": {
+         "low": -0.392,
+         "high": -0.2972
+        },
+        "p": 7.186024514043885e-48,
+        "p_holm": 4.311614708426331e-47,
+        "verdict": "better"
+       }
+      },
+      "word_filters": {
+       "old": 85.94431,
+       "new": 83.308313,
+       "point": -2.635997,
+       "ci": {
+        "low": -5.3457,
+        "high": -0.0355
+       },
+       "p": 0.05526990561566863,
+       "p_holm": 0.11053981123133726,
+       "verdict": "within noise",
+       "false_block_rate": {
+        "point": -0.112994,
+        "ci": {
+         "low": -0.1513,
+         "high": -0.078
+        },
+        "p": 1.7214443790827935e-09,
+        "p_holm": 5.164333137248381e-09,
+        "verdict": "better"
+       }
+      },
+      "sensitive_info": {
+       "old": 96.156911,
+       "new": 97.671005,
+       "point": 1.514094,
+       "ci": {
+        "low": 1.0183,
+        "high": 1.9933
+       },
+       "p": 2.8097516499305436e-09,
+       "p_holm": 8.42925494979163e-09,
+       "verdict": "better",
+       "false_block_rate": {
+        "point": -0.024781,
+        "ci": {
+         "low": -0.0303,
+         "high": -0.0192
+        },
+        "p": 1.2471967029681394e-17,
+        "p_holm": 4.9887868118725576e-17,
+        "verdict": "better"
+       }
+      },
+      "grounding": {
+       "old": 75.060292,
+       "new": 86.392985,
+       "point": 11.332692,
+       "ci": {
+        "low": 8.5125,
+        "high": 14.2967
+       },
+       "p": 3.253009980955166e-14,
+       "p_holm": 1.3012039923820665e-13,
+       "verdict": "better",
+       "false_block_rate": {
+        "point": 0.005587,
+        "ci": {
+         "low": -0.031,
+         "high": 0.0412
+        },
+        "p": 0.7611459142921331,
+        "p_holm": 0.7611459142921331,
+        "verdict": "within noise"
+       }
+      }
+     },
+     "subtasks": {
+      "content/request": {
+       "old": 83.377085,
+       "new": 86.913985,
+       "point": 3.5369,
+       "ci": {
+        "low": 2.1236,
+        "high": 5.0205
+       },
+       "p": 3.6327729971250843e-06,
+       "p_holm": 1.4531091988500337e-05,
+       "verdict": "better",
+       "fixed": 125,
+       "broke": 58
+      },
+      "content/reply": {
+       "old": 76.12758,
+       "new": 86.353662,
+       "point": 10.226082,
+       "ci": {
+        "low": 7.5804,
+        "high": 13.1124
+       },
+       "p": 3.4176149360438274e-13,
+       "p_holm": 2.0505689616262966e-12,
+       "verdict": "better",
+       "fixed": 99,
+       "broke": 20
+      },
+      "prompt_attacks/direct": {
+       "old": 67.329555,
+       "new": 67.400921,
+       "point": 0.071366,
+       "ci": {
+        "low": -1.3533,
+        "high": 1.5088
+       },
+       "p": 0.9218402632347491,
+       "p_holm": 0.9218402632347491,
+       "verdict": "within noise",
+       "fixed": 244,
+       "broke": 306
+      },
+      "prompt_attacks/indirect": {
+       "old": 79.886902,
+       "new": 77.992112,
+       "point": -1.89479,
+       "ci": {
+        "low": -4.6662,
+        "high": 0.7863
+       },
+       "p": 0.17105857621702172,
+       "p_holm": 0.34211715243404345,
+       "verdict": "within noise",
+       "fixed": 167,
+       "broke": 171
+      },
+      "denied_topics/topic": {
+       "old": 81.155779,
+       "new": 98.054334,
+       "point": 16.898555,
+       "ci": {
+        "low": 14.5477,
+        "high": 19.3796
+       },
+       "p": 9.068591986975548e-44,
+       "p_holm": 7.254873589580439e-43,
+       "verdict": "better",
+       "fixed": 137,
+       "broke": 2
+      },
+      "word_filters/profanity": {
+       "old": 85.94431,
+       "new": 83.308313,
+       "point": -2.635997,
+       "ci": {
+        "low": -5.3457,
+        "high": -0.0355
+       },
+       "p": 0.05526990561566863,
+       "p_holm": 0.16580971684700588,
+       "verdict": "within noise",
+       "fixed": 45,
+       "broke": 63
+      },
+      "sensitive_info/entity_detection": {
+       "old": 96.156911,
+       "new": 97.671005,
+       "point": 1.514094,
+       "ci": {
+        "low": 1.0183,
+        "high": 1.9933
+       },
+       "p": 2.8097516499305436e-09,
+       "p_holm": 1.4048758249652719e-08,
+       "verdict": "better",
+       "fixed": 176,
+       "broke": 44
+      },
+      "grounding/grounding": {
+       "old": 75.060292,
+       "new": 86.392985,
+       "point": 11.332692,
+       "ci": {
+        "low": 8.5125,
+        "high": 14.2967
+       },
+       "p": 3.253009980955166e-14,
+       "p_holm": 2.277106986668616e-13,
+       "verdict": "better",
+       "fixed": 114,
+       "broke": 31
+      }
+     },
+     "flips": {
+      "fixed": 1107,
+      "broke": 695,
+      "catches_gained": 396,
+      "catches_lost": 294,
+      "false_blocks_cleared": 711,
+      "false_blocks_added": 401,
+      "judgments": 14915
+     },
+     "mcnemar_p": 2.37515733602961e-22,
+     "calibration": {
+      "prompt_attacks/indirect": {
+       "old_ece": 0.083409,
+       "new_ece": 0.184285,
+       "point": 0.100876,
+       "ci": {
+        "low": 0.0501,
+        "high": 0.145
+       },
+       "p": 3.60599807964128e-05,
+       "p_holm": 7.21199615928256e-05,
+       "verdict": "worse"
+      },
+      "word_filters/profanity": {
+       "old_ece": 0.056709,
+       "new_ece": 0.126904,
+       "point": 0.070195,
+       "ci": {
+        "low": 0.0339,
+        "high": 0.0933
+       },
+       "p": 3.7413589146777273e-06,
+       "p_holm": 1.1224076744033183e-05,
+       "verdict": "worse"
+      },
+      "sensitive_info/entity_detection": {
+       "old_ece": 0.091439,
+       "new_ece": 0.038129,
+       "point": -0.053311,
+       "ci": {
+        "low": -0.0574,
+        "high": -0.0492
+       },
+       "p": 1.40433961300924e-138,
+       "p_holm": 5.61735845203696e-138,
+       "verdict": "better"
+      },
+      "grounding/grounding": {
+       "old_ece": 0.141448,
+       "new_ece": 0.088094,
+       "point": -0.053355,
+       "ci": {
+        "low": -0.0839,
+        "high": -0.0172
+       },
+       "p": 0.0017160115231460112,
+       "p_holm": 0.0017160115231460112,
+       "verdict": "better"
+      }
+     },
+     "cost": {
+      "old_usd_per_1000": 0.62232,
+      "new_usd_per_1000": 0.21204,
+      "delta_usd_per_1000": -0.41028,
+      "delta_pct": -65.93,
+      "old_usd_total": 6.2077,
+      "new_usd_total": 2.1151,
+      "old_basis": "allocated VM time (5037 s) x g2-standard-48/northamerica-northeast2/on-demand/third-party $4.4062/h + disk $0.030/h",
+      "new_basis": "allocated VM time (1505 s) x a2-ultragpu-1g/us-central1/on-demand $5.0277/h + disk $0.030/h",
+      "comparable": false,
+      "why_not_comparable": "g2-standard-48/northamerica-northeast2/on-demand/third-party vs a2-ultragpu-1g/us-central1/on-demand"
+     },
+     "tokens": {
+      "checks": 9975,
+      "old_mean": 770.7,
+      "new_mean": 816.4,
+      "delta_mean": 45.7,
+      "delta_pct": 5.94,
+      "old_total": 7687610,
+      "new_total": 8143885
+     }
+    }
+   ]
+  },
+  {
+   "key": "strands-decider-12b",
+   "label": "Strands Decider 12B (AWS)",
+   "vendor": "AWS",
+   "versions": [
+    "strands-decider-12b",
+    "strands-decider-12b-v2"
+   ],
+   "planned": [],
+   "board": {
+    "strands-decider-12b": {
+     "rank": 29,
+     "tier": 4,
+     "rank_interval": {
+      "low": 27.0,
+      "high": 32.0
+     }
+    },
+    "strands-decider-12b-v2": {
+     "rank": 14,
+     "tier": 2,
+     "rank_interval": {
+      "low": 9.0,
+      "high": 20.0
+     }
+    }
+   },
+   "comparisons": [
+    {
+     "from": "strands-decider-12b",
+     "to": "strands-decider-12b-v2",
+     "kind": "step",
+     "overall": {
+      "balanced_accuracy": {
+       "old": 86.401827,
+       "new": 89.842792,
+       "point": 3.440965,
+       "ci": {
+        "low": 2.6779,
+        "high": 4.2001
+       },
+       "p": 1.0715137003478405e-18,
+       "p_holm": 1.0715137003478405e-18,
+       "verdict": "better"
+      },
+      "catch_rate": {
+       "old": 0.877389,
+       "new": 0.904766,
+       "point": 0.027377,
+       "ci": {
+        "low": 0.0154,
+        "high": 0.0387
+       },
+       "p": 2.8375173167016186e-06,
+       "p_holm": 2.8375173167016186e-06,
+       "verdict": "better"
+      },
+      "false_block_rate": {
+       "old": 0.149352,
+       "new": 0.10791,
+       "point": -0.041442,
+       "ci": {
+        "low": -0.0525,
+        "high": -0.031
+       },
+       "p": 2.041295408087937e-14,
+       "p_holm": 2.041295408087937e-14,
+       "verdict": "better"
+      }
+     },
+     "board": {
+      "difference": 3.440965,
+      "p_holm_board": 0.0,
+      "separated_on_board": true,
+      "pairs_in_board_family": 1431
+     },
+     "suites": {
+      "content": {
+       "old": 83.299973,
+       "new": 88.941823,
+       "point": 5.64185,
+       "ci": {
+        "low": 4.2041,
+        "high": 7.0925
+       },
+       "p": 8.238080736216104e-14,
+       "p_holm": 3.2952322944864417e-13,
+       "verdict": "better",
+       "false_block_rate": {
+        "point": -0.049333,
+        "ci": {
+         "low": -0.073,
+         "high": -0.0269
+        },
+        "p": 3.5942664840544545e-05,
+        "p_holm": 0.00014377065936217818,
+        "verdict": "better"
+       }
+      },
+      "prompt_attacks": {
+       "old": 80.720806,
+       "new": 74.299346,
+       "point": -6.42146,
+       "ci": {
+        "low": -8.1243,
+        "high": -4.971
+       },
+       "p": 2.400365689588392e-15,
+       "p_holm": 1.200182844794196e-14,
+       "verdict": "worse",
+       "false_block_rate": {
+        "point": 0.036767,
+        "ci": {
+         "low": 0.0211,
+         "high": 0.0499
+        },
+        "p": 3.3058413804165747e-07,
+        "p_holm": 1.6529206902082873e-06,
+        "verdict": "worse"
+       }
+      },
+      "denied_topics": {
+       "old": 86.934673,
+       "new": 96.703046,
+       "point": 9.768373,
+       "ci": {
+        "low": 7.7606,
+        "high": 11.9612
+       },
+       "p": 3.650764756617592e-19,
+       "p_holm": 2.190458853970555e-18,
+       "verdict": "better",
+       "false_block_rate": {
+        "point": -0.198492,
+        "ci": {
+         "low": -0.2425,
+         "high": -0.1591
+        },
+        "p": 2.5128004928600594e-20,
+        "p_holm": 1.5076802957160358e-19,
+        "verdict": "better"
+       }
+      },
+      "word_filters": {
+       "old": 90.637611,
+       "new": 92.175141,
+       "point": 1.53753,
+       "ci": {
+        "low": -0.397,
+        "high": 3.4691
+       },
+       "p": 0.1251871830430725,
+       "p_holm": 0.250374366086145,
+       "verdict": "within noise",
+       "false_block_rate": {
+        "point": -0.059322,
+        "ci": {
+         "low": -0.0891,
+         "high": -0.031
+        },
+        "p": 5.2840032599883576e-05,
+        "p_holm": 0.00015852009779965072,
+        "verdict": "better"
+       }
+      },
+      "sensitive_info": {
+       "old": 97.060901,
+       "new": 97.095532,
+       "point": 0.034631,
+       "ci": {
+        "low": -0.4724,
+        "high": 0.5466
+       },
+       "p": 0.8936446650728839,
+       "p_holm": 0.8936446650728839,
+       "verdict": "within noise",
+       "false_block_rate": {
+        "point": -0.000617,
+        "ci": {
+         "low": -0.0046,
+         "high": 0.0033
+        },
+        "p": 0.7581960270786566,
+        "p_holm": 0.7581960270786566,
+        "verdict": "within noise"
+       }
+      },
+      "grounding": {
+       "old": 79.756999,
+       "new": 89.841866,
+       "point": 10.084867,
+       "ci": {
+        "low": 7.2961,
+        "high": 13.0059
+       },
+       "p": 8.842208955351404e-13,
+       "p_holm": 2.652662686605421e-12,
+       "verdict": "better",
+       "false_block_rate": {
+        "point": 0.022346,
+        "ci": {
+         "low": -0.0028,
+         "high": 0.0493
+        },
+        "p": 0.09638601091944374,
+        "p_holm": 0.19277202183888748,
+        "verdict": "within noise"
+       }
+      }
+     },
+     "subtasks": {
+      "content/request": {
+       "old": 86.800829,
+       "new": 88.011338,
+       "point": 1.21051,
+       "ci": {
+        "low": -0.2919,
+        "high": 2.6545
+       },
+       "p": 0.10388921095151721,
+       "p_holm": 0.3116676328545516,
+       "verdict": "within noise",
+       "fixed": 78,
+       "broke": 85
+      },
+      "content/reply": {
+       "old": 79.799117,
+       "new": 89.872307,
+       "point": 10.07319,
+       "ci": {
+        "low": 7.5711,
+        "high": 12.7354
+       },
+       "p": 8.572332340002161e-14,
+       "p_holm": 6.000632638001513e-13,
+       "verdict": "better",
+       "fixed": 95,
+       "broke": 18
+      },
+      "prompt_attacks/direct": {
+       "old": 70.71573,
+       "new": 66.909752,
+       "point": -3.805978,
+       "ci": {
+        "low": -4.9826,
+        "high": -2.6226
+       },
+       "p": 1.700870458561977e-10,
+       "p_holm": 8.504352292809884e-10,
+       "verdict": "worse",
+       "fixed": 116,
+       "broke": 279
+      },
+      "prompt_attacks/indirect": {
+       "old": 90.725882,
+       "new": 81.688941,
+       "point": -9.036941,
+       "ci": {
+        "low": -12.1848,
+        "high": -6.351
+       },
+       "p": 3.290485898625212e-09,
+       "p_holm": 1.3161943594500848e-08,
+       "verdict": "worse",
+       "fixed": 61,
+       "broke": 171
+      },
+      "denied_topics/topic": {
+       "old": 86.934673,
+       "new": 96.703046,
+       "point": 9.768373,
+       "ci": {
+        "low": 7.7606,
+        "high": 11.9612
+       },
+       "p": 3.650764756617592e-19,
+       "p_holm": 2.9206118052940736e-18,
+       "verdict": "better",
+       "fixed": 84,
+       "broke": 6
+      },
+      "word_filters/profanity": {
+       "old": 90.637611,
+       "new": 92.175141,
+       "point": 1.53753,
+       "ci": {
+        "low": -0.397,
+        "high": 3.4691
+       },
+       "p": 0.1251871830430725,
+       "p_holm": 0.3116676328545516,
+       "verdict": "within noise",
+       "fixed": 31,
+       "broke": 20
+      },
+      "sensitive_info/entity_detection": {
+       "old": 97.060901,
+       "new": 97.095532,
+       "point": 0.034631,
+       "ci": {
+        "low": -0.4724,
+        "high": 0.5466
+       },
+       "p": 0.8936446650728839,
+       "p_holm": 0.8936446650728839,
+       "verdict": "within noise",
+       "fixed": 59,
+       "broke": 55
+      },
+      "grounding/grounding": {
+       "old": 79.756999,
+       "new": 89.841866,
+       "point": 10.084867,
+       "ci": {
+        "low": 7.2961,
+        "high": 13.0059
+       },
+       "p": 8.842208955351404e-13,
+       "p_holm": 5.305325373210842e-12,
+       "verdict": "better",
+       "fixed": 94,
+       "broke": 20
+      }
+     },
+     "flips": {
+      "fixed": 618,
+      "broke": 654,
+      "catches_gained": 295,
+      "catches_lost": 222,
+      "false_blocks_cleared": 323,
+      "false_blocks_added": 432,
+      "judgments": 14915
+     },
+     "mcnemar_p": 0.32642075186579267,
+     "calibration": {
+      "prompt_attacks/indirect": {
+       "old_ece": 0.093555,
+       "new_ece": 0.169484,
+       "point": 0.075929,
+       "ci": {
+        "low": 0.0513,
+        "high": 0.0987
+       },
+       "p": 2.5146831958648137e-10,
+       "p_holm": 7.544049587594441e-10,
+       "verdict": "worse"
+      },
+      "word_filters/profanity": {
+       "old_ece": 0.055658,
+       "new_ece": 0.052666,
+       "point": -0.002992,
+       "ci": {
+        "low": -0.0313,
+        "high": 0.0193
+       },
+       "p": 0.8069242228399549,
+       "p_holm": 0.8069242228399549,
+       "verdict": "within noise"
+      },
+      "sensitive_info/entity_detection": {
+       "old_ece": 0.106441,
+       "new_ece": 0.058221,
+       "point": -0.04822,
+       "ci": {
+        "low": -0.0511,
+        "high": -0.0452
+       },
+       "p": 2.625444867128614e-217,
+       "p_holm": 1.0501779468514455e-216,
+       "verdict": "better"
+      },
+      "grounding/grounding": {
+       "old_ece": 0.162182,
+       "new_ece": 0.072796,
+       "point": -0.089385,
+       "ci": {
+        "low": -0.1131,
+        "high": -0.0565
+       },
+       "p": 1.1247702980906286e-09,
+       "p_holm": 2.2495405961812573e-09,
+       "verdict": "better"
+      }
+     },
+     "cost": {
+      "old_usd_per_1000": 0.96203,
+      "new_usd_per_1000": 0.26734,
+      "delta_usd_per_1000": -0.69469,
+      "delta_pct": -72.21,
+      "old_usd_total": 9.5962,
+      "new_usd_total": 2.6667,
+      "old_basis": "allocated VM time (7787 s) x g2-standard-48/northamerica-northeast2/on-demand/third-party $4.4062/h + disk $0.030/h",
+      "new_basis": "allocated VM time (1898 s) x a2-ultragpu-1g/us-central1/on-demand $5.0277/h + disk $0.030/h",
+      "comparable": false,
+      "why_not_comparable": "g2-standard-48/northamerica-northeast2/on-demand/third-party vs a2-ultragpu-1g/us-central1/on-demand"
+     },
+     "tokens": {
+      "checks": 9975,
+      "old_mean": 857.7,
+      "new_mean": 816.4,
+      "delta_mean": -41.3,
+      "delta_pct": -4.81,
+      "old_total": 8555512,
+      "new_total": 8143885
+     }
+    }
+   ]
+  },
+  {
+   "key": "strands-decider-26b-a4b",
+   "label": "Strands Decider 26B-A4B (AWS)",
+   "vendor": "AWS",
+   "versions": [
+    "strands-decider-26b-a4b",
+    "strands-decider-26b-a4b-v2"
+   ],
+   "planned": [],
+   "board": {
+    "strands-decider-26b-a4b": {
+     "rank": 32,
+     "tier": 4,
+     "rank_interval": {
+      "low": 28.0,
+      "high": 33.0
+     }
+    },
+    "strands-decider-26b-a4b-v2": {
+     "rank": 7,
+     "tier": 2,
+     "rank_interval": {
+      "low": 6.0,
+      "high": 13.0
+     }
+    }
+   },
+   "comparisons": [
+    {
+     "from": "strands-decider-26b-a4b",
+     "to": "strands-decider-26b-a4b-v2",
+     "kind": "step",
+     "overall": {
+      "balanced_accuracy": {
+       "old": 86.143365,
+       "new": 90.450523,
+       "point": 4.307158,
+       "ci": {
+        "low": 3.502,
+        "high": 5.0868
+       },
+       "p": 6.879589526313584e-27,
+       "p_holm": 6.879589526313584e-27,
+       "verdict": "better"
+      },
+      "catch_rate": {
+       "old": 0.903479,
+       "new": 0.906495,
+       "point": 0.003016,
+       "ci": {
+        "low": -0.0083,
+        "high": 0.0137
+       },
+       "p": 0.5938623160948742,
+       "p_holm": 0.5938623160948742,
+       "verdict": "within noise"
+      },
+      "false_block_rate": {
+       "old": 0.180612,
+       "new": 0.097484,
+       "point": -0.083127,
+       "ci": {
+        "low": -0.0938,
+        "high": -0.0716
+       },
+       "p": 4.2579700275606925e-47,
+       "p_holm": 4.2579700275606925e-47,
+       "verdict": "better"
+      }
+     },
+     "board": {
+      "difference": 4.307158,
+      "p_holm_board": 0.0,
+      "separated_on_board": true,
+      "pairs_in_board_family": 1431
+     },
+     "suites": {
+      "content": {
+       "old": 84.006883,
+       "new": 86.493803,
+       "point": 2.48692,
+       "ci": {
+        "low": 1.2374,
+        "high": 3.6958
+       },
+       "p": 0.00011552947780008504,
+       "p_holm": 0.0002310589556001701,
+       "verdict": "better",
+       "false_block_rate": {
+        "point": -0.02413,
+        "ci": {
+         "low": -0.0432,
+         "high": -0.0039
+        },
+        "p": 0.015045754683744054,
+        "p_holm": 0.03009150936748811,
+        "verdict": "better"
+       }
+      },
+      "prompt_attacks": {
+       "old": 74.65341,
+       "new": 81.75864,
+       "point": 7.10523,
+       "ci": {
+        "low": 5.6571,
+        "high": 8.6827
+       },
+       "p": 5.623240588002718e-20,
+       "p_holm": 2.811620294001359e-19,
+       "verdict": "better",
+       "false_block_rate": {
+        "point": -0.161934,
+        "ci": {
+         "low": -0.1862,
+         "high": -0.1412
+        },
+        "p": 3.525546319517202e-44,
+        "p_holm": 2.1153277917103212e-43,
+        "verdict": "better"
+       }
+      },
+      "denied_topics": {
+       "old": 85.929648,
+       "new": 98.713097,
+       "point": 12.783448,
+       "ci": {
+        "low": 10.6172,
+        "high": 15.0262
+       },
+       "p": 2.454713406221116e-29,
+       "p_holm": 1.4728280437326697e-28,
+       "verdict": "better",
+       "false_block_rate": {
+        "point": -0.258794,
+        "ci": {
+         "low": -0.3033,
+         "high": -0.2159
+        },
+        "p": 6.547394022373837e-31,
+        "p_holm": 3.273697011186918e-30,
+        "verdict": "better"
+       }
+      },
+      "word_filters": {
+       "old": 91.478612,
+       "new": 87.293785,
+       "point": -4.184826,
+       "ci": {
+        "low": -6.7108,
+        "high": -1.8708
+       },
+       "p": 0.0006391313300617667,
+       "p_holm": 0.0006391313300617667,
+       "verdict": "worse",
+       "false_block_rate": {
+        "point": -0.073446,
+        "ci": {
+         "low": -0.1003,
+         "high": -0.0469
+        },
+        "p": 7.219499882201854e-08,
+        "p_holm": 2.1658499646605562e-07,
+        "verdict": "better"
+       }
+      },
+      "sensitive_info": {
+       "old": 97.485778,
+       "new": 98.343988,
+       "point": 0.85821,
+       "ci": {
+        "low": 0.4345,
+        "high": 1.2842
+       },
+       "p": 4.037617001159499e-05,
+       "p_holm": 0.00012112851003478498,
+       "verdict": "better",
+       "false_block_rate": {
+        "point": -0.013979,
+        "ci": {
+         "low": -0.0189,
+         "high": -0.009
+        },
+        "p": 2.3078200701681505e-08,
+        "p_holm": 9.231280280672602e-08,
+        "verdict": "better"
+       }
+      },
+      "grounding": {
+       "old": 83.305858,
+       "new": 90.099826,
+       "point": 6.793968,
+       "ci": {
+        "low": 3.9482,
+        "high": 9.5093
+       },
+       "p": 9.893988275330678e-07,
+       "p_holm": 3.957595310132271e-06,
+       "verdict": "better",
+       "false_block_rate": {
+        "point": 0.03352,
+        "ci": {
+         "low": 0.0029,
+         "high": 0.0657
+        },
+        "p": 0.037220850553293924,
+        "p_holm": 0.037220850553293924,
+        "verdict": "worse"
+       }
+      }
+     },
+     "subtasks": {
+      "content/request": {
+       "old": 85.840573,
+       "new": 87.123764,
+       "point": 1.283191,
+       "ci": {
+        "low": -0.2421,
+        "high": 2.751
+       },
+       "p": 0.0931017786760786,
+       "p_holm": 0.0931017786760786,
+       "verdict": "within noise",
+       "fixed": 84,
+       "broke": 67
+      },
+      "content/reply": {
+       "old": 82.173193,
+       "new": 85.863841,
+       "point": 3.690648,
+       "ci": {
+        "low": 1.7092,
+        "high": 5.6664
+       },
+       "p": 0.00035377503605312893,
+       "p_holm": 0.0010613251081593867,
+       "verdict": "better",
+       "fixed": 45,
+       "broke": 17
+      },
+      "prompt_attacks/direct": {
+       "old": 67.981214,
+       "new": 72.771919,
+       "point": 4.790705,
+       "ci": {
+        "low": 3.7683,
+        "high": 5.8352
+       },
+       "p": 7.377055764616872e-19,
+       "p_holm": 5.16393903523181e-18,
+       "verdict": "better",
+       "fixed": 222,
+       "broke": 72
+      },
+      "prompt_attacks/indirect": {
+       "old": 81.325606,
+       "new": 90.745361,
+       "point": 9.419755,
+       "ci": {
+        "low": 6.6332,
+        "high": 12.353
+       },
+       "p": 1.1331458656993512e-10,
+       "p_holm": 6.798875194196107e-10,
+       "verdict": "better",
+       "fixed": 224,
+       "broke": 71
+      },
+      "denied_topics/topic": {
+       "old": 85.929648,
+       "new": 98.713097,
+       "point": 12.783448,
+       "ci": {
+        "low": 10.6172,
+        "high": 15.0262
+       },
+       "p": 2.454713406221116e-29,
+       "p_holm": 1.963770724976893e-28,
+       "verdict": "better",
+       "fixed": 104,
+       "broke": 2
+      },
+      "word_filters/profanity": {
+       "old": 91.478612,
+       "new": 87.293785,
+       "point": -4.184826,
+       "ci": {
+        "low": -6.7108,
+        "high": -1.8708
+       },
+       "p": 0.0006391313300617667,
+       "p_holm": 0.0012782626601235334,
+       "verdict": "worse",
+       "fixed": 28,
+       "broke": 57
+      },
+      "sensitive_info/entity_detection": {
+       "old": 97.485778,
+       "new": 98.343988,
+       "point": 0.85821,
+       "ci": {
+        "low": 0.4345,
+        "high": 1.2842
+       },
+       "p": 4.037617001159499e-05,
+       "p_holm": 0.00016150468004637997,
+       "verdict": "better",
+       "fixed": 113,
+       "broke": 42
+      },
+      "grounding/grounding": {
+       "old": 83.305858,
+       "new": 90.099826,
+       "point": 6.793968,
+       "ci": {
+        "low": 3.9482,
+        "high": 9.5093
+       },
+       "p": 9.893988275330678e-07,
+       "p_holm": 4.946994137665339e-06,
+       "verdict": "better",
+       "fixed": 78,
+       "broke": 28
+      }
+     },
+     "flips": {
+      "fixed": 898,
+      "broke": 356,
+      "catches_gained": 216,
+      "catches_lost": 173,
+      "false_blocks_cleared": 682,
+      "false_blocks_added": 183,
+      "judgments": 14915
+     },
+     "mcnemar_p": 2.1478085271775165e-54,
+     "calibration": {
+      "prompt_attacks/indirect": {
+       "old_ece": 0.187725,
+       "new_ece": 0.047633,
+       "point": -0.140092,
+       "ci": {
+        "low": -0.1684,
+        "high": -0.112
+       },
+       "p": 1.8729570861978526e-21,
+       "p_holm": 5.618871258593557e-21,
+       "verdict": "better"
+      },
+      "word_filters/profanity": {
+       "old_ece": 0.021114,
+       "new_ece": 0.131076,
+       "point": 0.109962,
+       "ci": {
+        "low": 0.0742,
+        "high": 0.1263
+       },
+       "p": 4.5712705819578207e-17,
+       "p_holm": 9.142541163915641e-17,
+       "verdict": "worse"
+      },
+      "sensitive_info/entity_detection": {
+       "old_ece": 0.059288,
+       "new_ece": 0.032603,
+       "point": -0.026685,
+       "ci": {
+        "low": -0.0294,
+        "high": -0.0236
+       },
+       "p": 2.1942245572352293e-72,
+       "p_holm": 8.776898228940917e-72,
+       "verdict": "better"
+      },
+      "grounding/grounding": {
+       "old_ece": 0.132326,
+       "new_ece": 0.10263,
+       "point": -0.029697,
+       "ci": {
+        "low": -0.0486,
+        "high": 0.0059
+       },
+       "p": 0.03020442784024507,
+       "p_holm": 0.03020442784024507,
+       "verdict": "better"
+      }
+     },
+     "cost": {
+      "old_usd_per_1000": 0.66987,
+      "new_usd_per_1000": 0.81494,
+      "delta_usd_per_1000": 0.14507,
+      "delta_pct": 21.66,
+      "old_usd_total": 6.682,
+      "new_usd_total": 8.1291,
+      "old_basis": "allocated VM time (4756 s) x a2-ultragpu-1g/us-central1/on-demand $5.0277/h + disk $0.030/h",
+      "new_basis": "allocated VM time (5786 s) x a2-ultragpu-1g/us-central1/on-demand $5.0277/h + disk $0.030/h",
+      "comparable": true
+     },
+     "tokens": {
+      "checks": 9975,
+      "old_mean": 770.7,
+      "new_mean": 816.4,
+      "delta_mean": 45.7,
+      "delta_pct": 5.94,
+      "old_total": 7687610,
+      "new_total": 8143885
+     }
+    }
+   ]
+  },
+  {
    "key": "drex",
    "label": "Nace.AI Drex",
    "vendor": "Nace.AI",
@@ -5153,19 +6784,19 @@
    "planned": [],
    "board": {
     "drex-v1.5": {
-     "rank": 30,
-     "tier": 5,
+     "rank": 35,
+     "tier": 6,
      "rank_interval": {
-      "low": 29.0,
-      "high": 32.0
+      "low": 34.0,
+      "high": 37.0
      }
     },
     "drex-v2.0": {
-     "rank": 31,
-     "tier": 5,
+     "rank": 36,
+     "tier": 6,
      "rank_interval": {
-      "low": 29.0,
-      "high": 33.0
+      "low": 34.0,
+      "high": 38.0
      }
     }
    },
@@ -5216,7 +6847,7 @@
       "difference": -0.296173,
       "p_holm_board": 1.0,
       "separated_on_board": false,
-      "pairs_in_board_family": 1176
+      "pairs_in_board_family": 1431
      },
      "suites": {
       "content": {

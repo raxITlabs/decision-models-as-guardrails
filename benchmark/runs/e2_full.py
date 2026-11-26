@@ -135,7 +135,9 @@ class TestRows:
         dev = {json.loads(x)["id"] for f in FEATURES for x in (d / f"{f}.dev.jsonl").open(encoding="utf-8")}
         if dev & set(self.rows):
             raise SystemExit("a dev id is also a test id")
-        if d.resolve() == smoke.BUILD.resolve() and FROZEN_BUILD.is_dir():
+        # any source: a materialized copy is byte-identical to the build (goldrails_bench.e2_source), so it takes the
+        # same amendment back to the frozen version
+        if FROZEN_BUILD.is_dir():
             self.amendment = label_amendment(self, FROZEN_BUILD)
 
     def guard(self, r: dict) -> None:
