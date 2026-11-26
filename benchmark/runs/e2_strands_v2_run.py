@@ -42,8 +42,8 @@ Hardware. The vendor's model cards say the 26B-A4B and the 31B need one 80 GB GP
 us-central1 has no A100 capacity (``REGIONS``). Self-hosted cost is each pass's VM up-to-paused time, at the tariff of
 the region it ran in, split across that pass's checkpoints by their run seconds.
 
-Not done here, after the run is scored: the v1 -> v2 lineages in ``goldrails_bench.versions.LINEAGES`` (``V1_OF``) and
-this folder in ``e2_versions.SOURCES``; both read scored ledgers, so they are added with the score.
+Version steps: the v1 -> v2 lineages are in ``goldrails_bench.versions.LINEAGES`` (``V1_OF``) and this folder is in
+``e2_versions.SOURCES``; ``uv run python benchmark/runs/e2_versions.py score`` after ``score``.
 
 Raw ledgers (unpublished ids) stay in the git-ignored ``benchmark/results/final/ledgers/strands-deciders-v2/private/``;
 ``report`` and ``score`` write committed ledgers with public test rows only and run the privacy checks.
